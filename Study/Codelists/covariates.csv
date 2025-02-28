@@ -1,0 +1,1561 @@
+codelist_name,concept_id,concept_name,standard_concept
+alcohol_misuse_dependence,4338024,Absinthe addiction,S
+alcohol_misuse_dependence,433735,Acute alcoholic intoxication in alcoholism,N
+alcohol_misuse_dependence,432609,"Acute alcoholic intoxication in remission, in alcoholism",N
+alcohol_misuse_dependence,433753,Alcohol abuse,S
+alcohol_misuse_dependence,435243,Alcohol dependence,S
+alcohol_misuse_dependence,45757131,Alcohol dependence in childbirth,S
+alcohol_misuse_dependence,45757093,Alcohol dependence in pregnancy,S
+alcohol_misuse_dependence,4218106,Alcoholism,S
+alcohol_misuse_dependence,44788303,Alcohol misuse enhanced service completed,S
+alcohol_misuse_dependence,44788279,Alcohol misuse enhanced services administration,S
+alcohol_misuse_dependence,439005,Chronic alcoholism in remission,S
+alcohol_misuse_dependence,436953,Continuous chronic alcoholism,S
+alcohol_misuse_dependence,378726,Dementia associated with alcoholism,S
+alcohol_misuse_dependence,4275257,Detoxication psychiatric therapy for alcoholism,S
+alcohol_misuse_dependence,435532,Episodic chronic alcoholism,S
+alcohol_misuse_dependence,37017329,Mild alcohol dependence,S
+alcohol_misuse_dependence,37018356,Moderate alcohol dependence,S
+alcohol_misuse_dependence,4152165,Nondependent alcohol abuse,S
+alcohol_misuse_dependence,435534,"Nondependent alcohol abuse, continuous",S
+alcohol_misuse_dependence,440685,"Nondependent alcohol abuse, episodic",S
+alcohol_misuse_dependence,441276,Nondependent alcohol abuse in remission,S
+alcohol_misuse_dependence,4109691,Persistent alcohol abuse,S
+alcohol_misuse_dependence,37017563,Severe alcohol dependence,S
+anxiety,442077,Anxiety disorder,S
+asthma,257581,Acute asthma,S
+asthma,45769441,Acute exacerbation of allergic asthma,S
+asthma,46273452,Acute exacerbation of asthma co-occurrent with allergic rhinitis,S
+asthma,40481763,Acute exacerbation of chronic asthmatic bronchitis,S
+asthma,43530693,Acute exacerbation of chronic obstructive airways disease with asthma,S
+asthma,37159957,Acute exacerbation of intermittent allergic asthma,S
+asthma,45773005,Acute exacerbation of intrinsic asthma,S
+asthma,37159958,Acute exacerbation of moderate persistent allergic asthma,S
+asthma,36684328,Acute severe exacerbation of allergic asthma,S
+asthma,45769438,Acute severe exacerbation of asthma,S
+asthma,46269767,Acute severe exacerbation of asthma co-occurrent with allergic rhinitis,S
+asthma,45769442,Acute severe exacerbation of immunoglobin E-mediated allergic asthma,S
+asthma,45769443,Acute severe exacerbation of intrinsic asthma,S
+asthma,46274124,Acute severe exacerbation of mild persistent allergic asthma,S
+asthma,46269777,Acute severe exacerbation of mild persistent allergic asthma co-occurrent with allergic rhinitis,S
+asthma,45769352,Acute severe exacerbation of mild persistent asthma,S
+asthma,46273462,Acute severe exacerbation of moderate persistent allergic asthma,S
+asthma,45769351,Acute severe exacerbation of moderate persistent asthma,S
+asthma,46269785,Acute severe exacerbation of moderate persistent asthma co-occurrent with allergic rhinitis,S
+asthma,46274059,Acute severe exacerbation of severe persistent allergic asthma,S
+asthma,45769350,Acute severe exacerbation of severe persistent asthma,S
+asthma,46269771,Acute severe exacerbation of severe persistent asthma co-occurrent with allergic rhinitis,S
+asthma,37116845,Acute severe refractory exacerbation of asthma,S
+asthma,4191479,Allergic asthma,S
+asthma,45766728,Allergic asthma due to Dermatophagoides farinae,S
+asthma,45766727,Allergic asthma due to Dermatophagoides pteronyssinus,S
+asthma,4271333,Allergic asthma without status asthmaticus,S
+asthma,46269801,Aspirin exacerbated respiratory disease,S
+asthma,4250128,Aspirin-induced asthma,S
+asthma,317009,Asthma,S
+asthma,4211530,Asthma caused by wood dust,S
+asthma,46274062,Asthma-chronic obstructive pulmonary disease overlap syndrome,S
+asthma,45772073,Asthma in mother complicating childbirth,S
+asthma,42535716,Asthma in pregnancy,S
+asthma,4235703,Asthma management,S
+asthma,44783610,Asthma self management,S
+asthma,4233784,Asthmatic bronchitis,S
+asthma,252942,Asthmatic pulmonary eosinophilia,S
+asthma,43530745,Asthma with irreversible airway obstruction,S
+asthma,4206340,Asthma without status asthmaticus,S
+asthma,4143474,Bakers' asthma,S
+asthma,4075237,Brittle asthma,S
+asthma,4225553,Cheese-makers' asthma,S
+asthma,4245676,Chemical-induced asthma,S
+asthma,4051466,Childhood asthma,S
+asthma,256448,Chronic asthmatic bronchitis,S
+asthma,44810117,Chronic asthma with fixed airflow obstruction,S
+asthma,46269802,Chronic obstructive asthma co-occurrent with acute exacerbation of asthma,S
+asthma,4119300,Colophony asthma,S
+asthma,313236,Cough variant asthma,S
+asthma,4120262,Cryptogenic pulmonary eosinophilia,S
+asthma,4217558,Detergent asthma,S
+asthma,4244339,Drug-induced asthma,S
+asthma,42538744,Exacerbation of allergic asthma,S
+asthma,36684335,Exacerbation of allergic asthma due to infection,S
+asthma,1340255,Exacerbation of asthma,S
+asthma,4138760,Exacerbation of intermittent asthma,S
+asthma,45768911,Exacerbation of mild persistent asthma,S
+asthma,45772937,Exacerbation of moderate persistent asthma,S
+asthma,45768912,Exacerbation of severe persistent asthma,S
+asthma,443801,Exercise-induced asthma,S
+asthma,4123253,Hay fever with asthma,S
+asthma,312950,IgE-mediated allergic asthma,S
+asthma,761844,Inhaled steroid-dependent asthma,S
+asthma,37310241,Intermittent allergic asthma,S
+asthma,4141978,Intermittent asthma,S
+asthma,46270030,Intermittent asthma co-occurrent with allergic rhinitis,S
+asthma,46270322,Intermittent asthma uncontrolled,S
+asthma,4145497,Intrinsic asthma,S
+asthma,252658,Intrinsic asthma without status asthmaticus,S
+asthma,4225554,Isocyanate induced asthma,S
+asthma,4119298,Late onset asthma,S
+asthma,35609846,Life threatening acute exacerbation of allergic asthma,S
+asthma,42536207,Life threatening acute exacerbation of asthma,S
+asthma,35609847,Life threatening acute exacerbation of intrinsic asthma,S
+asthma,4057952,Meat-wrappers' asthma,S
+asthma,4155468,Mild asthma,S
+asthma,4146581,Mild intermittent asthma,S
+asthma,46269776,Mild persistent allergic asthma,S
+asthma,4143828,Mild persistent asthma,S
+asthma,46270029,Mild persistent asthma co-occurrent with allergic rhinitis,S
+asthma,4022592,Millers' asthma,S
+asthma,4110051,Mixed asthma,S
+asthma,42536208,Moderate acute exacerbation of asthma,S
+asthma,4155469,Moderate asthma,S
+asthma,46269784,Moderate persistent allergic asthma,S
+asthma,4142738,Moderate persistent asthma,S
+asthma,46273454,Moderate persistent asthma co-occurrent with allergic rhinitis,S
+asthma,37206717,Near fatal asthma,S
+asthma,4309833,Non-IgE mediated allergic asthma,S
+asthma,4155470,Occasional asthma,S
+asthma,4212099,Occupational asthma,S
+asthma,37109103,Oral steroid-dependent asthma,S
+asthma,764677,Persistent asthma,S
+asthma,2108536,"Persistent asthma, preferred long term control medication or an acceptable alternative treatment, prescribed (NMA-No Measure Associated)",S
+asthma,764949,"Persistent asthma, well controlled",S
+asthma,4232595,Platinum asthma,S
+asthma,4080516,Printers' asthma,S
+asthma,4279553,Pulmonary eosinophilia,S
+asthma,40483397,Seasonal asthma,S
+asthma,4152913,Severe asthma,S
+asthma,37208352,Severe asthma with fungal sensitisation,S
+asthma,37108580,Severe controlled persistent asthma,S
+asthma,46269770,Severe persistent allergic asthma,S
+asthma,4145356,Severe persistent asthma,S
+asthma,46270028,Severe persistent asthma co-occurrent with allergic rhinitis,S
+asthma,37108581,Severe uncontrolled persistent asthma,S
+asthma,4277596,Simple pulmonary eosinophilia,S
+asthma,46273635,Steroid dependent asthma,S
+asthma,4120261,Sulfite-induced asthma,S
+asthma,4301938,Tea-makers' asthma,S
+asthma,3661412,Thunderstorm asthma,S
+asthma,4081994,Tropical pulmonary eosinophilia,S
+asthma,42539549,Uncomplicated allergic asthma,S
+asthma,45768910,Uncomplicated asthma,S
+asthma,45768963,Uncomplicated mild persistent asthma,S
+asthma,45768964,Uncomplicated moderate persistent asthma,S
+asthma,42536649,Uncomplicated non-allergic asthma,S
+asthma,45768965,Uncomplicated severe persistent asthma,S
+asthma,4245292,Weavers' cough,S
+depression,37016718,Acute depression,S
+depression,4308866,Agitated depression,S
+depression,37312479,Antenatal depression,S
+depression,438727,Atypical depressive disorder,S
+depression,439254,"Bipolar affective disorder, current episode depression",S
+depression,439251,"Bipolar affective disorder, currently depressed, in full remission",S
+depression,439253,"Bipolar affective disorder, currently depressed, mild",S
+depression,437528,"Bipolar affective disorder, currently depressed, moderate",S
+depression,4107538,"Bipolar I disorder, most recent episode depressed with atypical features",S
+depression,4103574,Chronic depression,S
+depression,40481798,Chronic depressive personality disorder,S
+depression,4031328,"Chronic major depressive disorder, single episode",S
+depression,4094358,Chronic recurrent major depressive disorder,S
+depression,4131545,Depression requiring intervention,S
+depression,4333687,Depressive conduct disorder,S
+depression,440383,Depressive disorder,S
+depression,37209503,Depressive disorder caused by amphetamine,S
+depression,4103126,Depressive disorder caused by drug,S
+depression,37309680,Depressive disorder caused by methamphetamine,S
+depression,45757213,Depressive disorder in mother complicating childbirth,S
+depression,37018656,Depressive disorder in mother complicating pregnancy,S
+depression,44782943,Depressive disorder in remission,S
+depression,433440,Dysthymia,S
+depression,4096229,Early onset dysthymia,S
+depression,4114950,Endogenous depression,S
+depression,4333679,Endogenous depression first episode,S
+depression,4168858,Endogenous depression - recurrent,S
+depression,1340305,Exacerbation of depressive disorder,S
+depression,1340392,Exacerbation of major depressive disorder,S
+depression,4336980,Generalized neuromuscular exhaustion syndrome,S
+depression,4154805,Involutional depression,S
+depression,4057218,Late onset dysthymia,S
+depression,4269493,Major depression in full remission,S
+depression,4148630,Major depression in partial remission,S
+depression,4176002,Major depression in remission,S
+depression,4154391,"Major depression, melancholic type",S
+depression,4282096,"Major depression, single episode",S
+depression,4323418,"Major depression single episode, in partial remission",S
+depression,37111697,Major depression with psychotic features,S
+depression,4152280,Major depressive disorder,S
+depression,45757195,Major depressive disorder in mother complicating childbirth,S
+depression,45757196,Major depressive disorder in mother complicating pregnancy,S
+depression,4181807,"Major depressive disorder, single episode with atypical features",S
+depression,4287238,"Major depressive disorder, single episode with catatonic features",S
+depression,4270907,"Major depressive disorder, single episode with melancholic features",S
+depression,4093584,"Major depressive disorder, single episode with postpartum onset",S
+depression,4338029,Masked depression,S
+depression,4133073,Maternity blues,S
+depression,4223090,Menopausal depression,S
+depression,4149320,Mild depression,S
+depression,4336957,Mild major depression,S
+depression,4195572,"Mild major depression, single episode",S
+depression,37109052,Mild major depressive disorder co-occurrent with anxiety single episode,S
+depression,4129842,Mild postnatal depression,S
+depression,4228802,Mild recurrent major depression,S
+depression,36713698,Minimal depression,S
+depression,36715000,Minimal major depression,S
+depression,36714999,Minimal major depression single episode,S
+depression,36714997,Minimal recurrent major depression,S
+depression,4174987,Minor depressive disorder,S
+depression,4338031,Mixed anxiety and depressive disorder,S
+depression,4151170,Moderate depression,S
+depression,36717092,Moderately severe depression,S
+depression,36714389,Moderately severe major depression,S
+depression,36717389,Moderately severe major depression single episode,S
+depression,36714998,Moderately severe recurrent major depression,S
+depression,4307111,Moderate major depression,S
+depression,4049623,"Moderate major depression, single episode",S
+depression,37109053,Moderate major depressive disorder co-occurrent with anxiety single episode,S
+depression,4077577,Moderate recurrent major depression,S
+depression,3654788,Mood disorder with depressive symptoms caused by amphetamine and/or amphetamine derivative,S
+depression,37110429,Mood disorder with depressive symptoms caused by anxiolytic,S
+depression,37110438,Mood disorder with depressive symptoms caused by cocaine,S
+depression,42538604,Mood disorder with depressive symptoms caused by dissociative drug,S
+depression,37164792,Mood disorder with depressive symptoms caused by ethanol,S
+depression,42538596,Mood disorder with depressive symptoms caused by hallucinogen,S
+depression,37110428,Mood disorder with depressive symptoms caused by hypnotic,S
+depression,42538584,Mood disorder with depressive symptoms caused by opioid,S
+depression,37117211,Mood disorder with depressive symptoms caused by sedative,S
+depression,42538590,Mood disorder with depressive symptoms caused by stimulant,S
+depression,42538736,Mood disorder with depressive symptoms caused by synthetic cathinone,S
+depression,42538599,Mood disorder with depressive symptoms caused by volatile inhalant,S
+depression,443864,Multi-infarct dementia with depression,S
+depression,36712668,Perinatal depression,S
+depression,607543,Persistent depressive disorder,S
+depression,37166876,Postmenopausal depression,S
+depression,4305966,Postoperative depression,S
+depression,4239471,Postpartum depression,S
+depression,42534817,Postpartum major depression in remission,S
+depression,4332994,Post-schizophrenic depression,S
+depression,4102973,Postviral depression,S
+depression,4242733,Premenstrual dysphoric disorder,S
+depression,4145216,Premenstrual dysphoric disorder in remission,S
+depression,4307951,Primary dysthymia,S
+depression,4243308,Primary dysthymia early onset,S
+depression,4195680,Primary dysthymia late onset,S
+depression,35622934,Psychosis and severe depression co-occurrent and due to bipolar affective disorder,S
+depression,35609845,"Reactive depression, first episode",S
+depression,35609842,"Reactive depression, prolonged single episode",S
+depression,35609844,"Reactive depression, recurrent",S
+depression,35609843,"Reactive depression, single episode",S
+depression,4314692,Reactive depression (situational),S
+depression,435520,Reactive depressive psychosis,S
+depression,43020483,"Reactive depressive psychosis, single episode",S
+depression,4226155,Recurrent brief depressive disorder,S
+depression,4098302,Recurrent depression,S
+depression,35610109,Recurrent depression with current moderate episode,S
+depression,35610097,Recurrent depression with current severe episode and psychotic features,S
+depression,35610108,Recurrent depression with current severe episode without psychotic features,S
+depression,4282316,Recurrent major depression,S
+depression,4263748,Recurrent major depression in full remission,S
+depression,4141454,Recurrent major depression in partial remission,S
+depression,433991,Recurrent major depression in remission,S
+depression,35615154,Recurrent major depressive disorder co-occurrent with anxiety in full remission,S
+depression,35615155,Recurrent major depressive disorder in partial remission co-occurrent with anxiety,S
+depression,4304140,Recurrent major depressive disorder with atypical features,S
+depression,4220023,Recurrent major depressive disorder with catatonic features,S
+depression,4205471,Recurrent major depressive disorder with melancholic features,S
+depression,4324959,Recurrent major depressive disorder with postpartum onset,S
+depression,432285,Recurrent major depressive episodes,S
+depression,44805549,"Recurrent major depressive episodes, in partial remission",S
+depression,44813499,"Recurrent major depressive episodes, in remission",S
+depression,438998,"Recurrent major depressive episodes, mild",S
+depression,432883,"Recurrent major depressive episodes, moderate",S
+depression,44805542,"Recurrent major depressive episodes, severe",S
+depression,434911,"Recurrent major depressive episodes, severe, with psychosis",S
+depression,44805669,"Recurrent major depressive episodes, severe, with psychosis, psychosis in remission",S
+depression,35615151,Recurrent mild major depressive disorder co-occurrent with anxiety,S
+depression,35615153,Recurrent moderate major depressive disorder co-occurrent with anxiety,S
+depression,35609824,"Recurrent reactive depressive episodes, severe, with psychosis",S
+depression,35615152,Recurrent severe major depressive disorder co-occurrent with anxiety,S
+depression,4224940,"Schizoaffective disorder, depressive type",S
+depression,4092239,Seasonal affective disorder,S
+depression,4224639,Secondary dysthymia,S
+depression,4150047,Secondary dysthymia early onset,S
+depression,4263770,Secondary dysthymia late onset,S
+depression,4149321,Severe depression,S
+depression,42872722,Severe major depression,S
+depression,42872411,"Severe major depression, single episode",S
+depression,441534,"Severe major depression, single episode, without psychotic features",S
+depression,438406,"Severe major depression, single episode, with psychotic features",S
+depression,4299785,"Severe major depression, single episode, with psychotic features, mood-congruent",S
+depression,4067409,"Severe major depression, single episode, with psychotic features, mood-incongruent",S
+depression,4327337,Severe major depression without psychotic features,S
+depression,4250023,Severe major depression with psychotic features,S
+depression,4144233,"Severe major depression with psychotic features, mood-congruent",S
+depression,4243822,"Severe major depression with psychotic features, mood-incongruent",S
+depression,37109054,Severe major depressive disorder co-occurrent with anxiety single episode,S
+depression,4129184,Severe postnatal depression,S
+depression,43531624,Severe recurrent major depression,S
+depression,435220,Severe recurrent major depression without psychotic features,S
+depression,4154309,Severe recurrent major depression with psychotic features,S
+depression,4141292,"Severe recurrent major depression with psychotic features, mood-congruent",S
+depression,4034842,"Severe recurrent major depression with psychotic features, mood-incongruent",S
+depression,44782720,Severe seasonal affective disorder,S
+depression,4025677,Single episode of major depression in full remission,S
+depression,44805550,"Single major depressive episode, in remission",S
+depression,439259,"Single major depressive episode, severe, with psychosis",S
+depression,44805668,"Single major depressive episode, severe, with psychosis, psychosis in remission",S
+depression,4197222,Stuporous depression,S
+depression,607540,Treatment resistant depression,S
+diabetes,36715051,"Atherosclerosis, deafness, diabetes, epilepsy, nephropathy syndrome",S
+diabetes,36713275,Atypical diabetes mellitus,S
+diabetes,36715417,DEND syndrome,S
+diabetes,4129516,Diabetes-deafness syndrome maternally transmitted,S
+diabetes,201820,Diabetes mellitus,S
+diabetes,4143529,Diabetes mellitus associated with cystic fibrosis,S
+diabetes,4245270,Diabetes mellitus associated with genetic syndrome,S
+diabetes,4240589,Diabetes mellitus associated with hormonal etiology,S
+diabetes,4178452,Diabetes mellitus associated with pancreatic disease,S
+diabetes,4178790,Diabetes mellitus associated with receptor abnormality,S
+diabetes,42537681,Diabetes mellitus caused by chemical,S
+diabetes,765478,Diabetes mellitus caused by drug without complication,S
+diabetes,3178281,Diabetes mellitus complicating Cystic fibrosis,S
+diabetes,4144583,Diabetes mellitus due to cystic fibrosis,S
+diabetes,43531011,Diabetes mellitus due to genetic defect in beta cell function,S
+diabetes,43531642,Diabetes mellitus due to genetic defect in insulin action,S
+diabetes,4192852,Diabetes mellitus due to insulin receptor antibodies,S
+diabetes,45757077,Diabetes mellitus due to pancreatic injury,S
+diabetes,4237068,Diabetes mellitus due to structurally abnormal insulin,S
+diabetes,4058243,"Diabetes mellitus during pregnancy, childbirth and the puerperium",S
+diabetes,4235410,Diabetes mellitus induced by non-steroid drugs,S
+diabetes,4136889,Diabetes mellitus induced by non-steroid drugs without complication,S
+diabetes,45757129,Diabetes mellitus in mother complicating childbirth,S
+diabetes,194700,"Diabetes mellitus in mother complicating pregnancy, childbirth AND/OR puerperium",S
+diabetes,4079850,Diabetes mellitus in neonate small for gestational age,S
+diabetes,45766050,Diabetes mellitus in remission,S
+diabetes,43531645,"Diabetes mellitus, transient neonatal 1",S
+diabetes,43531019,"Diabetes mellitus, transient neonatal 2",S
+diabetes,43531020,"Diabetes mellitus, transient neonatal 3",S
+diabetes,37174264,Diabetes mellitus type 1 stage 1,S
+diabetes,37174265,Diabetes mellitus type 1 stage 2,S
+diabetes,37174270,Diabetes mellitus type 1 stage 3,S
+diabetes,45757674,Diabetes mellitus type 1 without retinopathy,S
+diabetes,45757474,Diabetes mellitus type 2 without retinopathy,S
+diabetes,36684827,Diabetes mellitus type 2 with periodontal disease,S
+diabetes,44793113,Diabetes mellitus with multiple complications,S
+diabetes,4008576,Diabetes mellitus without complication,S
+diabetes,42535539,Disorder of nerve co-occurrent and due to type 1 diabetes mellitus,S
+diabetes,4202383,Drug-induced diabetes mellitus,S
+diabetes,1340306,Exacerbation of diabetes mellitus,S
+diabetes,766252,Exacerbation of type 1 diabetes mellitus,S
+diabetes,766253,Exacerbation of type 2 diabetes mellitus,S
+diabetes,4084643,"Extreme insulin resistance with acanthosis nigricans, hirsutism AND abnormal insulin receptors",S
+diabetes,4099741,Fibrocalculous pancreatic diabetes,S
+diabetes,37163452,Fulminant type 1 diabetes mellitus,S
+diabetes,3183244,Gestational diabetes during pregnancy,S
+diabetes,4024659,Gestational diabetes mellitus,S
+diabetes,4326434,Gestational diabetes mellitus class A1,S
+diabetes,4263902,Gestational diabetes mellitus class A2,S
+diabetes,37018765,Gestational diabetes mellitus complicating pregnancy,S
+diabetes,45757124,Gestational diabetes mellitus in childbirth,S
+diabetes,37396524,Gingival disease co-occurrent with diabetes mellitus,S
+diabetes,46274096,Gingivitis co-occurrent with diabetes mellitus,S
+diabetes,4048202,Houssay's syndrome,S
+diabetes,4047906,Insulin dependent diabetes mellitus type 1A,S
+diabetes,4102018,Insulin dependent diabetes mellitus type 1B,S
+diabetes,4129524,Insulin resistance - type A,S
+diabetes,4129525,Insulin resistance - type B,S
+diabetes,4130162,Insulin treated type 2 diabetes mellitus,S
+diabetes,36717215,"Intellectual disability, craniofacial dysmorphism, hypogonadism, diabetes mellitus syndrome",S
+diabetes,37162799,"Intrauterine growth restriction, short stature, early adult-onset diabetes syndrome",S
+diabetes,37165632,"Juvenile-onset diabetes mellitus, central and peripheral neurodegeneration syndrome",S
+diabetes,604357,Ketosis-prone diabetes mellitus,S
+diabetes,37163431,Ketosis-resistant diabetes mellitus,S
+diabetes,4145827,Latent autoimmune diabetes mellitus in adult,S
+diabetes,4006979,Leprechaunism syndrome,S
+diabetes,4131907,Lipoatrophic diabetes,S
+diabetes,44787902,Lipoatrophic diabetes mellitus without complication,S
+diabetes,4327944,Malnutrition related diabetes mellitus,S
+diabetes,4030061,Malnutrition-related diabetes mellitus - fibrocalculous,S
+diabetes,4096042,Malnutrition-related diabetes mellitus without complications,S
+diabetes,4096671,Malnutrition-related diabetes mellitus with peripheral circulatory complications,S
+diabetes,4096670,Malnutrition-related diabetes mellitus with renal complications,S
+diabetes,4166381,Maternal diabetes mellitus with hypoglycemia affecting fetus OR newborn,S
+diabetes,44792134,Maternally inherited diabetes mellitus,S
+diabetes,43531640,Maturity-onset diabetes of the young,S
+diabetes,43531006,"Maturity onset diabetes of the young, type 1",S
+diabetes,43531017,"Maturity-onset diabetes of the young, type 10",S
+diabetes,43531018,"Maturity-onset diabetes of the young, type 11",S
+diabetes,4130164,"Maturity onset diabetes of the young, type 2",S
+diabetes,43531012,"Maturity-onset diabetes of the young, type 3",S
+diabetes,43531013,"Maturity-onset diabetes of the young, type 4",S
+diabetes,43531014,"Maturity-onset diabetes of the young, type 5",S
+diabetes,43531643,"Maturity-onset diabetes of the young, type 6",S
+diabetes,43531015,"Maturity-onset diabetes of the young, type 7",S
+diabetes,43531644,"Maturity-onset diabetes of the young, type 8",S
+diabetes,43531016,"Maturity-onset diabetes of the young, type 9",S
+diabetes,4034963,"Megaloblastic anemia, thiamine-responsive, with diabetes mellitus and sensorineural deafness",S
+diabetes,4034961,"Muscular atrophy, ataxia, retinitis pigmentosa, and diabetes mellitus",S
+diabetes,37204818,Myopathy and diabetes mellitus,S
+diabetes,193323,Neonatal diabetes mellitus,S
+diabetes,36716258,"Pancreatic hypoplasia, diabetes mellitus, congenital heart disease syndrome",S
+diabetes,43531641,Permanent neonatal diabetes mellitus,S
+diabetes,37110041,Permanent neonatal diabetes mellitus with cerebellar agenesis syndrome,S
+diabetes,4030066,"Photomyoclonus, diabetes mellitus, deafness, nephropathy and cerebral dysfunction",S
+diabetes,3198118,Poorly controlled diabetes mellitus,S
+diabetes,3194119,Poorly controlled type 1 diabetes,S
+diabetes,3193274,Poorly controlled type 2 diabetes,S
+diabetes,3192767,Poorly controlled type II diabetes with circulatory disease,S
+diabetes,3194082,Poorly controlled type II diabetes with complications,S
+diabetes,3191208,Poorly controlled type II diabetes with neuropathy,S
+diabetes,3194332,Poorly controlled type II diabetes with renal complications,S
+diabetes,45757789,Postpartum gestational diabetes mellitus,S
+diabetes,40482883,Posttransplant diabetes mellitus,S
+diabetes,44793114,Pre-existing diabetes mellitus,S
+diabetes,45757079,Pre-existing diabetes mellitus in mother complicating childbirth,S
+diabetes,43531007,Pre-existing diabetes mellitus in pregnancy,S
+diabetes,4062687,Pre-existing malnutrition-related diabetes mellitus,S
+diabetes,606039,Pre-existing malnutrition-related diabetes mellitus in pregnancy,S
+diabetes,4063042,Pre-existing type 1 diabetes mellitus,S
+diabetes,43531008,Pre-existing type 1 diabetes mellitus in pregnancy,S
+diabetes,4063043,Pre-existing type 2 diabetes mellitus,S
+diabetes,43531010,Pre-existing type 2 diabetes mellitus in pregnancy,S
+diabetes,43531009,Pregnancy and type 1 diabetes mellitus,S
+diabetes,4129519,Pregnancy and type 2 diabetes mellitus,S
+diabetes,37204277,"Primary microcephaly, epilepsy, permanent neonatal diabetes syndrome",S
+diabetes,37204232,"Primary microcephaly, mild intellectual disability, young-onset diabetes syndrome",S
+diabetes,1340515,Progression of diabetes mellitus,S
+diabetes,4212631,Protein-deficient diabetes mellitus,S
+diabetes,4140808,Rabson-Mendenhall syndrome,S
+diabetes,195771,Secondary diabetes mellitus,S
+diabetes,4034960,Secondary endocrine diabetes mellitus,S
+diabetes,1340528,Slowly progressive insulin dependent diabetes mellitus type 1A,S
+diabetes,4099334,Steroid-induced diabetes,S
+diabetes,4099653,Steroid-induced diabetes mellitus without complication,S
+diabetes,37116379,Stimmler syndrome,S
+diabetes,4129378,Transient neonatal diabetes mellitus,S
+diabetes,201254,Type 1 diabetes mellitus,S
+diabetes,4099215,Type 1 diabetes mellitus maturity onset,S
+diabetes,443412,Type 1 diabetes mellitus without complication,S
+diabetes,4099214,Type 1 diabetes mellitus with ulcer,S
+diabetes,201826,Type 2 diabetes mellitus,S
+diabetes,4230254,Type 2 diabetes mellitus in nonobese,S
+diabetes,4304377,Type 2 diabetes mellitus in obese,S
+diabetes,4193704,Type 2 diabetes mellitus without complication,S
+diabetes,4099651,Type 2 diabetes mellitus with ulcer,S
+diabetes,45766051,Type I diabetes mellitus in remission,S
+diabetes,45766052,Type II diabetes mellitus in remission,S
+diabetes,37116960,Wolfram-like syndrome,S
+diabetes,4322638,Wolfram syndrome,S
+diabetes,37168689,Wolfram syndrome type 1,S
+diabetes,37168690,Wolfram syndrome type 2,S
+diabetes,37311329,Woodhouse Sakati syndrome,S
+essential_hypertension,312648,Benign essential hypertension,S
+essential_hypertension,4215640,Benign essential hypertension complicating AND/OR reason for care during childbirth,S
+essential_hypertension,4034031,Benign essential hypertension complicating AND/OR reason for care during pregnancy,S
+essential_hypertension,4148205,Benign essential hypertension complicating AND/OR reason for care during puerperium,S
+essential_hypertension,4269358,Benign essential hypertension in obstetric context,S
+essential_hypertension,320128,Essential hypertension,S
+essential_hypertension,4083723,Essential hypertension complicating AND/OR reason for care during childbirth,S
+essential_hypertension,4302591,Essential hypertension complicating AND/OR reason for care during pregnancy,S
+essential_hypertension,4321603,Essential hypertension complicating AND/OR reason for care during puerperium,S
+essential_hypertension,4217486,Essential hypertension in obstetric context,S
+essential_hypertension,4058987,High-renin essential hypertension,S
+essential_hypertension,4159755,Labile essential hypertension,S
+essential_hypertension,4263067,Low-renin essential hypertension,S
+essential_hypertension,317898,Malignant essential hypertension,S
+essential_hypertension,45757787,Postpartum pre-existing essential hypertension,S
+essential_hypertension,4180283,Systolic essential hypertension,S
+hiv,37017285,Acquired hemolytic anemia co-occurrent with human immunodeficiency virus infection,S
+hiv,45757102,Acquired immune deficiency syndrome complicating childbirth,S
+hiv,4128060,Acquired immune deficiency syndrome-related nephropathy,S
+hiv,4221489,Acquired immunodeficiency syndrome-associated disorder,S
+hiv,37017266,Acute endocarditis co-occurrent with human immunodeficiency virus infection,S
+hiv,4222405,Acute endocarditis with AIDS (acquired immunodeficiency syndrome),S
+hiv,4008081,Acute HIV infection,S
+hiv,37017282,Agranulocytosis co-occurrent with human immunodeficiency virus infection,S
+hiv,4224553,Agranulocytosis with AIDS (acquired immunodeficiency syndrome),S
+hiv,4267414,AIDS,S
+hiv,37166798,AIDS (acquired immunodeficiency syndrome) wasting syndrome,S
+hiv,37017132,Anemia co-occurrent with human immunodeficiency virus infection,S
+hiv,37019055,Aplastic anemia co-occurrent with human immunodeficiency virus infection,S
+hiv,4225810,Aplastic anemia with AIDS (acquired immunodeficiency syndrome),S
+hiv,37017456,Aspergillosis co-occurrent with human immunodeficiency virus infection,S
+hiv,42538959,Asymptomatic human immunodeficiency virus A1 infection,S
+hiv,4241530,Asymptomatic human immunodeficiency virus infection,S
+hiv,4239722,Asymptomatic human immunodeficiency virus infection in pregnancy,S
+hiv,37019058,Bacterial pneumonia co-occurrent with human immunodeficiency virus infection,S
+hiv,4223032,Bacterial pneumonia with AIDS (acquired immunodeficiency syndrome),S
+hiv,4226790,Blindness with AIDS (acquired immunodeficiency syndrome),S
+hiv,37017595,Burkitt lymphoma co-occurrent with human immunodeficiency virus infection,S
+hiv,37017092,Candidiasis of esophagus co-occurrent with human immunodeficiency virus infection,S
+hiv,4222062,Candidiasis of lung with AIDS (acquired immunodeficiency syndrome),S
+hiv,37017254,Candidiasis of mouth co-occurrent with human immunodeficiency virus infection,S
+hiv,4226792,Candidiasis of mouth with AIDS (acquired immunodeficiency syndrome),S
+hiv,36714339,Candidiasis of upper respiratory tract co-occurrent with human immunodeficiency virus infection,S
+hiv,37017276,Cardiomyopathy co-occurrent with human immunodeficiency virus infection,S
+hiv,4226110,Central nervous disorder with AIDS (acquired immunodeficiency syndrome),S
+hiv,4223276,Central nervous system demyelinating disease with AIDS (acquired immunodeficiency syndrome),S
+hiv,44783780,Cholangitis with AIDS (acquired immunodeficiency syndrome),S
+hiv,3654682,Chronic hepatitis C co-occurrent with human immunodeficiency virus infection,S
+hiv,37017210,Chronic infection caused by herpes simplex virus co-occurrent with human immunodeficiency virus infection,S
+hiv,4224740,Coccidioidomycosis with AIDS (acquired immunodeficiency syndrome),S
+hiv,37017453,Coccidiosis co-occurrent with human immunodeficiency virus infection,S
+hiv,4171124,Congenital acquired immune deficiency syndrome,S
+hiv,4180254,Congenital human immunodeficiency virus infection,S
+hiv,4171125,Congenital human immunodeficiency virus positive status syndrome,S
+hiv,4222712,Cryptococcosis with AIDS (acquired immunodeficiency syndrome),S
+hiv,37017549,Dementia co-occurrent with human immunodeficiency virus infection,S
+hiv,4228133,Dementia with AIDS (acquired immunodeficiency syndrome),S
+hiv,37017294,Demyelinating disease of central nervous system co-occurrent with human immunodeficiency virus infection,S
+hiv,4227229,Dermatomycosis with AIDS (acquired immunodeficiency syndrome),S
+hiv,37018935,Dermatophytosis co-occurrent with human immunodeficiency virus infection,S
+hiv,37017442,Diffuse non-Hodgkin immunoblastic lymphoma co-occurrent with human immunodeficiency virus infection,S
+hiv,37017319,Disorder of central nervous system co-occurrent with human immunodeficiency virus infection,S
+hiv,37018711,Disorder of eye proper co-occurrent with human immunodeficiency virus infection,S
+hiv,37017094,Disorder of gastrointestinal tract co-occurrent with human immunodeficiency virus infection,S
+hiv,37017260,Disorder of kidney co-occurrent with human immunodeficiency virus infection,S
+hiv,37017279,Disorder of peripheral nervous system co-occurrent with human immunodeficiency virus infection,S
+hiv,37017244,Disorder of respiratory system co-occurrent with human immunodeficiency virus infection,S
+hiv,37017125,Disorder of skin co-occurrent with human immunodeficiency virus infection,S
+hiv,37017259,Disorder of spinal cord co-occurrent with human immunodeficiency virus infection,S
+hiv,37017655,Disseminated atypical infection caused by Mycobacterium co-occurrent with human immunodeficiency virus infection,S
+hiv,4227380,Disseminated candidiasis with AIDS (acquired immunodeficiency syndrome),S
+hiv,37019052,Disseminated infection caused by Strongyloides co-occurrent with human immunodeficiency virus infection,S
+hiv,4228754,Dyspnea with AIDS (acquired immunodeficiency syndrome),S
+hiv,3654950,Encephalitis caused by human immunodeficiency virus type 1,S
+hiv,4222250,Encephalitis with AIDS (acquired immunodeficiency syndrome),S
+hiv,4228612,Encephalomyelitis with AIDS (acquired immunodeficiency syndrome),S
+hiv,4228440,Encephalopathy with AIDS (acquired immunodeficiency syndrome),S
+hiv,37017265,Enlargement of liver co-occurrent with human immunodeficiency virus infection,S
+hiv,37017106,Eruption of skin co-occurrent with human immunodeficiency virus infection,S
+hiv,37116831,Extrapulmonary tuberculosis co-occurrent with human immunodeficiency virus infection,S
+hiv,4228272,Failure to thrive in infant with AIDS (acquired immunodeficiency syndrome),S
+hiv,3200792,False positive serology for HIV,S
+hiv,4221911,Fatigue with AIDS (acquired immunodeficiency syndrome),S
+hiv,4276586,Finding of HIV status,S
+hiv,37017586,Focal segmental glomerulosclerosis co-occurrent with human immunodeficiency virus infection,S
+hiv,37017261,Gastrointestinal malabsorption syndrome co-occurrent with human immunodeficiency virus infection,S
+hiv,37017093,Heart disease co-occurrent with human immunodeficiency virus infection,S
+hiv,4222402,Hematopoietic system disease with AIDS (acquired immunodeficiency syndrome),S
+hiv,37017209,Hemophagocytic syndrome with human immunodeficiency virus infection,S
+hiv,4222224,Hepatomegaly with AIDS (acquired immunodeficiency syndrome),S
+hiv,4227539,Herpes zoster with AIDS (acquired immunodeficiency syndrome),S
+hiv,4225170,Histoplasmosis with AIDS (acquired immunodeficiency syndrome),S
+hiv,4295638,HIV CDC stage finding,S
+hiv,4013106,HIV detected,S
+hiv,46284256,HIV (human immunodeficiency virus) disease resulting in haematological and immunological abnormalities,S
+hiv,4314426,HIV infection with acute lymphadenitis,S
+hiv,4201627,HIV infection with aseptic meningitis,S
+hiv,4172009,HIV infection with infectious mononucleosis-like syndrome,S
+hiv,36714516,Human immunodeficiency virus 2 antibody detected and Human immunodeficiency virus 1 antibody cross-reactivity,S
+hiv,4276281,Human immunodeficiency virus antibody titer - finding,S
+hiv,44783356,Human immunodeficiency virus carrier,S
+hiv,604781,Human immunodeficiency virus Centers for Disease Control and Prevention dual infection with HIV-1 and HIV-2,S
+hiv,604783,Human immunodeficiency virus Centers for Disease Control and Prevention stage 0,S
+hiv,600510,Human immunodeficiency virus Centers for Disease Control and Prevention stage 1,S
+hiv,600511,Human immunodeficiency virus Centers for Disease Control and Prevention stage 2,S
+hiv,600512,Human immunodeficiency virus Centers for Disease Control and Prevention stage 3,S
+hiv,600513,Human immunodeficiency virus Centers for Disease Control and Prevention stage unknown,S
+hiv,604782,Human immunodeficiency virus Centers for Disease Control and Prevention undifferentiated type,S
+hiv,36715476,Human immunodeficiency virus complicating pregnancy childbirth and the puerperium,S
+hiv,4161950,Human immunodeficiency virus encephalitis,S
+hiv,4262297,Human immunodeficiency virus encephalopathy,S
+hiv,4340791,Human immunodeficiency virus enteropathy,S
+hiv,4253472,Human immunodeficiency virus I infection,S
+hiv,439727,Human immunodeficiency virus infection,S
+hiv,4087603,Human immunodeficiency virus infection constitutional disease,S
+hiv,36687122,Human immunodeficiency virus infection with cognitive impairment,S
+hiv,4087604,Human immunodeficiency virus infection with neurological disease,S
+hiv,4092686,Human immunodeficiency virus infection with secondary clinical infectious disease,S
+hiv,45757132,Human immunodeficiency virus in mother complicating childbirth,S
+hiv,4047624,Human immunodeficiency virus leukoencephalopathy,S
+hiv,606047,Human immunodeficiency virus modified skin disease,S
+hiv,4347288,Human immunodeficiency virus myopathy,S
+hiv,42536591,Human immunodeficiency virus World Health Organization 2007 stage 1 co-occurrent with malaria,S
+hiv,42536590,Human immunodeficiency virus World Health Organization 2007 stage 1 co-occurrent with tuberculosis,S
+hiv,42536593,Human immunodeficiency virus World Health Organization 2007 stage 2 co-occurrent with malaria,S
+hiv,42536592,Human immunodeficiency virus World Health Organization 2007 stage 2 co-occurrent with tuberculosis,S
+hiv,42536594,Human immunodeficiency virus World Health Organization 2007 stage 3 co-occurrent with malaria,S
+hiv,42539031,Human immunodeficiency virus World Health Organization 2007 stage 3 co-occurrent with tuberculosis,S
+hiv,42536596,Human immunodeficiency virus World Health Organization 2007 stage 4 co-occurrent with malaria,S
+hiv,42536595,Human immunodeficiency virus World Health Organization 2007 stage 4 co-occurrent with tuberculosis,S
+hiv,4228760,Hyperhidrosis with AIDS (acquired immunodeficiency syndrome),S
+hiv,37018063,Immune reconstitution inflammatory syndrome caused by human immunodeficiency virus infection,S
+hiv,36674252,Infection caused by Coccidia co-occurrent with acquired immunodeficiency syndrome,S
+hiv,37017550,Infection caused by Cryptosporidium co-occurrent with human immunodeficiency virus infection,S
+hiv,37017446,Infection caused by Cytomegalovirus co-occurrent with human immunodeficiency virus infection,S
+hiv,37017454,Infection caused by herpes simplex virus co-occurrent with human immunodeficiency virus infection,S
+hiv,37017457,Infection caused by herpes zoster virus co-occurrent with human immunodeficiency virus infection,S
+hiv,36674254,Infection caused by Isospora co-occurrent with acquired immunodeficiency syndrome,S
+hiv,37017295,Infection caused by Nocardia co-occurrent with human immunodeficiency virus infection,S
+hiv,37017248,Infection caused by Pneumocystis co-occurrent with human immunodeficiency virus infection,S
+hiv,37019042,Infection caused by Salmonella co-occurrent with human immunodeficiency virus infection,S
+hiv,37017124,Infection caused by Strongyloides co-occurrent with human immunodeficiency virus infection,S
+hiv,36674253,Infection caused by Toxoplasma gondii co-occurrent with acquired immunodeficiency syndrome,S
+hiv,40493262,Infectious disease with acquired immune deficiency syndrome,S
+hiv,37017318,Infectious gastroenteritis co-occurrent with human immunodeficiency virus infection,S
+hiv,4225989,Infectious gastroenteritis with AIDS (acquired immunodeficiency syndrome),S
+hiv,37162220,Infectious mononucleosis caused by human immunodeficiency virus,S
+hiv,37162221,Infectious mononucleosis caused by human immunodeficiency virus type I,S
+hiv,37017284,Infective arthritis co-occurrent with human immunodeficiency virus infection,S
+hiv,4228290,Infective arthritis with AIDS (acquired immunodeficiency syndrome),S
+hiv,4222383,Intestinal malabsorption with AIDS (acquired immunodeficiency syndrome),S
+hiv,37116830,Invasive carcinoma of uterine cervix co-occurrent with human immunodeficiency virus infection,S
+hiv,37017296,Isosporiasis co-occurrent with human immunodeficiency virus infection,S
+hiv,4224096,Kaposi's sarcoma with AIDS (acquired immunodeficiency syndrome),S
+hiv,4228757,Low vision with AIDS (acquired immunodeficiency syndrome),S
+hiv,37017263,Lymphadenopathy co-occurrent with human immunodeficiency virus infection,S
+hiv,4225027,Malaise with AIDS (acquired immunodeficiency syndrome),S
+hiv,4226357,Malignant neoplasm with AIDS (acquired immunodeficiency syndrome),S
+hiv,37017320,Malignant neoplastic disease co-occurrent with human immunodeficiency virus infection,S
+hiv,4225193,Microsporidiosis associated with acquired immunodeficiency syndrome,S
+hiv,37017580,Microsporidiosis co-occurrent with human immunodeficiency virus infection,S
+hiv,37017652,Multidermatomal infection caused by Herpes zoster co-occurrent with human immunodeficiency virus infection,S
+hiv,4221607,Mycobacteriosis with AIDS (acquired immunodeficiency syndrome),S
+hiv,37017126,Myelitis co-occurrent with human immunodeficiency virus infection,S
+hiv,4227974,Myelitis with AIDS (acquired immunodeficiency syndrome),S
+hiv,4224078,Myelopathy with AIDS (acquired immunodeficiency syndrome),S
+hiv,37017108,Myocarditis co-occurrent with human immunodeficiency virus infection,S
+hiv,4227053,Myocarditis with AIDS (acquired immunodeficiency syndrome),S
+hiv,37017424,Nephrotic syndrome co-occurrent with human immunodeficiency virus infection,S
+hiv,37019034,Neuralgia co-occurrent with human immunodeficiency virus infection,S
+hiv,4228745,Neuralgia with AIDS (acquired immunodeficiency syndrome),S
+hiv,37017262,Neuritis co-occurrent with human immunodeficiency virus infection,S
+hiv,4227519,Neuritis with AIDS (acquired immunodeficiency syndrome),S
+hiv,4048033,Neuropathy due to human immunodeficiency virus,S
+hiv,4211956,Neutropenia with AIDS (acquired immunodeficiency syndrome),S
+hiv,4224578,Nocardiosis with AIDS (acquired immunodeficiency syndrome),S
+hiv,4223738,Noninfectious gastroenteritis with AIDS (acquired immunodeficiency syndrome),S
+hiv,4227077,Nutritional deficiency with AIDS (acquired immunodeficiency syndrome),S
+hiv,37017579,Opportunistic mycosis co-occurrent with human immunodeficiency virus infection,S
+hiv,37017249,Organic brain syndrome co-occurrent with human immunodeficiency virus infection,S
+hiv,4227205,Organic brain syndrome with AIDS (acquired immunodeficiency syndrome),S
+hiv,4224860,Organic dementia with AIDS (acquired immunodeficiency syndrome),S
+hiv,36716524,Parkinsonism due to human immunodeficiency virus infection,S
+hiv,4236860,Pediatric human immunodeficiency virus infection,S
+hiv,4320032,Persistent generalized lymphadenopathy,S
+hiv,4221503,Pneumococcal pneumonia with AIDS (acquired immunodeficiency syndrome),S
+hiv,4226502,Pneumocystosis with AIDS (acquired immunodeficiency syndrome),S
+hiv,4228277,Pneumonia with AIDS (acquired immunodeficiency syndrome),S
+hiv,37018721,Polyneuropathy co-occurrent with human immunodeficiency virus infection,S
+hiv,4226662,Polyneuropathy with AIDS (acquired immunodeficiency syndrome),S
+hiv,37017247,Presenile dementia co-occurrent with human immunodeficiency virus infection,S
+hiv,4224240,Presenile dementia with AIDS (acquired immunodeficiency syndrome),S
+hiv,37017112,Primary cerebral lymphoma co-occurrent with human immunodeficiency virus infection,S
+hiv,606040,Primary human immunodeficiency virus infection,S
+hiv,4227969,Primary lymphoma of brain with AIDS (acquired immunodeficiency syndrome),S
+hiv,1340516,Progression of Human immunodeficiency virus infection,S
+hiv,37017246,Progressive multifocal leukoencephalopathy co-occurrent with human immunodeficiency virus infection,S
+hiv,4226631,Progressive multifocal leukoencephalopathy with AIDS (acquired immunodeficiency syndrome),S
+hiv,37017455,Pyrexia of unknown origin co-occurrent with human immunodeficiency virus infection,S
+hiv,37018714,Radiculitis co-occurrent with human immunodeficiency virus infection,S
+hiv,4227072,Radiculitis with AIDS (acquired immunodeficiency syndrome),S
+hiv,37017467,Reactive for both human immunodeficiency virus antibodies and p24 antigen,S
+hiv,37017278,Recurrent bacterial pneumonia co-occurrent with human immunodeficiency virus infection,S
+hiv,37018755,Recurrent salmonella sepsis co-occurrent with human immunodeficiency virus infection,S
+hiv,37017425,Renal failure syndrome co-occurrent with human immunodeficiency virus infection,S
+hiv,4225643,Respiratory disorder with AIDS (acquired immunodeficiency syndrome),S
+hiv,37017243,Reticulosarcoma co-occurrent with human immunodeficiency virus infection,S
+hiv,4226388,Reticulosarcoma with AIDS (acquired immunodeficiency syndrome),S
+hiv,4223918,Retinal vascular changes with AIDS (acquired immunodeficiency syndrome),S
+hiv,4228115,Retinopathy with AIDS (acquired immunodeficiency syndrome),S
+hiv,4226629,Salivary gland disease with AIDS (acquired immunodeficiency syndrome),S
+hiv,4225017,Salmonella infection with AIDS (acquired immunodeficiency syndrome),S
+hiv,44784137,Sepsis with acquired immunodeficiency syndrome,S
+hiv,4224566,Skin disorder with AIDS (acquired immunodeficiency syndrome),S
+hiv,4220603,Skin rash with AIDS (acquired immunodeficiency syndrome),S
+hiv,37017082,Splenomegaly co-occurrent with human immunodeficiency virus infection,S
+hiv,4223597,Strongyloidiasis with AIDS (acquired immunodeficiency syndrome),S
+hiv,37017071,Subacute adenoviral encephalitis co-occurrent with human immunodeficiency virus infection,S
+hiv,4222717,Subacute adenoviral encephalitis with AIDS (acquired immunodeficiency syndrome),S
+hiv,4227350,Subacute endocarditis with AIDS (acquired immunodeficiency syndrome),S
+hiv,4224425,Subacute myocarditis with AIDS (acquired immunodeficiency syndrome),S
+hiv,45769864,Symptomatic human immunodeficiency virus (HIV) I infection,S
+hiv,43531586,Symptomatic human immunodeficiency virus infection,S
+hiv,4226905,Thrombocytopenia with AIDS (acquired immunodeficiency syndrome),S
+hiv,4226658,Tuberculosis with AIDS (acquired immunodeficiency syndrome),S
+hiv,4045982,Vacuolar myelopathy,S
+hiv,4225318,Viral pneumonia with AIDS (acquired immunodeficiency syndrome),S
+hiv,37017283,Visual impairment co-occurrent with human immunodeficiency virus infection,S
+hiv,604976,World Health Organization human immunodeficiency virus infection clinical stage,S
+influenza_vaccine,1361667,0.5 ML influenza A virus A/Brisbane/02/2018 (H1N1) antigen 0.03 MG/ML / influenza A virus A/Kansas/14/2017 (H3N2) antigen 0.03 MG/ML / influenza B virus B/Maryland/15/2016 antigen 0.03 MG/ML Prefilled Syringe,S
+influenza_vaccine,1361668,0.5 ML influenza A virus A/Brisbane/02/2018 (H1N1) antigen 0.03 MG/ML / influenza A virus A/Kansas/14/2017 (H3N2) antigen 0.03 MG/ML / influenza B virus B/Maryland/15/2016 antigen 0.03 MG/ML Prefilled Syringe [Fluad 2019-2020],S
+influenza_vaccine,1361663,0.5 ML influenza A virus A/Brisbane/02/2018 (H1N1) antigen 0.09 MG/ML / influenza A virus A/Kansas/14/2017 (H3N2) antigen 0.09 MG/ML / influenza B virus B/Maryland/15/2016 antigen 0.09 MG/ML / influenza B virus B/Phuket/3073/2013 antigen 0.09 MG/ML Pre...,S
+influenza_vaccine,1361664,0.5 ML influenza A virus A/Brisbane/02/2018 (H1N1) antigen 0.09 MG/ML / influenza A virus A/Kansas/14/2017 (H3N2) antigen 0.09 MG/ML / influenza B virus B/Maryland/15/2016 antigen 0.09 MG/ML / influenza B virus B/Phuket/3073/2013 antigen 0.09 MG/ML Pre...,S
+influenza_vaccine,35606414,0.5 ML influenza A virus A/California/7/2009 (H1N1) antigen 0.015 MG/ML / influenza A virus A/Switzerland/9715293/2013 (H3N2) antigen 0.015 MG/ML / influenza B virus B/Brisbane/9/2014 antigen 0.015 MG/ML Prefilled Syringe,S
+influenza_vaccine,35606416,0.5 ML influenza A virus A/California/7/2009 (H1N1) antigen 0.015 MG/ML / influenza A virus A/Switzerland/9715293/2013 (H3N2) antigen 0.015 MG/ML / influenza B virus B/Brisbane/9/2014 antigen 0.015 MG/ML Prefilled Syringe [FLUAD 2015-2016],S
+influenza_vaccine,36249259,0.5 ML influenza A virus A/California/7/2009 (H1N1) antigen 0.03 MG/ML / influenza A virus A/Hong Kong/4801/2014 (H3N2) antigen 0.03 MG/ML / influenza B virus B/Brisbane/60/2008 antigen 0.03 MG/ML Prefilled Syringe,S
+influenza_vaccine,36249411,0.5 ML influenza A virus A/California/7/2009 (H1N1) antigen 0.03 MG/ML / influenza A virus A/Hong Kong/4801/2014 (H3N2) antigen 0.03 MG/ML / influenza B virus B/Brisbane/60/2008 antigen 0.03 MG/ML Prefilled Syringe [Fluad 2016-2017],S
+influenza_vaccine,40220827,0.5 ML influenza A virus A/California/7/2009 (H1N1) antigen 0.09 MG/ML / influenza A virus A/Hong Kong/4801/2014 (H3N2) antigen 0.09 MG/ML / influenza B virus B/Brisbane/60/2008 antigen 0.09 MG/ML Injection,S
+influenza_vaccine,40220832,0.5 ML influenza A virus A/California/7/2009 (H1N1) antigen 0.09 MG/ML / influenza A virus A/Hong Kong/4801/2014 (H3N2) antigen 0.09 MG/ML / influenza B virus B/Brisbane/60/2008 antigen 0.09 MG/ML Injection [Flublok 2016-2017],S
+influenza_vaccine,46276014,0.5 ML influenza A virus A/California/7/2009 (H1N1) antigen 0.09 MG/ML / influenza A virus A/Switzerland/9715293/2013 (H3N2) antigen 0.09 MG/ML / influenza B virus B/Phuket/3073/2013 antigen 0.09 MG/ML Injection,S
+influenza_vaccine,46276018,0.5 ML influenza A virus A/California/7/2009 (H1N1) antigen 0.09 MG/ML / influenza A virus A/Switzerland/9715293/2013 (H3N2) antigen 0.09 MG/ML / influenza B virus B/Phuket/3073/2013 antigen 0.09 MG/ML Injection [Flublok 2015-2016],S
+influenza_vaccine,747766,0.5 ML influenza A virus A/Darwin/6/2021 (H3N2) antigen 0.09 MG/ML / influenza A virus A/West Virginia/30/2022 (H1N1) antigen 0.09 MG/ML / influenza B virus B/Austria/1359417/2021 antigen 0.09 MG/ML / influenza B virus B/Phuket/3073/2013 antigen 0.09 M...,S
+influenza_vaccine,747765,0.5 ML influenza A virus A/Darwin/6/2021 (H3N2) antigen 0.09 MG/ML / influenza A virus A/West Virginia/30/2022 (H1N1) antigen 0.09 MG/ML / influenza B virus B/Austria/1359417/2021 antigen 0.09 MG/ML / influenza B virus B/Phuket/3073/2013 antigen 0.09 M...,S
+influenza_vaccine,780304,0.5 ML influenza A virus A/Darwin/6/2021 (H3N2) antigen 0.09 MG/ML / influenza A virus A/Wisconsin/588/2019 (H1N1) antigen 0.09 MG/ML / influenza B virus B/Austria/1359417/2021 antigen 0.09 MG/ML / influenza B virus B/Phuket/3073/2013 antigen 0.09 MG/M...,S
+influenza_vaccine,780305,0.5 ML influenza A virus A/Darwin/6/2021 (H3N2) antigen 0.09 MG/ML / influenza A virus A/Wisconsin/588/2019 (H1N1) antigen 0.09 MG/ML / influenza B virus B/Austria/1359417/2021 antigen 0.09 MG/ML / influenza B virus B/Phuket/3073/2013 antigen 0.09 MG/M...,S
+influenza_vaccine,1146798,0.5 ML influenza A virus A/Hawaii/70/2019 (H1N1) antigen 0.09 MG/ML / influenza A virus A/Minnesota/41/2019 (H3N2) antigen 0.09 MG/ML / influenza B virus B/Phuket/3073/2013 antigen 0.09 MG/ML / influenza B virus B/Washington/02/2019 antigen 0.09 MG/ML...,S
+influenza_vaccine,1146799,0.5 ML influenza A virus A/Hawaii/70/2019 (H1N1) antigen 0.09 MG/ML / influenza A virus A/Minnesota/41/2019 (H3N2) antigen 0.09 MG/ML / influenza B virus B/Phuket/3073/2013 antigen 0.09 MG/ML / influenza B virus B/Washington/02/2019 antigen 0.09 MG/ML...,S
+influenza_vaccine,1146800,0.5 ML influenza A virus A/Hong Kong/2671/2019 (H3N2) antigen 0.03 MG/ML / influenza A virus A/Victoria/2454/2019 (H1N1) antigen 0.03 MG/ML / influenza B virus B/Victoria/705/2018 antigen 0.03 MG/ML Prefilled Syringe,S
+influenza_vaccine,1146801,0.5 ML influenza A virus A/Hong Kong/2671/2019 (H3N2) antigen 0.03 MG/ML / influenza A virus A/Victoria/2454/2019 (H1N1) antigen 0.03 MG/ML / influenza B virus B/Victoria/705/2018 antigen 0.03 MG/ML Prefilled Syringe [Fluad 2020-2021],S
+influenza_vaccine,1593896,0.5 ML influenza A virus A/Hong Kong/4801/2014 (H3N2) antigen 0.03 MG/ML / influenza A virus A/Singapore/GP1908/2015 (H1N1) antigen 0.03 MG/ML / influenza B virus B/Brisbane/60/2008 antigen 0.03 MG/ML Prefilled Syringe,S
+influenza_vaccine,1593901,0.5 ML influenza A virus A/Hong Kong/4801/2014 (H3N2) antigen 0.03 MG/ML / influenza A virus A/Singapore/GP1908/2015 (H1N1) antigen 0.03 MG/ML / influenza B virus B/Brisbane/60/2008 antigen 0.03 MG/ML Prefilled Syringe [Fluad 2017-2018],S
+influenza_vaccine,1593520,0.5 ML influenza A virus A/Hong Kong/4801/2014 (H3N2) antigen 0.09 MG/ML / influenza A virus A/Michigan/45/2015 (H1N1) antigen 0.09 MG/ML / influenza B virus B/Brisbane/60/2008 antigen 0.09 MG/ML / influenza B virus B/Phuket/3073/2013 antigen 0.09 MG/M...,S
+influenza_vaccine,1593522,0.5 ML influenza A virus A/Hong Kong/4801/2014 (H3N2) antigen 0.09 MG/ML / influenza A virus A/Michigan/45/2015 (H1N1) antigen 0.09 MG/ML / influenza B virus B/Brisbane/60/2008 antigen 0.09 MG/ML / influenza B virus B/Phuket/3073/2013 antigen 0.09 MG/M...,S
+influenza_vaccine,1593537,0.5 ML influenza A virus A/Hong Kong/4801/2014 (H3N2) antigen 0.09 MG/ML / influenza A virus A/Michigan/45/2015 (H1N1) antigen 0.09 MG/ML / influenza B virus B/Brisbane/60/2008 antigen 0.09 MG/ML Injection,S
+influenza_vaccine,1593876,0.5 ML influenza A virus A/Hong Kong/4801/2014 (H3N2) antigen 0.09 MG/ML / influenza A virus A/Michigan/45/2015 (H1N1) antigen 0.09 MG/ML / influenza B virus B/Brisbane/60/2008 antigen 0.09 MG/ML Injection [Flublok 2017-2018],S
+influenza_vaccine,35201910,0.5 ML influenza A virus A/Michigan/45/2015 (H1N1) antigen 0.09 MG/ML / influenza A virus A/Singapore/INFIMH-16-0019/2016 (H3N2) antigen 0.09 MG/ML / influenza B virus B/Maryland/15/2016 antigen 0.09 MG/ML / influenza B virus B/Phuket/3073/2013 antigen...,S
+influenza_vaccine,35201911,0.5 ML influenza A virus A/Michigan/45/2015 (H1N1) antigen 0.09 MG/ML / influenza A virus A/Singapore/INFIMH-16-0019/2016 (H3N2) antigen 0.09 MG/ML / influenza B virus B/Maryland/15/2016 antigen 0.09 MG/ML / influenza B virus B/Phuket/3073/2013 antigen...,S
+influenza_vaccine,35201914,0.5 ML influenza A virus A/Singapore/GP1908/2015 (H1N1) antigen 0.03 MG/ML / influenza A virus A/Singapore/INFIMH-16-0019/2016 (H3N2) antigen 0.03 MG/ML / influenza B virus B/Maryland/15/2016 antigen 0.03 MG/ML Prefilled Syringe,S
+influenza_vaccine,35201915,0.5 ML influenza A virus A/Singapore/GP1908/2015 (H1N1) antigen 0.03 MG/ML / influenza A virus A/Singapore/INFIMH-16-0019/2016 (H3N2) antigen 0.03 MG/ML / influenza B virus B/Maryland/15/2016 antigen 0.03 MG/ML Prefilled Syringe [Fluad 2018-2019],S
+influenza_vaccine,1537647,0.5 ML influenza A virus A/Tasmania/503/2020 (H3N2) antigen 0.09 MG/ML / influenza A virus A/Wisconsin/588/2019 (H1N1) antigen 0.09 MG/ML / influenza B virus B/Phuket/3073/2013 antigen 0.09 MG/ML / influenza B virus B/Washington/02/2019 antigen 0.09 MG...,S
+influenza_vaccine,1537643,0.5 ML influenza A virus A/Tasmania/503/2020 (H3N2) antigen 0.09 MG/ML / influenza A virus A/Wisconsin/588/2019 (H1N1) antigen 0.09 MG/ML / influenza B virus B/Phuket/3073/2013 antigen 0.09 MG/ML / influenza B virus B/Washington/02/2019 antigen 0.09 MG...,S
+influenza_vaccine,43810065,"0.5 ML influenza A virus (H1N1) antigen 0.03 MG/ML / Influenza A virus vaccine, A-California-7-2009 (H1N1)-like virus 0.03 MG/ML / influenza B virus antigen 0.03 MG/ML Injectable Suspension [Afluria]",S
+influenza_vaccine,43828149,"0.5 ML influenza A virus (H1N1) antigen 0.03 MG/ML / Influenza A virus vaccine, A-California-7-2009 (H1N1)-like virus 0.03 MG/ML / influenza B virus antigen 0.03 MG/ML Injectable Suspension [Afluria] by bioCSL",S
+influenza_vaccine,43594165,0.5 ML influenza A virus (H1N1) antigen 0.03 MG/ML Injectable Suspension [Afluria],S
+influenza_vaccine,43720036,0.5 ML influenza A virus (H1N1) antigen 0.03 MG/ML Injectable Suspension [Afluria] Box of 10,S
+influenza_vaccine,43864462,0.5 ML influenza A virus (H1N1) antigen 0.03 MG/ML Injectable Suspension [Afluria] Box of 10 by bioCSL,S
+influenza_vaccine,43612139,0.5 ML influenza A virus (H1N1) antigen 0.03 MG/ML Injectable Suspension [Afluria] by bioCSL,S
+influenza_vaccine,43612132,"0.5 ML Influenza A virus vaccine, A-California-7-2009 (H1N1)-like virus 0.03 MG/ML Injectable Suspension [Afluria]",S
+influenza_vaccine,43702292,"0.5 ML Influenza A virus vaccine, A-California-7-2009 (H1N1)-like virus 0.03 MG/ML Injectable Suspension [Afluria] Box of 10",S
+influenza_vaccine,43702293,"0.5 ML Influenza A virus vaccine, A-California-7-2009 (H1N1)-like virus 0.03 MG/ML Injectable Suspension [Afluria] Box of 10 by bioCSL",S
+influenza_vaccine,43791911,"0.5 ML Influenza A virus vaccine, A-California-7-2009 (H1N1)-like virus 0.03 MG/ML Injectable Suspension [Afluria] by bioCSL",S
+influenza_vaccine,43612144,0.5 ML influenza B virus antigen 0.03 MG/ML Injectable Suspension [Afluria],S
+influenza_vaccine,43702304,0.5 ML influenza B virus antigen 0.03 MG/ML Injectable Suspension [Afluria] Box of 10,S
+influenza_vaccine,43594169,0.5 ML influenza B virus antigen 0.03 MG/ML Injectable Suspension [Afluria] Box of 10 by bioCSL,S
+influenza_vaccine,43738160,0.5 ML influenza B virus antigen 0.03 MG/ML Injectable Suspension [Afluria] by bioCSL,S
+influenza_vaccine,43259431,"0.5 ML Influenza B virus vaccine, B-Brisbane-60-2008-like virus 0.015 MG/ML / Influenza Virus Vaccine, Inactivated A-California-07-2009 X-181 (H1N1) strain 0.015 MG/ML / ... Injection [Fluvirin]",S
+influenza_vaccine,43270331,"0.5 ML Influenza B virus vaccine, B-Brisbane-60-2008-like virus 0.015 MG/ML / Influenza Virus Vaccine, Inactivated A-California-07-2009 X-181 (H1N1) strain 0.015 MG/ML / ... Injection [Fluvirin] Box of 1",S
+influenza_vaccine,43297451,"0.5 ML Influenza B virus vaccine, B-Brisbane-60-2008-like virus 0.015 MG/ML / Influenza Virus Vaccine, Inactivated A-California-07-2009 X-181 (H1N1) strain 0.015 MG/ML / ... Injection [Fluvirin] Box of 10",S
+influenza_vaccine,40225027,"influenza A-California-7-2009-(H1N1)v-like virus vaccine 0.03 MG/ML / influenza B virus vaccine B/Brisbane/60/2008 antigen 0.03 MG/ML / influenza virus vaccine, inactivated A-Victoria-210-2009 X-187 (H3N2) (A-Perth-16-2009) strain 0.03 MG/ML Injectable...",S
+influenza_vaccine,40240930,"influenza A-California-7-2009-(H1N1)v-like virus vaccine 0.03 MG/ML / influenza B virus vaccine B/Brisbane/60/2008 antigen 0.03 MG/ML / influenza virus vaccine, inactivated A-Victoria-210-2009 X-187 (H3N2) (A-Perth-16-2009) strain 0.03 MG/ML Injectable...",S
+influenza_vaccine,40240929,"influenza A-California-7-2009-(H1N1)v-like virus vaccine 0.03 MG/ML / influenza B virus vaccine B/Brisbane/60/2008 antigen 0.03 MG/ML / influenza virus vaccine, inactivated A-Victoria-210-2009 X-187 (H3N2) (A-Perth-16-2009) strain 0.03 MG/ML Injectable...",S
+influenza_vaccine,40240134,"influenza A-California-7-2009-(H1N1)v-like virus vaccine 0.03 MG/ML / influenza B virus vaccine B/Brisbane/60/2008 antigen 0.03 MG/ML / influenza virus vaccine, inactivated A-Victoria-210-2009 X-187 (H3N2) (A-Perth-16-2009) strain 0.03 MG/ML Injectable...",S
+influenza_vaccine,40225026,"influenza A-California-7-2009-(H1N1)v-like virus vaccine 0.03 MG/ML / influenza B virus vaccine B/Brisbane/60/2008 antigen 0.03 MG/ML / influenza virus vaccine, inactivated A-Victoria-210-2009 X-187 (H3N2) (A-Perth-16-2009) strain 0.03 MG/ML Injectable...",S
+influenza_vaccine,40225007,"influenza A-California-7-2009-(H1N1)v-like virus vaccine 0.03 MG/ML / influenza B virus vaccine B/Brisbane/60/2008 antigen 0.03 MG/ML / influenza virus vaccine, inactivated A-Victoria-210-2009 X-187 (H3N2) (A-Perth-16-2009) strain 0.03 MG/ML Injectable...",S
+influenza_vaccine,40240925,"influenza A-California-7-2009-(H1N1)v-like virus vaccine / influenza B virus vaccine B/Brisbane/60/2008 antigen / influenza virus vaccine, inactivated A-Victoria-210-2009 X-187 (H3N2) (A-Perth-16-2009) strain Injectable Suspension",S
+influenza_vaccine,40225015,"influenza A-California-7-2009-(H1N1)v-like virus vaccine / influenza B virus vaccine B/Brisbane/60/2008 antigen / influenza virus vaccine, inactivated A-Victoria-210-2009 X-187 (H3N2) (A-Perth-16-2009) strain Injectable Suspension [Afluria 2010-2011 Fo...",S
+influenza_vaccine,40225014,"influenza A-California-7-2009-(H1N1)v-like virus vaccine / influenza B virus vaccine B/Brisbane/60/2008 antigen / influenza virus vaccine, inactivated A-Victoria-210-2009 X-187 (H3N2) (A-Perth-16-2009) strain Injectable Suspension [Fluvirin 2010-2011 F...",S
+influenza_vaccine,40240926,"influenza A-California-7-2009-(H1N1)v-like virus vaccine / influenza B virus vaccine B/Brisbane/60/2008 antigen / influenza virus vaccine, inactivated A-Victoria-210-2009 X-187 (H3N2) (A-Perth-16-2009) strain Injectable Suspension [Fluvirin 2011-2012 F...",S
+influenza_vaccine,40224999,"influenza A-California-7-2009-(H1N1)v-like virus vaccine / influenza B virus vaccine B/Brisbane/60/2008 antigen / influenza virus vaccine, inactivated A-Victoria-210-2009 X-187 (H3N2) (A-Perth-16-2009) strain Injectable Suspension [Fluzone 2010-2011 Fo...",S
+influenza_vaccine,40240131,"influenza A-California-7-2009-(H1N1)v-like virus vaccine / influenza B virus vaccine B/Brisbane/60/2008 antigen / influenza virus vaccine, inactivated A-Victoria-210-2009 X-187 (H3N2) (A-Perth-16-2009) strain Injectable Suspension [Fluzone 2011-2012 Fo...",S
+influenza_vaccine,1361279,influenza A virus A/Brisbane/02/2018 (H1N1) antigen 0.03 MG/ML / influenza A virus A/Kansas/14/2017 (H3N2) antigen 0.03 MG/ML / influenza B virus B/Maryland/15/2016 antigen 0.03 MG/ML Prefilled Syringe,S
+influenza_vaccine,1361280,influenza A virus A/Brisbane/02/2018 (H1N1) antigen 0.03 MG/ML / influenza A virus A/Kansas/14/2017 (H3N2) antigen 0.03 MG/ML / influenza B virus B/Maryland/15/2016 antigen 0.03 MG/ML Prefilled Syringe [Fluad 2019-2020],S
+influenza_vaccine,1361154,influenza A virus A/Brisbane/02/2018 (H1N1) antigen 0.09 MG/ML / influenza A virus A/Kansas/14/2017 (H3N2) antigen 0.09 MG/ML / influenza B virus B/Maryland/15/2016 antigen 0.09 MG/ML / influenza B virus B/Phuket/3073/2013 antigen 0.09 MG/ML Prefilled...,S
+influenza_vaccine,1361155,influenza A virus A/Brisbane/02/2018 (H1N1) antigen 0.09 MG/ML / influenza A virus A/Kansas/14/2017 (H3N2) antigen 0.09 MG/ML / influenza B virus B/Maryland/15/2016 antigen 0.09 MG/ML / influenza B virus B/Phuket/3073/2013 antigen 0.09 MG/ML Prefilled...,S
+influenza_vaccine,35606417,influenza A virus A/California/7/2009 (H1N1) antigen 0.015 MG/ML / influenza A virus A/Switzerland/9715293/2013 (H3N2) antigen 0.015 MG/ML / influenza B virus B/Brisbane/9/2014 antigen 0.015 MG/ML Prefilled Syringe,S
+influenza_vaccine,35606418,influenza A virus A/California/7/2009 (H1N1) antigen 0.015 MG/ML / influenza A virus A/Switzerland/9715293/2013 (H3N2) antigen 0.015 MG/ML / influenza B virus B/Brisbane/9/2014 antigen 0.015 MG/ML Prefilled Syringe [FLUAD 2015-2016],S
+influenza_vaccine,36249270,influenza A virus A/California/7/2009 (H1N1) antigen 0.03 MG/ML / influenza A virus A/Hong Kong/4801/2014 (H3N2) antigen 0.03 MG/ML / influenza B virus B/Brisbane/60/2008 antigen 0.03 MG/ML Injectable Suspension,S
+influenza_vaccine,36249272,influenza A virus A/California/7/2009 (H1N1) antigen 0.03 MG/ML / influenza A virus A/Hong Kong/4801/2014 (H3N2) antigen 0.03 MG/ML / influenza B virus B/Brisbane/60/2008 antigen 0.03 MG/ML Injectable Suspension [Afluria 2016-2017],S
+influenza_vaccine,36249265,influenza A virus A/California/7/2009 (H1N1) antigen 0.03 MG/ML / influenza A virus A/Hong Kong/4801/2014 (H3N2) antigen 0.03 MG/ML / influenza B virus B/Brisbane/60/2008 antigen 0.03 MG/ML Prefilled Syringe,S
+influenza_vaccine,36249412,influenza A virus A/California/7/2009 (H1N1) antigen 0.03 MG/ML / influenza A virus A/Hong Kong/4801/2014 (H3N2) antigen 0.03 MG/ML / influenza B virus B/Brisbane/60/2008 antigen 0.03 MG/ML Prefilled Syringe [Fluad 2016-2017],S
+influenza_vaccine,46276313,influenza A virus A/California/7/2009 (H1N1) antigen 0.03 MG/ML / influenza A virus A/South Australia/55/2014 (H3N2) antigen 0.03 MG/ML / influenza B virus B/Phuket/3073/2013 antigen 0.03 MG/ML Injectable Suspension,S
+influenza_vaccine,46276315,influenza A virus A/California/7/2009 (H1N1) antigen 0.03 MG/ML / influenza A virus A/South Australia/55/2014 (H3N2) antigen 0.03 MG/ML / influenza B virus B/Phuket/3073/2013 antigen 0.03 MG/ML Injectable Suspension [Afluria 2015-2016],S
+influenza_vaccine,46275381,influenza A virus A/California/7/2009 (H1N1) antigen 0.03 MG/ML / influenza A virus A/Switzerland/9715293/2013 (H3N2) antigen 0.03 MG/ML / influenza B virus B/Phuket/3073/2013 antigen 0.03 MG/ML Injectable Suspension,S
+influenza_vaccine,46275385,influenza A virus A/California/7/2009 (H1N1) antigen 0.03 MG/ML / influenza A virus A/Switzerland/9715293/2013 (H3N2) antigen 0.03 MG/ML / influenza B virus B/Phuket/3073/2013 antigen 0.03 MG/ML Injectable Suspension [Fluzone 2015-2016],S
+influenza_vaccine,40220833,influenza A virus A/California/7/2009 (H1N1) antigen 0.09 MG/ML / influenza A virus A/Hong Kong/4801/2014 (H3N2) antigen 0.09 MG/ML / influenza B virus B/Brisbane/60/2008 antigen 0.09 MG/ML Injection,S
+influenza_vaccine,40220834,influenza A virus A/California/7/2009 (H1N1) antigen 0.09 MG/ML / influenza A virus A/Hong Kong/4801/2014 (H3N2) antigen 0.09 MG/ML / influenza B virus B/Brisbane/60/2008 antigen 0.09 MG/ML Injection [Flublok 2016-2017],S
+influenza_vaccine,46276019,influenza A virus A/California/7/2009 (H1N1) antigen 0.09 MG/ML / influenza A virus A/Switzerland/9715293/2013 (H3N2) antigen 0.09 MG/ML / influenza B virus B/Phuket/3073/2013 antigen 0.09 MG/ML Injection,S
+influenza_vaccine,46276020,influenza A virus A/California/7/2009 (H1N1) antigen 0.09 MG/ML / influenza A virus A/Switzerland/9715293/2013 (H3N2) antigen 0.09 MG/ML / influenza B virus B/Phuket/3073/2013 antigen 0.09 MG/ML Injection [Flublok 2015-2016],S
+influenza_vaccine,36249426,influenza A virus A/Christchurch/16/2010 (H1N1) antigen 0.03 MG/ML / influenza A virus A/Hong Kong/4801/2014 (H3N2) antigen 0.03 MG/ML / influenza B virus B/Brisbane/60/2008 antigen 0.03 MG/ML Injectable Suspension,S
+influenza_vaccine,36249431,influenza A virus A/Christchurch/16/2010 (H1N1) antigen 0.03 MG/ML / influenza A virus A/Hong Kong/4801/2014 (H3N2) antigen 0.03 MG/ML / influenza B virus B/Brisbane/60/2008 antigen 0.03 MG/ML Injectable Suspension [Fluvirin 2016-2017],S
+influenza_vaccine,46276178,influenza A virus A/Christchurch/16/2010 (H1N1) antigen 0.03 MG/ML / influenza A virus A/Switzerland/9715293/2013 (H3N2) antigen 0.03 MG/ML / influenza B virus B/Phuket/3073/2013 antigen 0.03 MG/ML Injectable Suspension,S
+influenza_vaccine,46276182,influenza A virus A/Christchurch/16/2010 (H1N1) antigen 0.03 MG/ML / influenza A virus A/Switzerland/9715293/2013 (H3N2) antigen 0.03 MG/ML / influenza B virus B/Phuket/3073/2013 antigen 0.03 MG/ML Injectable Suspension [Fluvirin 2015-2016],S
+influenza_vaccine,746137,influenza A virus A/Darwin/6/2021 (H3N2) antigen 0.09 MG/ML / influenza A virus A/West Virginia/30/2022 (H1N1) antigen 0.09 MG/ML / influenza B virus B/Austria/1359417/2021 antigen 0.09 MG/ML / influenza B virus B/Phuket/3073/2013 antigen 0.09 MG/ML Pr...,S
+influenza_vaccine,746132,influenza A virus A/Darwin/6/2021 (H3N2) antigen 0.09 MG/ML / influenza A virus A/West Virginia/30/2022 (H1N1) antigen 0.09 MG/ML / influenza B virus B/Austria/1359417/2021 antigen 0.09 MG/ML / influenza B virus B/Phuket/3073/2013 antigen 0.09 MG/ML Pr...,S
+influenza_vaccine,780110,influenza A virus A/Darwin/6/2021 (H3N2) antigen 0.09 MG/ML / influenza A virus A/Wisconsin/588/2019 (H1N1) antigen 0.09 MG/ML / influenza B virus B/Austria/1359417/2021 antigen 0.09 MG/ML / influenza B virus B/Phuket/3073/2013 antigen 0.09 MG/ML Prefi...,S
+influenza_vaccine,780105,influenza A virus A/Darwin/6/2021 (H3N2) antigen 0.09 MG/ML / influenza A virus A/Wisconsin/588/2019 (H1N1) antigen 0.09 MG/ML / influenza B virus B/Austria/1359417/2021 antigen 0.09 MG/ML / influenza B virus B/Phuket/3073/2013 antigen 0.09 MG/ML Prefi...,S
+influenza_vaccine,1146508,influenza A virus A/Hawaii/70/2019 (H1N1) antigen 0.09 MG/ML / influenza A virus A/Minnesota/41/2019 (H3N2) antigen 0.09 MG/ML / influenza B virus B/Phuket/3073/2013 antigen 0.09 MG/ML / influenza B virus B/Washington/02/2019 antigen 0.09 MG/ML Prefill...,S
+influenza_vaccine,1146507,influenza A virus A/Hawaii/70/2019 (H1N1) antigen 0.09 MG/ML / influenza A virus A/Minnesota/41/2019 (H3N2) antigen 0.09 MG/ML / influenza B virus B/Phuket/3073/2013 antigen 0.09 MG/ML / influenza B virus B/Washington/02/2019 antigen 0.09 MG/ML Prefill...,S
+influenza_vaccine,1146534,influenza A virus A/Hong Kong/2671/2019 (H3N2) antigen 0.03 MG/ML / influenza A virus A/Victoria/2454/2019 (H1N1) antigen 0.03 MG/ML / influenza B virus B/Victoria/705/2018 antigen 0.03 MG/ML Prefilled Syringe,S
+influenza_vaccine,1146535,influenza A virus A/Hong Kong/2671/2019 (H3N2) antigen 0.03 MG/ML / influenza A virus A/Victoria/2454/2019 (H1N1) antigen 0.03 MG/ML / influenza B virus B/Victoria/705/2018 antigen 0.03 MG/ML Prefilled Syringe [Fluad 2020-2021],S
+influenza_vaccine,793959,influenza A virus A/Hong Kong/4801/2014 (H3N2) antigen 0.03 MG/ML / influenza A virus A/Singapore/GP1908/2015 (H1N1) antigen 0.03 MG/ML / influenza B virus B/Brisbane/46/2015 antigen 0.03 MG/ML Injectable Suspension,S
+influenza_vaccine,793961,influenza A virus A/Hong Kong/4801/2014 (H3N2) antigen 0.03 MG/ML / influenza A virus A/Singapore/GP1908/2015 (H1N1) antigen 0.03 MG/ML / influenza B virus B/Brisbane/46/2015 antigen 0.03 MG/ML Injectable Suspension [Afluria 2017-2018],S
+influenza_vaccine,1593904,influenza A virus A/Hong Kong/4801/2014 (H3N2) antigen 0.03 MG/ML / influenza A virus A/Singapore/GP1908/2015 (H1N1) antigen 0.03 MG/ML / influenza B virus B/Brisbane/60/2008 antigen 0.03 MG/ML Injectable Suspension,S
+influenza_vaccine,1593909,influenza A virus A/Hong Kong/4801/2014 (H3N2) antigen 0.03 MG/ML / influenza A virus A/Singapore/GP1908/2015 (H1N1) antigen 0.03 MG/ML / influenza B virus B/Brisbane/60/2008 antigen 0.03 MG/ML Injectable Suspension [Fluvirin 2017-2018],S
+influenza_vaccine,1593902,influenza A virus A/Hong Kong/4801/2014 (H3N2) antigen 0.03 MG/ML / influenza A virus A/Singapore/GP1908/2015 (H1N1) antigen 0.03 MG/ML / influenza B virus B/Brisbane/60/2008 antigen 0.03 MG/ML Prefilled Syringe,S
+influenza_vaccine,1593903,influenza A virus A/Hong Kong/4801/2014 (H3N2) antigen 0.03 MG/ML / influenza A virus A/Singapore/GP1908/2015 (H1N1) antigen 0.03 MG/ML / influenza B virus B/Brisbane/60/2008 antigen 0.03 MG/ML Prefilled Syringe [Fluad 2017-2018],S
+influenza_vaccine,1593524,influenza A virus A/Hong Kong/4801/2014 (H3N2) antigen 0.09 MG/ML / influenza A virus A/Michigan/45/2015 (H1N1) antigen 0.09 MG/ML / influenza B virus B/Brisbane/60/2008 antigen 0.09 MG/ML / influenza B virus B/Phuket/3073/2013 antigen 0.09 MG/ML Prefi...,S
+influenza_vaccine,1593523,influenza A virus A/Hong Kong/4801/2014 (H3N2) antigen 0.09 MG/ML / influenza A virus A/Michigan/45/2015 (H1N1) antigen 0.09 MG/ML / influenza B virus B/Brisbane/60/2008 antigen 0.09 MG/ML / influenza B virus B/Phuket/3073/2013 antigen 0.09 MG/ML Prefi...,S
+influenza_vaccine,1593538,influenza A virus A/Hong Kong/4801/2014 (H3N2) antigen 0.09 MG/ML / influenza A virus A/Michigan/45/2015 (H1N1) antigen 0.09 MG/ML / influenza B virus B/Brisbane/60/2008 antigen 0.09 MG/ML Injection,S
+influenza_vaccine,1593877,influenza A virus A/Hong Kong/4801/2014 (H3N2) antigen 0.09 MG/ML / influenza A virus A/Michigan/45/2015 (H1N1) antigen 0.09 MG/ML / influenza B virus B/Brisbane/60/2008 antigen 0.09 MG/ML Injection [Flublok 2017-2018],S
+influenza_vaccine,35200027,influenza A virus A/Michigan/45/2015 (H1N1) antigen 0.09 MG/ML / influenza A virus A/Singapore/INFIMH-16-0019/2016 (H3N2) antigen 0.09 MG/ML / influenza B virus B/Maryland/15/2016 antigen 0.09 MG/ML / influenza B virus B/Phuket/3073/2013 antigen 0.09 M...,S
+influenza_vaccine,35200028,influenza A virus A/Michigan/45/2015 (H1N1) antigen 0.09 MG/ML / influenza A virus A/Singapore/INFIMH-16-0019/2016 (H3N2) antigen 0.09 MG/ML / influenza B virus B/Maryland/15/2016 antigen 0.09 MG/ML / influenza B virus B/Phuket/3073/2013 antigen 0.09 M...,S
+influenza_vaccine,35200049,influenza A virus A/Singapore/GP1908/2015 (H1N1) antigen 0.03 MG/ML / influenza A virus A/Singapore/INFIMH-16-0019/2016 (H3N2) antigen 0.03 MG/ML / influenza B virus B/Maryland/15/2016 antigen 0.03 MG/ML Injectable Suspension,S
+influenza_vaccine,35200054,influenza A virus A/Singapore/GP1908/2015 (H1N1) antigen 0.03 MG/ML / influenza A virus A/Singapore/INFIMH-16-0019/2016 (H3N2) antigen 0.03 MG/ML / influenza B virus B/Maryland/15/2016 antigen 0.03 MG/ML Injectable Suspension [Afluria 2018-2019],S
+influenza_vaccine,35200047,influenza A virus A/Singapore/GP1908/2015 (H1N1) antigen 0.03 MG/ML / influenza A virus A/Singapore/INFIMH-16-0019/2016 (H3N2) antigen 0.03 MG/ML / influenza B virus B/Maryland/15/2016 antigen 0.03 MG/ML Prefilled Syringe,S
+influenza_vaccine,35200048,influenza A virus A/Singapore/GP1908/2015 (H1N1) antigen 0.03 MG/ML / influenza A virus A/Singapore/INFIMH-16-0019/2016 (H3N2) antigen 0.03 MG/ML / influenza B virus B/Maryland/15/2016 antigen 0.03 MG/ML Prefilled Syringe [Fluad 2018-2019],S
+influenza_vaccine,1537482,influenza A virus A/Tasmania/503/2020 (H3N2) antigen 0.09 MG/ML / influenza A virus A/Wisconsin/588/2019 (H1N1) antigen 0.09 MG/ML / influenza B virus B/Phuket/3073/2013 antigen 0.09 MG/ML / influenza B virus B/Washington/02/2019 antigen 0.09 MG/ML Pre...,S
+influenza_vaccine,1537508,influenza A virus A/Tasmania/503/2020 (H3N2) antigen 0.09 MG/ML / influenza A virus A/Wisconsin/588/2019 (H1N1) antigen 0.09 MG/ML / influenza B virus B/Phuket/3073/2013 antigen 0.09 MG/ML / influenza B virus B/Washington/02/2019 antigen 0.09 MG/ML Pre...,S
+influenza_vaccine,43625193,"influenza A virus (H1N1) antigen 0.03 MG/ML / Influenza A virus vaccine, A-California-7-2009 (H1N1)-like virus 0.03 MG/ML / influenza B virus antigen 0.03 MG/ML Injectable Suspension [Afluria]",S
+influenza_vaccine,43643464,influenza A virus (H1N1) antigen 0.03 MG/ML Injectable Suspension [Afluria],S
+influenza_vaccine,43607294,influenza A virus (H1N1) antigen 0.03 MG/ML Injectable Suspension [Afluria] Box of 10,S
+influenza_vaccine,46276177,influenza A virus (H1N1) antigen / influenza A virus (H3N2) antigen / influenza B virus antigen Injectable Suspension,S
+influenza_vaccine,46276314,influenza A virus (H1N1) antigen / influenza A virus (H3N2) antigen / influenza B virus antigen Injectable Suspension [Afluria 2015-2016],S
+influenza_vaccine,36249271,influenza A virus (H1N1) antigen / influenza A virus (H3N2) antigen / influenza B virus antigen Injectable Suspension [Afluria 2016-2017],S
+influenza_vaccine,793960,influenza A virus (H1N1) antigen / influenza A virus (H3N2) antigen / influenza B virus antigen Injectable Suspension [Afluria 2017-2018],S
+influenza_vaccine,35200052,influenza A virus (H1N1) antigen / influenza A virus (H3N2) antigen / influenza B virus antigen Injectable Suspension [Afluria 2018-2019],S
+influenza_vaccine,46276181,influenza A virus (H1N1) antigen / influenza A virus (H3N2) antigen / influenza B virus antigen Injectable Suspension [Fluvirin 2015-2016],S
+influenza_vaccine,36249429,influenza A virus (H1N1) antigen / influenza A virus (H3N2) antigen / influenza B virus antigen Injectable Suspension [Fluvirin 2016-2017],S
+influenza_vaccine,1593907,influenza A virus (H1N1) antigen / influenza A virus (H3N2) antigen / influenza B virus antigen Injectable Suspension [Fluvirin 2017-2018],S
+influenza_vaccine,46275384,influenza A virus (H1N1) antigen / influenza A virus (H3N2) antigen / influenza B virus antigen Injectable Suspension [Fluzone 2015-2016],S
+influenza_vaccine,46275653,influenza A virus (H1N1) antigen / influenza A virus (H3N2) antigen / influenza B virus antigen Injection,S
+influenza_vaccine,46276017,influenza A virus (H1N1) antigen / influenza A virus (H3N2) antigen / influenza B virus antigen Injection [Flublok 2015-2016],S
+influenza_vaccine,40220830,influenza A virus (H1N1) antigen / influenza A virus (H3N2) antigen / influenza B virus antigen Injection [Flublok 2016-2017],S
+influenza_vaccine,1593874,influenza A virus (H1N1) antigen / influenza A virus (H3N2) antigen / influenza B virus antigen Injection [Flublok 2017-2018],S
+influenza_vaccine,46276001,influenza A virus (H1N1) antigen / influenza A virus (H3N2) antigen / influenza B virus antigen Prefilled Syringe,S
+influenza_vaccine,35606412,influenza A virus (H1N1) antigen / influenza A virus (H3N2) antigen / influenza B virus antigen Prefilled Syringe [FLUAD 2015-2016],S
+influenza_vaccine,36249409,influenza A virus (H1N1) antigen / influenza A virus (H3N2) antigen / influenza B virus antigen Prefilled Syringe [Fluad 2016-2017],S
+influenza_vaccine,1593899,influenza A virus (H1N1) antigen / influenza A virus (H3N2) antigen / influenza B virus antigen Prefilled Syringe [Fluad 2017-2018],S
+influenza_vaccine,35200045,influenza A virus (H1N1) antigen / influenza A virus (H3N2) antigen / influenza B virus antigen Prefilled Syringe [Fluad 2018-2019],S
+influenza_vaccine,1361188,influenza A virus (H1N1) antigen / influenza A virus (H3N2) antigen / influenza B virus antigen Prefilled Syringe [Fluad 2019-2020],S
+influenza_vaccine,1146532,influenza A virus (H1N1) antigen / influenza A virus (H3N2) antigen / influenza B virus antigen Prefilled Syringe [Fluad 2020-2021],S
+influenza_vaccine,1593361,influenza A virus (H1N1) antigen / influenza A virus (H3N2) antigen / influenza B virus antigen Prefilled Syringe [Flublok Quadrivalent 2017-2018],S
+influenza_vaccine,35200025,influenza A virus (H1N1) antigen / influenza A virus (H3N2) antigen / influenza B virus antigen Prefilled Syringe [Flublok Quadrivalent 2018-2019],S
+influenza_vaccine,1361148,influenza A virus (H1N1) antigen / influenza A virus (H3N2) antigen / influenza B virus antigen Prefilled Syringe [Flublok Quadrivalent 2019-2020],S
+influenza_vaccine,1146505,influenza A virus (H1N1) antigen / influenza A virus (H3N2) antigen / influenza B virus antigen Prefilled Syringe [Flublok Quadrivalent 2020-2021],S
+influenza_vaccine,1758617,influenza A virus (H1N1) antigen / influenza A virus (H3N2) antigen / influenza B virus antigen Prefilled Syringe [Flublok Quadrivalent 2021-2022],S
+influenza_vaccine,780109,influenza A virus (H1N1) antigen / influenza A virus (H3N2) antigen / influenza B virus antigen Prefilled Syringe [Flublok Quadrivalent 2022-2023],S
+influenza_vaccine,746136,influenza A virus (H1N1) antigen / influenza A virus (H3N2) antigen / influenza B virus antigen Prefilled Syringe [Flublok Quadrivalent 2023-2024],S
+influenza_vaccine,43841366,"Influenza A virus vaccine, A-California-7-2009 (H1N1)-like virus 0.03 MG/ML Injectable Suspension [Afluria]",S
+influenza_vaccine,43841367,"Influenza A virus vaccine, A-California-7-2009 (H1N1)-like virus 0.03 MG/ML Injectable Suspension [Afluria] Box of 10",S
+influenza_vaccine,45774411,"influenza A virus vaccine, A-Texas-50-2012 X-223A (H3N2), inactivated 0.03 MG/ML / influenza A-California-7-2009-(H1N1)v-like virus vaccine 0.03 MG/ML / influenza B virus vaccine, B-Massachusetts-2-2012-like virus 0.03 MG/ML Injectable Suspension",S
+influenza_vaccine,45774413,"influenza A virus vaccine, A-Texas-50-2012 X-223A (H3N2), inactivated 0.03 MG/ML / influenza A-California-7-2009-(H1N1)v-like virus vaccine 0.03 MG/ML / influenza B virus vaccine, B-Massachusetts-2-2012-like virus 0.03 MG/ML Injectable Suspension [Flul...",S
+influenza_vaccine,43532864,"influenza A virus vaccine, A-Victoria-361-2011 (H3N2)-like virus 0.03 MG/ML / influenza A-California-7-2009-(H1N1)v-like virus vaccine 0.03 MG/ML / influenza B virus vaccine, B-Massachusetts-2-2012-like virus 0.03 MG/ML Injectable Suspension",S
+influenza_vaccine,44818413,"influenza A virus vaccine, A-Victoria-361-2011 (H3N2)-like virus 0.03 MG/ML / influenza A-California-7-2009-(H1N1)v-like virus vaccine 0.03 MG/ML / influenza B virus vaccine, B-Massachusetts-2-2012-like virus 0.03 MG/ML Injectable Suspension [Afluria 2...",S
+influenza_vaccine,43532964,"influenza A virus vaccine, A-Victoria-361-2011 (H3N2)-like virus 0.03 MG/ML / influenza A-California-7-2009-(H1N1)v-like virus vaccine 0.03 MG/ML / influenza B virus vaccine, B-Massachusetts-2-2012-like virus 0.03 MG/ML Injectable Suspension [Afluria 2...",S
+influenza_vaccine,43532865,"influenza A virus vaccine, A-Victoria-361-2011 (H3N2)-like virus 0.03 MG/ML / influenza A-California-7-2009-(H1N1)v-like virus vaccine 0.03 MG/ML / influenza B virus vaccine, B-Massachusetts-2-2012-like virus 0.03 MG/ML Injectable Suspension [Flulaval...",S
+influenza_vaccine,44818419,"influenza A virus vaccine, A-Victoria-361-2011 (H3N2)-like virus 0.03 MG/ML / influenza A-California-7-2009-(H1N1)v-like virus vaccine 0.03 MG/ML / influenza B virus vaccine, B-Massachusetts-2-2012-like virus 0.03 MG/ML Injectable Suspension [Fluvirin...",S
+influenza_vaccine,43560216,"influenza A virus vaccine, A-Victoria-361-2011 (H3N2)-like virus 0.03 MG/ML / influenza A-California-7-2009-(H1N1)v-like virus vaccine 0.03 MG/ML / influenza B virus vaccine, B-Massachusetts-2-2012-like virus 0.03 MG/ML Injectable Suspension [Fluvirin...",S
+influenza_vaccine,44818422,"influenza A virus vaccine, A-Victoria-361-2011 (H3N2)-like virus 0.03 MG/ML / influenza A-California-7-2009-(H1N1)v-like virus vaccine 0.03 MG/ML / influenza B virus vaccine, B-Massachusetts-2-2012-like virus 0.03 MG/ML Injectable Suspension [Fluzone 2...",S
+influenza_vaccine,43532874,"influenza A virus vaccine, A-Victoria-361-2011 (H3N2)-like virus 0.03 MG/ML / influenza A-California-7-2009-(H1N1)v-like virus vaccine 0.03 MG/ML / influenza B virus vaccine, B-Massachusetts-2-2012-like virus 0.03 MG/ML Injectable Suspension [Fluzone 2...",S
+influenza_vaccine,42873937,"influenza A virus vaccine, A-Victoria-361-2011 (H3N2)-like virus 0.03 MG/ML / influenza A-California-7-2009-(H1N1)v-like virus vaccine 0.03 MG/ML / influenza B virus vaccine, B-Wisconsin-1-2010-like virus 0.03 MG/ML Injectable Suspension",S
+influenza_vaccine,42873939,"influenza A virus vaccine, A-Victoria-361-2011 (H3N2)-like virus 0.03 MG/ML / influenza A-California-7-2009-(H1N1)v-like virus vaccine 0.03 MG/ML / influenza B virus vaccine, B-Wisconsin-1-2010-like virus 0.03 MG/ML Injectable Suspension [Flulaval 2012...",S
+influenza_vaccine,42873940,"influenza A virus vaccine, A-Victoria-361-2011 (H3N2)-like virus 0.03 MG/ML / influenza A-California-7-2009-(H1N1)v-like virus vaccine 0.03 MG/ML / influenza B virus vaccine, B-Wisconsin-1-2010-like virus 0.03 MG/ML Injectable Suspension [Fluvirin 2012...",S
+influenza_vaccine,42873941,"influenza A virus vaccine, A-Victoria-361-2011 (H3N2)-like virus 0.03 MG/ML / influenza A-California-7-2009-(H1N1)v-like virus vaccine 0.03 MG/ML / influenza B virus vaccine, B-Wisconsin-1-2010-like virus 0.03 MG/ML Injectable Suspension [Fluzone 2012-...",S
+influenza_vaccine,44507887,"influenza A virus vaccine, A-Victoria-361-2011 (H3N2)-like virus 0.09 MG/ML / influenza A-California-7-2009-(H1N1)v-like virus vaccine 0.09 MG/ML / influenza B virus vaccine, B-Massachusetts-2-2012-like virus 0.09 MG/ML Injectable Solution",S
+influenza_vaccine,44818416,"influenza A virus vaccine, A-Victoria-361-2011 (H3N2)-like virus 0.09 MG/ML / influenza A-California-7-2009-(H1N1)v-like virus vaccine 0.09 MG/ML / influenza B virus vaccine, B-Massachusetts-2-2012-like virus 0.09 MG/ML Injectable Solution [Flublok 201...",S
+influenza_vaccine,44507888,"influenza A virus vaccine, A-Victoria-361-2011 (H3N2)-like virus 0.09 MG/ML / influenza A-California-7-2009-(H1N1)v-like virus vaccine 0.09 MG/ML / influenza B virus vaccine, B-Massachusetts-2-2012-like virus 0.09 MG/ML Injectable Solution [Flublok 201...",S
+influenza_vaccine,43012767,"influenza A virus vaccine, A-Victoria-361-2011 (H3N2)-like virus 0.09 MG/ML / influenza A-California-7-2009-(H1N1)v-like virus vaccine 0.09 MG/ML / influenza B virus vaccine, B-Wisconsin-1-2010-like virus 0.09 MG/ML Injectable Solution",S
+influenza_vaccine,43012768,"influenza A virus vaccine, A-Victoria-361-2011 (H3N2)-like virus 0.09 MG/ML / influenza A-California-7-2009-(H1N1)v-like virus vaccine 0.09 MG/ML / influenza B virus vaccine, B-Wisconsin-1-2010-like virus 0.09 MG/ML Injectable Solution [Flublok 2012-20...",S
+influenza_vaccine,44507842,"influenza A virus vaccine, A-Victoria-361-2011 (H3N2)-like virus / influenza A-California-7-2009-(H1N1)v-like virus vaccine / influenza B virus vaccine, B-Massachusetts-2-2012-like virus Injectable Solution",S
+influenza_vaccine,44507843,"influenza A virus vaccine, A-Victoria-361-2011 (H3N2)-like virus / influenza A-California-7-2009-(H1N1)v-like virus vaccine / influenza B virus vaccine, B-Massachusetts-2-2012-like virus Injectable Solution [Flublok 2013-2014 Formula]",S
+influenza_vaccine,44818106,"influenza A virus vaccine, A-Victoria-361-2011 (H3N2)-like virus / influenza A-California-7-2009-(H1N1)v-like virus vaccine / influenza B virus vaccine, B-Massachusetts-2-2012-like virus Injectable Solution [Flublok 2014-2015 Formula]",S
+influenza_vaccine,43532648,"influenza A virus vaccine, A-Victoria-361-2011 (H3N2)-like virus / influenza A-California-7-2009-(H1N1)v-like virus vaccine / influenza B virus vaccine, B-Massachusetts-2-2012-like virus Injectable Suspension",S
+influenza_vaccine,43532775,"influenza A virus vaccine, A-Victoria-361-2011 (H3N2)-like virus / influenza A-California-7-2009-(H1N1)v-like virus vaccine / influenza B virus vaccine, B-Massachusetts-2-2012-like virus Injectable Suspension [Afluria 2013-2014 Formula]",S
+influenza_vaccine,44818097,"influenza A virus vaccine, A-Victoria-361-2011 (H3N2)-like virus / influenza A-California-7-2009-(H1N1)v-like virus vaccine / influenza B virus vaccine, B-Massachusetts-2-2012-like virus Injectable Suspension [Afluria 2014-2015 Formula]",S
+influenza_vaccine,43532651,"influenza A virus vaccine, A-Victoria-361-2011 (H3N2)-like virus / influenza A-California-7-2009-(H1N1)v-like virus vaccine / influenza B virus vaccine, B-Massachusetts-2-2012-like virus Injectable Suspension [Flulaval 2013-2014 Formula]",S
+influenza_vaccine,44818100,"influenza A virus vaccine, A-Victoria-361-2011 (H3N2)-like virus / influenza A-California-7-2009-(H1N1)v-like virus vaccine / influenza B virus vaccine, B-Massachusetts-2-2012-like virus Injectable Suspension [Flulaval 2014-2015 Formula]",S
+influenza_vaccine,43560213,"influenza A virus vaccine, A-Victoria-361-2011 (H3N2)-like virus / influenza A-California-7-2009-(H1N1)v-like virus vaccine / influenza B virus vaccine, B-Massachusetts-2-2012-like virus Injectable Suspension [Fluvirin 2013-2014 Formula]",S
+influenza_vaccine,44818112,"influenza A virus vaccine, A-Victoria-361-2011 (H3N2)-like virus / influenza A-California-7-2009-(H1N1)v-like virus vaccine / influenza B virus vaccine, B-Massachusetts-2-2012-like virus Injectable Suspension [Fluvirin 2014-2015 Formula]",S
+influenza_vaccine,43532662,"influenza A virus vaccine, A-Victoria-361-2011 (H3N2)-like virus / influenza A-California-7-2009-(H1N1)v-like virus vaccine / influenza B virus vaccine, B-Massachusetts-2-2012-like virus Injectable Suspension [Fluzone 2013-2014 Formula]",S
+influenza_vaccine,44818116,"influenza A virus vaccine, A-Victoria-361-2011 (H3N2)-like virus / influenza A-California-7-2009-(H1N1)v-like virus vaccine / influenza B virus vaccine, B-Massachusetts-2-2012-like virus Injectable Suspension [Fluzone 2014-2015 Formula]",S
+influenza_vaccine,43012763,"influenza A virus vaccine, A-Victoria-361-2011 (H3N2)-like virus / influenza A-California-7-2009-(H1N1)v-like virus vaccine / influenza B virus vaccine, B-Wisconsin-1-2010-like virus Injectable Solution",S
+influenza_vaccine,43012764,"influenza A virus vaccine, A-Victoria-361-2011 (H3N2)-like virus / influenza A-California-7-2009-(H1N1)v-like virus vaccine / influenza B virus vaccine, B-Wisconsin-1-2010-like virus Injectable Solution [Flublok 2012-2013 Formula]",S
+influenza_vaccine,42873919,"influenza A virus vaccine, A-Victoria-361-2011 (H3N2)-like virus / influenza A-California-7-2009-(H1N1)v-like virus vaccine / influenza B virus vaccine, B-Wisconsin-1-2010-like virus Injectable Suspension",S
+influenza_vaccine,42873921,"influenza A virus vaccine, A-Victoria-361-2011 (H3N2)-like virus / influenza A-California-7-2009-(H1N1)v-like virus vaccine / influenza B virus vaccine, B-Wisconsin-1-2010-like virus Injectable Suspension [Flulaval 2012-2013 Formula]",S
+influenza_vaccine,42873922,"influenza A virus vaccine, A-Victoria-361-2011 (H3N2)-like virus / influenza A-California-7-2009-(H1N1)v-like virus vaccine / influenza B virus vaccine, B-Wisconsin-1-2010-like virus Injectable Suspension [Fluvirin 2012-2013 Formula]",S
+influenza_vaccine,42873923,"influenza A virus vaccine, A-Victoria-361-2011 (H3N2)-like virus / influenza A-California-7-2009-(H1N1)v-like virus vaccine / influenza B virus vaccine, B-Wisconsin-1-2010-like virus Injectable Suspension [Fluzone 2012-2013 Formula]",S
+influenza_vaccine,43751233,influenza B virus antigen 0.03 MG/ML Injectable Suspension [Afluria],S
+influenza_vaccine,43859536,influenza B virus antigen 0.03 MG/ML Injectable Suspension [Afluria] Box of 10,S
+influenza_vaccine,43264065,"Influenza B virus vaccine, B-Brisbane-60-2008-like virus 0.015 MG/ML / Influenza Virus Vaccine, Inactivated A-California-07-2009 X-181 (H1N1) strain 0.015 MG/ML / ... Injection [Fluvirin]",S
+influenza_vaccine,43296629,"Influenza B virus vaccine, B-Brisbane-60-2008-like virus 0.015 MG/ML / Influenza Virus Vaccine, Inactivated A-California-07-2009 X-181 (H1N1) strain 0.015 MG/ML / ... Injection [Fluvirin] Box of 1",S
+influenza_vaccine,43275078,"Influenza B virus vaccine, B-Brisbane-60-2008-like virus 0.015 MG/ML / Influenza Virus Vaccine, Inactivated A-California-07-2009 X-181 (H1N1) strain 0.015 MG/ML / ... Injection [Fluvirin] Box of 10",S
+influenza_vaccine,40213153,"Influenza, seasonal, injectable",S
+influenza_vaccine,40213156,"influenza virus vaccine, split virus (incl. purified surface antigen)-retired CODE",S
+influenza_vaccine,40213158,"influenza virus vaccine, unspecified formulation",S
+influenza_vaccine,40213159,"influenza virus vaccine, whole virus",S
+influenza_vaccine,40213152,"Seasonal, quadrivalent, recombinant, injectable influenza vaccine, preservative free",S
+influenza_vaccine,40213157,"Seasonal trivalent influenza vaccine, adjuvanted, preservative free",S
+influenza_vaccine,40213151,"Seasonal, trivalent, recombinant, injectable influenza vaccine, preservative free",S
+non_smoker,903651,Currently doesn't use tobacco or its derivatives,S
+non_smoker,42742406,Current tobacco non-smoker and not currently exposed to secondhand smoke (Asthma),S
+non_smoker,2101897,"Current tobacco non-user (CAD, CAP, COPD, PV) (DM) (IBD)",S
+non_smoker,2617856,Current tobacco non-user (Deprecated),S
+non_smoker,4144272,Never smoked tobacco,N
+non_smoker,903653,Never used tobacco or its derivatives,S
+non_smoker,4222303,Non-smoker,N
+non_smoker,40329152,Non-smoker (& [never smoked tobacco]),N
+non_smoker,40298657,Non-smoker (& [never smoked tobacco]),N
+obesity,604591,6q16 microdeletion syndrome,S
+obesity,4271317,Adiposogenital dystrophy,S
+obesity,4171972,Adult-onset obesity,S
+obesity,4270189,Alstrom syndrome,S
+obesity,4079899,Android obesity,S
+obesity,4235799,Buffalo obesity,S
+obesity,4087487,Central obesity,S
+obesity,40481140,Childhood obesity,S
+obesity,36713437,Choroideremia with deafness and obesity syndrome,S
+obesity,36678790,"Colobomatous microphthalmia, obesity, hypogenitalism, intellectual disability syndrome",S
+obesity,45763687,Congenital leptin deficiency,S
+obesity,4097929,Constitutional obesity,S
+obesity,4097996,Drug-induced obesity,S
+obesity,4182506,Endogenous obesity,S
+obesity,4100857,Extreme obesity with alveolar hypoventilation,S
+obesity,4160821,Familial obesity,S
+obesity,4029277,Fat pad syndrome,S
+obesity,4029276,Generalized obesity,S
+obesity,37166819,Genetic non-syndromic obesity,S
+obesity,4029900,Gynecoid obesity,S
+obesity,36717154,Hydrocephalus with obesity and hypogonadism syndrome,S
+obesity,4005991,Hyperinsulinar obesity,S
+obesity,4163032,Hyperplastic-hypertrophic obesity,S
+obesity,4185912,Hyperplastic obesity,S
+obesity,4171147,Hypertrophic obesity,S
+obesity,4177337,Hypogonadal obesity,S
+obesity,4220527,Hypothalamic obesity,S
+obesity,4203289,Hypothyroid obesity,S
+obesity,35622038,"Intellectual disability, obesity, brain malformation, facial dysmorphism syndrome",S
+obesity,36674490,"Intellectual disability, obesity, prognathism, eye and skin anomalies syndrome",S
+obesity,36674893,"Intellectual disability, seizures, macrocephaly, obesity syndrome",S
+obesity,4171317,Lifelong obesity,S
+obesity,438731,Localized adiposity,S
+obesity,37208175,Lower body obesity,S
+obesity,37164247,MAGEL2-related Prader-Willi-like syndrome,S
+obesity,42872398,"Maternal obesity complicating pregnancy, childbirth and the puerperium, antepartum",S
+obesity,4216214,Mauriac's syndrome,S
+obesity,36716144,MEHMO syndrome,S
+obesity,37110069,MOMO syndrome,S
+obesity,434005,Morbid obesity,S
+obesity,37395980,MORM syndrome,S
+obesity,433736,Obesity,S
+obesity,4212443,Obesity by adipocyte growth pattern,S
+obesity,4215969,Obesity by contributing factors,S
+obesity,4189665,Obesity by fat distribution pattern,S
+obesity,36716555,Obesity caused by energy imbalance,S
+obesity,36717199,"Obesity, colitis, hypothyroidism, cardiac hypertrophy, developmental delay syndrome",S
+obesity,37204685,Obesity due to CEP19 deficiency,S
+obesity,37206117,Obesity due to leptin receptor gene deficiency,S
+obesity,37397209,Obesity due to melanocortin 4 receptor deficiency,S
+obesity,37162364,Obesity due to pituitary disease,S
+obesity,36716151,Obesity due to prohormone convertase I deficiency,S
+obesity,37204815,Obesity due to SIM1 deficiency,S
+obesity,37311904,Obesity in adolescence,S
+obesity,45757112,Obesity in mother complicating childbirth,S
+obesity,4183240,Obesity of endocrine origin,S
+obesity,4093860,Peripheral obesity,S
+obesity,37163354,"PHIP-related behavioral problems, intellectual disability, obesity, dysmorphic features syndrome",S
+obesity,36674827,Prader-Willi-like syndrome,S
+obesity,3199162,Pregnancy complicated by obesity,S
+obesity,45771307,Proopiomelanocortin deficiency syndrome,S
+obesity,36676689,"Rapid-onset childhood obesity, hypothalamic dysfunction, hypoventilation, autonomic dysregulation syndrome",S
+obesity,37204691,Severe early-onset obesity insulin resistance syndrome due to SH2B1 deficiency,S
+obesity,37018860,Severe obesity,S
+obesity,42539192,Severe obesity complicating pregnancy,S
+obesity,37164244,SIM1-related Prader-Willi-like syndrome,S
+obesity,4217557,Simple obesity,S
+obesity,37166818,"Spastic paraplegia, intellectual disability, nystagmus, obesity syndrome",S
+obesity,4211019,Steatopygia,S
+obesity,36714072,Syndromic X-linked intellectual disability type 7,S
+obesity,36714548,Wilson Turner syndrome,S
+obesity,37165655,"X-linked intellectual disability, short stature, overweight syndrome",S
+polycystic_ovary_syndrome,3654293,Polycystic bilateral ovaries,S
+polycystic_ovary_syndrome,3654291,Polycystic left ovary,S
+polycystic_ovary_syndrome,36683296,Polycystic ovary,S
+polycystic_ovary_syndrome,40443308,Polycystic ovary syndrome,S
+polycystic_ovary_syndrome,3654296,Polycystic ovary syndrome of bilateral ovaries,S
+polycystic_ovary_syndrome,3654295,Polycystic ovary syndrome of left ovary,S
+polycystic_ovary_syndrome,3654294,Polycystic ovary syndrome of right ovary,S
+polycystic_ovary_syndrome,3654292,Polycystic right ovary,S
+smoker,40766642,Are you considering quitting smoking during the next 6 months [PLCO],S
+smoker,4044778,Chain smoker,N
+smoker,4047454,Cigar consumption,N
+smoker,4276526,Cigarette smoker,N
+smoker,903657,Cigarette smoker,S
+smoker,764104,Cigarette smoker (1-4 cigarettes/day),N
+smoker,764103,Cigarette smoker (5-9 cigarettes/day),N
+smoker,4282779,Cigarette smoking tobacco,S
+smoker,4246415,Cigar smoker,N
+smoker,903664,Cigar smoker,S
+smoker,4132133,Cigar smoking tobacco,S
+smoker,764468,Continuous dependence on chewing tobacco,N
+smoker,765451,Continuous dependence on cigarette smoking,N
+smoker,40766945,Current smoker,S
+smoker,44802867,Current smoker annual review,N
+smoker,2101895,"Current tobacco smoker (CAD, CAP, COPD, PV) (DM)",S
+smoker,2617854,Current tobacco smoker (Deprecated),S
+smoker,44786481,Documentation that patient is a current tobacco user,S
+smoker,764383,Enrollment in smoking cessation program,S
+smoker,764471,Episodic dependence on chewing tobacco,S
+smoker,764469,Episodic dependence on cigarette smoking,S
+smoker,40486518,Failed attempt to stop smoking,N
+smoker,4041511,Heavy cigarette smoker,N
+smoker,903661,Heavy cigarette smoker (20-39 cigarettes per day),S
+smoker,4052947,Heavy cigarette smoker (20-39 cigs/day),N
+smoker,4209006,Heavy smoker (over 20 per day),N
+smoker,762499,Heavy tobacco smoker,N
+smoker,44784248,Hookah pipe smoker,N
+smoker,903665,Hookah smoker,S
+smoker,40766643,"In the past, have you ever made a serious attempt to quit smoking That is, have you stopped smoking for at least one day or longer because you were trying to quit [PLCO]",S
+smoker,4052948,Keeps trying to stop smoking,N
+smoker,600776,Lack of support for smoking cessation,S
+smoker,4042037,Light cigarette smoker,N
+smoker,903659,Light cigarette smoker (1-9 cigarettes per day),S
+smoker,4052029,Light cigarette smoker (1-9 cigs/day),N
+smoker,762498,Light tobacco smoker,N
+smoker,42534813,Maternal tobacco use in pregnancy,N
+smoker,4131520,Minutes from waking to first tobacco consumption,N
+smoker,4044776,Moderate cigarette smoker,N
+smoker,903660,Moderate cigarette smoker (10-19 cigarettes per day),S
+smoker,4052030,Moderate cigarette smoker (10-19 cigs/day),N
+smoker,4209585,Moderate smoker (20 or less per day),N
+smoker,4193014,Negotiated date for cessation of smoking,S
+smoker,4209423,Nicotine dependence,S
+smoker,619068,Nondependent abuse of tobacco,N
+smoker,4216174,Not interested in stopping smoking,N
+smoker,44811339,Number of previous attempts to stop smoking,N
+smoker,4044775,Occasional cigarette smoker,N
+smoker,37395605,Occasional tobacco smoker,N
+smoker,903663,Pipe smoker,S
+smoker,4218917,Pipe smoker,N
+smoker,4224317,Pipe smoking tobacco,S
+smoker,4041509,Pipe tobacco consumption,N
+smoker,4215409,Ready to stop smoking,N
+smoker,4293731,Reason for restarting smoking,N
+smoker,4058138,Rolls own cigarettes,N
+smoker,1617736,Smoked cigarette within 30M after waking in past 3 months,S
+smoker,1617232,Smoked more than 10 cigarettes per day in past 3 months,S
+smoker,4298794,Smoker,N
+smoker,36716991,Smoker in home,N
+smoker,4263877,Smokers' cough,S
+smoker,4126918,Smokers keratosis,S
+smoker,46270550,Smoker's melanosis,S
+smoker,4028286,Smoker's respiratory syndrome,S
+smoker,42709996,Smokes tobacco daily,N
+smoker,4001198,Smoking-pipe maker,S
+smoker,4046886,Smoking reduced,N
+smoker,4204653,Smoking restarted,N
+smoker,4141787,Smoking started,N
+smoker,4190573,Thinking about stopping smoking,N
+smoker,4148163,Tobacco amblyopia,S
+smoker,37109024,Tobacco dependence caused by chewing tobacco,N
+smoker,37109023,Tobacco dependence caused by cigarettes,N
+smoker,4099811,"Tobacco dependence, continuous",S
+smoker,4103417,"Tobacco dependence, episodic",S
+smoker,437264,Tobacco dependence syndrome,S
+smoker,3655996,Tobacco dependence with current use,N
+smoker,4315821,Tobacco deposit on teeth,S
+smoker,903654,Tobacco or its derivatives user,S
+smoker,4150993,Tobacco related optic neuropathy,S
+smoker,764198,Tobacco smoking in mother complicating childbirth,N
+smoker,764199,Tobacco smoking in mother complicating pregnancy,N
+smoker,764197,Tobacco smoking in mother complicating puerperium,N
+smoker,21494888,Tobacco smoking status for tobacco smoker,S
+smoker,45757177,Tobacco use in mother complicating childbirth,N
+smoker,764196,Tobacco use in mother complicating pregnancy,N
+smoker,764195,Tobacco use in mother complicating puerperium,N
+smoker,36031616,Tobacco use in the past year,S
+smoker,4005823,Tobacco user,N
+smoker,903658,Trivial cigarette smoker (0-1 cigarettes per day),S
+smoker,4144273,Trivial cigarette smoker (less than one cigarette/day),N
+smoker,4058137,Trying to give up smoking,N
+smoker,4044777,Very heavy cigarette smoker,N
+smoker,4058136,Very heavy cigarette smoker (40+ cigs/day),N
+smoker,903662,Very heavy cigarette smoker (more or equal to 40 cigarettes per day),S
+smoker,44789712,Wants to stop smoking,N
+smoker,40766644,What was the longest length of time you stopped smoking because you were trying to quit [PLCO],S
+stop_smoking,37020654,Age when stopped smoking cigarettes completely,S
+stop_smoking,44802805,Recently stopped smoking,N
+stop_smoking,3558278,Recently stopped smoking,N
+stop_smoking,45461579,Recently stopped smoking,N
+stop_smoking,45491652,Stopped smoking,N
+stop_smoking,3472723,Stopped smoking,N
+stop_smoking,4052032,Stopped smoking,N
+stop_smoking,40298679,Stopped smoking,N
+stop_smoking,3090238,Stopped smoking,N
+stop_smoking,40486722,Stopped smoking before pregnancy,N
+stop_smoking,3558649,Stopped smoking before pregnancy,N
+stop_smoking,3456645,Stopped smoking before pregnancy,N
+stop_smoking,3558649,Stopped smoking before pregnancy,N
+stop_smoking,3558648,Stopped smoking during pregnancy,N
+stop_smoking,40486721,Stopped smoking during pregnancy,N
+substance_misuse_dependence,4089921,Abuse of antacids,S
+substance_misuse_dependence,440992,Abuse of antidepressant drug,S
+substance_misuse_dependence,4091716,Abuse of diuretics,S
+substance_misuse_dependence,4085362,Abuse of drugs to lose weight,S
+substance_misuse_dependence,4091715,Abuse of herbal medicine,S
+substance_misuse_dependence,4091714,Abuse of laxatives,S
+substance_misuse_dependence,4333674,Abuse of nonpsychotropic analgesic drugs,S
+substance_misuse_dependence,37164389,Abuse of steroid hormone,S
+substance_misuse_dependence,42538729,Abuse of synthetic cathinone,S
+substance_misuse_dependence,4092159,Abuse of vitamins,S
+substance_misuse_dependence,3190002,Acetaminphen abuse,S
+substance_misuse_dependence,433753,Alcohol abuse,S
+substance_misuse_dependence,37164322,"Amfetamine and/or amfetamine derivative abuse, continuous",S
+substance_misuse_dependence,37164321,"Amfetamine and/or amfetamine derivative abuse, episodic",S
+substance_misuse_dependence,37164390,Amphetamine and/or amphetamine derivative abuse in remission,S
+substance_misuse_dependence,3654785,Amphetamine and/or amphetamine derivative dependence,S
+substance_misuse_dependence,37164565,Amphetamine and/or amphetamine derivative dependence continuous,S
+substance_misuse_dependence,37164564,Amphetamine and/or amphetamine derivative dependence episodic,S
+substance_misuse_dependence,37164563,Amphetamine and/or amphetamine derivative dependence in remission,S
+substance_misuse_dependence,437533,Amphetamine dependence,S
+substance_misuse_dependence,436371,Barbiturate abuse,S
+substance_misuse_dependence,4180736,Caffeine dependence,S
+substance_misuse_dependence,434327,Cannabis abuse,S
+substance_misuse_dependence,42535585,Catha edulis abuse,S
+substance_misuse_dependence,44782433,Chronic abuse of laxatives,S
+substance_misuse_dependence,4001994,Chronic drug abuse,S
+substance_misuse_dependence,432303,Cocaine abuse,S
+substance_misuse_dependence,436389,Cocaine dependence,S
+substance_misuse_dependence,433994,"Cocaine dependence, continuous",S
+substance_misuse_dependence,440692,"Cocaine dependence, episodic",S
+substance_misuse_dependence,432302,Cocaine dependence in remission,S
+substance_misuse_dependence,37116661,Cocaine user,S
+substance_misuse_dependence,765685,Continuous dependence on snuff use,S
+substance_misuse_dependence,4144308,Continuous inhalant abuse,S
+substance_misuse_dependence,4141032,Continuous phencyclidine abuse,S
+substance_misuse_dependence,44782685,Continuous sedative abuse,S
+substance_misuse_dependence,44790195,Delivery of rehabilitation for drug addiction,S
+substance_misuse_dependence,4275756,Dependent drug abuse,S
+substance_misuse_dependence,37172480,Diamorphine abuse,S
+substance_misuse_dependence,44786481,Documentation that patient is a current tobacco user,S
+substance_misuse_dependence,436954,Drug abuse,S
+substance_misuse_dependence,4145220,"Drug abuse, continuous",S
+substance_misuse_dependence,43530681,Drug abuse in remission,S
+substance_misuse_dependence,44789201,Drug addiction detoxification therapy - methadone,S
+substance_misuse_dependence,44789202,Drug addiction maintenance therapy - methadone,S
+substance_misuse_dependence,4151569,Drug addiction notification,S
+substance_misuse_dependence,44787991,Drug addiction notification - HS2A 1(Revision) to Home Office,S
+substance_misuse_dependence,44808917,Drug addiction notification local SMR22,S
+substance_misuse_dependence,44792393,Drug addiction notification to Chief Medical Officer,S
+substance_misuse_dependence,44787997,Drug addiction re-notification - HS2A to Home Office,S
+substance_misuse_dependence,44788496,Drug addiction re-notification to Chief Medical Officer,S
+substance_misuse_dependence,4149607,Drug addiction therapy - methadone,S
+substance_misuse_dependence,440069,Drug dependence,N
+substance_misuse_dependence,440787,"Drug dependence in mother complicating pregnancy, childbirth AND/OR puerperium",N
+substance_misuse_dependence,4321741,Drug habituation,S
+substance_misuse_dependence,764471,Episodic dependence on chewing tobacco,S
+substance_misuse_dependence,764469,Episodic dependence on cigarette smoking,S
+substance_misuse_dependence,764470,Episodic dependence on snuff use,S
+substance_misuse_dependence,4143110,Episodic drug abuse,S
+substance_misuse_dependence,4140733,Episodic inhalant abuse,S
+substance_misuse_dependence,44789542,Episodic nondependent crack cocaine abuse,S
+substance_misuse_dependence,43020431,Episodic phencyclidine abuse,S
+substance_misuse_dependence,4213111,Frequency of substance misuse,S
+substance_misuse_dependence,437245,Hallucinogen abuse,S
+substance_misuse_dependence,37205764,Harmful pattern of use of amphetamine and/or amphetamine derivative,S
+substance_misuse_dependence,37110441,Harmful pattern of use of caffeine,S
+substance_misuse_dependence,37110444,Harmful pattern of use of nicotine,S
+substance_misuse_dependence,35610532,Harmful use of alcohol,S
+substance_misuse_dependence,35610533,Harmful use of amphetamine,S
+substance_misuse_dependence,35610529,Harmful use of analgesic,S
+substance_misuse_dependence,35610509,Harmful use of antacids,S
+substance_misuse_dependence,35610524,Harmful use of antidepressant drug,S
+substance_misuse_dependence,36676297,Harmful use of anxiolytic,S
+substance_misuse_dependence,35610542,Harmful use of barbiturate,S
+substance_misuse_dependence,35610534,Harmful use of cannabis,S
+substance_misuse_dependence,35610536,Harmful use of cocaine,S
+substance_misuse_dependence,35610525,Harmful use of diuretics,S
+substance_misuse_dependence,35610526,Harmful use of drugs to lose weight,S
+substance_misuse_dependence,35610537,Harmful use of hallucinogen,S
+substance_misuse_dependence,35610527,Harmful use of herbal medicine,S
+substance_misuse_dependence,36676296,Harmful use of hypnotic,S
+substance_misuse_dependence,35610538,Harmful use of inhalant,S
+substance_misuse_dependence,37110458,Harmful use of ketamine,S
+substance_misuse_dependence,35610535,Harmful use of khat,S
+substance_misuse_dependence,35610528,Harmful use of laxatives,S
+substance_misuse_dependence,35610539,Harmful use of methanol,S
+substance_misuse_dependence,35610540,Harmful use of opioid,S
+substance_misuse_dependence,35610541,Harmful use of sedative,S
+substance_misuse_dependence,35610530,Harmful use of steroids,S
+substance_misuse_dependence,35610543,Harmful use of stimulant,S
+substance_misuse_dependence,35610544,Harmful use of synthetic cannabinoid,S
+substance_misuse_dependence,35610545,Harmful use of synthetic cathinone,S
+substance_misuse_dependence,35610531,Harmful use of vitamins,S
+substance_misuse_dependence,4290538,Inhalant abuse,S
+substance_misuse_dependence,43020430,Intravenous cocaine abuse,S
+substance_misuse_dependence,44782731,Intravenous nondependent opioid abuse,S
+substance_misuse_dependence,37116660,Marijuana user,S
+substance_misuse_dependence,434697,Maternal tobacco abuse,N
+substance_misuse_dependence,40217339,"Medication assisted treatment, methadone; weekly bundle including dispensing and/or administration, substance use counseling, individual and group therapy, and toxicology testing, if performed (provision of the services by a medicare-enrolled opioid tr...",S
+substance_misuse_dependence,2796047,"Medication Management for Substance Abuse Treatment, Methadone Maintenance",S
+substance_misuse_dependence,44783367,Methamphetamine abuse,S
+substance_misuse_dependence,4141524,Methamphetamine dependence,S
+substance_misuse_dependence,4121343,Methanol abuse,S
+substance_misuse_dependence,37164560,Methylenedioxymethamphetamine dependence,S
+substance_misuse_dependence,4152165,Nondependent alcohol abuse,S
+substance_misuse_dependence,435534,"Nondependent alcohol abuse, continuous",S
+substance_misuse_dependence,440685,"Nondependent alcohol abuse, episodic",S
+substance_misuse_dependence,441276,Nondependent alcohol abuse in remission,S
+substance_misuse_dependence,762382,Nondependent amphetamine abuse,S
+substance_misuse_dependence,37164337,Nondependent amphetamine and/or amphetamine derivative abuse,S
+substance_misuse_dependence,37164334,"Nondependent amphetamine and/or amphetamine derivative abuse, continuous",S
+substance_misuse_dependence,37164336,"Nondependent amphetamine and/or amphetamine derivative abuse, episodic",S
+substance_misuse_dependence,37155429,Nondependent amphetamine and/or amphetamine derivative abuse in remission,S
+substance_misuse_dependence,44813498,Nondependent antidepressant type drug abuse,S
+substance_misuse_dependence,434627,"Nondependent antidepressant type drug abuse, continuous",S
+substance_misuse_dependence,434917,"Nondependent antidepressant type drug abuse, episodic",S
+substance_misuse_dependence,439313,Nondependent antidepressant type drug abuse in remission,S
+substance_misuse_dependence,37164330,Nondependent anxiolytic abuse,S
+substance_misuse_dependence,37164326,"Nondependent anxiolytic abuse, continuous",S
+substance_misuse_dependence,37164325,"Nondependent anxiolytic abuse, episodic",S
+substance_misuse_dependence,37164328,Nondependent anxiolytic abuse in remission,S
+substance_misuse_dependence,4103419,Nondependent cannabis abuse,S
+substance_misuse_dependence,434019,"Nondependent cannabis abuse, continuous",S
+substance_misuse_dependence,434328,"Nondependent cannabis abuse, episodic",S
+substance_misuse_dependence,435231,Nondependent cannabis abuse in remission,S
+substance_misuse_dependence,4102821,Nondependent cocaine abuse,S
+substance_misuse_dependence,439796,"Nondependent cocaine abuse, continuous",S
+substance_misuse_dependence,436089,"Nondependent cocaine abuse, episodic",S
+substance_misuse_dependence,436098,Nondependent cocaine abuse in remission,S
+substance_misuse_dependence,4175635,Non dependent drug abuse,S
+substance_misuse_dependence,4150794,Nondependent hallucinogen abuse,S
+substance_misuse_dependence,440381,"Nondependent hallucinogen abuse, continuous",S
+substance_misuse_dependence,438732,"Nondependent hallucinogen abuse, episodic",S
+substance_misuse_dependence,441272,Nondependent hallucinogen abuse in remission,S
+substance_misuse_dependence,37164331,Nondependent hypnotic abuse,S
+substance_misuse_dependence,37164327,"Nondependent hypnotic abuse, continuous",S
+substance_misuse_dependence,37164324,"Nondependent hypnotic abuse, episodic",S
+substance_misuse_dependence,37164329,Nondependent hypnotic abuse in remission,S
+substance_misuse_dependence,761090,Nondependent intraveous amphetamine abuse,S
+substance_misuse_dependence,439312,Nondependent mixed drug abuse,S
+substance_misuse_dependence,436097,"Nondependent mixed drug abuse, continuous",S
+substance_misuse_dependence,440694,"Nondependent mixed drug abuse, episodic",S
+substance_misuse_dependence,4103426,Nondependent mixed drug abuse in remission,S
+substance_misuse_dependence,4099935,Nondependent opioid abuse,S
+substance_misuse_dependence,434016,"Nondependent opioid abuse, continuous",S
+substance_misuse_dependence,435798,"Nondependent opioid abuse, episodic",S
+substance_misuse_dependence,436088,Nondependent opioid abuse in remission,S
+substance_misuse_dependence,37164338,Nondependent psychostimulant abuse,S
+substance_misuse_dependence,37164333,"Nondependent psychostimulant abuse, continuous",S
+substance_misuse_dependence,37164335,"Nondependent psychostimulant abuse, episodic",S
+substance_misuse_dependence,37164332,Nondependent psychostimulant abuse in remission,S
+substance_misuse_dependence,37017493,Novel psychoactive substance misuse,S
+substance_misuse_dependence,438130,Opioid abuse,S
+substance_misuse_dependence,4321069,PCP abuse,S
+substance_misuse_dependence,4109691,Persistent alcohol abuse,S
+substance_misuse_dependence,4219382,Persistent substance misuse,S
+substance_misuse_dependence,2796060,"Pharmacotherapy for Substance Abuse Treatment, Antabuse",S
+substance_misuse_dependence,2796064,"Pharmacotherapy for Substance Abuse Treatment, Bupropion",S
+substance_misuse_dependence,2796063,"Pharmacotherapy for Substance Abuse Treatment, Clonidine",S
+substance_misuse_dependence,2796059,"Pharmacotherapy for Substance Abuse Treatment, Levo-alpha-acetyl-methadol (LAAM)",S
+substance_misuse_dependence,2796058,"Pharmacotherapy for Substance Abuse Treatment, Methadone Maintenance",S
+substance_misuse_dependence,2796062,"Pharmacotherapy for Substance Abuse Treatment, Naloxone",S
+substance_misuse_dependence,2796061,"Pharmacotherapy for Substance Abuse Treatment, Naltrexone",S
+substance_misuse_dependence,2796057,"Pharmacotherapy for Substance Abuse Treatment, Nicotine Replacement",S
+substance_misuse_dependence,2796066,"Pharmacotherapy for Substance Abuse Treatment, Other Replacement Medication",S
+substance_misuse_dependence,2796065,"Pharmacotherapy for Substance Abuse Treatment, Psychiatric Medication",S
+substance_misuse_dependence,40482898,Polysubstance abuse,S
+substance_misuse_dependence,4168196,Prolonged high dose use of cannabis,S
+substance_misuse_dependence,4239381,Psychoactive substance abuse,S
+substance_misuse_dependence,4004672,Psychoactive substance use disorder,N
+substance_misuse_dependence,443274,Psychostimulant dependence,S
+substance_misuse_dependence,37164568,Psychostimulant dependence continuous,S
+substance_misuse_dependence,37164567,Psychostimulant dependence episodic,S
+substance_misuse_dependence,37164566,Psychostimulant dependence in remission,S
+substance_misuse_dependence,44787894,Referral to community drug dependency team,S
+substance_misuse_dependence,4269905,Referral to drug abuse counselor,S
+substance_misuse_dependence,442601,Sedative abuse,S
+substance_misuse_dependence,40479573,Stimulant abuse,S
+substance_misuse_dependence,4279309,Substance abuse,S
+substance_misuse_dependence,2821602,Substance Abuse Treatment @ None @ Pharmacotherapy @ Antabuse,S
+substance_misuse_dependence,2849587,Substance Abuse Treatment @ None @ Pharmacotherapy @ Antabuse @ None,S
+substance_misuse_dependence,2834828,Substance Abuse Treatment @ None @ Pharmacotherapy @ Antabuse @ None @ None,S
+substance_misuse_dependence,2809356,Substance Abuse Treatment @ None @ Pharmacotherapy @ Bupropion,S
+substance_misuse_dependence,2876004,Substance Abuse Treatment @ None @ Pharmacotherapy @ Bupropion @ None,S
+substance_misuse_dependence,2849589,Substance Abuse Treatment @ None @ Pharmacotherapy @ Bupropion @ None @ None,S
+substance_misuse_dependence,2849588,Substance Abuse Treatment @ None @ Pharmacotherapy @ Clonidine,S
+substance_misuse_dependence,2826853,Substance Abuse Treatment @ None @ Pharmacotherapy @ Clonidine @ None,S
+substance_misuse_dependence,2894447,Substance Abuse Treatment @ None @ Pharmacotherapy @ Clonidine @ None @ None,S
+substance_misuse_dependence,2900299,Substance Abuse Treatment @ None @ Pharmacotherapy @ Levo-alpha-acetyl-methadol (LAAM),S
+substance_misuse_dependence,2862965,Substance Abuse Treatment @ None @ Pharmacotherapy @ Levo-alpha-acetyl-methadol (LAAM) @ None,S
+substance_misuse_dependence,2849586,Substance Abuse Treatment @ None @ Pharmacotherapy @ Levo-alpha-acetyl-methadol (LAAM) @ None @ None,S
+substance_misuse_dependence,2876003,Substance Abuse Treatment @ None @ Pharmacotherapy @ Methadone Maintenance,S
+substance_misuse_dependence,2801512,Substance Abuse Treatment @ None @ Pharmacotherapy @ Methadone Maintenance @ None,S
+substance_misuse_dependence,2900298,Substance Abuse Treatment @ None @ Pharmacotherapy @ Methadone Maintenance @ None @ None,S
+substance_misuse_dependence,2862966,Substance Abuse Treatment @ None @ Pharmacotherapy @ Naloxone,S
+substance_misuse_dependence,2854469,Substance Abuse Treatment @ None @ Pharmacotherapy @ Naloxone @ None,S
+substance_misuse_dependence,2839406,Substance Abuse Treatment @ None @ Pharmacotherapy @ Naloxone @ None @ None,S
+substance_misuse_dependence,2814227,Substance Abuse Treatment @ None @ Pharmacotherapy @ Naltrexone,S
+substance_misuse_dependence,2881419,Substance Abuse Treatment @ None @ Pharmacotherapy @ Naltrexone @ None,S
+substance_misuse_dependence,2881420,Substance Abuse Treatment @ None @ Pharmacotherapy @ Naltrexone @ None @ None,S
+substance_misuse_dependence,2881418,Substance Abuse Treatment @ None @ Pharmacotherapy @ Nicotine Replacement,S
+substance_misuse_dependence,2849585,Substance Abuse Treatment @ None @ Pharmacotherapy @ Nicotine Replacement @ None,S
+substance_misuse_dependence,2839405,Substance Abuse Treatment @ None @ Pharmacotherapy @ Nicotine Replacement @ None @ None,S
+substance_misuse_dependence,2900300,Substance Abuse Treatment @ None @ Pharmacotherapy @ Other Replacement Medication,S
+substance_misuse_dependence,2889407,Substance Abuse Treatment @ None @ Pharmacotherapy @ Other Replacement Medication @ None,S
+substance_misuse_dependence,2881421,Substance Abuse Treatment @ None @ Pharmacotherapy @ Other Replacement Medication @ None @ None,S
+substance_misuse_dependence,2814228,Substance Abuse Treatment @ None @ Pharmacotherapy @ Psychiatric Medication,S
+substance_misuse_dependence,2862967,Substance Abuse Treatment @ None @ Pharmacotherapy @ Psychiatric Medication @ None,S
+substance_misuse_dependence,2826854,Substance Abuse Treatment @ None @ Pharmacotherapy @ Psychiatric Medication @ None @ None,S
+substance_misuse_dependence,2796056,"Substance Abuse Treatment, Pharmacotherapy",S
+substance_misuse_dependence,4217840,Substance misuse behavior,S
+substance_misuse_dependence,4217841,Substance misuse decreased,S
+substance_misuse_dependence,4188558,Substance misuse increased,S
+substance_misuse_dependence,4296409,Substance use treatment: alcohol withdrawal,S
+substance_misuse_dependence,4302387,Substance use treatment: drug withdrawal,S
+substance_misuse_dependence,42539100,Synthetic cannabinoid abuse,S
+substance_misuse_dependence,42539370,Synthetic cathinone dependence,S
+substance_misuse_dependence,4319165,Therapeutic drug dependence,S
+substance_misuse_dependence,37169544,Tobacco dependence caused by chewing tobacco in remission,S
+substance_misuse_dependence,4099811,"Tobacco dependence, continuous",S
+substance_misuse_dependence,4103417,"Tobacco dependence, episodic",S
+substance_misuse_dependence,4103418,Tobacco dependence in remission,S
+substance_misuse_dependence,437264,Tobacco dependence syndrome,S
+systemic_lupus_erythematosus,4295179,Acute systemic lupus erythematosus,S
+systemic_lupus_erythematosus,36676444,Autosomal systemic lupus erythematosus,S
+systemic_lupus_erythematosus,4346976,Bullous systemic lupus erythematosus,S
+systemic_lupus_erythematosus,37110504,Chorea co-occurrent and due to systemic lupus erythematosus,N
+systemic_lupus_erythematosus,4044056,Chorea due to systemic lupus erythematosus,S
+systemic_lupus_erythematosus,37110517,Demyelination of central nervous system co-occurrent and due to systemic lupus erythematosus,S
+systemic_lupus_erythematosus,4269448,Dilated cardiomyopathy due to systemic lupus erythematosus,S
+systemic_lupus_erythematosus,46273369,Endocarditis due to systemic lupus erythematosus,S
+systemic_lupus_erythematosus,4296502,Fulminating systemic lupus erythematosus,S
+systemic_lupus_erythematosus,37016279,Glomerular disease due to systemic lupus erythematosus,S
+systemic_lupus_erythematosus,4055640,Lung disease with systemic lupus erythematosus,S
+systemic_lupus_erythematosus,4299106,Lupus disease of the lung,S
+systemic_lupus_erythematosus,4057084,Lupus hepatitis,S
+systemic_lupus_erythematosus,4344399,Lupus panniculitis,S
+systemic_lupus_erythematosus,4344495,Lupus vasculitis,S
+systemic_lupus_erythematosus,4105023,Myopathy due to disseminated lupus erythematosus,S
+systemic_lupus_erythematosus,46270384,Nephropathy co-occurrent and due to systemic lupus erythematosus,S
+systemic_lupus_erythematosus,37399735,Nephrosis co-occurrent and due to systemic lupus erythematosus,N
+systemic_lupus_erythematosus,37395585,Nephrotic syndrome co-occurrent and due to systemic lupus erythematosus,S
+systemic_lupus_erythematosus,4101469,Pericarditis secondary to systemic lupus erythematosus,S
+systemic_lupus_erythematosus,4105637,Polyneuropathy in disseminated lupus erythematosus,S
+systemic_lupus_erythematosus,4319305,Rash of systemic lupus erythematosus,S
+systemic_lupus_erythematosus,4145240,Renal tubulo-interstitial disorder in systemic lupus erythematosus,S
+systemic_lupus_erythematosus,4217054,Retinal vasculitis due to systemic lupus erythematosus,S
+systemic_lupus_erythematosus,37117740,Secondary autoimmune hemolytic anemia co-occurrent and due to systemic lupus erythematosus,S
+systemic_lupus_erythematosus,4285717,SLE glomerulonephritis syndrome,S
+systemic_lupus_erythematosus,4250483,"SLE glomerulonephritis syndrome, WHO class I",S
+systemic_lupus_erythematosus,4186940,"SLE glomerulonephritis syndrome, WHO class II",S
+systemic_lupus_erythematosus,4297164,"SLE glomerulonephritis syndrome, WHO class III",S
+systemic_lupus_erythematosus,4267801,"SLE glomerulonephritis syndrome, WHO class IV",S
+systemic_lupus_erythematosus,4178133,"SLE glomerulonephritis syndrome, WHO class V",S
+systemic_lupus_erythematosus,4002526,"SLE glomerulonephritis syndrome, WHO class VI",S
+systemic_lupus_erythematosus,257628,Systemic lupus erythematosus,S
+systemic_lupus_erythematosus,4300204,Systemic lupus erythematosus-associated antiphospholipid syndrome,S
+systemic_lupus_erythematosus,4318863,Systemic lupus erythematosus encephalitis,S
+systemic_lupus_erythematosus,4301051,Systemic lupus erythematosus of childhood,S
+systemic_lupus_erythematosus,4219859,Systemic lupus erythematosus-related syndrome,S
+systemic_lupus_erythematosus,44814064,Systemic lupus erythematosus/Sjogren's overlap syndrome,S
+systemic_lupus_erythematosus,4344400,Systemic lupus erythematosus with multisystem involvement,S
+systemic_lupus_erythematosus,4344158,Systemic lupus erythematosus with organ/system involvement,S
+systemic_lupus_erythematosus,4149913,Systemic lupus erythematosus with pericarditis,S
+tdap_vaccine,42800267,"0.5 ML Bordetella pertussis filamentous hemagglutinin vaccine, inactivated 0.016 MG/ML / Bordetella pertussis pertactin vaccine, inactivated 0.005 MG/ML / Bordetella pertussis toxoid vaccine, inactivated 0.016 MG/ML / diphtheria toxoid vaccine, inactiv...",S
+tdap_vaccine,42800266,"0.5 ML Bordetella pertussis filamentous hemagglutinin vaccine, inactivated 0.016 MG/ML / Bordetella pertussis pertactin vaccine, inactivated 0.005 MG/ML / Bordetella pertussis toxoid vaccine, inactivated 0.016 MG/ML / diphtheria toxoid vaccine, inactiv...",S
+tdap_vaccine,42800473,"0.5 ML Bordetella pertussis filamentous hemagglutinin vaccine, inactivated 0.016 MG/ML / Bordetella pertussis pertactin vaccine, inactivated 0.005 UNT/ML / Bordetella pertussis toxoid vaccine, inactivated 0.016 MG/ML / diphtheria toxoid vaccine, inacti...",S
+tdap_vaccine,42800474,"0.5 ML Bordetella pertussis filamentous hemagglutinin vaccine, inactivated 0.016 MG/ML / Bordetella pertussis pertactin vaccine, inactivated 0.005 UNT/ML / Bordetella pertussis toxoid vaccine, inactivated 0.016 MG/ML / diphtheria toxoid vaccine, inacti...",S
+tdap_vaccine,42800265,"0.5 ML Bordetella pertussis filamentous hemagglutinin vaccine, inactivated 0.01 MG/ML / Bordetella pertussis fimbriae 2/3 vaccine, inactivated 0.01 MG/ML / Bordetella pertussis pertactin vaccine, inactivated 0.006 MG/ML / Bordetella pertussis toxoid va...",S
+tdap_vaccine,42800464,"0.5 ML Bordetella pertussis filamentous hemagglutinin vaccine, inactivated 0.01 MG/ML / Bordetella pertussis fimbriae 2/3 vaccine, inactivated 0.01 MG/ML / Bordetella pertussis pertactin vaccine, inactivated 0.006 MG/ML / Bordetella pertussis toxoid va...",S
+tdap_vaccine,44791056,"Booster diphtheria, tetanus, acellular pertussis and inactivated polio vaccination",N
+tdap_vaccine,44792127,"Booster diphtheria, tetanus, acellular pertussis, haemophilus influenzae type b, inactivated polio vaccination",N
+tdap_vaccine,724894,"Diphtheria, Tetanus, Poliomyelitis adsorbed (non-US)",S
+tdap_vaccine,40213281,"diphtheria, tetanus toxoids and acellular pertussis vaccine",S
+tdap_vaccine,40213282,"diphtheria, tetanus toxoids and acellular pertussis vaccine, 5 pertussis antigens",S
+tdap_vaccine,40213289,"Diphtheria, tetanus toxoids and acellular pertussis vaccine, and poliovirus vaccine, inactivated",S
+tdap_vaccine,40213283,"diphtheria, tetanus toxoids and acellular pertussis vaccine, unspecified formulation",S
+tdap_vaccine,40213291,"diphtheria, tetanus toxoids and pertussis vaccine",S
+tdap_vaccine,19033193,pertussis vaccine,S
+tdap_vaccine,4219827,"Second low dose diphtheria, tetanus and inactivated polio vaccination",N
+tdap_vaccine,40213230,"tetanus toxoid, reduced diphtheria toxoid, and acellular pertussis vaccine, adsorbed",S
+tdap_vaccine,4167723,"Third low dose diphtheria, tetanus and inactivated polio vaccination",N
+thyroid_disorder,36717595,Acquired central hypothyroidism,S
+thyroid_disorder,37161451,Acquired central hypothyroidism due to pituitary disorder,S
+thyroid_disorder,37161450,Acquired central hypothyroidism due to Sheehan syndrome,S
+thyroid_disorder,138384,Acquired hypothyroidism,S
+thyroid_disorder,607903,Adrenocorticotropic hormone resistance syndrome,S
+thyroid_disorder,4184957,Adult myxedema,S
+thyroid_disorder,45773358,Allan-Herndon-Dudley syndrome,S
+thyroid_disorder,4185526,Athyrotic hypothyroidism sequence,S
+thyroid_disorder,4034815,Autoimmune hypothyroidism,S
+thyroid_disorder,36716385,Bamforth Lazarus syndrome,S
+thyroid_disorder,4132435,Central hypothyroidism,S
+thyroid_disorder,36716764,Congenital central hypothyroidism,S
+thyroid_disorder,37110922,Congenital central hypothyroidism due to thyrotropin-releasing hormone receptor deficiency,S
+thyroid_disorder,133728,Congenital hypothyroidism,S
+thyroid_disorder,36713742,Congenital hypothyroidism due to absence of thyroid gland,S
+thyroid_disorder,37155411,Congenital hypothyroidism due to congenital anomaly of thyroid gland,S
+thyroid_disorder,37161472,Congenital hypothyroidism due to dual oxidase maturation factor 2,S
+thyroid_disorder,36716765,Congenital hypothyroidism due to iodine deficiency,S
+thyroid_disorder,37204507,Congenital hypothyroidism due to maternal intake of antithyroid drug,S
+thyroid_disorder,37161473,Congenital hypothyroidism due to peripheral resistance to thyroid hormone,S
+thyroid_disorder,37161468,Congenital hypothyroidism due to symporter mutation,S
+thyroid_disorder,37161471,Congenital hypothyroidism due to thyroglobulin mutation,S
+thyroid_disorder,37161467,Congenital hypothyroidism due to thyroid deiodinase mutation,S
+thyroid_disorder,37161465,Congenital hypothyroidism due to thyroid peroxidase mutation,S
+thyroid_disorder,37164395,Congenital hypothyroidism due to thyroid stimulating hormone receptor mutation,S
+thyroid_disorder,37397258,Congenital hypothyroidism due to transplacental passage of maternal thyroid stimulating hormone binding inhibitory antibody,S
+thyroid_disorder,4081998,Congenital hypothyroidism with diffuse goiter,S
+thyroid_disorder,4130017,Congenital hypothyroidism without goiter,S
+thyroid_disorder,4130026,Congenital iodine deficiency syndrome of mixed type,S
+thyroid_disorder,4246944,Congenital malposition of the thyroid gland,S
+thyroid_disorder,37161466,Consumptive hypothyroidism caused by type 3 iodothyronine deiodinase,S
+thyroid_disorder,37166448,Dementia due to acquired hypothyroidism,S
+thyroid_disorder,37161455,Drug induced acquired central hypothyroidism,S
+thyroid_disorder,4229107,Dyshormonogenetic goiter AND iodide leak,S
+thyroid_disorder,136933,Dyshormonogenic goiter,S
+thyroid_disorder,4034822,Dysprealbuminemic euthyroidal hyperthyroxinemia,S
+thyroid_disorder,4233438,Endemic congenital iodine deficiency syndrome of myxedematous type,S
+thyroid_disorder,4129362,Euthyroid with thyroid antibodies,S
+thyroid_disorder,1340365,Exacerbation of hyperthyroidism,S
+thyroid_disorder,4030051,Familial dysalbuminemic hyperthyroxinemia,S
+thyroid_disorder,4030053,Familial dyshormonogenetic goiter,S
+thyroid_disorder,35608125,Familial glucocorticoid deficiency,S
+thyroid_disorder,36716767,Familial hyperthyroidism,S
+thyroid_disorder,37396803,Familial non-autoimmune autosomal dominant hyperthyroidism,S
+thyroid_disorder,37397527,Familial thyroid dyshormonogenesis,S
+thyroid_disorder,4130024,Generalized thyroid hormone resistance,S
+thyroid_disorder,36674793,Genetic transient congenital hypothyroidism,S
+thyroid_disorder,4163854,Glucocorticoid deficiency with achalasia,S
+thyroid_disorder,4130012,Hashitoxicosis - transient,S
+thyroid_disorder,37396504,Hoffman syndrome,S
+thyroid_disorder,4142479,Hyperthyroidism,S
+thyroid_disorder,4337834,Hyperthyroidism due to ectopic thyroid nodule,S
+thyroid_disorder,4227238,Hyperthyroidism due to hydatidiform mole with thyrotoxic crisis,S
+thyroid_disorder,4259138,Hyperthyroidism due to molar thyrotropin,S
+thyroid_disorder,4094160,Hyperthyroidism due to struma ovarii,S
+thyroid_disorder,45757130,Hyperthyroidism in childbirth,S
+thyroid_disorder,4265061,Hyperthyroidism secondary to amiodarone,S
+thyroid_disorder,4241482,Hyperthyroidism secondary to potassium iodide,S
+thyroid_disorder,4194323,Hyperthyroidism secondary to radio contrast dye,S
+thyroid_disorder,4100629,Hyperthyroidism with Hashimoto disease,S
+thyroid_disorder,4291925,Hypothalamic hypothyroidism,S
+thyroid_disorder,4314386,Hypothyroid dwarfism,S
+thyroid_disorder,4034814,"Hypothyroid goiter, acquired",S
+thyroid_disorder,140673,Hypothyroidism,S
+thyroid_disorder,37208050,Hypothyroidism caused by amiodarone,S
+thyroid_disorder,37016342,Hypothyroidism caused by drug,S
+thyroid_disorder,4095914,Hypothyroidism caused by resorcinol,S
+thyroid_disorder,4245619,Hypothyroidism due to amyloidosis,S
+thyroid_disorder,4175837,Hypothyroidism due to cystinosis,S
+thyroid_disorder,4210299,Hypothyroidism due to defect in thyroid hormone synthesis,S
+thyroid_disorder,4192649,Hypothyroidism due to fibrous invasive thyroiditis,S
+thyroid_disorder,4172443,Hypothyroidism due to food stuff,S
+thyroid_disorder,4130018,Hypothyroidism due to Hashimoto's thyroiditis,S
+thyroid_disorder,4147364,Hypothyroidism due to infiltrative disease,S
+thyroid_disorder,4289921,Hypothyroidism due to iodide excess,S
+thyroid_disorder,4034824,Hypothyroidism due to iodide organification defect,S
+thyroid_disorder,4129369,Hypothyroidism due to iodide trapping defect,S
+thyroid_disorder,37397535,Hypothyroidism due to mutation in transcription factor of pituitary development,S
+thyroid_disorder,4303055,Hypothyroidism due to sarcoidosis,S
+thyroid_disorder,4268472,Hypothyroidism due to scleroderma,S
+thyroid_disorder,37167445,Hypothyroidism due to systemic sclerosis,S
+thyroid_disorder,45757058,Hypothyroidism due to thyroiditis,S
+thyroid_disorder,4030047,Hypothyroidism due to TSH receptor blocking antibody,S
+thyroid_disorder,4231548,Hypothyroidism following radioiodine therapy,S
+thyroid_disorder,45757193,Hypothyroidism in childbirth,S
+thyroid_disorder,4176015,Hypothyroidism in pregnancy,S
+thyroid_disorder,4095912,Hypothyroidism resulting from para-aminosalicylic acid,S
+thyroid_disorder,4095913,Hypothyroidism resulting from phenylbutazone,S
+thyroid_disorder,134312,Iatrogenic hypothyroidism,S
+thyroid_disorder,4309027,Idiopathic atrophic hypothyroidism,S
+thyroid_disorder,37399723,Idiopathic congenital hypothyroidism,S
+thyroid_disorder,4034983,Idiopathic TSH deficiency,S
+thyroid_disorder,4236858,Infant hypothyroidism,S
+thyroid_disorder,44782482,Infant hypothyroidism due to maternal drug,S
+thyroid_disorder,4236859,Infant hypothyroidism to 24 months of age,S
+thyroid_disorder,4202818,Iodide oxidation defect,S
+thyroid_disorder,4331585,Iodide transport defect,S
+thyroid_disorder,140062,Iodine hypothyroidism,S
+thyroid_disorder,4129357,Iodine-induced hyperthyroidism,S
+thyroid_disorder,4076302,Iodotyrosine deiodination defect,S
+thyroid_disorder,4052693,Iodotyrosyl coupling defect,S
+thyroid_disorder,4230503,Isolated thyrotropin deficiency,S
+thyroid_disorder,4028612,Juvenile myxedema,S
+thyroid_disorder,3171361,Lithium induced hypothyroidism,S
+thyroid_disorder,4182596,Myxedema,S
+thyroid_disorder,4263049,Myxedema heart disease,S
+thyroid_disorder,4275410,Myxedematous form of cretinism,S
+thyroid_disorder,36676796,Neonatal iodine exposure,S
+thyroid_disorder,4071079,Neonatal jaundice with congenital hypothyroidism,S
+thyroid_disorder,4210297,Neonatal transient hyperthyroidism,S
+thyroid_disorder,36717199,"Obesity, colitis, hypothyroidism, cardiac hypertrophy, developmental delay syndrome",S
+thyroid_disorder,44783239,"Ohdo syndrome, Say-Barber-Biesecker-Young-Simpson variant",S
+thyroid_disorder,37397534,Peripheral resistance to thyroid hormone,S
+thyroid_disorder,4232833,Pituitary thyroid hormone resistance,S
+thyroid_disorder,132583,Postablative hypothyroidism,S
+thyroid_disorder,4030049,Post-infectious hypothyroidism,S
+thyroid_disorder,137820,Postoperative hypothyroidism,S
+thyroid_disorder,40609121,Primary hypothyroidism,S
+thyroid_disorder,37161453,Radiation-induced acquired central hypothyroidism,S
+thyroid_disorder,4006466,Refetoff syndrome,S
+thyroid_disorder,37166867,Resistance to thyroid hormone due to mutation in thyroid hormone receptor alpha,S
+thyroid_disorder,37166868,Resistance to thyroid hormone due to mutation in thyroid hormone receptor beta,S
+thyroid_disorder,36716766,Secondary hyperthyroidism,S
+thyroid_disorder,4220368,Secondary hypothyroidism,S
+thyroid_disorder,4223217,Severe hypothyroidism,S
+thyroid_disorder,35622406,Short stature with delayed bone age due to thyroid hormone metabolism deficiency,S
+thyroid_disorder,4225129,Sporadic cretinism,S
+thyroid_disorder,4176932,Subclinical hyperthyroidism,S
+thyroid_disorder,4183422,Subclinical hypothyroidism,S
+thyroid_disorder,4130027,Subclinical iodine deficiency hypothyroidism,S
+thyroid_disorder,4269217,Thyroglobulin synthesis defect,S
+thyroid_disorder,4030054,Thyroid hormone resistance syndrome,S
+thyroid_disorder,4177341,Thyroid hormone responsiveness defect,S
+thyroid_disorder,137519,Thyrotoxicosis due to ectopic thyroid nodule with crisis,S
+thyroid_disorder,138718,Thyrotoxicosis due to ectopic thyroid nodule with no crisis,S
+thyroid_disorder,4236235,Thyrotoxicosis due to pituitary thyroid hormone resistance,S
+thyroid_disorder,606080,Transient congenital hypothyroidism due to dual oxidase 2 mutation,S
+thyroid_disorder,4173932,Transient decreased production of T-3,S
+thyroid_disorder,4091169,Transient decreased production of T-4,S
+thyroid_disorder,4104540,Transient hypothyroidism,S
+thyroid_disorder,4079964,Transient hypothyrotropinemia,S
+thyroid_disorder,4173188,Transient neonatal hypothyroidism,S
+thyroid_disorder,37161463,Traumatic acquired central hypothyroidism,S
+thyroid_disorder,36675175,X-linked central congenital hypothyroidism with late-onset testicular enlargement,S
+uterus_malformations,37204537,Agenesis of body of uterus,S
+uterus_malformations,40405737,Agenesis of uterus,S
+uterus_malformations,37204538,Aplasia of body of uterus,S
+uterus_malformations,37204436,Aplasia of uterine cervix,S
+uterus_malformations,4150816,Bicornuate uterus,S
+uterus_malformations,4034082,Bicornuate uterus affecting obstetric care,S
+uterus_malformations,4028640,"Bicornuate uterus in pregnancy, childbirth and the puerperium",S
+uterus_malformations,4002491,"Cervical, vaginal and external female genital anomalies",S
+uterus_malformations,4172511,Cochleate uterus,S
+uterus_malformations,37164304,Complete septate uterus,S
+uterus_malformations,4147333,Congenital abnormality of uterus affecting obstetric care,S
+uterus_malformations,197339,"Congenital abnormality of uterus, affecting pregnancy",S
+uterus_malformations,4145939,"Congenital abnormality of uterus in pregnancy, childbirth and the puerperium",S
+uterus_malformations,4245318,Congenital abnormal shape of uterus,S
+uterus_malformations,37311775,Congenital absence of body of uterus,S
+uterus_malformations,4291794,Congenital absence of cervix,S
+uterus_malformations,4063522,Congenital absence of uterus,S
+uterus_malformations,444437,Congenital anomaly of cervix,S
+uterus_malformations,4244022,Congenital atresia of uterus,S
+uterus_malformations,4238346,Congenital duplication of cervix,S
+uterus_malformations,4049461,Congenital duplication of uterus,S
+uterus_malformations,45757090,Congenital fistula between uterus and urinary tract,S
+uterus_malformations,4005469,Congenital fistulae between uterus and digestive and urinary tracts,S
+uterus_malformations,45757089,Congenital hypoplasia of uterine cervix,S
+uterus_malformations,45757689,Congenital imperforate cervix,S
+uterus_malformations,4109625,Congenital malformation of uterus and cervix,S
+uterus_malformations,4231104,Congenital prolapsed uterus,S
+uterus_malformations,4012550,Congenital stenosis of cervical canal,S
+uterus_malformations,201388,Congenital uterine anomaly,S
+uterus_malformations,4005588,Congenital uterointestinal fistula,S
+uterus_malformations,4002490,Congenital uterovesical fistula,S
+uterus_malformations,4058635,Double uterus affecting pregnancy,S
+uterus_malformations,36716428,"Double uterus, hemivagina, renal agenesis syndrome",S
+uterus_malformations,4235773,Doubling of uterus with doubling of cervix and vagina,S
+uterus_malformations,45757210,Doubling of uterus with doubling of cervix and vagina with obstruction,S
+uterus_malformations,4108901,Embryonic cyst of cervix,S
+uterus_malformations,4253344,Female infertility due to structural congenital anomaly of cervix,S
+uterus_malformations,4113440,Hypoplasia of uterus and cervix,S
+uterus_malformations,2110208,"Hysteroplasty, repair of uterine anomaly (Strassman type)",S
+uterus_malformations,4147753,Infantile uterus,S
+uterus_malformations,37160604,Mayer Rokitansky Küster Hauser syndrome type 1,S
+uterus_malformations,36713399,Mayer-Rokitansky-Küster-Hauser syndrome type 2,S
+uterus_malformations,4047942,Persistent fetal uterus,S
+uterus_malformations,36674759,Pseudounicornuate uterus,S
+uterus_malformations,4338806,Rokitansky sequence,S
+uterus_malformations,4046117,Rudimentary uterus in male,S
+uterus_malformations,4220376,Segmental uterine aplasia,S
+uterus_malformations,4109795,Solid rudimentary uterus,S
+uterus_malformations,37312029,Uterine arteriovenous malformation,S
+uterus_malformations,4188292,Uterus acollis,S
+uterus_malformations,4244530,Uterus arcuatus,S
+uterus_malformations,4310798,Uterus bicameratus vetularum,S
+uterus_malformations,4245809,Uterus bicornis affecting pregnancy,S
+uterus_malformations,4248025,Uterus bicornis bicollis,S
+uterus_malformations,36713395,Uterus bicornis bicollis with blind hemi-vagina,S
+uterus_malformations,36713396,Uterus bicornis bicollis with patent cervix and vagina,S
+uterus_malformations,4237916,Uterus bicornis unicollis,S
+uterus_malformations,4049412,Uterus bicornis unicollis with septate vagina,S
+uterus_malformations,4197915,Uterus bicornuatus vetularum,S
+uterus_malformations,4185224,Uterus biforis,S
+uterus_malformations,4331291,Uterus bilocularis,S
+uterus_malformations,4032777,Uterus cordiformis,S
+uterus_malformations,4095095,Uterus incudiformis,S
+uterus_malformations,4102854,Uterus parvicollis,S
+uterus_malformations,4201748,Uterus subseptus,S
+uterus_malformations,4028991,Uterus unicornis,S

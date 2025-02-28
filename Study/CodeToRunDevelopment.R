@@ -11,6 +11,7 @@ library(log4r)
 library(SqlRender)
 library(omopgenerics)
 library(CohortConstructor)
+library(CohortCharacteristics)
 
 # Database name
 database_name <- "CPRD Gold"
@@ -40,8 +41,10 @@ table_stem <- "nmb_saf"
 cdm <- cdmFromCon(
   con = db,
   cdmSchema = cdm_database_schema,
-  writeSchema = c("schema" = results_database_schema, "prefix" = tolower(table_stem)),
-  cdmName = database_name
+  writeSchema = results_database_schema,
+  writePrefix = tolower(table_stem),
+  cdmName = database_name,
+  .softValidation = TRUE
 )
 
 # Pregnancy tables details:
@@ -55,8 +58,10 @@ minimum_counts <- 5
 results <- paste0("Results_", cdmName(cdm))
 
 # Choose code to run
-runInstantiateCohorts <- TRUE
-
+runInstantiateCohorts <- FALSE
+runRiskSetSampling <- TRUE
+runPSWeighting <- FALSE
+runOutcomeModel <- FALSE
 
 source(here("RunStudy.R"))
 

@@ -24,19 +24,36 @@ dataCutDate <- cdm$observation_period |> dplyr::pull("observation_period_end_dat
 enrollment1 <- as.Date(c("2021-04-01", "2022-02-28"))
 enrollment2 <- as.Date(c("2021-05-01", "2022-03-31"))
 enrollment3 <- c(as.Date("2021-10-01"), dataCutDate - lubridate::years(1))
-samplig_fraction <- 5
+samplig_fraction <- 3
 
 # Database snapshot:
 readr::write_csv(CDMConnector::snapshot(cdm), here(output_folder, paste0("cdm_snapshot_", cdmName(cdm), ".csv")))
 
 if (runInstantiateCohorts) {
   info(logger, "STEP 1 INSTANTIATE COHORTS ----")
-  source(here("Analysis", "instantiateCohorts.R"))
+  source(here("Analysis", "01_instantiateCohorts.R"))
 }
 
 if (runRiskSetSampling) {
+  if (!runInstantiateCohorts) {
+    cdm <- cdmFromCon(
+      con = db,
+      cdmSchema = cdm_database_schema,
+      writeSchema = results_database_schema,
+      writePrefix = tolower(table_stem),
+      cdmName = database_name,
+      cohortTables = c(
+        "mother_table", "base", "covid_vaccines", "covid_vaccines_dose", "source_population", 
+        "covid", "smoking", "covariates_inf", "covariates_5", "covariates_1", "other_vaccines",
+        "covid_test", "thrombocytopenia", "aesi90", "aesi30", "aesi_inf", "nco", "covid_washout",
+        "aesi90_washout", "aesi30_washout"
+      ),
+      .softValidation = TRUE
+    )
+    
+  }
   info(logger, "STEP 2 RISK SET SAMPLING ----")
-  source(here("Analysis", "risk_set_sampling.R"))
+  source(here("Analysis", "02_riskSetSampling.R"))
 }
 
 
