@@ -27,7 +27,8 @@ enrollment3 <- c(as.Date("2021-10-01"), dataCutDate - lubridate::years(1))
 samplig_fraction <- 3
 
 # Database snapshot:
-readr::write_csv(CDMConnector::snapshot(cdm), here(output_folder, paste0("cdm_snapshot_", cdmName(cdm), ".csv")))
+summariseOmopSnapshot(cdm) |>
+  exportSummarisedResult(path = output_folder, fileName = paste0("cdm_snapshot_", cdmName(cdm), ".csv"))
 
 if (runInstantiateCohorts) {
   info(logger, "STEP 1 INSTANTIATE COHORTS ----")
@@ -45,7 +46,7 @@ if (runRiskSetSampling) {
       cohortTables = c(
         "mother_table", "base", "covid_vaccines", "covid_vaccines_dose", "source_population", 
         "covid", "smoking", "covariates_inf", "covariates_5", "covariates_1", "other_vaccines",
-        "covid_test", "thrombocytopenia", "aesi90", "aesi30", "aesi_inf", "nco", "covid_washout",
+        "covid_test", "aesi90", "aesi30", "aesi_inf", "nco", "covid_washout",
         "aesi90_washout", "aesi30_washout"
       ),
       .softValidation = TRUE
@@ -54,6 +55,36 @@ if (runRiskSetSampling) {
   }
   info(logger, "STEP 2 RISK SET SAMPLING ----")
   source(here("Analysis", "02_riskSetSampling.R"))
+}
+
+if (runPSWeighting) {
+  if (!runRiskSetSampling) {
+    cdm <- cdmFromCon(
+      con = db,
+      cdmSchema = cdm_database_schema,
+      writeSchema = results_database_schema,
+      writePrefix = tolower(table_stem),
+      cdmName = database_name,
+      cohortTables = c(
+        "mother_table", "base", "covid_vaccines", "covid_vaccines_dose", "source_population", 
+        "covid", "smoking", "covariates_inf", "covariates_5", "covariates_1", "other_vaccines",
+        "covid_test", "aesi90", "aesi30", "aesi_inf", "nco", "covid_washout", 
+        "aesi90_washout", "aesi30_washout", "study_population", "study_population_nco",
+        "features"
+      ),
+      .softValidation = TRUE
+    )
+  }
+  # cdm$features <- tbl(
+  #   db, inSchema(schema = results_database_schema, table = paste0(table_stem, "features"))
+  # ) |>
+  #   compute(
+  #     name = inSchema(schema = results_database_schema, table = "features"), 
+  #     temporary = FALSE, 
+  #     overwrite = TRUE
+  #   ) 
+  info(logger, "STEP 3 PROPENSITY SCORE WEIGHTING ----")
+  source(here("Analysis", "03_PSWeighting.R"))
 }
 
 

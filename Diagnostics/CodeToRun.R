@@ -4,16 +4,12 @@ library(zip)
 library(dbplyr)
 library(dplyr)
 library(CDMConnector)
-library(tidyr)
 library(readr)
 library(PatientProfiles)
 library(log4r)
 library(SqlRender)
 library(omopgenerics)
 library(CohortConstructor)
-library(CohortCharacteristics)
-library(OmopSketch)
-library(glmnet)
 
 # Database name
 database_name <- "CPRD GOLD"
@@ -38,7 +34,7 @@ cdm_database_schema <- "public"
 results_database_schema <- "results"
 
 # cohort stem where cohorts will be instantiated
-table_stem <- "nmb_saf"
+table_stem <- "nmb_ph"
 
 cdm <- cdmFromCon(
   con = db,
@@ -59,14 +55,7 @@ minimum_counts <- 5
 # output folder
 results <- paste0("Results_", cdmName(cdm))
 
-# Choose code to run
-runInstantiateCohorts <- FALSE
-runRiskSetSampling <- TRUE
-runPSWeighting <- TRUE
-runOutcomeModel <- FALSE
-runBackgroundRates <- FALSE
-runBackgroundCharacteristics <- FALSE
+# Instantiate cohorts
+source(here("InstantiateCohorts.R"))
 
-source(here("RunStudy.R"))
-
-print("Thanks for running the analysis!! :D")
+# PhenotypeR

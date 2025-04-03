@@ -1,5 +1,5 @@
-# RISK SET SAMPLING ----
-# Potential comparator cohort
+# Risk Set Sampling ----
+# Potential comparator cohort 
 info(logger, "- Potential comparator cohort")
 cdm$comparator_source <- cdm$source_population |>
   addCohortName() %>% 
@@ -14,7 +14,7 @@ cdm$comparator_source <- cdm$source_population |>
   filter(!is.na(cohort_start_date) & !is.na(cohort_end_date)) |>
   compute(name = "comparator_source", temporary = FALSE)
 
-# Potential exposed cohort
+# Potential exposed cohort 
 info(logger, "- Potential exposed cohort")
 cdm$exposed_source <- cdm$source_population |>
   addCohortName() |>
@@ -57,7 +57,7 @@ sampling_source <- cdm$exposed_source |>
     "exposed_observation_end" = "observation_period_end_date",
     "exposed_any_covid_vaccine_1" = "any_covid_vaccine_1",
     "exposed_any_covid_vaccine_2" = "any_covid_vaccine_2",
-    "exposed_pregnancy_outcome_who" = "pregnancy_outcome_who"
+    "exposed_pregnancy_outcome_study" = "pregnancy_outcome_study"
   ) |>
   left_join(
     cdm$comparator_source |>
@@ -71,7 +71,7 @@ sampling_source <- cdm$exposed_source |>
         "comparator_observation_end" = "observation_period_end_date",
         "comparator_any_covid_vaccine_1" = "any_covid_vaccine_1",
         "comparator_any_covid_vaccine_2" = "any_covid_vaccine_2",
-        "comparator_pregnancy_outcome_who" = "pregnancy_outcome_who"
+        "comparator_pregnancy_outcome_study" = "pregnancy_outcome_study"
       ),
     by = c("cohort_name", "age_group", "pregnancy_start_band"),
     relationship = "many-to-many"
@@ -160,7 +160,7 @@ sampling_source <- sampling_source |>
 
 sampling_summary <- samplingSummary(sampling_source, "Sampling", sampling_summary)
 sampling_summary |>
-  exportSummarisedResult(fileName = "sampling_summary.csv", path = output_folder)
+  exportSummarisedResult(fileName = paste0("sampling_summary", cdmName(cdm), ".csv"), path = output_folder)
 
 # Study population ----
 info(logger, "- Study population cohort")
@@ -173,7 +173,7 @@ cdm$study_population <- sampling_source |>
     exposure = if_else(exposure == "subject_id", "comparator", "exposed"),
     cohort_end_date = exposure_date,
     !!!datesPivotLongerExprs(
-      c("pregnancy_start_date", "pregnancy_end_date", "pregnancy_id", "pregnancy_outcome_who",
+      c("pregnancy_start_date", "pregnancy_end_date", "pregnancy_id", "pregnancy_outcome_study",
         "observation_start", "observation_end", "any_covid_vaccine_1", "any_covid_vaccine_2")
     )
   ) |>
@@ -182,7 +182,7 @@ cdm$study_population <- sampling_source |>
     "cohort_end_date", "exposure", "exposed_match_id", "pregnancy_id", "vaccine_brand",
     "pregnancy_start_date", "pregnancy_end_date", "age", "observation_start",
     "observation_end", "any_covid_vaccine_1", "any_covid_vaccine_2", "cohort_name",
-    "pregnancy_outcome_who"
+    "pregnancy_outcome_study"
   ))) |>
   distinct() |>
   compute(name = "study_population", temporary = FALSE) |>
@@ -205,8 +205,9 @@ cdm$study_population <- cdm$study_population |>
     nameStyle = "covid_infection",
     name = "study_population"
   ) |>
+  mutate(next_covid_vaccine_comparator = if_else(exposure == "exposed", NA, next_covid_vaccine)) |>
   exitAtFirstDateStudy(
-    dateColumns = c("date_of_death", "next_covid_vaccine", "observation_end"),
+    dateColumns = c("date_of_death", "next_covid_vaccine_comparator", "observation_end"),
     endColumn = "cohort_end_date",
     keepDates = TRUE,
     reason = "exit_reason",
@@ -214,14 +215,14 @@ cdm$study_population <- cdm$study_population |>
   ) |>
   exitAtFirstDateStudy(
     dateColumns = c("date_of_death", "next_covid_vaccine", "covid_infection", "observation_end"),
-    endColumn = "cohort_end_date_sensitvity",
+    endColumn = "cohort_end_date_sensitivity",
     keepDates = FALSE,
     reason = "exit_reason_sensitivty",
     name = "study_population"
-  ) 
+  ) |>
+  select(!"next_covid_vaccine_comparator")
 
 # Strata and covariates ----
-# TODO add monovalent / bivalent
 info(logger, "- Study population cohort - set strata variables")
 cdm$study_population <- cdm$study_population %>% 
   mutate(
@@ -268,36 +269,65 @@ cdm$study_population <- cdm$study_population %>%
   ) |>
   select(!any_of(c("non_smoker", "smoker", "former_smoker" ))) |>
   compute(name = "study_population", temporary = FALSE) |>
+  # more covariates that will be used later
+  addCohortIntersectCount(
+    targetCohortTable = "mother_table", 
+    window = list(c(-Inf, -1)), 
+    nameStyle = "previous_pregnancies",
+    name = "study_population"
+  ) |>
+  addTableIntersectCount(
+    tableName = "visit_occurrence", 
+    window = list(c(-365, 0)), 
+    nameStyle = "previous_healthcare_visits",
+    name = "study_population"
+  ) |>
+  addCohortIntersectFlag(
+    targetCohortTable = "covariates_5", 
+    window = list(c(-Inf, 0)), 
+    nameStyle = "{cohort_name}",
+    name = "study_population"
+  ) |>
   newCohortTable(.softValidation = TRUE)
 
+summaryCohort(cdm$study_population) |>
+  exportSummarisedResult(path = output_folder, fileName = paste0("unweighted_study_cohort_summary_", cdmName(cdm), ".csv"))
 
 # Characterise ---- 
-strata <- selectStrata(cdm, strata = c("vaccine_brand", "gestational_trimester", "vaccine_valency"))
+info(logger, "- Baseline characteristics")
+strata <- selectStrata(cdm, strata = c("vaccine_brand", "gestational_trimester"))
 
 ## table one
 baseline_characteristics <- getBaselineCharacteristics(cdm, strata, weights = NULL)
 
 ## large scale
-cdm <- getFeaturesTable(cdm)
+info(logger, "- Large Scale characteristics")
+cdm <- getFeaturesTable(cdm, strata)
 large_scale_characteristics <- getLargeScaleCharacteristics(cdm, strata, weights = NULL)
 
 ## censoring 
+info(logger, "- Censoring summary")
 censoring <- summariseCohortExit(cdm = cdm, strata = strata, weights = NULL)
+
+## index date and gestational age
+timeDistribution <- summariseTimeDistribution(cdm = cdm, strata = strata, weights = NULL)
 
 # Confounding ----
 ## SMD
+info(logger, "- Standardised Mean Differences")
 smdBinary <- summariseBinarySMD(large_scale_characteristics) |>
-  filter(!i.na(estimate_value))
+  filter(!is.na(estimate_value))
 smdNumeric <- summariseNumericSMD(baseline_characteristics) |>
-  filter(!i.na(estimate_value))
-bind(baseline_characteristics, large_scale_characteristics, smdBinary, smdNumeric, censoring) |>
-  exportSummarisedResult(fileName = "unweighted_characteristics.csv", path = output_folder)
+  filter(!is.na(estimate_value))
+bind(baseline_characteristics, large_scale_characteristics, smdBinary, smdNumeric, censoring, timeDistribution) |>
+  exportSummarisedResult(fileName = paste0("unweighted_characteristics_", cdmName(cdm), ".csv"), path = output_folder)
 
 ## NCO 
+info(logger, "- Negative Control Outcomes")
 cdm$study_population_nco <- cdm$study_population |>
   select(any_of(c(
     "cohort_definition_id", "cohort_name", "subject_id", "cohort_start_date", "cohort_end_date",
-    "cohort_end_date_sensitivty", "exposure", "exposed_match_id", "pregnancy_id",
+    "cohort_end_date_sensitivity", "exposure", "exposed_match_id", "pregnancy_id",
     unlist(strata)
   ))) |>
   compute(name = "study_population_nco", temporary = FALSE) |>
@@ -319,7 +349,7 @@ nco_unweighted <- bind(
   ), 
   estimateSurvivalRisk(
     cohort = cdm$study_population_nco, outcomes = settings(cdm$nco)$cohort_name, 
-    end = "cohort_end_date_sensitivty", strata = strata, group = "cohort_name", weights = NULL
+    end = "cohort_end_date_sensitivity", strata = strata, group = "cohort_name", weights = NULL
   )
 )
 
@@ -329,7 +359,5 @@ nco_unweighted <- nco_unweighted |>
   ) |>
   suppressRiskEstimates()
 
-nco_unweighted |> exportSummarisedResult(fileName = "unweighted_nco.csv", path = output_folder)
-
-# Outcome risk ----
-# TODO
+nco_unweighted |> 
+  exportSummarisedResult(fileName = paste0("unweighted_nco", cdmName(cdm), ".csv"), path = output_folder)
