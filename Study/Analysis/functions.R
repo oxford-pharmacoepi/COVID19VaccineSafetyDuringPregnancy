@@ -90,9 +90,9 @@ getPregnantCohorts <- function(db, cdm, mother_table_schema, mother_table_name) 
   return(cdm$mother_table)
 }
 
-getSourcePopulation <- function(mother, objective, enrollment) {
+getSourcePopulation <- function(cdm, objective, enrollment) {
   name <- paste0("source_", objective)
-  cdm[[name]] <- mother |>
+  cdm[[name]] <- cdm$mother_table |>
     mutate(cohort_definition_id = objective) |>
     # pregnancy end after enrollment start
     filter(.data$cohort_end_date > !!enrollment[1]) |>
@@ -101,7 +101,7 @@ getSourcePopulation <- function(mother, objective, enrollment) {
       cohortSetRef = tibble(
         cohort_definition_id = objective, cohort_name = name
       ),
-      cohortAttritionRef = attrition(mother) |>
+      cohortAttritionRef = attrition(cdm$mother_table) |>
         mutate(cohort_definition_id = objective)
     ) |>
     recordCohortAttrition("Pregnancy end date > {enrollment[1]}") |>
@@ -112,17 +112,93 @@ getSourcePopulation <- function(mother, objective, enrollment) {
     trimToDateRange(
       dateRange = c(enrollment[1], NA), 
       name = name
-    ) |>
-    # previous doses (any type)
-    requireCohortIntersect(
-      targetCohortTable = "covid_vaccines",
-      window = list(c(-Inf, -1)),
-      intersections = objective-1,
-      targetCohortId = "any_covid_vaccine",
-      indexDate = "cohort_start_date",
-      targetStartDate = "cohort_start_date",
-      targetEndDate = NULL
-    )
+    ) 
+  
+  # Eligible for exposure
+  if (objective == 1) {
+    ## 1st Objective
+    cdm[[name]] <- cdm[[name]] |>
+      left_join(
+        cdm$covid_vaccines_dose |> 
+          filter(cohort_definition_id == 1) |>
+          select("subject_id", "vaccine_date" = "cohort_start_date"),
+        by = "subject_id"
+      ) %>% 
+      filter(vaccine_date > cohort_start_date | is.na(vaccine_date)) |>
+      compute(name = name, temporary = FALSE) |>
+      recordCohortAttrition(reason = "Unvaccinated before pregnancy start")
+  }
+  
+  if (objective == 2) {
+    ## 2nd Objective
+    cdm[[name]] <- cdm[[name]] |>
+      left_join(
+        cdm$covid_vaccines_dose |> 
+          addCohortName() |>
+          filter(cohort_definition_id %in% 1:2) |>
+          select("subject_id", "cohort_start_date", "cohort_name") |>
+          pivot_wider(names_from = "cohort_name", values_from = "cohort_start_date"),
+        by = "subject_id"
+      ) |>
+      rename("previous_dose" = "any_covid_vaccine_1", "vaccine_date" = "any_covid_vaccine_2") |>
+      filter(vaccine_date >= pregnancy_start_date | is.na(vaccine_date)) |>
+      compute(name = name, temporary = FALSE) |>
+      recordCohortAttrition(reason = "No 2nd dose before pregnancy") %>% 
+      mutate(new_cohort_start = !!dateadd("previous_dose", 16)) |>
+      filter(new_cohort_start < .data$cohort_end_date & !is.na(new_cohort_start)) %>% 
+      mutate(cohort_start_date = if_else(
+        new_cohort_start < cohort_start_date, cohort_start_date, new_cohort_start
+      )) |>
+      select(!c("new_cohort_start")) |>
+      compute(name = name, temporary = FALSE) |>
+      recordCohortAttrition(reason = "Eligible for 2nd during pregnancy") 
+  }
+  
+  if (objective == 3) {
+    ## 2nd Objective
+    cdm[[name]] <- cdm[[name]] |>
+      left_join(
+        cdm$covid_vaccines_dose |> 
+          filter(cohort_definition_id == 2) |>
+          select("subject_id", "any_covid_vaccine_2" = "cohort_start_date"),
+        by = "subject_id"
+      ) |>
+      filter(.data$any_covid_vaccine_2 < .data$cohort_end_date) |>
+      compute(name = name, temporary = FALSE) |>
+      recordCohortAttrition(reason = "2 doses any time before pregnancy end") |>
+      addCohortIntersectDate(
+        targetCohortTable = "covid_vaccines_booster",
+        targetCohortId = NULL,
+        indexDate = "cohort_start_date",
+        censorDate = NULL,
+        targetDate = "cohort_start_date",
+        order = "first",
+        window = c(-Inf, 0),
+        nameStyle = "booster_previous",
+        name = name
+      ) |>
+      addCohortIntersectDate(
+        targetCohortTable = "covid_vaccines_booster",
+        targetCohortId = NULL,
+        indexDate = "cohort_start_date",
+        censorDate = NULL,
+        targetDate = "cohort_start_date",
+        order = "first",
+        window = c(0, Inf),
+        nameStyle = "vaccine_date",
+        name = name
+      ) %>% 
+      mutate(
+        previous_dose = if_else(
+          is.na(booster_previous), any_covid_vaccine_2, booster_previous
+        )
+      ) %>% 
+      filter(!!dateadd("previous_dose", 90) < pregnancy_end_date) |>
+      select(!c("any_covid_vaccine_2", "booster_previous")) |>
+      compute(name = name, temporary = FALSE) |>
+      recordCohortAttrition(reason = "Eligible for booster during pregnancy") 
+  }
+  
   return(cdm[[name]])
 }
 
@@ -134,7 +210,7 @@ getWashOut <- function(washout, source) {
     ) |> 
     filter(
       cohort_start_date >= as.Date(clock::add_days("pregnancy_start_date", -.data$days)),
-      cohort_start_date <= as.Date(clock::add_days("pregnancy_start_date", 12*7))
+      cohort_start_date <= .data$pregnancy_end_date
     ) |>
     select(!c("pregnancy_start_date", "pregnancy_end_date", "days")) |>
     distinct() 
@@ -252,8 +328,7 @@ datesPivotLongerExprs <- function(cols) {
 getBaselineCharacteristics <- function(cdm, strata, weights) {
   estimates = list(
     'age' = c('min', 'q25', 'median', 'q75', 'max', "mean", "sd"), 
-    'days_first_vaccine' = c('min', 'q25', 'median', 'q75', 'max', "mean", "sd"), 
-    'days_second_vaccine' = c('min', 'q25', 'median', 'q75', 'max', "mean", "sd"), 
+    'days_previous_dose' = c('min', 'q25', 'median', 'q75', 'max', "mean", "sd"), 
     'previous_observation' = c('min', 'q25', 'median', 'q75', 'max', "mean", "sd"), 
     "previous_healthcare_visits" = c('min', 'q25', 'median', 'q75', 'max', "mean", "sd"),
     "previous_pregnancies" = c('min', 'q25', 'median', 'q75', 'max', "mean", "sd"), 
@@ -267,8 +342,8 @@ getBaselineCharacteristics <- function(cdm, strata, weights) {
   )
   estimates <- estimates[names(estimates) %in% colnames(cdm$study_population)]
   otherVariables = c(
-    "age", "age_group", "gestational_trimester", "vaccine_brand", "days_first_vaccine", 
-    "days_second_vaccine", "previous_observation", "smoking_status",
+    "age", "age_group", "gestational_trimester", "vaccine_brand", 
+    "days_previous_dose", "previous_observation", "smoking_status",
     "alcohol_misuse_dependence", "obesity", "substance_misuse_dependence",
     "previous_healthcare_visits", "previous_pregnancies"
   )
@@ -869,6 +944,6 @@ summariseTimeDistribution <- function(cdm, strata, weights = NULL) {
         package_version = "v0.0.1",
         weighting = weighting
       )
-  )
+    )
   return(results)
 }

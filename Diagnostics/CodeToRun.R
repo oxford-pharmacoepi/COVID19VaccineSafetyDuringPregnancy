@@ -10,6 +10,7 @@ library(log4r)
 library(SqlRender)
 library(omopgenerics)
 library(CohortConstructor)
+library(PhenotypeR)
 
 # Database name
 database_name <- "CPRD GOLD"
@@ -30,17 +31,18 @@ db <- dbConnect(
   password = password
 )
 
-cdm_database_schema <- "public"
+cdm_database_schema <- "public_100k"
 results_database_schema <- "results"
 
 # cohort stem where cohorts will be instantiated
-table_stem <- "nmb_ph"
+table_stem <- "nmb_ph100"
 
 cdm <- cdmFromCon(
   con = db,
   cdmSchema = cdm_database_schema,
   writeSchema = results_database_schema,
   writePrefix = tolower(table_stem),
+  achillesSchema = results_database_schema,
   cdmName = database_name,
   .softValidation = TRUE
 )
@@ -52,10 +54,22 @@ mother_table_name <- "pregnancy_episode"
 # minimum counts to report
 minimum_counts <- 5
 
-# output folder
-results <- paste0("Results_", cdmName(cdm))
+# Diagnostics
+source(here("Scripts", "InstantiateCohorts.R"))
+source(here("Scripts", "Diagnostics.R"))
 
-# Instantiate cohorts
-source(here("InstantiateCohorts.R"))
+# Drop cohorts
+cdm <- cdmFromCon(
+  con = db,
+  cdmSchema = cdm_database_schema,
+  writeSchema = results_database_schema,
+  cdmName = database_name,
+  .softValidation = TRUE
+)
+cdm <- dropSourceTable(cdm = cdm, name = starts_with(table_stem))
 
-# PhenotypeR
+# Disconnect
+cdmDisconnect(cdm)
+
+# Done!
+print("Thanks for running the study!")

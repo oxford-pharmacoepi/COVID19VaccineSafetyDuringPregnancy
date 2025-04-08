@@ -12,9 +12,10 @@ for (nm in cohortNames) {
   if (nm == "source_1") {
     vax <- NULL
   } else if (nm == "source_2") {
-    vax <- "days_first_vaccine"
+    vax <- "days_previous_dose"
   } else if (nm == "source_3") {
-    vax <- "days_second_vaccine"
+    vax <- "days_previous_dose"
+    ## TODO previou doses
   }
   
   ## LASSO 

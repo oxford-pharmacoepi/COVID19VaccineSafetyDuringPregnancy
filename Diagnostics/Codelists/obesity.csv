@@ -1,0 +1,101 @@
+codelist_name,concept_id,concept_name,standard_concept
+bmi_measurement,3038553,Body mass index (BMI) [Ratio],S
+bmi_measurement,36304833,Body mass index (BMI) [Ratio] Estimated,S
+body_weight,3025315,Body weight,S
+body_weight,4099154,Body weight,N
+body_weight,3013762,Body weight Measured,S
+body_weight,3023166,Body weight Stated,S
+body_weight,3027492,Dry body weight Measured,S
+obesity,604591,6q16 microdeletion syndrome,S
+obesity,4271317,Adiposogenital dystrophy,S
+obesity,4171972,Adult-onset obesity,S
+obesity,4270189,Alstrom syndrome,S
+obesity,4079899,Android obesity,S
+obesity,4060985,Body mass index 30+ - obesity,S
+obesity,4256640,Body mass index 40+ - severely obese,S
+obesity,4235799,Buffalo obesity,S
+obesity,4087487,Central obesity,S
+obesity,40481140,Childhood obesity,S
+obesity,36713437,Choroideremia with deafness and obesity syndrome,S
+obesity,36678790,"Colobomatous microphthalmia, obesity, hypogenitalism, intellectual disability syndrome",S
+obesity,45763687,Congenital leptin deficiency,S
+obesity,4097929,Constitutional obesity,S
+obesity,4097996,Drug-induced obesity,S
+obesity,4182506,Endogenous obesity,S
+obesity,4100857,Extreme obesity with alveolar hypoventilation,S
+obesity,4160821,Familial obesity,S
+obesity,4029277,Fat pad syndrome,S
+obesity,605048,Fetal disorder due to maternal obesity,S
+obesity,605056,Fetal disorder due to maternal obesity with adult body mass index 30 or greater but less than 40,S
+obesity,605054,Fetal disorder due to maternal obesity with adult body mass index equal to or greater than 40,S
+obesity,37168107,Focal segmental glomerulosclerosis due to obesity,S
+obesity,4029276,Generalized obesity,S
+obesity,37166819,Genetic non-syndromic obesity,S
+obesity,4029900,Gynecoid obesity,S
+obesity,36717154,Hydrocephalus with obesity and hypogonadism syndrome,S
+obesity,4005991,Hyperinsulinar obesity,S
+obesity,4163032,Hyperplastic-hypertrophic obesity,S
+obesity,4185912,Hyperplastic obesity,S
+obesity,4171147,Hypertrophic obesity,S
+obesity,4177337,Hypogonadal obesity,S
+obesity,4220527,Hypothalamic obesity,S
+obesity,4203289,Hypothyroid obesity,S
+obesity,35622038,"Intellectual disability, obesity, brain malformation, facial dysmorphism syndrome",S
+obesity,36674490,"Intellectual disability, obesity, prognathism, eye and skin anomalies syndrome",S
+obesity,36674893,"Intellectual disability, seizures, macrocephaly, obesity syndrome",S
+obesity,4171317,Lifelong obesity,S
+obesity,438731,Localized adiposity,S
+obesity,37208175,Lower body obesity,S
+obesity,45766204,Lymphedema associated with obesity,S
+obesity,37164247,MAGEL2-related Prader-Willi-like syndrome,S
+obesity,42872398,"Maternal obesity complicating pregnancy, childbirth and the puerperium, antepartum",S
+obesity,4216214,Mauriac's syndrome,S
+obesity,36716144,MEHMO syndrome,S
+obesity,37110069,MOMO syndrome,S
+obesity,434005,Morbid obesity,S
+obesity,37395980,MORM syndrome,S
+obesity,37162173,Myelopathy due to obesity,S
+obesity,37162111,Neurological disorder due to obesity,S
+obesity,37162112,Neuropathy due to obesity,S
+obesity,4215968,Obese,S
+obesity,763588,Obese class I,S
+obesity,44811711,Obese class I (body mass index 30.0 - 34.9),S
+obesity,763589,Obese class II,S
+obesity,44811712,Obese class II (body mass index 35.0 - 39.9),S
+obesity,37311728,Obese class III,S
+obesity,433736,Obesity,S
+obesity,4176962,Obesity associated disorder,S
+obesity,4212443,Obesity by adipocyte growth pattern,S
+obesity,4215969,Obesity by contributing factors,S
+obesity,4189665,Obesity by fat distribution pattern,S
+obesity,36716555,Obesity caused by energy imbalance,S
+obesity,36717199,"Obesity, colitis, hypothyroidism, cardiac hypertrophy, developmental delay syndrome",S
+obesity,37204685,Obesity due to CEP19 deficiency,S
+obesity,37206117,Obesity due to leptin receptor gene deficiency,S
+obesity,37397209,Obesity due to melanocortin 4 receptor deficiency,S
+obesity,37162364,Obesity due to pituitary disease,S
+obesity,36716151,Obesity due to prohormone convertase I deficiency,S
+obesity,37204815,Obesity due to SIM1 deficiency,S
+obesity,37311904,Obesity in adolescence,S
+obesity,45757112,Obesity in mother complicating childbirth,S
+obesity,4183240,Obesity of endocrine origin,S
+obesity,37162131,Peripheral neuropathy due to obesity,S
+obesity,4093860,Peripheral obesity,S
+obesity,37163354,"PHIP-related behavioral problems, intellectual disability, obesity, dysmorphic features syndrome",S
+obesity,36674827,Prader-Willi-like syndrome,S
+obesity,3199162,Pregnancy complicated by obesity,S
+obesity,45771307,Proopiomelanocortin deficiency syndrome,S
+obesity,37162152,Pseudoneoplasm cerebri due to obesity,S
+obesity,4081038,Pulmonary hypertension with extreme obesity,S
+obesity,36676689,"Rapid-onset childhood obesity, hypothalamic dysfunction, hypoventilation, autonomic dysregulation syndrome",S
+obesity,37204691,Severe early-onset obesity insulin resistance syndrome due to SH2B1 deficiency,S
+obesity,37018860,Severe obesity,S
+obesity,42539192,Severe obesity complicating pregnancy,S
+obesity,37164244,SIM1-related Prader-Willi-like syndrome,S
+obesity,4217557,Simple obesity,S
+obesity,37165516,Skin striae due to obesity,S
+obesity,37166818,"Spastic paraplegia, intellectual disability, nystagmus, obesity syndrome",S
+obesity,4211019,Steatopygia,S
+obesity,36714072,Syndromic X-linked intellectual disability type 7,S
+obesity,36714548,Wilson Turner syndrome,S
+obesity,37165655,"X-linked intellectual disability, short stature, overweight syndrome",S

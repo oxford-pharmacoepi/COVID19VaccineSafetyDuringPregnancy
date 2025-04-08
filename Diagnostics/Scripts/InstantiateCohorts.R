@@ -1,23 +1,52 @@
-# Base cohorts subsetted to pregnant people ----
-# pregnant table clean
-info(logger, "- Mother table")
-cdm$mother_table <- getPregnantCohorts(db, cdm, mother_table_schema, mother_table_name)
-# read codes
-info(logger, "- Base cohort")
+output_folder <- here(paste0("Results_", cdmName(cdm)))
+if (!dir.exists(output_folder)) {
+  dir.create(output_folder)
+}
+
+source(here("Scripts", "functions.R"))
+
+# SQL ----
+# dir_sql <- file.path(here::here(output_folder), "sql_diagnostics")
+# dir.create(dir_sql)
+# options("omopgenerics.log_sql_path" = dir_sql)
+# 
+# dir_explain <- file.path(here::here(output_folder), "sql_diagnostics_explain")
+# dir.create(dir_explain)
+# options("omopgenerics.log_sql_explain_path" = dir_explain)
+
+# Logger ----
+log_file <- here(output_folder, paste0("log", "_", gsub("-", "", Sys.Date()), ".txt"))
+if (file.exists(log_file)) {
+  unlink(log_file)
+}
+logger <- create.logger()
+logfile(logger) <- log_file
+level(logger) <- "INFO"
+info(logger, "CREATE LOGGER")
+
+# Codelist ----
 csvs <- list.files(here("Codelists"))
 codes <- NULL
 for (csv in csvs) {
   codes <- codes |>
     union_all(read_csv(here("Codelists", csv)))
 }
-ncoNames <- read_csv(here("Codelists", "nco.csv")) |> 
-  pull("codelist_name") |> 
-  unique() |> 
-  omopgenerics::toSnakeCase()
+
 # construct codelsit
 codelist <- split(codes$concept_id, codes$codelist_name)
-# base cohorts subsetted
-baseCodelist <- codelist[!names(codelist) %in% c("platelet_measurement")] # if any measurement
+baseCodelist <- codelist[!names(codelist) %in% c(
+  "platelet_measurement", "bmi_measurement", "body_weight", "asthma", "diabetes", 
+  "essential_hypertension", "hiv", "uterus_malformations", "polycystic_ovary_syndrome", 
+  "systemic_lupus_erythematosus", "thyroid_disorder", "substance_misuse_dependence", 
+  "anxiety", "depression"
+  )] # if any measurement or non contributing cohort to phenotypeR
+
+
+# Base cohorts subsetted to pregnant people ----
+# pregnant table clean
+info(logger, "- Mother table")
+cdm$mother_table <- getPregnantCohorts(db, cdm, mother_table_schema, mother_table_name)
+
 cdm$base <- conceptCohort(
   cdm = cdm,
   conceptSet = baseCodelist,
@@ -62,43 +91,6 @@ cdm$covid_vaccines_booster <- unionCohorts(
   cohortName = "booster"
 )
 
-# Source cohorts ----
-info(logger, "- Source cohorts")
-# objective-specific source populations
-cdm$source_1 <- getSourcePopulation(cdm, 1, enrollment1)
-cdm$source_2 <- getSourcePopulation(cdm, 2, enrollment2)
-cdm$source_3 <- getSourcePopulation(cdm, 3, enrollment3)
-
-# bind source population cohorts
-cdm <- omopgenerics::bind(cdm$source_1, cdm$source_2, cdm$source_3, name = "source_population")
-
-# add index vaccine dose date and other important covariates
-cdm$source_population <- cdm$source_population |>
-  mutate(cohort_start_date = as.Date(cohort_start_date)) |>
-  requireSex(sex = "Female") %>% 
-  filter(!!datediff("observation_period_start_date", "pregnancy_start_date") >= 365) |>
-  compute(name = "source_population", temporary = FALSE) |>
-  recordCohortAttrition("Prior observation requirement: 365 days") |>
-  addAge(indexDate = "pregnancy_start_date", ageGroup = list(c(12, 17), c(18, 34), c(35, 55))) |>
-  filter(age >= 12 & age <= 55) |>
-  compute(name = "source_population", temporary = FALSE) |> 
-  recordCohortAttrition("Age requirement: 12 to 55") %>% 
-  mutate(
-    pregnancy_start_band = if_else(
-      day(pregnancy_start_date) <= 15, 
-      paste0("01", month(pregnancy_start_date), year(pregnancy_start_date)),
-      paste0("02", month(pregnancy_start_date), year(pregnancy_start_date))
-    ),
-    age_group_sample = cut(age, !!seq(12, 56, 2), include.lowest = TRUE)
-  ) |>
-  compute(name = "source_population", temporary = FALSE)
-
-# subset base cohorts 
-cdm$base <- cdm$base |>
-  inner_join(cdm$source_population |> distinct(subject_id), by = "subject_id") |>
-  compute(name = "base", temporary = FALSE) |>
-  recordCohortAttrition("Subset to source population")
-
 # COVID-19 cohort ----
 info(logger, "- COVID-19 cohort")
 cdm$positive_covid_test <- measurementCohort(
@@ -116,6 +108,7 @@ cdm$covid <- CohortConstructor::unionCohorts(
 )
 
 # Smoking cohort ----
+info(logger, "- Smoking cohort")
 cdm$smoking <- cdm$base |>
   subsetCohorts(
     cohortId = c("non_smoker", "smoker", "stop_smoking"),
@@ -151,7 +144,21 @@ cdm <- bind(
   name = "smoking"
 )
 
+# fix for PhenotypeR:
+cdm$smoking <- cdm$smoking |>
+  newCohortTable(
+    cohortCodelistRef = attr(cdm$smoking, "cohort_codelist") |>
+      inner_join(
+        settings(cdm$smoking) |> select("cohort_definition_id", "cohort_name"), 
+        by = "cohort_definition_id",
+        copy = TRUE
+      ) |>
+      filter(cohort_name == codelist_name) |>
+      select(!"cohort_name")
+  )
+
 # Obesity ----
+info(logger, "- Obesity cohort")
 # diagnostics cohort
 cdm$obesity <- conceptCohort(
   cdm = cdm, conceptSet = codelist["obesity"], name = "obesity"
@@ -166,44 +173,14 @@ cdm$body_weight <- measurementCohort(
   cdm = cdm, conceptSet = codelist["body_weight"], name = "body_weight",
   valueAsNumber = list("9529" = c(120, 200), "3195625" = c(265, 440))
 )
+# bind
 cdm <- omopgenerics::bind(cdm$obesity, cdm$bmi_measurement, cdm$body_weight, name = "obesity")
+# union
 cdm$obesity <- unionCohorts(cdm$obesity, cohortName = "obesity")
-
-# Covariates ----
-# covid test, influenza, tdap and smoking apart
-covariatesInf <- c(
-  "asthma", "diabetes", "essential_hypertension", "hiv", "uterus_malformations",       
-  "polycystic_ovary_syndrome", "systemic_lupus_erythematosus", "thyroid_disorder"       
-)
-covariates5 <- c(
-  "alcohol_misuse_dependence", "substance_misuse_dependence"
-)
-covariates1 <- c("anxiety", "depression")
-## All history
-cdm$covariates_inf <- cdm$base |>
-  subsetCohorts(cohortId = covariatesInf, name = "covariates_inf") |>
-  requireIsFirstEntry()
-## 5 years
-cdm$covariates_5 <-  cdm$base |>
-  subsetCohorts(cohortId = covariates5, name = "covariates_5")  
-cdm <- omopgenerics::bind(cdm$obesity, cdm$covariates_5, name = "covariates_5")
-cdm$covariates_5 <- cdm$covariates_5 |>
-  mutate(days = 365*5) |>
-  getWashOut(cdm$source_population)
-## 1 year
-cdm$covariates_1 <-  cdm$base |>
-  subsetCohorts(cohortId = covariates1, name = "covariates_1")  |>
-  mutate(days = 365) |>
-  getWashOut(cdm$source_population)
-# other vax
-cdm$other_vaccines <- cdm$base |>
-  subsetCohorts(cohortId = c("influenza_vaccine", "tdap_vaccine"), name = "other_vaccines")
-# covid test
-cdm$covid_test <- cdm$base |>
-  subsetCohorts(cohortId = "covid_test", name = "covid_test")
 
 # AESI ----
 info(logger, "- AESI")
+info(logger, "  - Thrombocytopenia") 
 ## complex thrombocytopenia
 cdm$platelet_measurement <- measurementCohort(
   cdm = cdm,
@@ -228,9 +205,21 @@ cdm$thrombosis_thrombocytopenia <- cdm$base |>
 cdm$thrombosis_thrombocytopenia  <- cdm$thrombosis_thrombocytopenia |>
   newCohortTable(
     cohortSetRef = settings(cdm$thrombosis_thrombocytopenia) |> mutate(cohort_name = "thrombosis_thrombocytopenia")
+  ) |>
+  requireCohortIntersect(
+    targetCohortTable = "mother_table",
+    window = list(c(0, 0)),
+    intersections = 1,
+    cohortId = NULL,
+    targetCohortId = NULL,
+    indexDate = "cohort_start_date",
+    targetStartDate = "cohort_start_date",
+    targetEndDate = "cohort_end_date",
+    censorDate = NULL
   )
 
 ## AESI acute
+info(logger, "  - Acute") 
 cdm$aesi90 <- cdm$base |>
   subsetCohorts(
     cohortId = c(
@@ -241,21 +230,57 @@ cdm$aesi90 <- cdm$base |>
       "myocarditis_or_pericarditis"
     ),
     name = "aesi90"
-  ) 
-cdm <- bind(cdm$thrombosis_thrombocytopenia, cdm$aesi90, name = "aesi90")
-cdm$aesi90 <- cdm$aesi90 |> padCohortEnd(days = 90)
+  ) |> 
+  padCohortEnd(days = 90) |>
+  requireCohortIntersect(
+    targetCohortTable = "mother_table",
+    window = list(c(0, 0)),
+    intersections = 1,
+    cohortId = NULL,
+    targetCohortId = NULL,
+    indexDate = "cohort_start_date",
+    targetStartDate = "cohort_start_date",
+    targetEndDate = "cohort_end_date",
+    censorDate = NULL
+  )
 
 ## AESI recurrent
+info(logger, "  - Recurrent") 
 cdm$aesi30 <- cdm$base |>
   subsetCohorts(cohortId = "anaphylaxis", name = "aesi30") |>
-  padCohortEnd(days = 30)
+  padCohortEnd(days = 30) |>
+  requireCohortIntersect(
+    targetCohortTable = "mother_table",
+    window = list(c(0, 0)),
+    intersections = 1,
+    cohortId = NULL,
+    targetCohortId = NULL,
+    indexDate = "cohort_start_date",
+    targetStartDate = "cohort_start_date",
+    targetEndDate = "cohort_end_date",
+    censorDate = NULL
+  )
 
 ## AESI chronic
+info(logger, "  - Chronic") 
 cdm$aesi_inf <- cdm$base |>
   subsetCohorts(cohortId = "narcolepsy", name = "aesi_inf") |>
-  requireIsFirstEntry()
+  exitAtObservationEnd(limitToCurrentPeriod = FALSE) |>
+  requireCohortIntersect(
+    targetCohortTable = "mother_table",
+    window = list(c(0, 0)),
+    intersections = 1,
+    cohortId = NULL,
+    targetCohortId = NULL,
+    indexDate = "cohort_start_date",
+    targetStartDate = "cohort_start_date",
+    targetEndDate = "cohort_end_date",
+    censorDate = NULL
+  )
+
 
 # MAE ----
+info(logger, "- MAE from OMOP tables")
 ## From OMOP table
 cdm$mae_omop <- cdm$mother_table |>
   select("subject_id", "cohort_start_date" = "pregnancy_end_date", "cohort_name" = "pregnancy_outcome_study") |>
@@ -284,37 +309,22 @@ cdm$maternal_death <- cdm$death |>
   ) |>
   compute(name = "maternal_death", temporary = FALSE) |>
   newCohortTable(cohortSetRef = tibble(cohort_definition_id = 1L, cohort_name = "maternal_death"), cohortAttritionRef = NULL)
-  
+
 # From phenotype
+cdm$phenotyper <- cdm$base |>
+  subsetCohorts(
+    cohortId = c(
+      "antepartum_haemorrhage",  "dysfunctional_labour", "eclampsia", "ectopic_pregnancy", 
+      "gestational_diabetes", "hellp", "postpartum_endometritis", "postpartum_haemorrhage",  
+      "preeclampsia", "alcohol_misuse_dependence"
+    ),
+    name = "phenotyper"
+  )
 
-# NCO ----
-info(logger, "- NCO")
-cdm$nco <- cdm$base |>
-  subsetCohorts(cohortId = ncoNames, name = "nco")
-
-# Small wash-out cohorts ----
-info(logger, "- Wash-out reduced cohort")
-cdm$covid_washout <- cdm$covid |>
-  mutate(days = 90) |>
-  getWashOut(cdm$source_population) |>
-  compute(name = "covid_washout", temporary = FALSE)
-cdm$aesi90_washout <- cdm$aesi90 |>
-  mutate(days = 90) |>
-  getWashOut(cdm$source_population) |>
-  mutate(cohort_end_date = cohort_start_date) |>
-  compute(name = "aesi90_washout", temporary = FALSE) |>
-  CohortConstructor::unionCohorts(cohortName = "aesi_90")
-cdm$aesi30_washout <- cdm$aesi30 |>
-  mutate(days = 30) |>
-  getWashOut(cdm$source_population) |>
-  compute(name = "aesi30_washout", temporary = FALSE) 
-
-# Export cohort counts ----
-bind(
-  summaryCohort(cdm$nco), summaryCohort(cdm$covariates_1), summaryCohort(cdm$covariates_5), 
-  summaryCohort(cdm$covariates_inf), summaryCohort(cdm$covid), summaryCohort(cdm$covid_vaccines),
-  summaryCohort(cdm$covid_vaccines_dose), summaryCohort(cdm$aesi30), summaryCohort(cdm$aesi90), 
-  summaryCohort(cdm$aesi_inf), summaryCohort(cdm$smoking), summaryCohort(cdm$other_vaccines),
-  summaryCohort(cdm$source_population), summaryCohort(cdm$mother_table)
-) |>
-  exportSummarisedResult(path = output_folder, fileName = paste0("cohort_summary_base_", cdmName(cdm), ".csv"))
+# BIND ----
+cdm <- bind(
+  cdm$phenotyper, cdm$maternal_death, cdm$mae_omop, cdm$aesi30, cdm$aesi90, 
+  cdm$aesi_inf, cdm$thrombosis_thrombocytopenia, cdm$smoking, cdm$obesity, 
+  cdm$covid_vaccines, cdm$mother_table, 
+  name = "phenotyper"
+)
