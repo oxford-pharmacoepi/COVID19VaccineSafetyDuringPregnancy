@@ -48,5 +48,5 @@ cdm$source_population |>
   tally() |>
   collect() |>
   mutate(n = if_else(n > 5 | n == 0, n, NA)) |>
-  write_csv(file = here::here(output_folder, paste0("ratio_exposed_comparator_", cdm_name)))
+  write_csv(file = here::here(output_folder, paste0("ratio_exposed_comparator_", cdm_name, ".csv")))
 

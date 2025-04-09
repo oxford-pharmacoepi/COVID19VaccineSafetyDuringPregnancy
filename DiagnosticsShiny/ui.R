@@ -665,7 +665,7 @@ ui <- bslib::page_navbar(
             bslib::card(
               full_screen = TRUE,
               bslib::card_header(
-                shiny::downloadButton(outputId = "summarise_large_scale_characteristics_tidy_download", label = ""),,
+                shiny::downloadButton(outputId = "summarise_large_scale_characteristics_tidy_download", label = ""),
                 class = "text-end"
               ),
               uiOutput("summarise_large_scale_characteristics_tidy") |> withSpinner()

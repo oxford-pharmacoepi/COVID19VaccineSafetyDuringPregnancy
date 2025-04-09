@@ -217,6 +217,11 @@ cdm$thrombosis_thrombocytopenia  <- cdm$thrombosis_thrombocytopenia |>
     targetEndDate = "cohort_end_date",
     censorDate = NULL
   )
+cdm$thrombosis_thrombocytopenia <- cdm$thrombosis_thrombocytopenia |>
+  omopgenerics::newCohortTable(
+    cohortSetRef = settings(cdm$thrombosis_thrombocytopenia) |> mutate(cohort_name = paste0(cohort_name, "_pregnant")),
+    .softValidation = TRUE
+  )
 
 ## AESI acute
 info(logger, "  - Acute") 
@@ -243,6 +248,11 @@ cdm$aesi90 <- cdm$base |>
     targetEndDate = "cohort_end_date",
     censorDate = NULL
   )
+cdm$aesi90 <- cdm$aesi90 |>
+  omopgenerics::newCohortTable(
+    cohortSetRef = settings(cdm$aesi90) |> mutate(cohort_name = paste0(cohort_name, "_pregnant")),
+    .softValidation = TRUE
+  )
 
 ## AESI recurrent
 info(logger, "  - Recurrent") 
@@ -259,6 +269,11 @@ cdm$aesi30 <- cdm$base |>
     targetStartDate = "cohort_start_date",
     targetEndDate = "cohort_end_date",
     censorDate = NULL
+  )
+cdm$aesi30 <- cdm$aesi30 |>
+  omopgenerics::newCohortTable(
+    cohortSetRef = settings(cdm$aesi30) |> mutate(cohort_name = paste0(cohort_name, "_pregnant")),
+    .softValidation = TRUE
   )
 
 ## AESI chronic
@@ -277,7 +292,11 @@ cdm$aesi_inf <- cdm$base |>
     targetEndDate = "cohort_end_date",
     censorDate = NULL
   )
-
+cdm$aesi_inf <- cdm$aesi_inf |>
+  omopgenerics::newCohortTable(
+    cohortSetRef = settings(cdm$aesi_inf) |> mutate(cohort_name = paste0(cohort_name, "_pregnant")),
+    .softValidation = TRUE
+  )
 
 # MAE ----
 info(logger, "- MAE from OMOP tables")
@@ -325,6 +344,6 @@ cdm$phenotyper <- cdm$base |>
 cdm <- bind(
   cdm$phenotyper, cdm$maternal_death, cdm$mae_omop, cdm$aesi30, cdm$aesi90, 
   cdm$aesi_inf, cdm$thrombosis_thrombocytopenia, cdm$smoking, cdm$obesity, 
-  cdm$covid_vaccines, cdm$mother_table, 
+  cdm$mother_table, 
   name = "phenotyper"
 )

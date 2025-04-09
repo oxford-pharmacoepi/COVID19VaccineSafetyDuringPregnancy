@@ -11,6 +11,7 @@ library(SqlRender)
 library(omopgenerics)
 library(CohortConstructor)
 library(PhenotypeR)
+library(tidyr)
 
 # Database name
 database_name <- "CPRD GOLD"
