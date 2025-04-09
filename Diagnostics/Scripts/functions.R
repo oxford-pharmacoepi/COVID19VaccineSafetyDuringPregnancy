@@ -3,7 +3,7 @@ getPregnantCohorts <- function(db, cdm, mother_table_schema, mother_table_name) 
     db, inSchema(schema = mother_table_schema, table = mother_table_name)
   ) %>% 
     {if (grepl("CPRD", database_name)) {
-      rename(., "pregnancy_outcome_id" = "original_outcome")
+      rename(., "pregnancy_outcome" = "original_outcome")
     } else . } |>
     compute(
       name = inSchema(results_database_schema, "mother_table_original"), 
@@ -68,13 +68,13 @@ getPregnantCohorts <- function(db, cdm, mother_table_schema, mother_table_name) 
     ) |>
     mutate(
       pregnancy_outcome_study = case_when(
-        pregnancy_outcome_id == 4092289  & gestational_length <= 37*7~ "preterm_labour",
-        pregnancy_outcome_id == 4092289 ~ "livebirth",
-        pregnancy_outcome_id == 4067106 ~ "miscarriage",
-        pregnancy_outcome_id == 443213 & gestational_length < 20*7 ~ "miscarriage",
-        pregnancy_outcome_id == 443213 & gestational_length >= 20*7 ~ "stillbirth",
-        pregnancy_outcome_id == 4081422 ~ "elective_termination",
-        pregnancy_outcome_id == 4095714 ~ "discordant",
+        pregnancy_outcome == 4092289  & gestational_length <= 37*7~ "preterm_labour",
+        pregnancy_outcome == 4092289 ~ "livebirth",
+        pregnancy_outcome == 4067106 ~ "miscarriage",
+        pregnancy_outcome == 443213 & gestational_length < 20*7 ~ "miscarriage",
+        pregnancy_outcome == 443213 & gestational_length >= 20*7 ~ "stillbirth",
+        pregnancy_outcome == 4081422 ~ "elective_termination",
+        pregnancy_outcome == 4095714 ~ "discordant",
         .default = "unknown"
       )
     ) |>
