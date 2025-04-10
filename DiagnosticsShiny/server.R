@@ -1035,7 +1035,7 @@ server <- function(input, output, session) {
     }
 
     result <- dataFiltered$summarise_cohort_overlap |>
-      filterData("summarise_cohort_overlap", input)
+      filterData("summarise_cohort_overlap", input) 
     CohortCharacteristics::plotCohortOverlap(
       result,
       facet = input$summarise_cohort_overlap_plot_facet,
