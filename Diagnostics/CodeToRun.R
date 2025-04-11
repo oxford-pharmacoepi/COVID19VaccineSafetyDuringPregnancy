@@ -14,14 +14,14 @@ library(PhenotypeR)
 library(tidyr)
 
 # Database name
-database_name <- "CPRD GOLD"
+database_name <- "..."
 
 # Connection details
-server_dbi <- Sys.getenv("DB_SERVER_DBI_gd")
-user <- Sys.getenv("DB_USER")
-password <- Sys.getenv("DB_PASSWORD")
-port <- Sys.getenv("DB_PORT")
-host <- Sys.getenv("DB_HOST")
+server_dbi <- Sys.getenv("...")
+user <- Sys.getenv("...")
+password <- Sys.getenv("...")
+port <- Sys.getenv("...")
+host <- Sys.getenv("...")
 
 db <- dbConnect(
   RPostgres::Postgres(),
@@ -32,11 +32,11 @@ db <- dbConnect(
   password = password
 )
 
-cdm_database_schema <- "public_100k"
-results_database_schema <- "results"
+cdm_database_schema <- "..."
+results_database_schema <- "..."
 
 # cohort stem where cohorts will be instantiated
-table_stem <- "nmb_ph100"
+table_stem <- "..."
 
 cdm <- cdmFromCon(
   con = db,
@@ -49,8 +49,8 @@ cdm <- cdmFromCon(
 )
 
 # Pregnancy tables details:
-mother_table_schema <- results_database_schema
-mother_table_name <- "pregnancy_episode"
+mother_table_schema <- "..."
+mother_table_name <- "..."
 
 # minimum counts to report
 minimum_counts <- 5
