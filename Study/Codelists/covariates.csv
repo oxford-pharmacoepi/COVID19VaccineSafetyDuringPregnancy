@@ -143,6 +143,13 @@ asthma,45768964,Uncomplicated moderate persistent asthma,S
 asthma,42536649,Uncomplicated non-allergic asthma,S
 asthma,45768965,Uncomplicated severe persistent asthma,S
 asthma,4245292,Weavers' cough,S
+bmi_measurement,3038553,Body mass index (BMI) [Ratio],S
+bmi_measurement,36304833,Body mass index (BMI) [Ratio] Estimated,S
+body_weight,3025315,Body weight,S
+body_weight,4099154,Body weight,N
+body_weight,3013762,Body weight Measured,S
+body_weight,3023166,Body weight Stated,S
+body_weight,3027492,Dry body weight Measured,S
 depression,37016718,Acute depression,S
 depression,4308866,Agitated depression,S
 depression,37312479,Antenatal depression,S
@@ -875,6 +882,7 @@ non_smoker,903653,Never used tobacco or its derivatives,S
 non_smoker,4222303,Non-smoker,N
 non_smoker,40329152,Non-smoker (& [never smoked tobacco]),N
 non_smoker,40298657,Non-smoker (& [never smoked tobacco]),N
+non_smoker,45879404,Never smoker,S
 obesity,604591,6q16 microdeletion syndrome,S
 obesity,4271317,Adiposogenital dystrophy,S
 obesity,4171972,Adult-onset obesity,S
@@ -1052,6 +1060,9 @@ smoker,4058136,Very heavy cigarette smoker (40+ cigs/day),N
 smoker,903662,Very heavy cigarette smoker (more or equal to 40 cigarettes per day),S
 smoker,44789712,Wants to stop smoking,N
 smoker,40766644,What was the longest length of time you stopped smoking because you were trying to quit [PLCO],S
+smoker,45884037,Current some day smoker,S
+smoker,46272634,Counseling about tobacco use,S
+smoker,37167370,Fetal disorder caused by maternal tobacco via placenta,S
 stop_smoking,37020654,Age when stopped smoking cigarettes completely,S
 stop_smoking,44802805,Recently stopped smoking,N
 stop_smoking,3558278,Recently stopped smoking,N
@@ -1063,10 +1074,9 @@ stop_smoking,40298679,Stopped smoking,N
 stop_smoking,3090238,Stopped smoking,N
 stop_smoking,40486722,Stopped smoking before pregnancy,N
 stop_smoking,3558649,Stopped smoking before pregnancy,N
-stop_smoking,3456645,Stopped smoking before pregnancy,N
-stop_smoking,3558649,Stopped smoking before pregnancy,N
 stop_smoking,3558648,Stopped smoking during pregnancy,N
 stop_smoking,40486721,Stopped smoking during pregnancy,N
+stop_smoking,45883458,Former smoker,S
 substance_misuse_dependence,4089921,Abuse of antacids,S
 substance_misuse_dependence,440992,Abuse of antidepressant drug,S
 substance_misuse_dependence,4091716,Abuse of diuretics,S

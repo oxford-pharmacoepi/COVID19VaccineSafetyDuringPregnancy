@@ -16,10 +16,10 @@ results <- phenotypeDiagnostics(
   databaseDiagnostics = TRUE,
   codelistDiagnostics = TRUE,
   cohortDiagnostics = TRUE,
-  populationDiagnostics = FALSE,
+  populationDiagnostics = TRUE,
   populationSample = 1e+06,
   populationDateRange = as.Date(c(NA, NA)),
-  matchedDiagnostics = TRUE, ## needed?
+  matchedDiagnostics = FALSE,
   matchedSample = 1000
 )
 
