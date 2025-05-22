@@ -608,221 +608,221 @@ ui <- bslib::page_navbar(
       )
     ),
     ## Large scale characteristics -----
-    bslib::nav_panel(
-      title = "Large scale characteristics",
-      icon = shiny::icon("arrow-up-right-dots"),
-      bslib::layout_sidebar(
-        sidebar = bslib::sidebar(width = 400, open = "closed",
-                                 bslib::accordion(
-                                   bslib::accordion_panel(
-                                     title = "Settings",
-                                     shinyWidgets::pickerInput(
-                                       inputId = "summarise_large_scale_characteristics_grouping_cdm_name",
-                                       label = "CDM name",
-                                       choices = NULL,
-                                       selected = NULL,
-                                       multiple = TRUE,
-                                       options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
-                                     ),
-                                     shinyWidgets::pickerInput(
-                                       inputId = "summarise_large_scale_characteristics_grouping_cohort_name",
-                                       label = "Cohort name",
-                                       choices = NULL,
-                                       selected = NULL,
-                                       multiple = TRUE,
-                                       options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
-                                     ),
-                                     shinyWidgets::pickerInput(
-                                       inputId = "summarise_large_scale_characteristics_grouping_domain",
-                                       label = "Domain",
-                                       choices = NULL,
-                                       selected = NULL,
-                                       multiple = FALSE,
-                                       options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
-                                     ),
-                                     shinyWidgets::pickerInput(
-                                       inputId = "summarise_large_scale_characteristics_grouping_time_window",
-                                       label = "Time window",
-                                       choices = NULL,
-                                       selected = NULL,
-                                       multiple = FALSE,
-                                       options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
-                                     ),
-                                     shinyWidgets::pickerInput(
-                                       inputId = "summarise_large_scale_characteristics_settings_analysis",
-                                       label = "Concept type",
-                                       choices = NULL,
-                                       selected = NULL,
-                                       multiple = FALSE,
-                                       options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
-                                     )
-                                   )
-                                 )
-        ),
-        bslib::navset_card_tab(
-          bslib::nav_panel(
-            title = "All concepts",
-            bslib::card(
-              full_screen = TRUE,
-              bslib::card_header(
-                shiny::downloadButton(outputId = "summarise_large_scale_characteristics_tidy_download", label = ""),
-                class = "text-end"
-              ),
-              uiOutput("summarise_large_scale_characteristics_tidy") |> withSpinner()
-            )
-          ),
-          bslib::nav_panel(
-            title = "Top concepts",
-            bslib::card(
-              full_screen = TRUE,
-              bslib::card_header(
-                shiny::downloadButton(outputId = "summarise_large_scale_characteristics_gt_download", label = ""),
-                class = "text-end"
-              ),
-              gt::gt_output("summarise_large_scale_characteristics_gt") |> withSpinner()
-            )
-          )
-        )
-      )
-    ),
+    # bslib::nav_panel(
+    #   title = "Large scale characteristics",
+    #   icon = shiny::icon("arrow-up-right-dots"),
+    #   bslib::layout_sidebar(
+    #     sidebar = bslib::sidebar(width = 400, open = "closed",
+    #                              bslib::accordion(
+    #                                bslib::accordion_panel(
+    #                                  title = "Settings",
+    #                                  shinyWidgets::pickerInput(
+    #                                    inputId = "summarise_large_scale_characteristics_grouping_cdm_name",
+    #                                    label = "CDM name",
+    #                                    choices = NULL,
+    #                                    selected = NULL,
+    #                                    multiple = TRUE,
+    #                                    options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
+    #                                  ),
+    #                                  shinyWidgets::pickerInput(
+    #                                    inputId = "summarise_large_scale_characteristics_grouping_cohort_name",
+    #                                    label = "Cohort name",
+    #                                    choices = NULL,
+    #                                    selected = NULL,
+    #                                    multiple = TRUE,
+    #                                    options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
+    #                                  ),
+    #                                  shinyWidgets::pickerInput(
+    #                                    inputId = "summarise_large_scale_characteristics_grouping_domain",
+    #                                    label = "Domain",
+    #                                    choices = NULL,
+    #                                    selected = NULL,
+    #                                    multiple = FALSE,
+    #                                    options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
+    #                                  ),
+    #                                  shinyWidgets::pickerInput(
+    #                                    inputId = "summarise_large_scale_characteristics_grouping_time_window",
+    #                                    label = "Time window",
+    #                                    choices = NULL,
+    #                                    selected = NULL,
+    #                                    multiple = FALSE,
+    #                                    options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
+    #                                  ),
+    #                                  shinyWidgets::pickerInput(
+    #                                    inputId = "summarise_large_scale_characteristics_settings_analysis",
+    #                                    label = "Concept type",
+    #                                    choices = NULL,
+    #                                    selected = NULL,
+    #                                    multiple = FALSE,
+    #                                    options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
+    #                                  )
+    #                                )
+    #                              )
+    #     ),
+    #     bslib::navset_card_tab(
+    #       bslib::nav_panel(
+    #         title = "All concepts",
+    #         bslib::card(
+    #           full_screen = TRUE,
+    #           bslib::card_header(
+    #             shiny::downloadButton(outputId = "summarise_large_scale_characteristics_tidy_download", label = ""),
+    #             class = "text-end"
+    #           ),
+    #           uiOutput("summarise_large_scale_characteristics_tidy") |> withSpinner()
+    #         )
+    #       ),
+    #       bslib::nav_panel(
+    #         title = "Top concepts",
+    #         bslib::card(
+    #           full_screen = TRUE,
+    #           bslib::card_header(
+    #             shiny::downloadButton(outputId = "summarise_large_scale_characteristics_gt_download", label = ""),
+    #             class = "text-end"
+    #           ),
+    #           gt::gt_output("summarise_large_scale_characteristics_gt") |> withSpinner()
+    #         )
+    #       )
+    #     )
+    #   )
+    # ),
     ## Compare large scale characteristics -----
-    bslib::nav_panel(
-      title = "Compare large scale characteristics",
-      icon = shiny::icon("arrow-up-right-dots"),
-      bslib::layout_sidebar(
-        sidebar = bslib::sidebar(width = 400, open = "closed",
-                                 bslib::accordion(
-                                   bslib::accordion_panel(
-                                     title = "Settings",
-                                     shinyWidgets::pickerInput(
-                                       inputId = "compare_large_scale_characteristics_grouping_cdm_name",
-                                       label = "CDM name",
-                                       choices = NULL,
-                                       selected = NULL,
-                                       multiple = TRUE,
-                                       options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
-                                     ),
-                                     shinyWidgets::pickerInput(
-                                       inputId = "compare_large_scale_characteristics_grouping_cohort_1",
-                                       label = "Cohort 1",
-                                       choices = NULL,
-                                       selected = NULL,
-                                       multiple = FALSE,
-                                       options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
-                                     ),
-                                     shinyWidgets::pickerInput(
-                                       inputId = "compare_large_scale_characteristics_grouping_cohort_2",
-                                       label = "Cohort 2",
-                                       choices = NULL,
-                                       selected = NULL,
-                                       multiple = FALSE,
-                                       options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
-                                     ),
-                                     shinyWidgets::pickerInput(
-                                       inputId = "compare_large_scale_characteristics_grouping_time_window",
-                                       label = "Time window",
-                                       choices = NULL,
-                                       selected = NULL,
-                                       multiple = TRUE,
-                                       options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
-                                     ),
-                                     shinyWidgets::pickerInput(
-                                       inputId = "compare_large_scale_characteristics_grouping_domain",
-                                       label = "Domain",
-                                       choices = NULL,
-                                       selected = NULL,
-                                       multiple = TRUE,
-                                       options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
-                                     ),
-                                     shinyWidgets::pickerInput(
-                                       inputId = "compare_large_scale_characteristics_settings_analysis",
-                                       label = "Concept type",
-                                       choices = NULL,
-                                       selected = NULL,
-                                       multiple = FALSE,
-                                       options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
-                                     ),
-                                     shinyWidgets::prettyCheckbox(
-                                       inputId = "compare_large_scale_characteristics_impute_missings",
-                                       label = "Impute missing values as 0",
-                                       value = TRUE)
-                                   )
-                                 )
-        ),
-        bslib::navset_card_tab(
-          bslib::nav_panel(
-            title = "Table",
-            bslib::card(
-              full_screen = TRUE,
-              bslib::card_header(
-                shiny::downloadButton(outputId = "compare_large_scale_characteristics_tidy_download", label = ""),
-                class = "text-end"
-              ),
-              reactable::reactableOutput("compare_large_scale_characteristics_tidy") |> withSpinner()
-            )
-          ),
-          bslib::nav_panel(
-            title = "Plot",
-            bslib::card(
-              full_screen = TRUE,
-              bslib::card_header(
-                bslib::popover(
-                  shiny::icon("download"),
-                  shiny::numericInput(
-                    inputId = "plot_compare_large_scale_characteristics_download_width",
-                    label = "Width",
-                    value = 15
-                  ),
-                  shiny::numericInput(
-                    inputId = "plot_compare_large_scale_characteristics_download_height",
-                    label = "Height",
-                    value = 10
-                  ),
-                  shinyWidgets::pickerInput(
-                    inputId = "plot_compare_large_scale_characteristics_download_units",
-                    label = "Units",
-                    selected = "cm",
-                    choices = c("px", "cm", "inch"),
-                    multiple = FALSE
-                  ),
-                  shiny::numericInput(
-                    inputId = "plot_compare_large_scale_characteristics_download_dpi",
-                    label = "dpi",
-                    value = 300
-                  ),
-                  shiny::downloadButton(outputId = "plot_compare_large_scale_characteristics_download", label = "Download")
-                ),
-                class = "text-end"
-              ),
-              bslib::layout_sidebar(
-                sidebar = bslib::sidebar(width = 400, open = "closed",
-                                         shinyWidgets::pickerInput(
-                                           inputId = "compare_large_scale_characteristics_colour_1",
-                                           label = "Colour",
-                                           selected = c("table"),
-                                           multiple = TRUE,
-                                           choices = c("table", "database", "time_window"),
-                                           options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
-                                         ),
-                                         shinyWidgets::pickerInput(
-                                           inputId = "compare_large_scale_characteristics_facet_1",
-                                           label = "Facet",
-                                           selected = c("database"),
-                                           multiple = TRUE,
-                                           choices = c("table", "database", "time_window"),
-                                           options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
-                                         ),
-                                         position = "right"
-                ),
-                position = "right"
-              ),
-              plotly::plotlyOutput("plotly_compare_lsc") |> withSpinner()
-            )
-          )
-        )
-      )
-    ),
-    ## Cohort overlap -----
+    # bslib::nav_panel(
+    #   title = "Compare large scale characteristics",
+    #   icon = shiny::icon("arrow-up-right-dots"),
+    #   bslib::layout_sidebar(
+    #     sidebar = bslib::sidebar(width = 400, open = "closed",
+    #                              bslib::accordion(
+    #                                bslib::accordion_panel(
+    #                                  title = "Settings",
+    #                                  shinyWidgets::pickerInput(
+    #                                    inputId = "compare_large_scale_characteristics_grouping_cdm_name",
+    #                                    label = "CDM name",
+    #                                    choices = NULL,
+    #                                    selected = NULL,
+    #                                    multiple = TRUE,
+    #                                    options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
+    #                                  ),
+    #                                  shinyWidgets::pickerInput(
+    #                                    inputId = "compare_large_scale_characteristics_grouping_cohort_1",
+    #                                    label = "Cohort 1",
+    #                                    choices = NULL,
+    #                                    selected = NULL,
+    #                                    multiple = FALSE,
+    #                                    options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
+    #                                  ),
+    #                                  shinyWidgets::pickerInput(
+    #                                    inputId = "compare_large_scale_characteristics_grouping_cohort_2",
+    #                                    label = "Cohort 2",
+    #                                    choices = NULL,
+    #                                    selected = NULL,
+    #                                    multiple = FALSE,
+    #                                    options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
+    #                                  ),
+    #                                  shinyWidgets::pickerInput(
+    #                                    inputId = "compare_large_scale_characteristics_grouping_time_window",
+    #                                    label = "Time window",
+    #                                    choices = NULL,
+    #                                    selected = NULL,
+    #                                    multiple = TRUE,
+    #                                    options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
+    #                                  ),
+    #                                  shinyWidgets::pickerInput(
+    #                                    inputId = "compare_large_scale_characteristics_grouping_domain",
+    #                                    label = "Domain",
+    #                                    choices = NULL,
+    #                                    selected = NULL,
+    #                                    multiple = TRUE,
+    #                                    options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
+    #                                  ),
+    #                                  shinyWidgets::pickerInput(
+    #                                    inputId = "compare_large_scale_characteristics_settings_analysis",
+    #                                    label = "Concept type",
+    #                                    choices = NULL,
+    #                                    selected = NULL,
+    #                                    multiple = FALSE,
+    #                                    options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
+    #                                  ),
+    #                                  shinyWidgets::prettyCheckbox(
+    #                                    inputId = "compare_large_scale_characteristics_impute_missings",
+    #                                    label = "Impute missing values as 0",
+    #                                    value = TRUE)
+    #                                )
+    #                              )
+    #     ),
+    #     bslib::navset_card_tab(
+    #       bslib::nav_panel(
+    #         title = "Table",
+    #         bslib::card(
+    #           full_screen = TRUE,
+    #           bslib::card_header(
+    #             shiny::downloadButton(outputId = "compare_large_scale_characteristics_tidy_download", label = ""),
+    #             class = "text-end"
+    #           ),
+    #           reactable::reactableOutput("compare_large_scale_characteristics_tidy") |> withSpinner()
+    #         )
+    #       ),
+    #       bslib::nav_panel(
+    #         title = "Plot",
+    #         bslib::card(
+    #           full_screen = TRUE,
+    #           bslib::card_header(
+    #             bslib::popover(
+    #               shiny::icon("download"),
+    #               shiny::numericInput(
+    #                 inputId = "plot_compare_large_scale_characteristics_download_width",
+    #                 label = "Width",
+    #                 value = 15
+    #               ),
+    #               shiny::numericInput(
+    #                 inputId = "plot_compare_large_scale_characteristics_download_height",
+    #                 label = "Height",
+    #                 value = 10
+    #               ),
+    #               shinyWidgets::pickerInput(
+    #                 inputId = "plot_compare_large_scale_characteristics_download_units",
+    #                 label = "Units",
+    #                 selected = "cm",
+    #                 choices = c("px", "cm", "inch"),
+    #                 multiple = FALSE
+    #               ),
+    #               shiny::numericInput(
+    #                 inputId = "plot_compare_large_scale_characteristics_download_dpi",
+    #                 label = "dpi",
+    #                 value = 300
+    #               ),
+    #               shiny::downloadButton(outputId = "plot_compare_large_scale_characteristics_download", label = "Download")
+    #             ),
+    #             class = "text-end"
+    #           ),
+    #           bslib::layout_sidebar(
+    #             sidebar = bslib::sidebar(width = 400, open = "closed",
+    #                                      shinyWidgets::pickerInput(
+    #                                        inputId = "compare_large_scale_characteristics_colour_1",
+    #                                        label = "Colour",
+    #                                        selected = c("table"),
+    #                                        multiple = TRUE,
+    #                                        choices = c("table", "database", "time_window"),
+    #                                        options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
+    #                                      ),
+    #                                      shinyWidgets::pickerInput(
+    #                                        inputId = "compare_large_scale_characteristics_facet_1",
+    #                                        label = "Facet",
+    #                                        selected = c("database"),
+    #                                        multiple = TRUE,
+    #                                        choices = c("table", "database", "time_window"),
+    #                                        options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
+    #                                      ),
+    #                                      position = "right"
+    #             ),
+    #             position = "right"
+    #           ),
+    #           plotly::plotlyOutput("plotly_compare_lsc") |> withSpinner()
+    #         )
+    #       )
+    #     )
+    #   )
+    # ),
+    # ## Cohort overlap -----
     bslib::nav_panel(
       title = "Cohort overlap",
       icon = shiny::icon("circle-half-stroke"),

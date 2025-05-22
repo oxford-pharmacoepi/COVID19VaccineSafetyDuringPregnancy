@@ -1209,8 +1209,8 @@ server <- function(input, output, session) {
         facet = facet,
         colour = colour
       )
-      plot$data <- plot$data |>
-        filter(incidence_100000_pys > 0)
+      # plot$data <- plot$data |>
+      #   filter(incidence_100000_pys > 0)
 
       if(!is.null(facet) && isTRUE(facet_free)){
         plot <- plot +
