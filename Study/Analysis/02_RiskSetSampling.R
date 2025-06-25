@@ -8,7 +8,7 @@ cdm$comparator_source <- cdm$source_population |>
       cohort_start_date < vaccine_date | is.na(vaccine_date), cohort_start_date, NA
     ),
     cohort_end_date = if_else(
-      cohort_end_date <= vaccine_date | is.na(vaccine_date), cohort_end_date, as.Date(!!dateadd("vaccine_date", -1))
+      cohort_end_date < vaccine_date | is.na(vaccine_date), cohort_end_date, as.Date(!!dateadd("vaccine_date", -1))
     )
   ) |>
   filter(!is.na(cohort_start_date) & !is.na(cohort_end_date)) |>
@@ -52,6 +52,22 @@ sampling_summary <- omopgenerics::bind(
     )
 )
 
+cdm$exposed_source <- cdm$exposed_source |>
+  filter(vaccine_brand %in% c("pfizer", "moderna")) |>
+  compute(name = "exposed_source", temporary = FALSE) |>
+  newCohortTable() 
+
+sampling_summary <- omopgenerics::bind(
+  sampling_summary,
+  cdm$exposed_source |> 
+    summariseResult(group = "cohort_name") |> 
+    filter(variable_name == "number records") |>
+    mutate(
+      variable_name = "Number exposed", 
+      variable_level = "Vaccinated with recommended vaccines"
+    )
+)
+
 # Matching and washout
 info(logger, "- Matching and washout")
 sampling_source <- cdm$exposed_source |>
@@ -84,7 +100,7 @@ sampling_source <- cdm$exposed_source |>
     by = c("cohort_name", "age_group_sample", "pregnancy_start_band"),
     relationship = "many-to-many"
   ) |>
-  # pregnant and exposure-free at exposure date
+  # control must be pregnant and exposure-free at potential index date
   filter(
     exposure_date >= cohort_start_date & exposure_date <= cohort_end_date
   )  |>
@@ -159,7 +175,7 @@ sampling_summary <- samplingSummary(sampling_source, "Apply wash-out", sampling_
 info(logger, "- Sampling")
 sampling_source <- sampling_source |>
   slice_sample(
-    n =  samplig_fraction, 
+    n =  samplig_fraction, # TODO update based on PhenotypeR
     by = all_of(c("cohort_definition_id", "cohort_name", "exposed_id", "exposure_date", "exposed_pregnancy_id"))
   ) |>
   compute(name = "sampling_source", temporary = FALSE)
@@ -185,8 +201,9 @@ cdm$study_population <- sampling_source |>
   ) |>
   select(all_of(c(
     "cohort_definition_id", "subject_id", "cohort_start_date" = "exposure_date", 
-    "cohort_end_date", "exposure", "exposed_match_id", "pregnancy_id", "vaccine_brand", "vaccine_dose",
-    "pregnancy_start_date", "pregnancy_end_date", "age", "age_group", "observation_start",
+    "cohort_end_date", "exposure", "exposed_match_id", "pregnancy_id", 
+    "vaccine_brand", "vaccine_dose", "pregnancy_start_date", 
+    "pregnancy_end_date", "age", "age_group", "observation_start",
     "observation_end", "previous_dose", "cohort_name", "pregnancy_outcome_study"
   ))) |>
   distinct() |>
@@ -194,7 +211,7 @@ cdm$study_population <- sampling_source |>
   newCohortTable(.softValidation = TRUE) |>
   recordCohortAttrition("Risk Set Sampling")
 
-# End date (TODO: add miscarriage events - without including in exitAtFirstDate)
+# End date 
 info(logger, "- Study population cohort - set end dates")
 cdm$study_population <- cdm$study_population |>
   addDeathDate() |>
@@ -228,7 +245,7 @@ cdm$study_population <- cdm$study_population |>
   select(!"next_covid_vaccine_comparator")
 
 # Strata and covariates ----
-info(logger, "- Study population cohort - set strata variables")
+info(logger, "- Study population cohort - set strata and covariates")
 cdm$study_population <- cdm$study_population %>% 
   mutate(
     gestational_day = !!datediff("pregnancy_start_date", "cohort_start_date"),
@@ -239,27 +256,30 @@ cdm$study_population <- cdm$study_population %>%
     )
   ) |>
   # Geographic location
-  left_join(
-    cdm$person |> select("subject_id" = "person_id", "care_site_id"),
-    by = "subject_id"
-  ) %>% 
+  getRegion(database_name = database_name) %>% 
   # previous observation and vaccines
   mutate(
     previous_observation = !!datediff("observation_start", "cohort_start_date"),
     previous_dose = if_else(previous_dose > 0, previous_dose, NA)
   ) |>
   rename("days_previous_dose" = "previous_dose") |>
-  # smoking status
+  # TODO smoking status -- make sure it is useful and lookback days match
   addCohortIntersectDate(
     targetCohortTable = "smoking",
     indexDate = "cohort_start_date",
     censorDate = NULL,
     targetDate = "cohort_start_date",
-    window = list(c(-Inf, 0)),
+    window = list(c(-5*365, 0)),
     nameStyle = "{cohort_name}"
   ) |>
   mutate(
-    smoking_status = pmax(non_smoker, smoker, former_smoker, na.rm = TRUE),
+    # smoking_status = pmax(non_smoker, smoker, former_smoker, na.rm = TRUE), #will not work in sql?
+    smoking_status = case_when(
+      non_smoker < smoker & non_smoker < former_smoker & !is.na(non_smoker) ~ non_smoker,
+      smoker < non_smoker & smoker < former_smoker & !is.na(smoker) ~ smoker,
+      former_smoker < non_smoker & former_smoker < smoker & !is.na(former_smoker) ~ former_smoker,
+      .default = NA
+    ),
     smoking_status = case_when(
       is.na(smoking_status) ~ "Missing/Other",
       smoking_status == .data$non_smoker ~ "Non-smoker",
@@ -282,13 +302,32 @@ cdm$study_population <- cdm$study_population %>%
     nameStyle = "previous_healthcare_visits",
     name = "study_population"
   ) |>
+  # obesisty, and alcohol and substance missuse dependenacy - 5 years back
   addCohortIntersectFlag(
     targetCohortTable = "covariates_5", 
-    window = list(c(-Inf, 0)), 
+    window = list(c(-5*365, 0)), 
     nameStyle = "{cohort_name}",
     name = "study_population"
   ) |>
-  # TODO: previous vax (pregnant and all time)
+  addCohortIntersectCount(
+    targetCohortTable = "covid_vaccines", 
+    targetCohortId = "any_covid_vaccine",
+    window = list(c(-Inf, 0)), 
+    nameStyle = "previous_covid_vaccines",
+    name = "study_population"
+  ) |>
+  addCohortIntersectCount(
+    targetCohortTable = "covid_vaccines", 
+    targetCohortId = "any_covid_vaccine",
+    window = list(c(-Inf, 0)),
+    censorDate = "pregnancy_start_date",
+    nameStyle = "previous_pregnant_covid_vaccines",
+    name = "study_population"
+  ) |>
+  mutate(
+    previous_covid_vaccines = as.character(previous_covid_vaccines),
+    previous_pregnant_covid_vaccines = as.character(previous_pregnant_covid_vaccines)
+  ) |>
   newCohortTable(.softValidation = TRUE)
 
 summaryCohort(cdm$study_population) |>
@@ -299,7 +338,6 @@ info(logger, "- Baseline characteristics")
 strata <- selectStrata(cdm, strata = c("vaccine_brand", "gestational_trimester", "age_group"))
 
 ## table one
-## TODO previou doses and previous pregannt doses (category)
 baseline_characteristics <- getBaselineCharacteristics(cdm, strata, weights = NULL)
 
 ## large scale

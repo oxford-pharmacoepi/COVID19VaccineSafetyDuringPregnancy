@@ -14,6 +14,7 @@ library(CohortConstructor)
 library(CohortCharacteristics)
 library(OmopSketch)
 library(glmnet)
+library(Hmisc)
 
 # Database name
 database_name <- "CPRD GOLD"
@@ -61,7 +62,7 @@ results <- paste0("Results_", cdmName(cdm))
 
 # Choose code to run
 runInstantiateCohorts <- FALSE
-runRiskSetSampling <- TRUE
+runRiskSetSampling <- FALSE
 runPSWeighting <- TRUE
 runOutcomeModel <- FALSE
 runBackgroundRates <- FALSE

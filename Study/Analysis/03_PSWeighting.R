@@ -1,21 +1,23 @@
 # Propensity Score Weighting ----
 info(logger, "- Compute PS and Weights")
 cohortNames <- settings(cdm$study_population)$cohort_name
-strata <- selectStrata(cdm, strata = c("vaccine_brand", "gestational_trimester"))
+strata <- selectStrata(cdm, strata = c("vaccine_brand", "gestational_trimester", "age_group"))
 selectedLassoFeatures <- vector("list", 3)  
 names(selectedLassoFeatures) <- cohortNames
 ps <- selectedLassoFeatures
 psCovariates <- selectedLassoFeatures
+cdm$study_population <- cdm$study_population |>
+  dplyr::select(!dplyr::starts_with("ps")) |>
+  dplyr::select(!dplyr::starts_with("weight"))
 for (nm in cohortNames) {
   info(logger, paste0("  - Cohort: ", nm))
   
   if (nm == "source_1") {
     vax <- NULL
   } else if (nm == "source_2") {
-    vax <- "days_previous_dose"
+    vax <- c("days_previous_dose", "previous_pregnant_covid_vaccines")
   } else if (nm == "source_3") {
-    vax <- "days_previous_dose"
-    ## TODO previou doses
+    vax <- c("days_previous_dose", "previous_covid_vaccines", "previous_pregnant_covid_vaccines")
   }
   
   ## LASSO 
@@ -25,7 +27,7 @@ for (nm in cohortNames) {
       cdm$study_population |>
         mutate(unique_id = paste0(subject_id, "_", exposed_match_id, "_", pregnancy_id)) |>
         select(any_of(c(
-          "subject_id", "unique_id", "exposure", "age", "care_site_id", "gestational_day", "cohort_start_date", 
+          "subject_id", "unique_id", "exposure", "age", "region", "gestational_day", "cohort_start_date", 
           "previous_observation", "smoking_status", "previous_pregnancies", "previous_healthcare_visits",
           "alcohol_misuse_dependence", "obesity", vax 
         )))
@@ -170,7 +172,7 @@ ps |>
 
 # Characterise ---- 
 info(logger, "- Baseline characteristics")
-strata <- selectStrata(cdm, strata = c("vaccine_brand", "gestational_trimester"))
+strata <- selectStrata(cdm, strata = c("vaccine_brand", "gestational_trimester", "age_group"))
 
 ## table one
 baseline_characteristics <- getBaselineCharacteristics(cdm, strata, weights = "weight")

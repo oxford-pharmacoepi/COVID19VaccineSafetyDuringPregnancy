@@ -1,4 +1,4 @@
-output_folder <- here(results)
+output_folder <- here::here(results)
 if (!dir.exists(output_folder)) {
   dir.create(output_folder)
 }
@@ -32,7 +32,7 @@ summariseOmopSnapshot(cdm) |>
 
 if (runInstantiateCohorts) {
   info(logger, "STEP 1 INSTANTIATE COHORTS ----")
-  source(here("Analysis", "01_instantiateCohorts.R"))
+  source(here("Analysis", "01_InstantiateCohorts.R"))
 }
 
 if (runRiskSetSampling) {
@@ -47,14 +47,14 @@ if (runRiskSetSampling) {
         "mother_table", "base", "covid_vaccines", "covid_vaccines_dose", "source_population", 
         "covid", "smoking", "covariates_inf", "covariates_5", "covariates_1", "other_vaccines",
         "covid_test", "aesi90", "aesi30", "aesi_inf", "nco", "covid_washout",
-        "aesi90_washout", "aesi30_washout"
+        "aesi90_washout", "aesi30_washout", "covid_vaccines_booster"
       ),
       .softValidation = TRUE
     )
     
   }
   info(logger, "STEP 2 RISK SET SAMPLING ----")
-  source(here("Analysis", "02_riskSetSampling.R"))
+  source(here("Analysis", "02_RiskSetSampling.R"))
 }
 
 if (runPSWeighting) {
@@ -75,18 +75,31 @@ if (runPSWeighting) {
       .softValidation = TRUE
     )
   }
-  # cdm$features <- tbl(
-  #   db, inSchema(schema = results_database_schema, table = paste0(table_stem, "features"))
-  # ) |>
-  #   compute(
-  #     name = inSchema(schema = results_database_schema, table = "features"), 
-  #     temporary = FALSE, 
-  #     overwrite = TRUE
-  #   ) 
   info(logger, "STEP 3 PROPENSITY SCORE WEIGHTING ----")
   source(here("Analysis", "03_PSWeighting.R"))
 }
 
+if (runOutcomeModel) {
+  if (!runPSWeighting) {
+    cdm <- cdmFromCon(
+      con = db,
+      cdmSchema = cdm_database_schema,
+      writeSchema = results_database_schema,
+      writePrefix = tolower(table_stem),
+      cdmName = database_name,
+      cohortTables = c(
+        "mother_table", "base", "covid_vaccines", "covid_vaccines_dose", "source_population", 
+        "covid", "smoking", "covariates_inf", "covariates_5", "covariates_1", "other_vaccines",
+        "covid_test", "aesi90", "aesi30", "aesi_inf", "nco", "covid_washout", 
+        "aesi90_washout", "aesi30_washout", "study_population", "study_population_nco",
+        "features"
+      ),
+      .softValidation = TRUE
+    )
+  }
+  info(logger, "STEP 4 OUTCOME MODEL ----")
+  source(here("Analysis", "04_OutcomeModel.R"))
+}
 
 # info(logger, "STEP XXX ZIP RESULTS ----")
 # output_folder <- basename(output_folder)
