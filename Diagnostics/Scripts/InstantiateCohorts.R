@@ -6,13 +6,13 @@ if (!dir.exists(output_folder)) {
 source(here("Scripts", "functions.R"))
 
 # SQL ----
-# dir_sql <- file.path(here::here(output_folder), "sql_diagnostics")
-# dir.create(dir_sql)
-# options("omopgenerics.log_sql_path" = dir_sql)
-# 
-# dir_explain <- file.path(here::here(output_folder), "sql_diagnostics_explain")
-# dir.create(dir_explain)
-# options("omopgenerics.log_sql_explain_path" = dir_explain)
+dir_sql <- file.path(here::here(output_folder), "sql_diagnostics")
+dir.create(dir_sql)
+options("omopgenerics.log_sql_path" = dir_sql)
+
+dir_explain <- file.path(here::here(output_folder), "sql_diagnostics_explain")
+dir.create(dir_explain)
+options("omopgenerics.log_sql_explain_path" = dir_explain)
 
 # Logger ----
 log_file <- here(output_folder, paste0("log", "_", gsub("-", "", Sys.Date()), ".txt"))
@@ -107,55 +107,55 @@ cdm$covid <- CohortConstructor::unionCohorts(
   cdm$covid, gap = 42, cohortName = "covid"
 )
 
-# Smoking cohort ----
-info(logger, "- Smoking cohort")
-cdm$smoking <- cdm$base |>
-  subsetCohorts(
-    cohortId = c("non_smoker", "smoker", "stop_smoking"),
-    name = "smoking"
-  ) 
-# former smoker: codes indicating former smoker (stop smoking cohort) or 
-# non smoker codes after smoking codes
-cdm$former_smoker <- cdm$smoking |>
-  requireCohortIntersect(
-    cohortId = "non_smoker",
-    targetCohortTable = "smoking",
-    targetCohortId = "smoker",
-    intersections = c(1, Inf),
-    window = c(-Inf, 0),
-    name = "former_smoker"
-  ) |>
-  unionCohorts(cohortId = c("stop_smoking", "non_smoker"), cohortName = "former_smoker")
-
-cdm$non_smoker <- cdm$smoking |>
-  subsetCohorts(cohortId = "non_smoker", name = "non_smoker") |>
-  requireCohortIntersect(
-    targetCohortTable = "smoking",
-    targetCohortId = c("smoker"),
-    intersections = 0,
-    window = c(-Inf, 0),
-    name = "non_smoker"
-  )
-
-cdm <- bind(
-  cdm$smoking |> subsetCohorts("smoker"),
-  cdm$non_smoker,
-  cdm$former_smoker,
-  name = "smoking"
-)
-
-# fix for PhenotypeR:
-cdm$smoking <- cdm$smoking |>
-  newCohortTable(
-    cohortCodelistRef = attr(cdm$smoking, "cohort_codelist") |>
-      inner_join(
-        settings(cdm$smoking) |> select("cohort_definition_id", "cohort_name"), 
-        by = "cohort_definition_id",
-        copy = TRUE
-      ) |>
-      filter(cohort_name == codelist_name) |>
-      select(!"cohort_name")
-  )
+# # Smoking cohort ----
+# info(logger, "- Smoking cohort")
+# cdm$smoking <- cdm$base |>
+#   subsetCohorts(
+#     cohortId = c("non_smoker", "smoker", "stop_smoking"),
+#     name = "smoking"
+#   ) 
+# # former smoker: codes indicating former smoker (stop smoking cohort) or 
+# # non smoker codes after smoking codes
+# cdm$former_smoker <- cdm$smoking |>
+#   requireCohortIntersect(
+#     cohortId = "non_smoker",
+#     targetCohortTable = "smoking",
+#     targetCohortId = "smoker",
+#     intersections = c(1, Inf),
+#     window = c(-Inf, 0),
+#     name = "former_smoker"
+#   ) |>
+#   unionCohorts(cohortId = c("stop_smoking", "non_smoker"), cohortName = "former_smoker")
+# 
+# cdm$non_smoker <- cdm$smoking |>
+#   subsetCohorts(cohortId = "non_smoker", name = "non_smoker") |>
+#   requireCohortIntersect(
+#     targetCohortTable = "smoking",
+#     targetCohortId = c("smoker"),
+#     intersections = 0,
+#     window = c(-Inf, 0),
+#     name = "non_smoker"
+#   )
+# 
+# cdm <- bind(
+#   cdm$smoking |> subsetCohorts("smoker"),
+#   cdm$non_smoker,
+#   cdm$former_smoker,
+#   name = "smoking"
+# )
+# 
+# # fix for PhenotypeR:
+# cdm$smoking <- cdm$smoking |>
+#   newCohortTable(
+#     cohortCodelistRef = attr(cdm$smoking, "cohort_codelist") |>
+#       inner_join(
+#         settings(cdm$smoking) |> select("cohort_definition_id", "cohort_name"), 
+#         by = "cohort_definition_id",
+#         copy = TRUE
+#       ) |>
+#       filter(cohort_name == codelist_name) |>
+#       select(!"cohort_name")
+#   )
 
 # Obesity ----
 info(logger, "- Obesity cohort")
@@ -177,22 +177,12 @@ cdm$body_weight <- measurementCohort(
 cdm <- omopgenerics::bind(cdm$obesity, cdm$bmi_measurement, cdm$body_weight, name = "obesity")
 # union
 cdm$obesity <- cdm$obesity |>
-  requireCohortIntersect(
-    targetCohortTable = "mother_table",
-    window = list(c(0, 0)),
-    intersections = c(1, Inf),
-    cohortId = NULL,
-    targetCohortId = NULL,
-    indexDate = "cohort_start_date",
-    targetStartDate = "cohort_start_date",
-    targetEndDate = "cohort_end_date",
-    censorDate = NULL
-  ) |>
+  startsInPregnancy() |>
   unionCohorts(cohortName = "obesity_pregnant")
 
 # AESI ----
 info(logger, "- AESI")
-info(logger, "  - Thrombocytopenia") 
+info(logger, "  - Thombosis with Thrombocytopenia Syndrome") 
 ## complex thrombocytopenia
 cdm$platelet_measurement <- measurementCohort(
   cdm = cdm,
@@ -205,39 +195,32 @@ cdm$platelet_measurement <- measurementCohort(
 )
 cdm$thrombocytopenia <- cdm$base |> subsetCohorts("thrombocytopenia", "thrombocytopenia")
 cdm <- bind(cdm$platelet_measurement, cdm$thrombocytopenia, name = "thrombocytopenia")
-cdm$thrombocytopenia <- cdm$thrombocytopenia |> unionCohorts(cohortName = "thrombocytopenia")
+cdm$thrombocytopenia <- cdm$thrombocytopenia|>
+  unionCohorts(cohortName = "thrombocytopenia") |> 
+  padCohortDate(days = 90, cohortDate = "cohort_end_date") 
 
-cdm$thrombosis_thrombocytopenia <- cdm$base |>
-  subsetCohorts(cohortId = "thrombosis", name = "thrombosis_thrombocytopenia") |>
+cdm$tts <- cdm$base |>
+  subsetCohorts(cohortId = "thrombosis", name = "tts") |> 
+  padCohortDate(days = 90, cohortDate = "cohort_end_date") |>
   requireCohortIntersect(
     targetCohortTable = "thrombocytopenia", 
     targetEndDate = NULL,
     window = c(-10, 10)
   ) 
-cdm$thrombosis_thrombocytopenia  <- cdm$thrombosis_thrombocytopenia |>
+cdm$tts  <- cdm$tts |>
   newCohortTable(
-    cohortSetRef = settings(cdm$thrombosis_thrombocytopenia) |> mutate(cohort_name = "thrombosis_thrombocytopenia")
+    cohortSetRef = settings(cdm$tts) |> mutate(cohort_name = "tts")
   ) |>
-  requireCohortIntersect(
-    targetCohortTable = "mother_table",
-    window = list(c(0, 0)),
-    intersections = c(1, Inf),
-    cohortId = NULL,
-    targetCohortId = NULL,
-    indexDate = "cohort_start_date",
-    targetStartDate = "cohort_start_date",
-    targetEndDate = "cohort_end_date",
-    censorDate = NULL
-  )
-cdm$thrombosis_thrombocytopenia <- cdm$thrombosis_thrombocytopenia |>
+  startsInPregnancy()
+cdm$tts <- cdm$tts |>
   omopgenerics::newCohortTable(
-    cohortSetRef = settings(cdm$thrombosis_thrombocytopenia) |> mutate(cohort_name = paste0(cohort_name, "_pregnant")),
+    cohortSetRef = settings(cdm$tts) |> mutate(cohort_name = paste0(cohort_name, "_pregnant")),
     .softValidation = TRUE
   )
 
 ## AESI acute
 info(logger, "  - Acute") 
-cdm$aesi90 <- cdm$base |>
+cdm$aesi_90 <- cdm$base |>
   subsetCohorts(
     cohortId = c(
       "myocardial_infarction", "ischaemic_stroke", "pulmonary_embolism",                    
@@ -246,45 +229,25 @@ cdm$aesi90 <- cdm$base |>
       "disseminated_intravascular_coagulation", "deep_vein_thrombosis",
       "myocarditis_or_pericarditis"
     ),
-    name = "aesi90"
+    name = "aesi_90"
   ) |> 
-  padCohortEnd(days = 90) |>
-  requireCohortIntersect(
-    targetCohortTable = "mother_table",
-    window = list(c(0, 0)),
-    intersections = c(1, Inf),
-    cohortId = NULL,
-    targetCohortId = NULL,
-    indexDate = "cohort_start_date",
-    targetStartDate = "cohort_start_date",
-    targetEndDate = "cohort_end_date",
-    censorDate = NULL
-  )
-cdm$aesi90 <- cdm$aesi90 |>
+  padCohortDate(days = 90, cohortDate = "cohort_end_date") |>
+  startsInPregnancy()
+cdm$aesi_90 <- cdm$aesi_90 |>
   omopgenerics::newCohortTable(
-    cohortSetRef = settings(cdm$aesi90) |> mutate(cohort_name = paste0(cohort_name, "_pregnant")),
+    cohortSetRef = settings(cdm$aesi_90) |> mutate(cohort_name = paste0(cohort_name, "_pregnant")),
     .softValidation = TRUE
   )
 
 ## AESI recurrent
 info(logger, "  - Recurrent") 
-cdm$aesi30 <- cdm$base |>
-  subsetCohorts(cohortId = "anaphylaxis", name = "aesi30") |>
-  padCohortEnd(days = 30) |>
-  requireCohortIntersect(
-    targetCohortTable = "mother_table",
-    window = list(c(0, 0)),
-    intersections = c(1, Inf),
-    cohortId = NULL,
-    targetCohortId = NULL,
-    indexDate = "cohort_start_date",
-    targetStartDate = "cohort_start_date",
-    targetEndDate = "cohort_end_date",
-    censorDate = NULL
-  )
-cdm$aesi30 <- cdm$aesi30 |>
+cdm$aesi_30 <- cdm$base |>
+  subsetCohorts(cohortId = "anaphylaxis", name = "aesi_30") |>
+  padCohortDate(days = 30, cohortDate = "cohort_end_date") |>
+  startsInPregnancy()
+cdm$aesi_30 <- cdm$aesi_30 |>
   omopgenerics::newCohortTable(
-    cohortSetRef = settings(cdm$aesi30) |> mutate(cohort_name = paste0(cohort_name, "_pregnant")),
+    cohortSetRef = settings(cdm$aesi_30) |> mutate(cohort_name = paste0(cohort_name, "_pregnant")),
     .softValidation = TRUE
   )
 
@@ -292,18 +255,8 @@ cdm$aesi30 <- cdm$aesi30 |>
 info(logger, "  - Chronic") 
 cdm$aesi_inf <- cdm$base |>
   subsetCohorts(cohortId = "narcolepsy", name = "aesi_inf") |>
-  exitAtObservationEnd(limitToCurrentPeriod = FALSE) |>
-  requireCohortIntersect(
-    targetCohortTable = "mother_table",
-    window = list(c(0, 0)),
-    intersections = c(1, Inf),
-    cohortId = NULL,
-    targetCohortId = NULL,
-    indexDate = "cohort_start_date",
-    targetStartDate = "cohort_start_date",
-    targetEndDate = "cohort_end_date",
-    censorDate = NULL
-  )
+  exitAtObservationEnd() |>
+  startsInPregnancy()
 cdm$aesi_inf <- cdm$aesi_inf |>
   omopgenerics::newCohortTable(
     cohortSetRef = settings(cdm$aesi_inf) |> mutate(cohort_name = paste0(cohort_name, "_pregnant")),
@@ -351,18 +304,8 @@ cdm$phenotyper_pregnancy <- cdm$base |>
     ),
     name = "phenotyper_pregnancy"
   ) |>
-  requireCohortIntersect(
-    targetCohortTable = "mother_table",
-    window = list(c(0, 0)),
-    intersections = c(1, Inf),
-    cohortId = NULL,
-    targetCohortId = NULL,
-    indexDate = "cohort_start_date",
-    targetStartDate = "cohort_start_date",
-    targetEndDate = "cohort_end_date",
-    censorDate = NULL
-  ) |>
-  renameCohort(cohortId = "alcohol_misuse_dependence", newCohortName = "alcohol_misuse_pregnant")
+  startsInPregnancy() |>
+  renameCohort(cohortId = "alcohol_misuse_dependence", newCohortName = "pregnant_alcohol_misuse")
 cdm$mother_table <- cdm$mother_table %>% 
   mutate(
     end_6 = !!CDMConnector::dateadd("pregnancy_end_date", 42),
@@ -373,39 +316,19 @@ cdm$phenotyper_6weeks <- cdm$base |>
     cohortId = c("postpartum_endometritis"),
     name = "phenotyper_6weeks"
   ) |>
-  requireCohortIntersect(
-    targetCohortTable = "mother_table",
-    window = list(c(0, 0)),
-    intersections = c(1, Inf),
-    cohortId = NULL,
-    targetCohortId = NULL,
-    indexDate = "cohort_start_date",
-    targetStartDate = "pregnancy_end_date",
-    targetEndDate = "end_6",
-    censorDate = NULL
-  )
+  startsInPregnancy(start = "pregnancy_end_date", end = "end_6", reason = "In the firsts 6 weeks postpartum")
 cdm$phenotyper_12weeks <- cdm$base |>
   subsetCohorts(
     cohortId = c("postpartum_haemorrhage"),
     name = "phenotyper_12weeks"
   ) |>
-  requireCohortIntersect(
-    targetCohortTable = "mother_table",
-    window = list(c(0, 0)),
-    intersections = c(1, Inf),
-    cohortId = NULL,
-    targetCohortId = NULL,
-    indexDate = "cohort_start_date",
-    targetStartDate = "pregnancy_end_date",
-    targetEndDate = "end_12",
-    censorDate = NULL
-  )
+  startsInPregnancy(start = "pregnancy_end_date", end = "end_12", reason = "In the firsts 12 weeks postpartum")
 
 # BIND ----
 cdm <- bind(
   cdm$phenotyper_pregnancy, cdm$phenotyper_6weeks, cdm$phenotyper_12weeks,
-  cdm$maternal_death, cdm$mae_omop, cdm$aesi30, cdm$aesi90, 
-  cdm$aesi_inf, cdm$thrombosis_thrombocytopenia, cdm$smoking, cdm$obesity, 
+  cdm$maternal_death, cdm$mae_omop, cdm$aesi_30, cdm$aesi_90, 
+  cdm$aesi_inf, cdm$tts, cdm$obesity, 
   cdm$mother_table, 
   name = "phenotyper"
 )

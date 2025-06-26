@@ -140,10 +140,11 @@ getSourcePopulation <- function(cdm, objective, enrollment) {
       compute(name = name, temporary = FALSE) |>
       recordCohortAttrition(reason = "No 2nd dose before pregnancy") %>% 
       mutate(new_cohort_start = !!dateadd("previous_dose", 16)) |>
-      filter(new_cohort_start < .data$cohort_end_date & !is.na(new_cohort_start)) %>% 
-      mutate(cohort_start_date = if_else(
-        new_cohort_start < cohort_start_date, cohort_start_date, new_cohort_start
-      )) |>
+      filter(new_cohort_start < .data$cohort_end_date) %>% 
+      mutate(
+        cohort_start_date = if_else(
+          new_cohort_start < cohort_start_date, cohort_start_date, new_cohort_start
+        )) |>
       select(!c("new_cohort_start")) |>
       compute(name = name, temporary = FALSE) |>
       recordCohortAttrition(reason = "Eligible for 2nd during pregnancy") 
@@ -188,11 +189,35 @@ getSourcePopulation <- function(cdm, objective, enrollment) {
           is.na(booster_previous), any_covid_vaccine_2, booster_previous
         )
       ) %>% 
-      filter(!!dateadd("previous_dose", 90) < pregnancy_end_date) |>
-      select(!c("any_covid_vaccine_2", "booster_previous")) |>
+      mutate(new_cohort_start = !!dateadd("previous_dose", 90)) |>
+      filter(new_cohort_start < .data$cohort_end_date) %>% 
+      mutate(
+        cohort_start_date = if_else(
+          new_cohort_start < cohort_start_date, cohort_start_date, new_cohort_start
+        )) |>
+      select(!c("any_covid_vaccine_2", "booster_previous", "new_cohort_start")) |>
       compute(name = name, temporary = FALSE) |>
       recordCohortAttrition(reason = "Eligible for booster during pregnancy") 
   }
   
+  return(cdm[[name]])
+}
+
+startsInPregnancy <- function(cohort, 
+                              start = "pregnancy_start_date", 
+                              end = "pregnancy_end_date", 
+                              reason = "During pregnancy") {
+  cdm <- omopgenerics::cdmReference(cohort)
+  name <- omopgenerics::tableName(cohort)
+  cdm[[name]]  <- cdm[[name]] |> 
+    dplyr::inner_join(
+      cdm$mother_table |>
+        dplyr::select("subject_id", start, end),
+      by = "subject_id"
+    ) |>
+    dplyr::filter(cohort_start_date >= .data[[start]] & cohort_start_date <= .data[[end]]) |>
+    dplyr::select(!dplyr::starts_with("pregnancy")) |>
+    dplyr::compute(name = name, temporary = FALSE) |>
+    omopgenerics::recordCohortAttrition(reason = reason)
   return(cdm[[name]])
 }

@@ -36,6 +36,9 @@ cdm$source_3 <- getSourcePopulation(cdm, 3, enrollment3)
 # bind source population cohorts
 cdm <- omopgenerics::bind(cdm$source_1, cdm$source_2, cdm$source_3, name = "source_population")
 
+CohortCharacteristics::summariseCohortAttrition(cdm$source_population) |>
+  exportSummarisedResult(fileName = "attrition_source_{cdm_name}_{date}.csv", path = here::here(output_folder))
+
 info(logger, "- Exposed:Comparator ratio")
 cdm$source_population |>
   addCohortName() |>
