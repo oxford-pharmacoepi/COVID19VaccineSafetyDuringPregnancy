@@ -299,7 +299,7 @@ cdm$maternal_death <- cdm$death |>
 cdm$phenotyper_pregnancy <- cdm$base |>
   subsetCohorts(
     cohortId = c(
-      "antepartum_haemorrhage",  "dysfunctional_labour", "eclampsia", "ectopic_pregnancy", 
+      "dysfunctional_labour", "eclampsia", "ectopic_pregnancy", "antepartum_haemorrhage",
       "gestational_diabetes", "hellp", "preeclampsia", "alcohol_misuse_dependence"
     ),
     name = "phenotyper_pregnancy"

@@ -51,6 +51,7 @@ cdm$source_population |>
   group_by(cohort_name, exposed) |>
   tally() |>
   collect() |>
-  mutate(n = if_else(n > 5 | n == 0, n, NA)) |>
+  pivot_wider(names_from = "exposed", values_from = "n") |>
+  mutate(ratio = comparator/exposed) |>
   write_csv(file = here::here(output_folder, paste0("ratio_exposed_comparator_", cdm_name, ".csv")))
 
