@@ -1,0 +1,933 @@
+codelist_name,concept_id,concept_name,standard_concept
+myocardial_infarction,45766075,Acute anterior ST segment elevation myocardial infarction,S
+myocardial_infarction,4178129,Acute anteroapical myocardial infarction,S
+myocardial_infarction,4267568,Acute anteroseptal myocardial infarction,S
+myocardial_infarction,312327,Acute myocardial infarction,S
+myocardial_infarction,44782769,Acute myocardial infarction due to left coronary artery occlusion,S
+myocardial_infarction,44782712,Acute myocardial infarction due to right coronary artery occlusion,S
+myocardial_infarction,45766115,Acute myocardial infarction during procedure,S
+myocardial_infarction,434376,Acute myocardial infarction of anterior wall,S
+myocardial_infarction,45766150,Acute myocardial infarction of anterior wall involving right ventricle,S
+myocardial_infarction,438438,Acute myocardial infarction of anterolateral wall,S
+myocardial_infarction,4243372,Acute myocardial infarction of apical-lateral wall,S
+myocardial_infarction,4108669,Acute myocardial infarction of atrium,S
+myocardial_infarction,4151046,Acute myocardial infarction of basal-lateral wall,S
+myocardial_infarction,4275436,Acute myocardial infarction of high lateral wall,S
+myocardial_infarction,438170,Acute myocardial infarction of inferior wall,S
+myocardial_infarction,45771322,Acute myocardial infarction of inferior wall involving right ventricle,S
+myocardial_infarction,438447,Acute myocardial infarction of inferolateral wall,S
+myocardial_infarction,441579,Acute myocardial infarction of inferoposterior wall,S
+myocardial_infarction,436706,Acute myocardial infarction of lateral wall,S
+myocardial_infarction,4324413,Acute myocardial infarction of posterobasal wall,S
+myocardial_infarction,4051874,Acute myocardial infarction of posterolateral wall,S
+myocardial_infarction,4303359,Acute myocardial infarction of septum,S
+myocardial_infarction,4145721,Acute non-Q wave infarction,S
+myocardial_infarction,4119944,Acute non-Q wave infarction - anterolateral,S
+myocardial_infarction,4119456,Acute non-Q wave infarction - anteroseptal,S
+myocardial_infarction,4119945,Acute non-Q wave infarction - inferior,S
+myocardial_infarction,4119946,Acute non-Q wave infarction - inferolateral,S
+myocardial_infarction,4121466,Acute non-Q wave infarction - lateral,S
+myocardial_infarction,4124685,Acute non-Q wave infarction - widespread,S
+myocardial_infarction,4270024,Acute non-ST segment elevation myocardial infarction,S
+myocardial_infarction,35610091,Acute nontransmural myocardial infarction,S
+myocardial_infarction,319039,Acute posterior myocardial infarction,S
+myocardial_infarction,4119457,Acute Q wave infarction - anterolateral,S
+myocardial_infarction,4119943,Acute Q wave infarction - anteroseptal,S
+myocardial_infarction,4121464,Acute Q wave infarction - inferior,S
+myocardial_infarction,4121465,Acute Q wave infarction - inferolateral,S
+myocardial_infarction,4124684,Acute Q wave infarction - lateral,S
+myocardial_infarction,4119948,Acute Q wave infarction - widespread,S
+myocardial_infarction,4126801,Acute Q wave myocardial infarction,S
+myocardial_infarction,4296653,Acute ST segment elevation myocardial infarction,S
+myocardial_infarction,46270162,Acute ST segment elevation myocardial infarction due to left coronary artery occlusion,S
+myocardial_infarction,46270163,Acute ST segment elevation myocardial infarction due to right coronary artery occlusion,S
+myocardial_infarction,43020460,Acute ST segment elevation myocardial infarction involving left anterior descending coronary artery,S
+myocardial_infarction,45766076,Acute ST segment elevation myocardial infarction of anterior wall involving right ventricle,S
+myocardial_infarction,761736,Acute ST segment elevation myocardial infarction of anteroapical wall,S
+myocardial_infarction,46270159,Acute ST segment elevation myocardial infarction of anterolateral wall,S
+myocardial_infarction,46270160,Acute ST segment elevation myocardial infarction of anteroseptal wall,S
+myocardial_infarction,45766116,Acute ST segment elevation myocardial infarction of inferior wall,S
+myocardial_infarction,45766151,Acute ST segment elevation myocardial infarction of inferior wall involving right ventricle,S
+myocardial_infarction,35611570,Acute ST segment elevation myocardial infarction of inferolateral wall,S
+myocardial_infarction,35611571,Acute ST segment elevation myocardial infarction of inferoposterior wall,S
+myocardial_infarction,46274044,Acute ST segment elevation myocardial infarction of lateral wall,S
+myocardial_infarction,46270161,Acute ST segment elevation myocardial infarction of posterior wall,S
+myocardial_infarction,46273495,Acute ST segment elevation myocardial infarction of posterobasal wall,S
+myocardial_infarction,46270158,Acute ST segment elevation myocardial infarction of posterolateral wall,S
+myocardial_infarction,46270164,Acute ST segment elevation myocardial infarction of septum,S
+myocardial_infarction,444406,Acute subendocardial infarction,S
+myocardial_infarction,35610093,Acute transmural myocardial infarction,S
+myocardial_infarction,4119947,Acute widespread myocardial infarction,S
+myocardial_infarction,37109912,Arrhythmia due to and following acute myocardial infarction,S
+myocardial_infarction,438172,Atrial septal defect due to and following acute myocardial infarction,S
+myocardial_infarction,4124687,Cardiac rupture due to and following acute myocardial infarction,S
+myocardial_infarction,4215259,First myocardial infarction,S
+myocardial_infarction,4108678,Hemopericardium due to and following acute myocardial infarction,S
+myocardial_infarction,4173632,Microinfarct of heart,S
+myocardial_infarction,45766214,Mitral valve regurgitation due to acute myocardial infarction without papillary muscle and chordal rupture,S
+myocardial_infarction,45771327,Mitral valve regurgitation due to acute myocardial infarction with papillary muscle and chordal rupture,S
+myocardial_infarction,4323202,Mixed myocardial ischemia and infarction,S
+myocardial_infarction,4329847,Myocardial infarction,S
+myocardial_infarction,37309626,Myocardial infarction due to demand ischemia,S
+myocardial_infarction,4170094,Myocardial infarction in recovery phase,S
+myocardial_infarction,4200113,Non-Q wave myocardial infarction,S
+myocardial_infarction,4030582,Postoperative myocardial infarction,S
+myocardial_infarction,35610087,Postoperative nontransmural myocardial infarction,S
+myocardial_infarction,4206867,Postoperative subendocardial myocardial infarction,S
+myocardial_infarction,35610089,Postoperative transmural myocardial infarction,S
+myocardial_infarction,4207921,Postoperative transmural myocardial infarction of anterior wall,S
+myocardial_infarction,4209541,Postoperative transmural myocardial infarction of inferior wall,S
+myocardial_infarction,37109911,Pulmonary embolism due to and following acute myocardial infarction,S
+myocardial_infarction,4108679,Rupture of cardiac wall without hemopericardium as current complication following acute myocardial infarction,S
+myocardial_infarction,4108219,Rupture of chordae tendinae due to and following acute myocardial infarction,S
+myocardial_infarction,4147223,Rupture of ventricle due to acute myocardial infarction,S
+myocardial_infarction,4124686,Silent myocardial infarction,S
+myocardial_infarction,765132,Subendocardial myocardial infarction,S
+myocardial_infarction,4108217,Subsequent myocardial infarction,S
+myocardial_infarction,4108677,Subsequent myocardial infarction of anterior wall,S
+myocardial_infarction,4108218,Subsequent myocardial infarction of inferior wall,S
+myocardial_infarction,45766241,Subsequent non-ST segment elevation myocardial infarction,S
+myocardial_infarction,45766114,Subsequent ST segment elevation myocardial infarction,S
+myocardial_infarction,45766113,Subsequent ST segment elevation myocardial infarction of anterior wall,S
+myocardial_infarction,45773170,Subsequent ST segment elevation myocardial infarction of inferior wall,S
+myocardial_infarction,4108680,"Thrombosis of atrium, auricular appendage, and ventricle due to and following acute myocardial infarction",S
+myocardial_infarction,439693,True posterior myocardial infarction,S
+myocardial_infarction,37109910,Ventricular aneurysm due to and following acute myocardial infarction,S
+myocardial_infarction,45766212,Mitral valve regurgitation due to and following acute myocardial infarction,NA
+myocardial_infarction,761737,Acute ST segment elevation myocardial infarction due to occlusion of circumflex coronary artery,NA
+myocardial_infarction,4154704,Myocardial infarction with complication,NA
+ischaemic_stroke,4048784,Anterior cerebral circulation hemorrhagic infarction,S
+ischaemic_stroke,4045735,Anterior cerebral circulation infarction,S
+ischaemic_stroke,4031045,Anterior choroidal artery syndrome,S
+ischaemic_stroke,761110,Bilateral cerebral infarction due to precererbral arterial occlusion,S
+ischaemic_stroke,4319331,Cerebellar infarction,S
+ischaemic_stroke,372924,Cerebral artery occlusion,S
+ischaemic_stroke,4110189,Cerebral infarct due to thrombosis of precerebral arteries,S
+ischaemic_stroke,443454,Cerebral infarction,S
+ischaemic_stroke,762951,Cerebral infarction due to anterior cerebral artery occlusion,S
+ischaemic_stroke,765515,Cerebral infarction due to basilar artery stenosis,S
+ischaemic_stroke,43530683,Cerebral infarction due to carotid artery occlusion,S
+ischaemic_stroke,762933,Cerebral infarction due to cerebral artery occlusion,S
+ischaemic_stroke,762937,Cerebral infarction due to cerebral venous thrombosis,S
+ischaemic_stroke,4111714,"Cerebral infarction due to cerebral venous thrombosis, non-pyogenic",S
+ischaemic_stroke,4108356,Cerebral infarction due to embolism of cerebral arteries,S
+ischaemic_stroke,45772786,Cerebral infarction due to embolism of middle cerebral artery,S
+ischaemic_stroke,4110190,Cerebral infarction due to embolism of precerebral arteries,S
+ischaemic_stroke,762935,Cerebral infarction due to internal carotid artery occlusion,S
+ischaemic_stroke,763015,Cerebral infarction due to middle cerebral artery occlusion,S
+ischaemic_stroke,46273649,Cerebral infarction due to occlusion of basilar artery,S
+ischaemic_stroke,35610084,Cerebral infarction due to occlusion of cerebral artery,S
+ischaemic_stroke,46270031,Cerebral infarction due to occlusion of precerebral artery,S
+ischaemic_stroke,762934,Cerebral infarction due to posterior cerebral artery occlusion,S
+ischaemic_stroke,43531607,Cerebral infarction due to stenosis of carotid artery,S
+ischaemic_stroke,35610085,Cerebral infarction due to stenosis of cerebral artery,S
+ischaemic_stroke,46270381,Cerebral infarction due to stenosis of precerebral artery,S
+ischaemic_stroke,4110192,Cerebral infarction due to thrombosis of cerebral arteries,S
+ischaemic_stroke,45767658,Cerebral infarction due to thrombosis of middle cerebral artery,S
+ischaemic_stroke,44782773,Cerebral infarction due to vertebral artery occlusion,S
+ischaemic_stroke,46270380,Cerebral infarction due to vertebral artery stenosis,S
+ischaemic_stroke,37110678,Cerebral ischemic stroke due to occlusion of extracranial large artery,S
+ischaemic_stroke,37110679,Cerebral ischemic stroke due to stenosis of extracranial large artery,S
+ischaemic_stroke,4045734,CVA - cerebrovascular accident due to cerebral artery occlusion,S
+ischaemic_stroke,4046362,Hemorrhagic cerebral infarction,S
+ischaemic_stroke,4131383,Infarction of basal ganglia,S
+ischaemic_stroke,4046237,Infarction of optic radiation,S
+ischaemic_stroke,4119140,Infarction of visual cortex,S
+ischaemic_stroke,4043731,Infarction - precerebral,S
+ischaemic_stroke,4046360,Lacunar infarction,S
+ischaemic_stroke,4141405,Left sided cerebral infarction,S
+ischaemic_stroke,37116473,Multifocal cerebral infarction due to and following procedure on cardiovascular system,S
+ischaemic_stroke,4077086,Occipital cerebral infarction,S
+ischaemic_stroke,4046359,Partial anterior cerebral circulation infarction,S
+ischaemic_stroke,4319146,Pituitary infarction,S
+ischaemic_stroke,4043732,Posterior cerebral circulation hemorrhagic infarction,S
+ischaemic_stroke,4045737,Pure motor lacunar infarction,S
+ischaemic_stroke,4146185,Right sided cerebral infarction,S
+ischaemic_stroke,36717605,Silent cerebral infarct,S
+ischaemic_stroke,4111716,Occlusion and stenosis of anterior cerebral artery,S
+ischaemic_stroke_v5,4111717,Occlusion and stenosis of posterior cerebral artery,S
+ischaemic_stroke_v6,4112023,Occlusion and stenosis of middle cerebral artery,S
+ischaemic_stroke_v7,443239,Precerebral arterial occlusion,S
+ischaemic_stroke,4142739,Thalamic infarction,S
+ischaemic_stroke,4046358,Total anterior cerebral circulation infarction,S
+ischaemic_stroke,4045738,Pure sensory lacunar infarction,S
+ischaemic_stroke,40479572,Infarct of cerebrum due to iatrogenic cerebrovascular accident,S
+pulmonary_embolism,43530605,Pulmonary embolism with pulmonary infarction,S
+pulmonary_embolism,45768439,Acute pulmonary embolism,S
+pulmonary_embolism,45768888,Acute pulmonary thromboembolism,S
+pulmonary_embolism,440417,Pulmonary embolism,S
+pulmonary_embolism,4120091,Acute massive pulmonary embolism,S
+pulmonary_embolism,4108681,Postoperative pulmonary embolus,S
+pulmonary_embolism,4121618,Pulmonary thromboembolism,S
+pulmonary_embolism,37016922,Pulmonary embolism on long-term anticoagulation therapy,S
+pulmonary_embolism,4253796,Pulmonary microemboli,S
+pulmonary_embolism,40480461,Infarction of lung due to iatrogenic pulmonary embolism,S
+pulmonary_embolism,35615055,Saddle embolus of pulmonary artery with acute cor pulmonale,S
+pulmonary_embolism,40761384,Pulmonary embolism requiring hospitalization,S
+pulmonary_embolism,40479606,Septic pulmonary embolism,S
+pulmonary_embolism,37109911,Pulmonary embolism due to and following acute myocardial infarction,S
+pulmonary_embolism,36713113,Saddle embolus of pulmonary artery,S
+pulmonary_embolism,4119607,Subacute massive pulmonary embolism,S
+pulmonary_embolism,762808,Infarction of lung due to embolus,S
+bells_palsy,374923,Bell's palsy,S
+bells_palsy,760892,Bells palsy of left side of face,S
+bells_palsy,760893,Bells palsy of right side of face,S
+bells_palsy,42710044,Peripheral facial palsy,S
+bells_palsy,4091559,Facial palsy,S
+guillain_barre_syndrome,374925,Acute infective polyneuritis,S
+guillain_barre_syndrome,4164770,Guillain-BarrÃ© syndrome,S
+guillain_barre_syndrome,37396786,Acute inflammatory demyelinating polyradiculoneuropathy,S
+guillain_barre_syndrome,4070552,Fisher's syndrome,S
+guillain_barre_syndrome,4141686,Bickerstaff's brainstem encephalitis,S
+guillain_barre_syndrome,43530713,Acute inflammatory demyelinating polyneuropathy,S
+transverse_myelitis,4044077,Acute non-infective transverse myelitis,S
+transverse_myelitis,380995,Neuromyelitis optica,S
+transverse_myelitis,4147498,"Encephalitis, myelitis and encephalomyelitis",S
+transverse_myelitis,138965,Myelitis,S
+transverse_myelitis,134330,Idiopathic transverse myelitis,S
+transverse_myelitis,139803,Acute transverse myelitis,S
+transverse_myelitis,4310824,Acute ascending myelitis,S
+transverse_myelitis,604439,Acute flaccid myelitis,S
+transverse_myelitis,443904,Transverse myelopathy syndrome,S
+transverse_myelitis,373189,encephalomyelitis,S
+haemorrhagic_stroke,35609033,Haemorrhagic stroke,S
+haemorrhagic_stroke,42535421,Spontaneous hemorrhage of subarachnoid space from intracranial artery,S
+haemorrhagic_stroke,45766118,Non-aneurysmal subarachnoid intracranial hemorrhage,S
+haemorrhagic_stroke,42538062,Spontaneous intracranial hemorrhage,S
+haemorrhagic_stroke,42873042,Subpial intracranial hemorrhage,S
+haemorrhagic_stroke,439847,Intracranial hemorrhage,S
+haemorrhagic_stroke,4172545,Angiogram-negative subarachnoid hemorrhage,S
+haemorrhagic_stroke,432923,Subarachnoid hemorrhage,S
+haemorrhagic_stroke,4046365,Subarachnoid hemorrhage due to ruptured aneurysm,S
+haemorrhagic_stroke,4111708,Subarachnoid hemorrhage from vertebral artery,S
+haemorrhagic_stroke,4148906,Spontaneous subarachnoid hemorrhage,S
+haemorrhagic_stroke,42535423,Spontaneous hemorrhage of deep cerebral hemisphere,S
+haemorrhagic_stroke,42535424,Spontaneous hemorrhage of cortical intracerebral hemisphere,S
+haemorrhagic_stroke,42535425,Spontaneous hemorrhage of cerebral hemisphere,S
+haemorrhagic_stroke,42539269,Spontaneous hemorrhage of brain stem,S
+haemorrhagic_stroke,43530674,Spontaneous cerebellar hemorrhage,S
+haemorrhagic_stroke,43530727,Spontaneous cerebral hemorrhage,S
+haemorrhagic_stroke,44782730,Nontraumatic intraparenchymal cerebral hemorrhage,S
+haemorrhagic_stroke,45766120,Convexal subarachnoid hemorrhage,S
+haemorrhagic_stroke,46270111,Nontraumatic subarachnoid hemorrhage with brain compression,S
+haemorrhagic_stroke,37309659,Spontaneous hemorrhage of subarachnoid space from anterior communicating artery,S
+haemorrhagic_stroke,46273491,Spontaneous cerebral hemorrhage with compression of brain,S
+haemorrhagic_stroke,42535420,Spontaneous hemorrhage of subarachnoid space from basilar artery,S
+haemorrhagic_stroke,4077200,Subarachnoid hemorrhage from posterior cerebral artery aneurysm,S
+haemorrhagic_stroke,42535422,Spontaneous hemorrhage of subarachnoid space from left posterior communicating artery,S
+haemorrhagic_stroke,4077201,Subarachnoid hemorrhage from basilar artery aneurysm,S
+haemorrhagic_stroke,4077827,Subarachnoid hemorrhage from multiple aneurysms,S
+haemorrhagic_stroke,4077828,Subarachnoid hemorrhage from anterior cerebral artery aneurysm,S
+haemorrhagic_stroke,42539183,Spontaneous hemorrhage of subarachnoid space from right posterior communicating artery,S
+haemorrhagic_stroke,4077958,Subarachnoid hemorrhage from anterior communicating artery aneurysm,S
+haemorrhagic_stroke,4077959,Subarachnoid hemorrhage from posterior communicating artery aneurysm,S
+haemorrhagic_stroke,4078446,Subarachnoid hemorrhage from middle cerebral artery aneurysm,S
+haemorrhagic_stroke,762095,Spontaneous hemorrhage of subarachnoid space from left middle cerebral artery,S
+haemorrhagic_stroke,4078447,Subarachnoid hemorrhage from posterior inferior cerebellar artery aneurysm,S
+haemorrhagic_stroke,762096,Non-traumatic hemorrhage of subarachnoid space from right middle cerebral artery,S
+haemorrhagic_stroke,4046364,Subarachnoid hemorrhage due to ruptured arteriovenous malformation,S
+haemorrhagic_stroke,4078448,Subarachnoid hemorrhage from carotid artery aneurysm,S
+haemorrhagic_stroke,4108952,Subarachnoid hemorrhage from carotid siphon and bifurcation,S
+haemorrhagic_stroke,4173481,Cerebromeningeal hemorrhage,S
+haemorrhagic_stroke,45766119,Perimesencephalic subarachnoid hemorrhage,S
+haemorrhagic_stroke,45766830,Non-aneurysmal perimesencephalic subarachnoid hemorrhage,S
+haemorrhagic_stroke,4144154,Non-traumatic intracerebral ventricular hemorrhage,S
+haemorrhagic_stroke,45773167,Subarachnoid hemorrhage from vertebral artery aneurysm,S
+haemorrhagic_stroke,376713,Cerebral hemorrhage,S
+haemorrhagic_stroke,443752,Ventricular hemorrhage,S
+haemorrhagic_stroke,4045743,Massive supratentorial cerebral hemorrhage,S
+haemorrhagic_stroke,4045744,Lobar cerebral hemorrhage,S
+haemorrhagic_stroke,4045745,Thalamic hemorrhage,S
+haemorrhagic_stroke,4049659,Subcortical hemorrhage,S
+haemorrhagic_stroke,4080892,Intracerebellar and posterior fossa hemorrhage,S
+haemorrhagic_stroke,4110185,"Intracerebral hemorrhage, intraventricular",S
+haemorrhagic_stroke,4110186,"Intracerebral hemorrhage, multiple localized",S
+haemorrhagic_stroke,4112018,Basal ganglia hemorrhage,S
+haemorrhagic_stroke,4112019,External capsule hemorrhage,S
+haemorrhagic_stroke,4129535,Pituitary hemorrhage,S
+haemorrhagic_stroke,4176892,Cortical hemorrhage,S
+haemorrhagic_stroke,4178726,Internal capsule hemorrhage,S
+haemorrhagic_stroke,37109909,Silent micro-hemorrhage of brain,S
+haemorrhagic_stroke,4199890,Hematoma of brain,S
+haemorrhagic_stroke,4201094,Cerebellar hematoma,S
+haemorrhagic_stroke,4218781,Cerebral hemisphere hemorrhage,S
+haemorrhagic_stroke,37116267,Hemorrhage of medulla oblongata,S
+haemorrhagic_stroke,4298750,Periventricular hemorrhagic venous infarct,S
+haemorrhagic_stroke,40492969,Intraparenchymal hemorrhage of brain,S
+haemorrhagic_stroke,4299377,Intrapontine hemorrhage,S
+haemorrhagic_stroke,4319328,Brain stem hemorrhage,S
+haemorrhagic_stroke,4326561,Cerebellar hemorrhage,S
+haemorrhagic_stroke,4328027,Intraparenchymal hematoma of brain,S
+haemorrhagic_stroke,42872434,Intracranial hematoma,S
+haemorrhagic_stroke,42873044,Hemorrhage in globus pallidus,S
+haemorrhagic_stroke,42873045,Hemorrhage in caudate nucleus,S
+haemorrhagic_stroke,42873046,Hemorrhage in putamen,S
+haemorrhagic_stroke,45766068,Deep hemispheric cerebral hemorrhage,S
+haemorrhagic_stroke,762351,Ruptured acquired aneurysm of cerebral artery,S
+haemorrhagic_stroke,764707,Ruptured aneurysm of intracranial artery,S
+encephalitis,36676495,Limbic encephalitis with dipeptidyl-peptidase 6 antibodies,S
+encephalitis,37399546,Limbic encephalitis with N-methyl-D-aspartate receptor antibodies,S
+encephalitis,44806551,Acute encephalitis,S
+encephalitis,379792,Post-immunization encephalitis,S
+encephalitis,764228,Autoimmune encephalitis caused by N-methyl D-aspartate receptor antibody,S
+encephalitis,4041671,Brainstem encephalitis,S
+encephalitis,4041673,Limbic encephalitis,S
+encephalitis,4047626,Focal encephalitis,S
+encephalitis,4088249,Encephalitis lethargica,S
+encephalitis,4100108,Post tetanus vaccination encephalitis,S
+encephalitis,4100109,Post smallpox vaccination encephalitis,S
+encephalitis,4100110,Post typhus vaccination encephalitis,S
+encephalitis,4100111,Post rubella vaccination encephalitis,S
+encephalitis,4100112,Post hepatitis A vaccination encephalitis,S
+encephalitis,4102198,Post BCG vaccination encephalitis,S
+encephalitis,4102199,Post measles vaccination encephalitis,S
+encephalitis,4103107,Post typhoid vaccination encephalitis,S
+encephalitis,4103108,Post paratyphoid vaccination encephalitis,S
+encephalitis,4103109,Post cholera vaccination encephalitis,S
+encephalitis,4103110,Post plague vaccination encephalitis,S
+encephalitis,4103111,Post pertussis vaccination encephalitis,S
+encephalitis,4103112,Post rabies vaccination encephalitis,S
+encephalitis,4103113,Post yellow fever vaccination encephalitis,S
+encephalitis,4103114,Post polio vaccination encephalitis,S
+encephalitis,4103116,Post influenza vaccination encephalitis,S
+encephalitis,4104690,Post hepatitis B vaccination encephalitis,S
+encephalitis,4105200,Post diphtheria vaccination encephalitis,S
+encephalitis,4105201,Post mixed vaccination encephalitis,S
+encephalitis,4141686,Bickerstaff's brainstem encephalitis,S
+encephalitis,4147498,"Encephalitis, myelitis and encephalomyelitis",S
+encephalitis,4249132,Primary encephalitis,S
+encephalitis,4318558,Autoimmune encephalitis,S
+encephalitis,4322814,Meningoencephalitis,S
+encephalitis,35607961,Limbic encephalitis with leucine-rich glioma-inactivated 1 antibodies,S
+encephalitis,35622353,Limbic encephalitis with contactin-associated protein-like 2 antibodies,S
+encephalitis,35622805,Non-herpetic acute limbic encephalitis,S
+encephalitis,4249574,Acute hemorrhagic leukoencephalitis,S
+encephalitis,36674282,Steroid-responsive encephalopathy associated with autoimmune thyroiditis,S
+encephalitis,373189,Encephalomyelitis,S
+encephalitis,374021,Acute disseminated encephalomyelitis,S
+encephalitis,443802,Postvaccinal encephalomyelitis,S
+encephalitis,763040,"Rasmussen syndrome, refractory",S
+encephalitis,4104546,Meningoencephalomyelitis,S
+encephalitis,4041672,Rasmussen syndrome,S
+encephalitis,4103115,Post mumps vaccination encephalitis,S
+immune_thrombocytopenia,4027374,Alloimmune platelet transfusion refractoriness,S
+immune_thrombocytopenia,4133984,Alloimmune thrombocytopenia,S
+immune_thrombocytopenia,318397,Chronic idiopathic thrombocytopenic purpura,S
+immune_thrombocytopenia,4000065,Drug-induced immune thrombocytopenia,S
+immune_thrombocytopenia,4119134,Thrombocytopenic purpura,S
+immune_thrombocytopenia,4103532,Immune thrombocytopenia,S
+immune_thrombocytopenia,4028065,Primary ITP (immune thrombocytopenia),S
+immune_thrombocytopenia,4133983,Secondary autoimmune thrombocytopenia,S
+immune_thrombocytopenia,4102469,Acute idiopathic thrombocytopenic purpura,NA
+immune_thrombocytopenia,4137430,Idiopathic thrombocytopenic purpura,NA
+immune_thrombocytopenia,441264,Primary thrombocytopenia,S
+disseminated_intravascular_coagulation,4028488,Purpura fulminans,S
+disseminated_intravascular_coagulation,436093,Disseminated intravascular coagulation,S
+disseminated_intravascular_coagulation,37117819,Acquired purpura fulminans,S
+narcolepsy,42536721,Narcolepsy type 1,S
+narcolepsy,436100,Narcolepsy,S
+narcolepsy,437854,Cataplexy and narcolepsy,S
+narcolepsy,43531721,Narcolepsy without cataplexy,S
+deep_vein_thrombosis,762047,Acute bilateral thrombosis of subclavian veins,S
+deep_vein_thrombosis,762148,Acute deep vein thrombosis of bilateral iliac veins,S
+deep_vein_thrombosis,35616028,Acute deep vein thrombosis of left iliac vein,S
+deep_vein_thrombosis,35615035,Acute deep vein thrombosis of left lower limb following procedure,S
+deep_vein_thrombosis,35615031,Acute deep vein thrombosis of left upper limb following procedure,S
+deep_vein_thrombosis,43531681,Acute deep vein thrombosis of lower limb,S
+deep_vein_thrombosis,35616027,Acute deep vein thrombosis of right iliac vein,S
+deep_vein_thrombosis,44782746,Acute deep venous thrombosis,S
+deep_vein_thrombosis,44782751,Acute deep venous thrombosis of axillary vein,S
+deep_vein_thrombosis,762008,Acute deep venous thrombosis of bilateral axillary veins,S
+deep_vein_thrombosis,760875,Acute deep venous thrombosis of bilateral calves,S
+deep_vein_thrombosis,765155,Acute deep venous thrombosis of bilateral ileofemoral veins,S
+deep_vein_thrombosis,762017,Acute deep venous thrombosis of bilateral internal jugular veins,S
+deep_vein_thrombosis,762417,Acute deep venous thrombosis of bilateral legs,S
+deep_vein_thrombosis,762020,Acute deep venous thrombosis of bilateral popliteal veins,S
+deep_vein_thrombosis,765546,Acute deep venous thrombosis of bilateral tibial veins,S
+deep_vein_thrombosis,762004,Acute deep venous thrombosis of both upper extremities,S
+deep_vein_thrombosis,44782742,Acute deep venous thrombosis of calf,S
+deep_vein_thrombosis,44782747,Acute deep venous thrombosis of femoral vein,S
+deep_vein_thrombosis,762015,Acute deep venous thrombosis of ileofemoral vein of left leg,S
+deep_vein_thrombosis,765541,Acute deep venous thrombosis of ileofemoral vein of right lower extremity,S
+deep_vein_thrombosis,44782748,Acute deep venous thrombosis of iliofemoral vein,S
+deep_vein_thrombosis,44782752,Acute deep venous thrombosis of internal jugular vein,S
+deep_vein_thrombosis,762009,Acute deep venous thrombosis of left axillary vein,S
+deep_vein_thrombosis,760876,Acute deep venous thrombosis of left calf,S
+deep_vein_thrombosis,765540,Acute deep venous thrombosis of left femoral vein,S
+deep_vein_thrombosis,765922,Acute deep venous thrombosis of left internal jugular vein,S
+deep_vein_thrombosis,762418,Acute deep venous thrombosis of left lower extremity,S
+deep_vein_thrombosis,765537,Acute deep venous thrombosis of left upper extremity,S
+deep_vein_thrombosis,762022,Acute deep venous thrombosis of politeal vein of right leg,S
+deep_vein_thrombosis,44782743,Acute deep venous thrombosis of popliteal vein,S
+deep_vein_thrombosis,762021,Acute deep venous thrombosis of popliteal vein of left leg,S
+deep_vein_thrombosis,762010,Acute deep venous thrombosis of right axillary vein,S
+deep_vein_thrombosis,760877,Acute deep venous thrombosis of right calf,S
+deep_vein_thrombosis,762013,Acute deep venous thrombosis of right femoral vein,S
+deep_vein_thrombosis,762018,Acute deep venous thrombosis of right internal jugular vein,S
+deep_vein_thrombosis,762419,Acute deep venous thrombosis of right lower extremity,S
+deep_vein_thrombosis,762005,Acute deep venous thrombosis of right upper extremity,S
+deep_vein_thrombosis,44782745,Acute deep venous thrombosis of thigh,S
+deep_vein_thrombosis,44782744,Acute deep venous thrombosis of tibial vein,S
+deep_vein_thrombosis,762026,Acute deep venous thrombosis of tibial vein of left leg,S
+deep_vein_thrombosis,765156,Acute deep venous thrombosis of tibial vein of right leg,S
+deep_vein_thrombosis,44782421,Acute deep venous thrombosis of upper extremity,S
+deep_vein_thrombosis,762048,Acute thrombosis of left subclavian vein,S
+deep_vein_thrombosis,45757410,Acute thrombosis of mesenteric vein,S
+deep_vein_thrombosis,762049,Acute thrombosis of right subclavian vein,S
+deep_vein_thrombosis,36712892,Acute thrombosis of splenic vein,S
+deep_vein_thrombosis,4179911,Axillary vein thrombosis,S
+deep_vein_thrombosis,44782762,Acute thrombosis of subclavian vein,S
+deep_vein_thrombosis,37109253,Bilateral acute deep vein thrombosis of femoral veins,S
+deep_vein_thrombosis,40478951,Bilateral deep vein thrombosis of lower extremities,S
+deep_vein_thrombosis,4042396,Deep thrombophlebitis,S
+deep_vein_thrombosis,77310,Deep vein phlebitis and thrombophlebitis of the leg,NA
+deep_vein_thrombosis,4189004,Deep vein thrombosis of leg related to intravenous drug use,NA
+deep_vein_thrombosis,3655221,Deep vein thrombosis of lower extremity due to intravenous drug use,S
+deep_vein_thrombosis,4133004,Deep venous thrombosis,S
+deep_vein_thrombosis,45773536,Deep venous thrombosis of femoropopliteal vein,S
+deep_vein_thrombosis,763942,Deep venous thrombosis of left lower extremity,S
+deep_vein_thrombosis,761980,Deep venous thrombosis of left upper extremity,S
+deep_vein_thrombosis,443537,Deep venous thrombosis of lower extremity,S
+deep_vein_thrombosis,4133975,Deep venous thrombosis of pelvic vein,S
+deep_vein_thrombosis,40480555,Deep venous thrombosis of peroneal vein,S
+deep_vein_thrombosis,4322565,Deep venous thrombosis of profunda femoris vein,S
+deep_vein_thrombosis,763941,Deep venous thrombosis of right lower extremity,S
+deep_vein_thrombosis,761928,Deep venous thrombosis of right upper extremity,S
+deep_vein_thrombosis,4207899,Deep venous thrombosis of tibial vein,S
+deep_vein_thrombosis,4028057,Deep venous thrombosis of upper extremity,S
+deep_vein_thrombosis,435565,Embolism and thrombosis of the vena cava,S
+deep_vein_thrombosis,40481089,Embolism from thrombosis of vein of lower extremity,S
+deep_vein_thrombosis,4119760,Iliofemoral deep vein thrombosis,S
+deep_vein_thrombosis,4124856,Inferior mesenteric vein thrombosis,S
+deep_vein_thrombosis,4096099,Phlebitis of deep veins of lower extremity,S
+deep_vein_thrombosis,4281689,Phlegmasia alba dolens,S
+deep_vein_thrombosis,4284538,Phlegmasia cerulea dolens,S
+deep_vein_thrombosis,46285905,Provoked deep vein thrombosis,S
+deep_vein_thrombosis,46271900,Recurrent deep vein thrombosis,S
+deep_vein_thrombosis,4033521,Splenic vein thrombosis,S
+deep_vein_thrombosis,4055089,Superior mesenteric vein thrombosis,S
+deep_vein_thrombosis,4230403,Thrombophlebitis of axillary vein,S
+deep_vein_thrombosis,4069561,Thrombophlebitis of deep femoral vein,S
+deep_vein_thrombosis,761831,Thrombophlebitis of deep vein of bilateral lower limbs,S
+deep_vein_thrombosis,761830,Thrombophlebitis of deep vein of left lower limb,S
+deep_vein_thrombosis,761808,Thrombophlebitis of deep vein of left upper limb,S
+deep_vein_thrombosis,761832,Thrombophlebitis of deep vein of right lower limb,S
+deep_vein_thrombosis,761809,Thrombophlebitis of deep vein of right upper limb,S
+deep_vein_thrombosis,4221821,Thrombophlebitis of deep veins of lower extremity,S
+deep_vein_thrombosis,440750,Thrombophlebitis of deep veins of upper extremities,S
+deep_vein_thrombosis,4176614,Thrombophlebitis of iliac vein,S
+deep_vein_thrombosis,761821,Thrombophlebitis of left deep femoral vein,S
+deep_vein_thrombosis,761819,Thrombophlebitis of left femoral vein,S
+deep_vein_thrombosis,761820,Thrombophlebitis of right deep femoral vein,S
+deep_vein_thrombosis,761818,Thrombophlebitis of right femoral vein,S
+deep_vein_thrombosis,4110339,Thrombophlebitis of the anterior tibial vein,S
+deep_vein_thrombosis,4111868,Thrombophlebitis of the common iliac vein,S
+deep_vein_thrombosis,4110343,Thrombophlebitis of the external iliac vein,S
+deep_vein_thrombosis,439314,Thrombophlebitis of the femoral vein,S
+deep_vein_thrombosis,4109877,Thrombophlebitis of the internal iliac vein,S
+deep_vein_thrombosis,4112171,Thrombophlebitis of the popliteal vein,S
+deep_vein_thrombosis,4112172,Thrombophlebitis of the posterior tibial vein,S
+deep_vein_thrombosis,4250765,Thrombophlebitis of tibial vein,S
+deep_vein_thrombosis,42538533,Thrombosis of iliac vein,S
+deep_vein_thrombosis,44811347,Thrombosis of internal jugular vein,S
+deep_vein_thrombosis,765049,Thrombosis of left peroneal vein,S
+deep_vein_thrombosis,4317289,Thrombosis of mesenteric vein,S
+deep_vein_thrombosis,4203836,Thrombosis of subclavian vein,S
+deep_vein_thrombosis,4175649,Thrombosis of the popliteal vein,S
+deep_vein_thrombosis,4149782,Thrombosis of vein of lower limb,S
+deep_vein_thrombosis,4153353,Traumatic thrombosis of axillary vein,S
+deep_vein_thrombosis,46285904,Unprovoked deep vein thrombosis,S
+deep_vein_thrombosis,199837,Portal vein thrombosis,S
+deep_vein_thrombosis,193512,Embolism and thrombosis of the renal vein,S
+deep_vein_thrombosis,4111861,Phlebitis of popliteal vein,S
+deep_vein_thrombosis,440738,Phlebitis of the femoral vein,S
+deep_vein_thrombosis,435887,Antepartum deep vein thrombosis,S
+deep_vein_thrombosis,438820,Deep venous thrombosis in puerperium,S
+anaphylaxis,37207726,Anaphylaxis due to allergen immunotherapy,NA
+anaphylaxis,42539054,Shock co-occurrent and due to anaphylaxis caused by serum,S
+anaphylaxis,441202,Anaphylaxis,S
+anaphylaxis,4083867,Human protein-induced anaphylaxis,NA
+anaphylaxis,4084639,Idiopathic anaphylaxis,S
+anaphylaxis,42536383,Anaphylactic shock,S
+anaphylaxis,442038,Anaphylactic shock due to serum,S
+anaphylaxis,4193788,Anaphylactic transfusion reaction,S
+anaphylaxis,4302371,"Anaphylactic shock, due to adverse effect of correct medicinal substance properly administered",NA
+anaphylaxis,762509,Anaphylaxis due to human papillomavirus vaccine,S
+anaphylaxis,762511,Anaphylaxis due to diphtheria and tetanus vaccine,S
+anaphylaxis,762512,"Anaphylaxis due to tetanus, diphtheria and acellular pertussis vaccine",S
+anaphylaxis,762513,Anaphylaxis due to meningococcal vaccine,S
+anaphylaxis,762514,Anaphylaxis due to Hepatitis B vaccine,S
+anaphylaxis,762515,Anaphylaxis due to rotavirus vaccine,S
+anaphylaxis,762909,Anaphylaxis due to Hemophilus influenzae type b vaccine,NA
+anaphylaxis,4084168,Drug-induced anaphylaxis,S
+anaphylaxis,4084169,Penicillin-induced anaphylaxis,S
+anaphylaxis,4086737,Insulin-induced anaphylaxis,S
+anaphylaxis,4302371,"Anaphylactic shock, due to adverse effect of correct medicinal substance properly administered",NA
+myocarditis_or_pericarditis,312653,Acute myocarditis,S
+myocarditis_or_pericarditis,4147350,Acute myoendocarditis,S
+myocarditis_or_pericarditis,4006483,Acute myopericarditis,S
+myocarditis_or_pericarditis,317307,Idiopathic myocarditis,S
+myocarditis_or_pericarditis,43020652,Inflammatory cardiomyopathy,S
+myocarditis_or_pericarditis,4242712,Interstitial myocarditis,S
+myocarditis_or_pericarditis,314383,Myocarditis,S
+myocarditis_or_pericarditis,4219260,Myocarditis due to drug,S
+myocarditis_or_pericarditis,4336533,Myocarditis due to hypersensitivity state,S
+myocarditis_or_pericarditis,37109914,Myopericarditis,S
+myocarditis_or_pericarditis,4143969,Isolated (Fiedler's) myocarditis,S
+myocarditis_or_pericarditis,4071283,Acute benign pericarditis,S
+myocarditis_or_pericarditis,4072086,Acute bloody pericarditis,S
+myocarditis_or_pericarditis,4070323,Acute effusive pericarditis,S
+myocarditis_or_pericarditis,315293,Acute idiopathic pericarditis,S
+myocarditis_or_pericarditis,4304392,Acute mediastinopericarditis,S
+myocarditis_or_pericarditis,4006483,Acute myopericarditis,S
+myocarditis_or_pericarditis,320116,Acute pericarditis,S
+myocarditis_or_pericarditis,4204985,Acute periendocarditis,S
+myocarditis_or_pericarditis,4069712,Acute pleuropericarditis,S
+myocarditis_or_pericarditis,4178425,Acute pneumopericarditis,S
+myocarditis_or_pericarditis,44782774,Chest pain due to pericarditis,S
+myocarditis_or_pericarditis,4031469,Drug-induced pericarditis,S
+myocarditis_or_pericarditis,4218568,Non-infectious pericarditis,S
+myocarditis_or_pericarditis,4138837,Pericarditis,S
+myocarditis_or_pericarditis,4245386,Pericarditis sicca,S
+myocarditis_or_pericarditis,312928,adhesive pericarditis,S
+myocarditis_or_pericarditis,312334,constrictive pericarditis,S
+myocarditis_or_pericarditis,4238032,Acute pericardial effusion,S
+myocarditis_or_pericarditis,4108814,Pericardial effusion - noninflammatory,S
+myocarditis_or_pericarditis,4203625,Chronic constrictive pericarditis,S
+myocarditis_or_pericarditis,4121477,Post-infarction pericarditis,S
+thrombosis,45766075,Acute anterior ST segment elevation myocardial infarction,S
+thrombosis,4178129,Acute anteroapical myocardial infarction,S
+thrombosis,4267568,Acute anteroseptal myocardial infarction,S
+thrombosis,762047,Acute bilateral thrombosis of subclavian veins,S
+thrombosis,762148,Acute deep vein thrombosis of bilateral iliac veins,S
+thrombosis,761444,Acute deep vein thrombosis of bilateral lower limbs following coronary artery bypass graft,S
+thrombosis,35616028,Acute deep vein thrombosis of left iliac vein,S
+thrombosis,35615035,Acute deep vein thrombosis of left lower limb following procedure,S
+thrombosis,761416,Acute deep vein thrombosis of left upper limb following coronary artery bypass graft,S
+thrombosis,35615031,Acute deep vein thrombosis of left upper limb following procedure,S
+thrombosis,43531681,Acute deep vein thrombosis of lower limb,S
+thrombosis,35616027,Acute deep vein thrombosis of right iliac vein,S
+thrombosis,35615034,Acute deep vein thrombosis of right lower limb following procedure,S
+thrombosis,761415,Acute deep vein thrombosis of right upper limb following coronary artery bypass graft,S
+thrombosis,35615030,Acute deep vein thrombosis of right upper limb following procedure,S
+thrombosis,44782746,Acute deep venous thrombosis,S
+thrombosis,44782751,Acute deep venous thrombosis of axillary vein,S
+thrombosis,762008,Acute deep venous thrombosis of bilateral axillary veins,S
+thrombosis,760875,Acute deep venous thrombosis of bilateral calves,S
+thrombosis,765155,Acute deep venous thrombosis of bilateral ileofemoral veins,S
+thrombosis,762017,Acute deep venous thrombosis of bilateral internal jugular veins,S
+thrombosis,762417,Acute deep venous thrombosis of bilateral legs,S
+thrombosis,762020,Acute deep venous thrombosis of bilateral popliteal veins,S
+thrombosis,765546,Acute deep venous thrombosis of bilateral tibial veins,S
+thrombosis,762004,Acute deep venous thrombosis of both upper extremities,S
+thrombosis,44782742,Acute deep venous thrombosis of calf,S
+thrombosis,44782747,Acute deep venous thrombosis of femoral vein,S
+thrombosis,762015,Acute deep venous thrombosis of ileofemoral vein of left leg,S
+thrombosis,765541,Acute deep venous thrombosis of ileofemoral vein of right lower extremity,S
+thrombosis,44782748,Acute deep venous thrombosis of iliofemoral vein,S
+thrombosis,44782752,Acute deep venous thrombosis of internal jugular vein,S
+thrombosis,762009,Acute deep venous thrombosis of left axillary vein,S
+thrombosis,760876,Acute deep venous thrombosis of left calf,S
+thrombosis,765540,Acute deep venous thrombosis of left femoral vein,S
+thrombosis,765922,Acute deep venous thrombosis of left internal jugular vein,S
+thrombosis,762418,Acute deep venous thrombosis of left lower extremity,S
+thrombosis,765537,Acute deep venous thrombosis of left upper extremity,S
+thrombosis,44782767,Acute deep venous thrombosis of lower extremity as complication of procedure,S
+thrombosis,46270071,Acute deep venous thrombosis of lower limb due to and following coronary artery bypass grafting,S
+thrombosis,762022,Acute deep venous thrombosis of politeal vein of right leg,S
+thrombosis,44782743,Acute deep venous thrombosis of popliteal vein,S
+thrombosis,762021,Acute deep venous thrombosis of popliteal vein of left leg,S
+thrombosis,762010,Acute deep venous thrombosis of right axillary vein,S
+thrombosis,760877,Acute deep venous thrombosis of right calf,S
+thrombosis,762013,Acute deep venous thrombosis of right femoral vein,S
+thrombosis,762018,Acute deep venous thrombosis of right internal jugular vein,S
+thrombosis,762419,Acute deep venous thrombosis of right lower extremity,S
+thrombosis,762005,Acute deep venous thrombosis of right upper extremity,S
+thrombosis,44782745,Acute deep venous thrombosis of thigh,S
+thrombosis,44782744,Acute deep venous thrombosis of tibial vein,S
+thrombosis,762026,Acute deep venous thrombosis of tibial vein of left leg,S
+thrombosis,765156,Acute deep venous thrombosis of tibial vein of right leg,S
+thrombosis,44782421,Acute deep venous thrombosis of upper extremity,S
+thrombosis,764016,Acute deep venous thrombosis of upper extremity after coronary artery bypass graft,S
+thrombosis,44782766,Acute deep venous thrombosis of upper extremity as complication of procedure,S
+thrombosis,4120091,Acute massive pulmonary embolism,S
+thrombosis,312327,Acute myocardial infarction,S
+thrombosis,44782769,Acute myocardial infarction due to left coronary artery occlusion,S
+thrombosis,44782712,Acute myocardial infarction due to right coronary artery occlusion,S
+thrombosis,45766115,Acute myocardial infarction during procedure,S
+thrombosis,434376,Acute myocardial infarction of anterior wall,S
+thrombosis,45766150,Acute myocardial infarction of anterior wall involving right ventricle,S
+thrombosis,438438,Acute myocardial infarction of anterolateral wall,S
+thrombosis,4243372,Acute myocardial infarction of apical-lateral wall,S
+thrombosis,4108669,Acute myocardial infarction of atrium,S
+thrombosis,4151046,Acute myocardial infarction of basal-lateral wall,S
+thrombosis,4275436,Acute myocardial infarction of high lateral wall,S
+thrombosis,438170,Acute myocardial infarction of inferior wall,S
+thrombosis,45771322,Acute myocardial infarction of inferior wall involving right ventricle,S
+thrombosis,438447,Acute myocardial infarction of inferolateral wall,S
+thrombosis,441579,Acute myocardial infarction of inferoposterior wall,S
+thrombosis,436706,Acute myocardial infarction of lateral wall,S
+thrombosis,4324413,Acute myocardial infarction of posterobasal wall,S
+thrombosis,4051874,Acute myocardial infarction of posterolateral wall,S
+thrombosis,4303359,Acute myocardial infarction of septum,S
+thrombosis,4145721,Acute non-Q wave infarction,S
+thrombosis,4119944,Acute non-Q wave infarction - anterolateral,S
+thrombosis,4119456,Acute non-Q wave infarction - anteroseptal,S
+thrombosis,4119945,Acute non-Q wave infarction - inferior,S
+thrombosis,4119946,Acute non-Q wave infarction - inferolateral,S
+thrombosis,4121466,Acute non-Q wave infarction - lateral,S
+thrombosis,4124685,Acute non-Q wave infarction - widespread,S
+thrombosis,4270024,Acute non-ST segment elevation myocardial infarction,S
+thrombosis,35610091,Acute nontransmural myocardial infarction,S
+thrombosis,319039,Acute posterior myocardial infarction,S
+thrombosis,45768439,Acute pulmonary embolism,S
+thrombosis,45768888,Acute pulmonary thromboembolism,S
+thrombosis,4119457,Acute Q wave infarction - anterolateral,S
+thrombosis,4119943,Acute Q wave infarction - anteroseptal,S
+thrombosis,4121464,Acute Q wave infarction - inferior,S
+thrombosis,4121465,Acute Q wave infarction - inferolateral,S
+thrombosis,4124684,Acute Q wave infarction - lateral,S
+thrombosis,4119948,Acute Q wave infarction - widespread,S
+thrombosis,4126801,Acute Q wave myocardial infarction,S
+thrombosis,4296653,Acute ST segment elevation myocardial infarction,S
+thrombosis,46270162,Acute ST segment elevation myocardial infarction due to left coronary artery occlusion,S
+thrombosis,46270163,Acute ST segment elevation myocardial infarction due to right coronary artery occlusion,S
+thrombosis,43020460,Acute ST segment elevation myocardial infarction involving left anterior descending coronary artery,S
+thrombosis,45766076,Acute ST segment elevation myocardial infarction of anterior wall involving right ventricle,S
+thrombosis,761736,Acute ST segment elevation myocardial infarction of anteroapical wall,S
+thrombosis,46270159,Acute ST segment elevation myocardial infarction of anterolateral wall,S
+thrombosis,46270160,Acute ST segment elevation myocardial infarction of anteroseptal wall,S
+thrombosis,45766116,Acute ST segment elevation myocardial infarction of inferior wall,S
+thrombosis,45766151,Acute ST segment elevation myocardial infarction of inferior wall involving right ventricle,S
+thrombosis,35611570,Acute ST segment elevation myocardial infarction of inferolateral wall,S
+thrombosis,35611571,Acute ST segment elevation myocardial infarction of inferoposterior wall,S
+thrombosis,46274044,Acute ST segment elevation myocardial infarction of lateral wall,S
+thrombosis,46270161,Acute ST segment elevation myocardial infarction of posterior wall,S
+thrombosis,46273495,Acute ST segment elevation myocardial infarction of posterobasal wall,S
+thrombosis,46270158,Acute ST segment elevation myocardial infarction of posterolateral wall,S
+thrombosis,46270164,Acute ST segment elevation myocardial infarction of septum,S
+thrombosis,444406,Acute subendocardial infarction,S
+thrombosis,762048,Acute thrombosis of left subclavian vein,S
+thrombosis,45757410,Acute thrombosis of mesenteric vein,S
+thrombosis,762049,Acute thrombosis of right subclavian vein,S
+thrombosis,36712892,Acute thrombosis of splenic vein,S
+thrombosis,44782762,Acute thrombosis of subclavian vein,S
+thrombosis,35610093,Acute transmural myocardial infarction,S
+thrombosis,4119947,Acute widespread myocardial infarction,S
+thrombosis,4048784,Anterior cerebral circulation hemorrhagic infarction,S
+thrombosis,4045735,Anterior cerebral circulation infarction,S
+thrombosis,4031045,Anterior choroidal artery syndrome,S
+thrombosis,37109912,Arrhythmia due to and following acute myocardial infarction,S
+thrombosis,438172,Atrial septal defect due to and following acute myocardial infarction,S
+thrombosis,37109253,Bilateral acute deep vein thrombosis of femoral veins,S
+thrombosis,761110,Bilateral cerebral infarction due to precererbral arterial occlusion,S
+thrombosis,40478951,Bilateral deep vein thrombosis of lower extremities,S
+thrombosis,196715,Budd-Chiari syndrome,S
+thrombosis,4124687,Cardiac rupture due to and following acute myocardial infarction,S
+thrombosis,372924,Cerebral artery occlusion,S
+thrombosis,4110189,Cerebral infarct due to thrombosis of precerebral arteries,S
+thrombosis,443454,Cerebral infarction,S
+thrombosis,762951,Cerebral infarction due to anterior cerebral artery occlusion,S
+thrombosis,765515,Cerebral infarction due to basilar artery stenosis,S
+thrombosis,43530683,Cerebral infarction due to carotid artery occlusion,S
+thrombosis,762933,Cerebral infarction due to cerebral artery occlusion,S
+thrombosis,762937,Cerebral infarction due to cerebral venous thrombosis,S
+thrombosis,4111714,"Cerebral infarction due to cerebral venous thrombosis, non-pyogenic",S
+thrombosis,4108356,Cerebral infarction due to embolism of cerebral arteries,S
+thrombosis,45772786,Cerebral infarction due to embolism of middle cerebral artery,S
+thrombosis,4110190,Cerebral infarction due to embolism of precerebral arteries,S
+thrombosis,762935,Cerebral infarction due to internal carotid artery occlusion,S
+thrombosis,763015,Cerebral infarction due to middle cerebral artery occlusion,S
+thrombosis,46273649,Cerebral infarction due to occlusion of basilar artery,S
+thrombosis,35610084,Cerebral infarction due to occlusion of cerebral artery,S
+thrombosis,46270031,Cerebral infarction due to occlusion of precerebral artery,S
+thrombosis,762934,Cerebral infarction due to posterior cerebral artery occlusion,S
+thrombosis,43531607,Cerebral infarction due to stenosis of carotid artery,S
+thrombosis,35610085,Cerebral infarction due to stenosis of cerebral artery,S
+thrombosis,46270381,Cerebral infarction due to stenosis of precerebral artery,S
+thrombosis,4110192,Cerebral infarction due to thrombosis of cerebral arteries,S
+thrombosis,45767658,Cerebral infarction due to thrombosis of middle cerebral artery,S
+thrombosis,44782773,Cerebral infarction due to vertebral artery occlusion,S
+thrombosis,46270380,Cerebral infarction due to vertebral artery stenosis,S
+thrombosis,37110678,Cerebral ischemic stroke due to occlusion of extracranial large artery,S
+thrombosis,37110679,Cerebral ischemic stroke due to stenosis of extracranial large artery,S
+thrombosis,4102202,Cerebral venous sinus thrombosis,S
+thrombosis,4046443,Cerebral venous thrombosis of cortical vein,S
+thrombosis,762938,Cerebral venous thrombosis of cortical vein with infarction,S
+thrombosis,762811,Cerebral venous thrombosis of cortical vein without infarction,S
+thrombosis,4048787,Cerebral venous thrombosis of great cerebral vein,S
+thrombosis,4048786,Cerebral venous thrombosis of sigmoid sinus,S
+thrombosis,4043735,Cerebral venous thrombosis of straight sinus,S
+thrombosis,45757409,Chronic thrombosis of mesenteric vein,S
+thrombosis,36712891,Chronic thrombosis of splenic vein,S
+thrombosis,4042396,Deep thrombophlebitis,S
+thrombosis,4046884,Deep vein thrombosis of leg related to air travel,S
+thrombosis,4133004,Deep venous thrombosis,S
+thrombosis,4181315,Deep venous thrombosis associated with coronary artery bypass graft,S
+thrombosis,45773536,Deep venous thrombosis of femoropopliteal vein,S
+thrombosis,763942,Deep venous thrombosis of left lower extremity,S
+thrombosis,761980,Deep venous thrombosis of left upper extremity,S
+thrombosis,443537,Deep venous thrombosis of lower extremity,S
+thrombosis,4133975,Deep venous thrombosis of pelvic vein,S
+thrombosis,40480555,Deep venous thrombosis of peroneal vein,S
+thrombosis,4322565,Deep venous thrombosis of profunda femoris vein,S
+thrombosis,763941,Deep venous thrombosis of right lower extremity,S
+thrombosis,761928,Deep venous thrombosis of right upper extremity,S
+thrombosis,4207899,Deep venous thrombosis of tibial vein,S
+thrombosis,4028057,Deep venous thrombosis of upper extremity,S
+thrombosis,435565,Embolism and thrombosis of the vena cava,S
+thrombosis,40481089,Embolism from thrombosis of vein of lower extremity,S
+thrombosis,4215259,First myocardial infarction,S
+thrombosis,4108678,Hemopericardium due to and following acute myocardial infarction,S
+thrombosis,4046362,Hemorrhagic cerebral infarction,S
+thrombosis,4309039,Hemorrhagic pulmonary infarction,S
+thrombosis,4119760,Iliofemoral deep vein thrombosis,S
+thrombosis,4131383,Infarction of basal ganglia,S
+thrombosis,762808,Infarction of lung due to embolus,S
+thrombosis,40480461,Infarction of lung due to iatrogenic pulmonary embolism,S
+thrombosis,4046237,Infarction of optic radiation,S
+thrombosis,4119140,Infarction of visual cortex,S
+thrombosis,4043731,Infarction - precerebral,S
+thrombosis,4124856,Inferior mesenteric vein thrombosis,S
+thrombosis,4120316,Intracranial septic thrombophlebitis,S
+thrombosis,4194609,Intracranial thrombophlebitis,S
+thrombosis,4141405,Left sided cerebral infarction,S
+thrombosis,4173167,Mesenteric embolus,S
+thrombosis,4173632,Microinfarct of heart,S
+thrombosis,45766214,Mitral valve regurgitation due to acute myocardial infarction without papillary muscle and chordal rupture,S
+thrombosis,45771327,Mitral valve regurgitation due to acute myocardial infarction with papillary muscle and chordal rupture,S
+thrombosis,4323202,Mixed myocardial ischemia and infarction,S
+thrombosis,37116473,Multifocal cerebral infarction due to and following procedure on cardiovascular system,S
+thrombosis,4329847,Myocardial infarction,S
+thrombosis,37309626,Myocardial infarction due to demand ischemia,S
+thrombosis,4170094,Myocardial infarction in recovery phase,S
+thrombosis,314667,Nonpyogenic thrombosis of intracranial venous sinus,S
+thrombosis,4111713,Non-pyogenic venous sinus thrombosis,S
+thrombosis,4200113,Non-Q wave myocardial infarction,S
+thrombosis,4077086,Occipital cerebral infarction,S
+thrombosis,764503,Occlusion of cerebral vein by nonpyogenic thrombus,S
+thrombosis,4046359,Partial anterior cerebral circulation infarction,S
+thrombosis,4096099,Phlebitis of deep veins of lower extremity,S
+thrombosis,4281689,Phlegmasia alba dolens,S
+thrombosis,4284538,Phlegmasia cerulea dolens,S
+thrombosis,4319146,Pituitary infarction,S
+thrombosis,4092406,Portal thrombophlebitis,S
+thrombosis,199837,Portal vein thrombosis,S
+thrombosis,4043732,Posterior cerebral circulation hemorrhagic infarction,S
+thrombosis,4309333,Postoperative deep vein thrombosis,S
+thrombosis,4030582,Postoperative myocardial infarction,S
+thrombosis,35610087,Postoperative nontransmural myocardial infarction,S
+thrombosis,4108681,Postoperative pulmonary embolus,S
+thrombosis,4206867,Postoperative subendocardial myocardial infarction,S
+thrombosis,35610089,Postoperative transmural myocardial infarction,S
+thrombosis,4207921,Postoperative transmural myocardial infarction of anterior wall,S
+thrombosis,4209541,Postoperative transmural myocardial infarction of inferior wall,S
+thrombosis,46285905,Provoked deep vein thrombosis,S
+thrombosis,440417,Pulmonary embolism,S
+thrombosis,37109911,Pulmonary embolism due to and following acute myocardial infarction,S
+thrombosis,37016922,Pulmonary embolism on long-term anticoagulation therapy,S
+thrombosis,43530605,Pulmonary embolism with pulmonary infarction,S
+thrombosis,254662,Pulmonary infarction,S
+thrombosis,4253796,Pulmonary microemboli,S
+thrombosis,4121618,Pulmonary thromboembolism,S
+thrombosis,4119610,Pulmonary tumor embolism,S
+thrombosis,46271900,Recurrent deep vein thrombosis,S
+thrombosis,4236271,Recurrent pulmonary embolism,S
+thrombosis,4146185,Right sided cerebral infarction,S
+thrombosis,4108679,Rupture of cardiac wall without hemopericardium as current complication following acute myocardial infarction,S
+thrombosis,4108219,Rupture of chordae tendinae due to and following acute myocardial infarction,S
+thrombosis,4147223,Rupture of ventricle due to acute myocardial infarction,S
+thrombosis,36713113,Saddle embolus of pulmonary artery,S
+thrombosis,35615055,Saddle embolus of pulmonary artery with acute cor pulmonale,S
+thrombosis,4116206,Septic thrombophlebitis of cavernous sinus,S
+thrombosis,4047634,Septic thrombophlebitis of cortical vein,S
+thrombosis,4043901,Septic thrombophlebitis of great cerebral vein,S
+thrombosis,4121335,Septic thrombophlebitis of lateral sinus,S
+thrombosis,4119136,Septic thrombophlebitis of sagittal sinus,S
+thrombosis,4041680,Septic thrombophlebitis of sigmoid sinus,S
+thrombosis,36717605,Silent cerebral infarct,S
+thrombosis,4124686,Silent myocardial infarction,S
+thrombosis,4033521,Splenic vein thrombosis,S
+thrombosis,4119607,Subacute massive pulmonary embolism,S
+thrombosis,765132,Subendocardial myocardial infarction,S
+thrombosis,4108217,Subsequent myocardial infarction,S
+thrombosis,4108677,Subsequent myocardial infarction of anterior wall,S
+thrombosis,4108218,Subsequent myocardial infarction of inferior wall,S
+thrombosis,45766241,Subsequent non-ST segment elevation myocardial infarction,S
+thrombosis,45766114,Subsequent ST segment elevation myocardial infarction,S
+thrombosis,45766113,Subsequent ST segment elevation myocardial infarction of anterior wall,S
+thrombosis,45773170,Subsequent ST segment elevation myocardial infarction of inferior wall,S
+thrombosis,4055089,Superior mesenteric vein thrombosis,S
+thrombosis,4142739,Thalamic infarction,S
+thrombosis,4100225,Thrombophlebitis lateral venous sinus,S
+thrombosis,4230403,Thrombophlebitis of axillary vein,S
+thrombosis,764716,Thrombophlebitis of basal vein of Rosenthal,S
+thrombosis,4217471,Thrombophlebitis of basilar sinus,S
+thrombosis,4104695,Thrombophlebitis of cavernous sinus,S
+thrombosis,4319332,Thrombophlebitis of cerebral vein,S
+thrombosis,4069561,Thrombophlebitis of deep femoral vein,S
+thrombosis,761831,Thrombophlebitis of deep vein of bilateral lower limbs,S
+thrombosis,761830,Thrombophlebitis of deep vein of left lower limb,S
+thrombosis,761808,Thrombophlebitis of deep vein of left upper limb,S
+thrombosis,761832,Thrombophlebitis of deep vein of right lower limb,S
+thrombosis,761809,Thrombophlebitis of deep vein of right upper limb,S
+thrombosis,4221821,Thrombophlebitis of deep veins of lower extremity,S
+thrombosis,440750,Thrombophlebitis of deep veins of upper extremities,S
+thrombosis,4176614,Thrombophlebitis of iliac vein,S
+thrombosis,4167985,Thrombophlebitis of inferior sagittal sinus,S
+thrombosis,764712,Thrombophlebitis of internal cerebral vein,S
+thrombosis,761821,Thrombophlebitis of left deep femoral vein,S
+thrombosis,761819,Thrombophlebitis of left femoral vein,S
+thrombosis,4318407,Thrombophlebitis of mesenteric vein,S
+thrombosis,761820,Thrombophlebitis of right deep femoral vein,S
+thrombosis,761818,Thrombophlebitis of right femoral vein,S
+thrombosis,764714,Thrombophlebitis of sigmoid sinus,S
+thrombosis,764708,Thrombophlebitis of straight sinus,S
+thrombosis,763149,Thrombophlebitis of superior anastomotic vein,S
+thrombosis,4100224,Thrombophlebitis of superior longitudinal venous sinus,S
+thrombosis,4098706,Thrombophlebitis of superior sagittal sinus,S
+thrombosis,4110339,Thrombophlebitis of the anterior tibial vein,S
+thrombosis,4111868,Thrombophlebitis of the common iliac vein,S
+thrombosis,4110343,Thrombophlebitis of the external iliac vein,S
+thrombosis,439314,Thrombophlebitis of the femoral vein,S
+thrombosis,4109877,Thrombophlebitis of the internal iliac vein,S
+thrombosis,4112171,Thrombophlebitis of the popliteal vein,S
+thrombosis,4112172,Thrombophlebitis of the posterior tibial vein,S
+thrombosis,4250765,Thrombophlebitis of tibial vein,S
+thrombosis,4277833,Thrombophlebitis of torcular Herophili,S
+thrombosis,4108680,"Thrombosis of atrium, auricular appendage, and ventricle due to and following acute myocardial infarction",S
+thrombosis,764726,Thrombosis of basal vein,S
+thrombosis,4228209,Thrombosis of basilar sinus,S
+thrombosis,4234264,Thrombosis of cavernous venous sinus,S
+thrombosis,762828,Thrombosis of cerebral medullary veins,S
+thrombosis,4319329,Thrombosis of cerebral veins,S
+thrombosis,42538533,Thrombosis of iliac vein,S
+thrombosis,4048890,Thrombosis of inferior sagittal sinus,S
+thrombosis,44811347,Thrombosis of internal jugular vein,S
+thrombosis,4057329,Thrombosis of lateral venous sinus,S
+thrombosis,765049,Thrombosis of left peroneal vein,S
+thrombosis,4317289,Thrombosis of mesenteric vein,S
+thrombosis,4203836,Thrombosis of subclavian vein,S
+thrombosis,764723,Thrombosis of superior anastomotic vein,S
+thrombosis,4102203,Thrombosis of superior longitudinal sinus,S
+thrombosis,4290940,Thrombosis of superior sagittal sinus,S
+thrombosis,4175649,Thrombosis of the popliteal vein,S
+thrombosis,4079905,Thrombosis of torcular Herophili,S
+thrombosis,4149782,Thrombosis of vein of lower limb,S
+thrombosis,4105338,Thrombosis transverse sinus,S
+thrombosis,4179912,Thrombus of intracranial vein,S
+thrombosis,4046358,Total anterior cerebral circulation infarction,S
+thrombosis,4153353,Traumatic thrombosis of axillary vein,S
+thrombosis,439693,True posterior myocardial infarction,S
+thrombosis,46285904,Unprovoked deep vein thrombosis,S
+thrombosis,37109910,Ventricular aneurysm due to and following acute myocardial infarction,S
+thrombosis,764710,Thrombophlebitis of transverse sinus,S
+thrombosis,4144032,Mesenteric thrombus and/or embolus,S
+thrombosis,45766212,Mitral valve regurgitation due to and following acute myocardial infarction,NA
+thrombosis,761737,Acute ST segment elevation myocardial infarction due to occlusion of circumflex coronary artery,NA
+thrombosis,77310,Deep vein phlebitis and thrombophlebitis of the leg,NA
+thrombosis,4189004,Deep vein thrombosis of leg related to intravenous drug use,NA
+thrombosis,4154704,Myocardial infarction with complication,NA
+thrombosis,4062269,Cerebral venous thrombosis in pregnancy,S
+thrombocytopenia,432870,Thrombocytopenic disorder,S
+thrombocytopenia,46272950,"Thrombocytopathy, asplenia and miosis",S
+thrombocytopenia,44782445,Thrombocytopenia due to alcohol,S
+thrombocytopenia,42536958,Pancytopenia caused by medication,S
+thrombocytopenia,40321716,Secondary thrombocytopenia,S
+thrombocytopenia,37312165,Atypical hemolytic uremic syndrome,S
+thrombocytopenia,37209558,Pancytopenia caused by immunosuppressant,S
+thrombocytopenia,37204551,Hereditary isolated aplastic anemia,S
+thrombocytopenia,37110394,Isolated thrombocytopenia,S
+thrombocytopenia,37019055,Aplastic anemia co-occurrent with human immunodeficiency virus infection,S
+thrombocytopenia,37018663,Thrombocytopenia co-occurrent and due to alcoholism,S
+thrombocytopenia,37017607,Antibody mediated acquired pure red cell aplasia caused by erythropoiesis stimulating agent,S
+thrombocytopenia,37016151,Aplastic anemia caused by antineoplastic agent,S
+thrombocytopenia,36716406,Severe fever with thrombocytopenia syndrome virus,S
+thrombocytopenia,36715586,Refractory thrombocytopenia,S
+thrombocytopenia,36715053,Autosomal dominant macrothrombocytopenia,S
+thrombocytopenia,36713112,Pancytopenia due to antineoplastic chemotherapy,S
+thrombocytopenia,35623407,Adult pure red cell aplasia,S
+thrombocytopenia,4345236,Parvoviral aplastic crisis,S
+thrombocytopenia,4338386,Thrombocytopenia due to non-immune destruction,S
+thrombocytopenia,441264,Primary thrombocytopenia,S
+thrombocytopenia,4301602,Thrombotic thrombocytopenic purpura,S
+thrombocytopenia,4301128,Thrombocytopenia due to diminished platelet production,S
+thrombocytopenia,4299560,Thrombocytopenic purpura due to defective platelet production,S
+thrombocytopenia,4298690,Immunologic aplastic anemia,S
+thrombocytopenia,4292531,Thrombocytopenic purpura due to platelet consumption,S
+thrombocytopenia,4272928,Thrombocytopenia due to hypersplenism,S
+thrombocytopenia,4247776,Posttransfusion purpura,S
+thrombocytopenia,4239484,Acquired pancytopenia,S
+thrombocytopenia,4235220,Hereditary thrombocytopenic disorder,S
+thrombocytopenia,4234973,Chronic acquired pure red cell aplasia,S
+thrombocytopenia,4233407,Megakaryocytic aplasia,S
+thrombocytopenia,4230266,Autoimmune thrombotic thrombocytopenic purpura,S
+thrombocytopenia,4226905,Thrombocytopenia associated with AIDS,S
+thrombocytopenia,4225810,Aplastic anemia associated with AIDS,S
+thrombocytopenia,4219476,Thrombocytopenia due to defective platelet production,S
+thrombocytopenia,4218171,Uremic thrombocytopenia,S
+thrombocytopenia,4214947,Thrombocytopenic purpura associated with metabolic disorder,S
+thrombocytopenia,4211348,Aplastic anemia associated with pancreatitis,S
+thrombocytopenia,4204900,Acquired thrombotic thrombocytopenic purpura,S
+thrombocytopenia,4197574,Dilutional thrombocytopenia,S
+thrombocytopenia,4188208,Estren-Dameshek anemia,S
+thrombocytopenia,4186108,Aplastic anemia associated with metabolic alteration,S
+thrombocytopenia,4184758,Acquired aplastic anemia,S
+thrombocytopenia,4184200,Secondary aplastic anemia,S
+thrombocytopenia,4177177,Cellular immunologic aplastic anemia,S
+thrombocytopenia,4173278,Thrombocytopenia due to blood loss,S
+thrombocytopenia,4172008,Cyclic thrombocytopenia,S
+thrombocytopenia,4166754,Perinatal thrombocytopenia,S
+thrombocytopenia,4159966,Upshaw-Schulman syndrome,S
+thrombocytopenia,4159749,Idiopathic maternal thrombocytopenia,S
+thrombocytopenia,4159736,Radiation thrombocytopenia,S
+thrombocytopenia,4156233,Thrombocytopenia due to sequestration,S
+thrombocytopenia,4147049,Thrombocytopenia due to extracorporeal circulation,S
+thrombocytopenia,4146088,Aplastic anemia due to drugs,S
+thrombocytopenia,4145458,Thrombocytopenia due to hypothermia,S
+thrombocytopenia,4140545,Post infectious thrombocytopenic purpura,S
+thrombocytopenia,4139555,Thrombocytopenia due to massive blood transfusion,S
+thrombocytopenia,4137430,Idiopathic thrombocytopenic purpura,NA
+thrombocytopenia,4133984,Alloimmune thrombocytopenia,S
+thrombocytopenia,4133983,Secondary autoimmune thrombocytopenia,S
+thrombocytopenia,4133981,Benign gestational thrombocytopenia,S
+thrombocytopenia,4125496,"Pure red cell aplasia, acquired",NA
+thrombocytopenia,4125494,Pancytopenia with pancreatitis,S
+thrombocytopenia,4121264,Epstein syndrome,S
+thrombocytopenia,4120620,Amegakaryocytic thrombocytopenia,S
+thrombocytopenia,4119134,Thrombocytopenic purpura,S
+thrombocytopenia,4103532,Immune thrombocytopenia,S
+thrombocytopenia,4102469,Acute idiopathic thrombocytopenic purpura,NA
+thrombocytopenia,4101603,Thrombocytopenia due to extracorporeal circulation of blood,S
+thrombocytopenia,4101583,Aplastic anemia due to infection,S
+thrombocytopenia,4101582,Aplastic anemia due to chronic disease,S
+thrombocytopenia,4100998,Aplastic anemia due to toxic cause,S
+thrombocytopenia,4098148,Thrombocytopenia due to drugs,S
+thrombocytopenia,4098145,Idiopathic aplastic anemia,S
+thrombocytopenia,4098028,Transient acquired pure red cell aplasia,S
+thrombocytopenia,4098027,Aplastic anemia due to radiation,S
+thrombocytopenia,4082738,Autoimmune pancytopenia,S
+thrombocytopenia,4077348,Pancytopenia-dysmelia,S
+thrombocytopenia,4031699,Humoral immunologic aplastic anemia,S
+thrombocytopenia,4028065,Primary ITP (immune thrombocytopenia),S
+thrombocytopenia,4027374,Alloimmune platelet transfusion refractoriness,S
+thrombocytopenia,4009307,Heparin-induced thrombocytopenia with thrombosis,S
+thrombocytopenia,4000065,Drug-induced immune thrombocytopenia,S
+thrombocytopenia,436956,Evans syndrome,S
+thrombocytopenia,433749,Heparin-induced thrombocytopenia,S
+thrombocytopenia,432881,Pancytopenia,S
+thrombocytopenia,318397,Chronic idiopathic thrombocytopenic purpura,S
+thrombocytopenia,140681,Constitutional aplastic anemia,S
+thrombocytopenia,138723,Acquired red cell aplasia,S
+thrombocytopenia,137829,Aplastic anemia,S
+platelet_measurement,37393863,Platelet count,S
+platelet_measurement,4267147,Platelet count,S
+platelet_measurement,4260199,Serial platelet counts,S
+platelet_measurement,4038124,"Platelet count, Rees-Ecker method",S
+platelet_measurement,4016231,"Platelet count, blood, manual",S
+platelet_measurement,4015170,"Platelet count, blood, automated",S
+platelet_measurement,3039827,Platelets [#/volume] in Body fluid by Automated count,S
+platelet_measurement,3031586,Platelets [#/volume] in Blood by Estimate,S
+platelet_measurement,3024929,Platelets [#/volume] in Blood by Automated count,S
+platelet_measurement,3024386,Platelet mean volume [Entitic volume] in Blood by Rees-Ecker,S
+platelet_measurement,3007461,Platelets [#/volume] in Blood,S

@@ -1,0 +1,337 @@
+codelist_name,concept_id,concept_name,standard_concept
+antepartum_haemorrhage,4228479,Accidental antepartum hemorrhage,NA
+antepartum_haemorrhage,434089,Antepartum hemorrhage,NA
+antepartum_haemorrhage,438489,Antepartum hemorrhage associated with coagulation defect,NA
+antepartum_haemorrhage,45757208,Antepartum hemorrhage due to disseminated intravascular coagulation,NA
+antepartum_haemorrhage,44784542,Antepartum hemorrhage due to placenta previa type I,NA
+antepartum_haemorrhage,44784543,Antepartum hemorrhage due to placenta previa type II,NA
+antepartum_haemorrhage,44784544,Antepartum hemorrhage due to placenta previa type III,NA
+antepartum_haemorrhage,44784545,Antepartum hemorrhage due to placenta previa type IV,NA
+antepartum_haemorrhage,4129032,Antepartum hemorrhage with afibrinogenemia,NA
+antepartum_haemorrhage,443133,Antepartum hemorrhage with coagulation defect - delivered,NA
+antepartum_haemorrhage,438203,Antepartum hemorrhage with coagulation defect - not delivered,NA
+antepartum_haemorrhage,4129031,Antepartum hemorrhage with hyperfibrinolysis,NA
+antepartum_haemorrhage,4034091,Antepartum hemorrhage with hypofibrinogenemia,NA
+antepartum_haemorrhage,4143074,"Antepartum hemorrhage, abruptio placentae and placenta previa",NA
+antepartum_haemorrhage,3404588,Concealed accidental hemorrhage,NA
+antepartum_haemorrhage,193535,Fetal-maternal hemorrhage - delivered,NA
+antepartum_haemorrhage,196757,Fetal-maternal hemorrhage with antenatal problem,NA
+antepartum_haemorrhage,3657563,First trimester bleeding,NA
+antepartum_haemorrhage,435323,"Hemorrhage in early pregnancy, delivered",NA
+antepartum_haemorrhage,4025198,Hemorrhagic complication of pregnancy,NA
+antepartum_haemorrhage,4129827,Indeterminate antepartum hemorrhage,NA
+antepartum_haemorrhage,193264,Placenta previa with hemorrhage - delivered,NA
+antepartum_haemorrhage,200149,Placenta previa with hemorrhage - not delivered,NA
+antepartum_haemorrhage,4327745,Second trimester bleeding,NA
+antepartum_haemorrhage,4142581,Third trimester bleeding,NA
+antepartum_haemorrhage,37109810,Vaginal bleeding complicating early pregnancy,NA
+dysfunctional_labour,42536563,Obstructed labor due to shoulder dystocia,NA
+dysfunctional_labour,72377,Shoulder girdle dystocia,NA
+dysfunctional_labour,75608,Shoulder dystocia with antenatal problem,NA
+dysfunctional_labour,80474,Shoulder dystocia - delivered,NA
+dysfunctional_labour,4025199,Pelvic dystocia AND/OR uterine disorder,NA
+dysfunctional_labour,4034148,Cervical dystocia,NA
+dysfunctional_labour,4194811,Retraction ring dystocia,NA
+dysfunctional_labour,4197085,Maternal dystocia,NA
+dysfunctional_labour,4216551,Fetal dystocia,NA
+dysfunctional_labour,4268171,Contraction ring dystocia,NA
+dysfunctional_labour,4034147,Failure to progress in labor,NA
+dysfunctional_labour,4091673,Failure to progress in second stage of labor,NA
+dysfunctional_labour,4129838,Failure to progress in first stage of labor,NA
+dysfunctional_labour,37110285,Intrapartum hemorrhage co-occurrent and due to obstructed labor with uterine rupture,NA
+dysfunctional_labour,37110289,Postpartum hemorrhage co-occurrent and due to uterine rupture following obstructed labor,NA
+dysfunctional_labour,37116435,Sepsis following obstructed labor,NA
+dysfunctional_labour,37119134,Vesicovaginal fistula with involvement of urinary continence mechanism due to and following obstructed labor,NA
+dysfunctional_labour,37310898,Obstructed labor due to deep transverse arrest and persistent occipitoposterior position,NA
+dysfunctional_labour,37396169,Obstructed labor due to fetal abnormality,NA
+dysfunctional_labour,45757117,Obstructed labor due to disproportion between fetus and pelvis,NA
+dysfunctional_labour,45772074,Obstructed labor due to incomplete rotation of fetal head,NA
+dysfunctional_labour,46269810,Obstructed labor due to abnormality of maternal pelvis,NA
+dysfunctional_labour,192694,Obstructed labor caused by pelvic soft tissues,NA
+dysfunctional_labour,193273,Obstructed labor caused by bony pelvis with antenatal problem,NA
+dysfunctional_labour,193827,Obstructed labor,NA
+dysfunctional_labour,193831,Obstructed labor due to fetal malposition with antenatal problem,NA
+dysfunctional_labour,194100,Obstructed labor due to fetal malposition,NA
+dysfunctional_labour,194711,Obstructed labor due to fetal malposition - delivered,NA
+dysfunctional_labour,196182,Obstructed labor caused by pelvic soft tissues - delivered,NA
+dysfunctional_labour,197051,Obstructed labor caused by bony pelvis,NA
+dysfunctional_labour,199087,Obstructed labor caused by bony pelvis - delivered,NA
+dysfunctional_labour,442440,Obstructed labor caused by pelvic soft tissues with antenatal problem,NA
+dysfunctional_labour,4060036,Obstructed labor due to breech presentation,NA
+dysfunctional_labour,4060037,Obstructed labor due to brow presentation,NA
+dysfunctional_labour,4060038,Obstructed labor due to shoulder presentation,NA
+dysfunctional_labour,4060039,Obstructed labor due to generally contracted pelvis,NA
+dysfunctional_labour,4061850,Obstructed labor due to face presentation,NA
+dysfunctional_labour,4061852,Obstructed labor due to abnormality of maternal pelvic organs,NA
+dysfunctional_labour,4064423,Obstructed labor due to pelvic inlet contraction,NA
+dysfunctional_labour,4064424,Obstructed labor due to pelvic outlet and mid-cavity contraction,NA
+dysfunctional_labour,4064437,Obstructed labor due to unusually large fetus,NA
+dysfunctional_labour,4064819,Obstructed labor due to compound presentation,NA
+dysfunctional_labour,4064821,Obstructed labor due to deformed pelvis,NA
+dysfunctional_labour,443435,Primary uterine inertia,NA
+dysfunctional_labour,73265,Deep transverse arrest with antenatal problem,NA
+dysfunctional_labour,75882,Deep transverse arrest - delivered,NA
+dysfunctional_labour,76487,Deep transverse arrest,NA
+dysfunctional_labour,192384,Secondary uterine inertia - delivered,NA
+dysfunctional_labour,192698,Hypertonic uterine dysfunction,NA
+dysfunctional_labour,192974,Secondary uterine inertia,NA
+dysfunctional_labour,196759,Primary uterine inertia with antenatal problem,NA
+dysfunctional_labour,196762,Primary uterine inertia - delivered,NA
+dysfunctional_labour,197346,Secondary uterine inertia with antenatal problem,NA
+dysfunctional_labour,197938,Uterine inertia,NA
+dysfunctional_labour,434431,Prolonged second stage - delivered,NA
+dysfunctional_labour,434435,Prolonged first stage with antenatal problem,NA
+dysfunctional_labour,434714,Prolonged second stage of labor,NA
+dysfunctional_labour,437620,Prolonged second stage with antenatal problem,NA
+dysfunctional_labour,438213,"Delayed delivery of second twin, triplet etc",NA
+dysfunctional_labour,440167,Prolonged labor,NA
+dysfunctional_labour,440475,Prolonged first stage - delivered,NA
+dysfunctional_labour,441361,Delayed delivery after artificial rupture of membranes,NA
+dysfunctional_labour,441362,Prolonged first stage of labor,NA
+dysfunctional_labour,442617,Obstruction by abnormal pelvic soft tissues,NA
+dysfunctional_labour,443244,Hypertonic uterine inertia,NA
+dysfunctional_labour,443706,Dyscoordinate labor,NA
+dysfunctional_labour,444404,Obstruction caused by position of fetus at onset of labor,NA
+dysfunctional_labour,4053158,"Uterine incoordination, first degree",NA
+dysfunctional_labour,4064559,Delayed delivery second twin - delivered,NA
+dysfunctional_labour,4064560,Delayed delivery second twin with antenatal problem,NA
+dysfunctional_labour,4064834,Hypertonic uterine inertia - delivered,NA
+dysfunctional_labour,4064835,Hypertonic uterine inertia with antenatal problem,NA
+dysfunctional_labour,4080668,Arrested active phase of labor,NA
+dysfunctional_labour,4129044,Delayed delivery of triplet,NA
+dysfunctional_labour,4129045,Head entrapment during breech delivery,NA
+dysfunctional_labour,4170458,Delayed delivery of second twin,NA
+dysfunctional_labour,4174056,Slow slope active phase of labor,NA
+dysfunctional_labour,4184274,Irregular uterine contractions,NA
+dysfunctional_labour,4193756,Desultory labor,NA
+dysfunctional_labour,4300387,Primary hypotonic uterine dysfunction,NA
+dysfunctional_labour,4300773,Obstruction by bony pelvis,NA
+dysfunctional_labour,4308657,Hypotonic uterine inertia,NA
+dysfunctional_labour,4308660,Prolonged latent phase of labor,NA
+dysfunctional_labour,4319561,Delayed delivery of second of multiple births,NA
+dysfunctional_labour,37017049,Prolonged second stage of labor due to poor maternal effort,NA
+dysfunctional_labour,37311825,Inefficient uterine activity with oxytocin augmentation,NA
+dysfunctional_labour,44784536,Deep transverse arrest with persistent occipitoposterior position,NA
+dysfunctional_labour,72700,Locked twins with antenatal problem,NA
+dysfunctional_labour,442422,Locked twins - delivered,NA
+dysfunctional_labour,444386,Interlocked twins,NA
+eclampsia,4116344,Eclampsia in puerperium,NA
+eclampsia,443700,Eclampsia,NA
+eclampsia,133816,Eclampsia - delivered,NA
+eclampsia,4062550,Pre-eclampsia or eclampsia with pre-existing hypertension with postnatal complication,NA
+eclampsia,134414,Pre-eclampsia or eclampsia with pre-existing hypertension - delivered with postnatal complication,NA
+eclampsia,42537548,Nephropathy following eclampsia,NA
+eclampsia,141084,Pre-eclampsia or eclampsia with pre-existing hypertension,NA
+eclampsia,4058536,Eclampsia with postnatal complication,NA
+eclampsia,4289142,Eclampsia added to pre-existing hypertension,NA
+eclampsia,138811,Eclampsia - delivered with postnatal complication,NA
+eclampsia,137613,Eclampsia in pregnancy,NA
+eclampsia,4034096,Eclampsia in labor,NA
+eclampsia,45757119,Eclampsia with pre-existing hypertension in childbirth,NA
+eclampsia,135601,Pre-eclampsia or eclampsia with pre-existing hypertension - delivered,NA
+eclampsia,136743,Pre-eclampsia or eclampsia with pre-existing hypertension - not delivered,NA
+ectopic_pregnancy,37203955,Intramural ectopic pregnancy of myometrium,NA
+ectopic_pregnancy,37209653,Ectopic pregnancy of left ovary,NA
+ectopic_pregnancy,37209654,Ectopic pregnancy of right ovary,NA
+ectopic_pregnancy,42536560,Pelvic infection due to and following ectopic pregnancy,NA
+ectopic_pregnancy,42536561,Genital tract infection due to and following ectopic pregnancy,NA
+ectopic_pregnancy,42537762,Delayed hemorrhage due to and following ectopic pregnancy,NA
+ectopic_pregnancy,42537763,Excessive hemorrhage due to and following ectopic pregnancy,NA
+ectopic_pregnancy,42537767,Damage to pelvic organs and tissues following ectopic pregnancy,NA
+ectopic_pregnancy,42537770,Disorder of vein following ectopic pregnancy,NA
+ectopic_pregnancy,42539701,Embolism due to and following ectopic pregnancy,NA
+ectopic_pregnancy,43530979,Miscarriage of tubal ectopic pregnancy,NA
+ectopic_pregnancy,45757120,Renal failure after ectopic pregnancy,NA
+ectopic_pregnancy,46269806,Salpingitis due to ectopic pregnancy,NA
+ectopic_pregnancy,46269807,Sepsis due to ectopic pregnancy,NA
+ectopic_pregnancy,46269808,Shock due to ectopic pregnancy,NA
+ectopic_pregnancy,46269809,Urinary tract infection due to ectopic pregnancy,NA
+ectopic_pregnancy,195014,Renal failure following molar AND/OR ectopic pregnancy,NA
+ectopic_pregnancy,196177,Genital tract AND/OR pelvic infection following molar AND/OR ectopic pregnancy,NA
+ectopic_pregnancy,196475,Damage to pelvic organs AND/OR tissues following molar AND/OR ectopic pregnancy,NA
+ectopic_pregnancy,432371,Metabolic disorder following molar AND/OR ectopic pregnancy,NA
+ectopic_pregnancy,437611,Ectopic pregnancy,NA
+ectopic_pregnancy,440464,Complication following molar AND/OR ectopic pregnancy,NA
+ectopic_pregnancy,440777,Embolism following molar AND/OR ectopic pregnancy,NA
+ectopic_pregnancy,442271,Shock following molar AND/OR ectopic pregnancy,NA
+ectopic_pregnancy,4023382,Postoperative shock following molar AND/OR ectopic pregnancy,NA
+ectopic_pregnancy,4063939,Intravascular hemolysis following molar AND/OR ectopic pregnancy,NA
+ectopic_pregnancy,4066014,Endometritis following molar AND/OR ectopic pregnancy,NA
+ectopic_pregnancy,4069106,Ruptured ectopic pregnancy,NA
+ectopic_pregnancy,4080587,Septic shock following molar AND/OR ectopic pregnancy,NA
+ectopic_pregnancy,4093262,Septic embolism following molar AND/OR ectopic pregnancy,NA
+ectopic_pregnancy,4095115,Renal tubular necrosis following molar AND/OR ectopic pregnancy,NA
+ectopic_pregnancy,4100193,Damage to bladder following molar AND/OR ectopic pregnancy,NA
+ectopic_pregnancy,4103056,Blood clot embolism following molar AND/OR ectopic pregnancy,NA
+ectopic_pregnancy,4107071,Oliguria following molar AND/OR ectopic pregnancy,NA
+ectopic_pregnancy,4118058,Fetal or neonatal effect of ectopic pregnancy,NA
+ectopic_pregnancy,4118263,Fetal or neonatal effect of intraperitoneal ectopic pregnancy,NA
+ectopic_pregnancy,4118419,Fetal or neonatal effect of abdominal ectopic pregnancy,NA
+ectopic_pregnancy,4118420,Fetal or neonatal effect of tubal ectopic pregnancy,NA
+ectopic_pregnancy,4141453,Air embolism following molar AND/OR ectopic pregnancy,NA
+ectopic_pregnancy,4147060,Cerebral anoxia following molar AND/OR ectopic pregnancy,NA
+ectopic_pregnancy,4151214,Uremia following molar AND/OR ectopic pregnancy,NA
+ectopic_pregnancy,4152444,Antenatal ultrasound confirms ectopic pregnancy,NA
+ectopic_pregnancy,4172629,Amniotic fluid embolism following molar AND/OR ectopic pregnancy,NA
+ectopic_pregnancy,4173946,Damage to cervix following molar AND/OR ectopic pregnancy,NA
+ectopic_pregnancy,4174543,Damage to periurethral tissue following molar AND/OR ectopic pregnancy,NA
+ectopic_pregnancy,4185718,Damage to bowel following molar AND/OR ectopic pregnancy,NA
+ectopic_pregnancy,4187090,Sepsis following molar AND/OR ectopic pregnancy,NA
+ectopic_pregnancy,4194053,Damage to uterus following molar AND/OR ectopic pregnancy,NA
+ectopic_pregnancy,4215648,Acute renal failure following molar AND/OR ectopic pregnancy,NA
+ectopic_pregnancy,4216382,Damage to vagina following molar AND/OR ectopic pregnancy,NA
+ectopic_pregnancy,4232953,Damage to broad ligament following molar AND/OR ectopic pregnancy,NA
+ectopic_pregnancy,4239009,Salpingo-oophoritis following molar AND/OR ectopic pregnancy,NA
+ectopic_pregnancy,4242401,Urinary tract infection following molar AND/OR ectopic pregnancy,NA
+ectopic_pregnancy,4265400,Soap embolism following molar AND/OR ectopic pregnancy,NA
+ectopic_pregnancy,4266839,Defibrination syndrome following molar AND/OR ectopic pregnancy,NA
+ectopic_pregnancy,4276942,Electrolyte imbalance following molar AND/OR ectopic pregnancy,NA
+ectopic_pregnancy,4280067,Pulmonary embolism following molar AND/OR ectopic pregnancy,NA
+ectopic_pregnancy,4296038,Tetanus complicating ectopic AND/OR molar pregnancy,NA
+ectopic_pregnancy,4312095,Afibrinogenemia following molar AND/OR ectopic pregnancy,NA
+ectopic_pregnancy,4314877,Pelvic peritonitis following molar AND/OR ectopic pregnancy,NA
+ectopic_pregnancy,4315388,Fat embolism following molar AND/OR ectopic pregnancy,NA
+ectopic_pregnancy,4316051,Salpingitis following molar AND/OR ectopic pregnancy,NA
+ectopic_pregnancy,4336392,Parametritis following molar AND/OR ectopic pregnancy,NA
+ectopic_pregnancy,4135209,Combined pregnancy,NA
+ectopic_pregnancy,193525,Abdominal pregnancy,NA
+ectopic_pregnancy,199076,Tubal pregnancy,NA
+ectopic_pregnancy,200153,Ovarian pregnancy,NA
+ectopic_pregnancy,4066151,Intraperitoneal pregnancy,NA
+ectopic_pregnancy,4112952,Membranous pregnancy,NA
+ectopic_pregnancy,4113218,Mesenteric pregnancy,NA
+ectopic_pregnancy,4113680,Ruptured tubal pregnancy,NA
+ectopic_pregnancy,4113682,Angular pregnancy,NA
+ectopic_pregnancy,4113846,Delivery of viable fetus in abdominal pregnancy,NA
+ectopic_pregnancy,4129027,Viable fetus in abdominal pregnancy,NA
+ectopic_pregnancy,4129712,Unruptured tubal pregnancy,NA
+ectopic_pregnancy,4149029,Intraligamentous pregnancy,NA
+ectopic_pregnancy,4174577,Secondary abdominal pregnancy,NA
+ectopic_pregnancy,4194693,Cervical pregnancy,NA
+ectopic_pregnancy,4227267,Cornual pregnancy,NA
+ectopic_pregnancy,4243803,Mesometric pregnancy,NA
+ectopic_pregnancy,37209655,Pregnancy of left fallopian tube,NA
+ectopic_pregnancy,37209656,Ruptured tubal pregnancy of right fallopian tube,NA
+ectopic_pregnancy,37209657,Ruptured tubal pregnancy of left fallopian tube,NA
+ectopic_pregnancy,37209658,Pregnancy of right fallopian tube,NA
+ectopic_pregnancy,40483581,Combined tubal and intrauterine pregnancy,NA
+ectopic_pregnancy,44783183,Combined intrauterine and ovarian pregnancy,NA
+ectopic_pregnancy,3043153,[#] Ectopic pregnancy,NA
+ectopic_pregnancy,37167330,Metabolic disorder following ectopic pregnancy,NA
+ectopic_pregnancy,37167172,Shock following ectopic pregnancy,NA
+gestational_diabetes,37018765,Gestational diabetes mellitus complicating pregnancy,NA
+gestational_diabetes,43020791,Gestational diabetes mellitus uncontrolled,NA
+gestational_diabetes,45757124,Gestational diabetes mellitus in childbirth,NA
+gestational_diabetes,45757789,Postpartum gestational diabetes mellitus,NA
+gestational_diabetes,4024659,Gestational diabetes mellitus,NA
+gestational_diabetes,4263902,"Gestational diabetes mellitus, class A>2<",NA
+gestational_diabetes,4326434,"Gestational diabetes mellitus, class A>1<",NA
+gestational_diabetes,4058243,"Diabetes mellitus during pregnancy, childbirth and the puerperium",NA
+HELLP,4316372,HELLP syndrome,NA
+postpartum_endometritis,4066014,Endometritis following molar AND/OR ectopic pregnancy,NA
+postpartum_endometritis,4061203,Subacute endometritis,NA
+postpartum_endometritis,4065749,Puerperal endometritis - delivered with postnatal complication,NA
+postpartum_endometritis,4061463,Puerperal endometritis with postnatal complication,NA
+postpartum_endometritis,4328870,Puerperal endometritis,NA
+postpartum_endometritis,4128047,Gonococcal endometritis,NA
+postpartum_endometritis,4122172,"Endometritis, excluding cervix",NA
+postpartum_endometritis,193699,Chronic gonococcal endometritis,NA
+postpartum_endometritis,4261372,Tuberculous endometritis,NA
+postpartum_endometritis,200040,Acute gonococcal endometritis,NA
+postpartum_endometritis,4194612,Acute endometritis,NA
+postpartum_endometritis,45765708,Acute on chronic endometritis,NA
+postpartum_endometritis,37017218,Atrophic endometritis,NA
+postpartum_endometritis,4327175,Decidual endometritis,NA
+postpartum_endometritis,4302765,Endometritis,NA
+postpartum_endometritis,42597060,Fungal endometritis,NA
+postpartum_endometritis,194687,Uterine inflammatory diseases excluding the cervix,NA
+postpartum_endometritis,4056780,Acute uterine inflammatory disease,NA
+postpartum_endometritis,196162,Inflammatory disease of the uterus,NA
+postpartum_endometritis,4031820,Acute endomyometritis,NA
+postpartum_endometritis,4339120,Endomyometritis,NA
+postpartum_endometritis,4061204,Subacute endomyometritis,NA
+postpartum_endometritis,42536672,Pyometra co-occurrent and due to acute inflammatory disease of uterus,NA
+postpartum_endometritis,193699,Chronic gonococcal endometritis,NA
+postpartum_endometritis,4061203,Subacute endometritis,NA
+postpartum_endometritis,4065749,Puerperal endometritis - delivered with postnatal complication,NA
+postpartum_endometritis,200040,Acute gonococcal endometritis,NA
+postpartum_endometritis,4327175,Decidual endometritis,NA
+postpartum_endometritis,4061204,Subacute endomyometritis,NA
+postpartum_endometritis,4066014,Endometritis following molar AND/OR ectopic pregnancy,NA
+postpartum_endometritis,4328870,Puerperal endometritis,NA
+postpartum_endometritis,4031820,Acute endomyometritis,NA
+postpartum_endometritis,4061463,Puerperal endometritis with postnatal complication,NA
+postpartum_endometritis,4128047,Gonococcal endometritis,NA
+postpartum_endometritis,4302765,Endometritis,NA
+postpartum_endometritis,45765708,Acute on chronic endometritis,NA
+postpartum_endometritis,4339120,Endomyometritis,NA
+postpartum_endometritis,4122172,"Endometritis, excluding cervix",NA
+postpartum_endometritis,4194612,Acute endometritis,NA
+postpartum_haemorrhage,37394499,Minor postpartum haemorrhage,NA
+postpartum_haemorrhage,37394500,Major postpartum haemorrhage,NA
+postpartum_haemorrhage,37108740,Postpartum hemorrhage due to total placenta previa,NA
+postpartum_haemorrhage,37110289,Postpartum hemorrhage co-occurrent and due to uterine rupture following obstructed labor,NA
+postpartum_haemorrhage,194109,Delayed AND/OR secondary postpartum hemorrhage,NA
+postpartum_haemorrhage,196488,Atonic postpartum hemorrhage,NA
+postpartum_haemorrhage,443929,Postpartum hemorrhage,NA
+postpartum_haemorrhage,4006327,Postpartum afibrinogenemia with hemorrhage,NA
+postpartum_haemorrhage,4065618,Secondary postpartum hemorrhage - delivered with postnatal problem,NA
+postpartum_haemorrhage,4169890,Postpartum coagulation defect with hemorrhage,NA
+postpartum_haemorrhage,4266066,Postpartum fibrinolysis with hemorrhage,NA
+postpartum_haemorrhage,4194998,"Retained products of conception, following delivery with hemorrhage",NA
+postpartum_haemorrhage,46274097,Compression suturing of uterus for atonic postpartum hemorrhage,NA
+postpartum_haemorrhage,4127264,Surgical control of postpartum hemorrhage,NA
+postpartum_haemorrhage,4169003,Pack to control postpartum hemorrhage,NA
+postpartum_haemorrhage,606891,Postpartum hemorrhage with retained placenta,NA
+postpartum_haemorrhage,4298174,Bleeding reduction: postpartum uterus,NA
+preeclampsia,4057976,Severe pre-eclampsia with postnatal complication,NA
+preeclampsia,438490,Severe pre-eclampsia - delivered,NA
+preeclampsia,132685,Severe pre-eclampsia - not delivered,NA
+preeclampsia,439393,Pre-eclampsia,NA
+preeclampsia,4283352,Pre-eclampsia added to pre-existing hypertension,NA
+preeclampsia,42537547,Nephropathy following pre-eclampsia,NA
+preeclampsia,35622939,Postpartum pre-eclampsia,NA
+preeclampsia,604804,Fetal disorder due to maternal pre-eclampsia,NA
+preeclampsia,1340440,Exacerbation of pre-eclampsia,NA
+preeclampsia,314090,Mild pre-eclampsia,NA
+preeclampsia,433536,Severe pre-eclampsia,NA
+preeclampsia,439077,Severe pre-eclampsia - delivered with postnatal complication,NA
+preeclampsia,4034094,Moderate proteinuric hypertension of pregnancy,NA
+antepartum_haemorrhage,201627,Abnormal vaginal bleeding,NA
+antepartum_haemorrhage,4083209,Vaginal vault bleeding,NA
+antepartum_haemorrhage,4095942,Vaginal introitus bleeding,NA
+antepartum_haemorrhage,4124469,Profuse vaginal bleeding,NA
+antepartum_haemorrhage,4126713,Moderate vaginal bleeding,NA
+antepartum_haemorrhage,4126908,Scanty vaginal bleeding,NA
+antepartum_haemorrhage,4129155,Vaginal bleeding,NA
+antepartum_haemorrhage,4199815,Heavy episode of vaginal bleeding,NA
+antepartum_haemorrhage,4219594,Non-menstrual vaginal bleeding,NA
+antepartum_haemorrhage,4127410,Vaginal vault hematoma,NA
+antepartum_haemorrhage,199068,Vaginal hematoma,NA
+antepartum_haemorrhage,4126712,Fresh bleeding from vagina,NA
+antepartum_haemorrhage,4126906,Passing clots vaginally,NA
+antepartum_haemorrhage,4126907,Passing altered blood from vagina,NA
+antepartum_haemorrhage,4129156,Passing small clots vaginally,NA
+antepartum_haemorrhage,4129157,Passing large clots vaginally,NA
+antepartum_haemorrhage,44806343,Minimal vaginal blood loss,NA
+antepartum_haemorrhage,4195179,Abnormal uterine bleeding unrelated to menstrual cycle,NA
+antepartum_haemorrhage,4169954,Genitourinary tract hemorrhage,NA
+postpartum_haemorrhage,201627,Abnormal vaginal bleeding,NA
+postpartum_haemorrhage,4083209,Vaginal vault bleeding,NA
+postpartum_haemorrhage,4095942,Vaginal introitus bleeding,NA
+postpartum_haemorrhage,4124469,Profuse vaginal bleeding,NA
+postpartum_haemorrhage,4126713,Moderate vaginal bleeding,NA
+postpartum_haemorrhage,4126908,Scanty vaginal bleeding,NA
+postpartum_haemorrhage,4129155,Vaginal bleeding,NA
+postpartum_haemorrhage,4199815,Heavy episode of vaginal bleeding,NA
+postpartum_haemorrhage,4219594,Non-menstrual vaginal bleeding,NA
+postpartum_haemorrhage,4127410,Vaginal vault hematoma,NA
+postpartum_haemorrhage,199068,Vaginal hematoma,NA
+postpartum_haemorrhage,4126712,Fresh bleeding from vagina,NA
+postpartum_haemorrhage,4126906,Passing clots vaginally,NA
+postpartum_haemorrhage,4126907,Passing altered blood from vagina,NA
+postpartum_haemorrhage,4129156,Passing small clots vaginally,NA
+postpartum_haemorrhage,4129157,Passing large clots vaginally,NA
+postpartum_haemorrhage,44806343,Minimal vaginal blood loss,NA
+postpartum_haemorrhage,4195179,Abnormal uterine bleeding unrelated to menstrual cycle,NA
+postpartum_haemorrhage,4169954,Genitourinary tract hemorrhage,NA
