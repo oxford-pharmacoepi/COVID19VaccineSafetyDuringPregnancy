@@ -25,11 +25,11 @@ level(logger) <- "INFO"
 info(logger, "CREATE LOGGER")
 
 # Codelist ----
-csvs <- list.files(here("Codelists"))
+csvs <- list.files(here("Codelists_v2"))
 codes <- NULL
 for (csv in csvs) {
   codes <- codes |>
-    union_all(read_csv(here("Codelists", csv)))
+    union_all(read_csv(here("Codelists_v2", csv)))
 }
 
 # construct codelsit

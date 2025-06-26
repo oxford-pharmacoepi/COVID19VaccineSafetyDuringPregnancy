@@ -16,11 +16,12 @@ results <- phenotypeDiagnostics(
   databaseDiagnostics = TRUE,
   codelistDiagnostics = TRUE,
   cohortDiagnostics = TRUE,
+  survival = FALSE,
+  match = FALSE,
+  matchedSample = 1000,
   populationDiagnostics = TRUE,
-  populationSample = 1e+06,
-  populationDateRange = as.Date(c(NA, NA)),
-  matchedDiagnostics = FALSE,
-  matchedSample = 1000
+  populationSample = 100000,
+  populationDateRange = as.Date(c("2015-01-01", NA))
 )
 
 exportSummarisedResult(results, fileName = "phenotyper_{cdm_name}_{date}.csv", path = here::here(output_folder))
