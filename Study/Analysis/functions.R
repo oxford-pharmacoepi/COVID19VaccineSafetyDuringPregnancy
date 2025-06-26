@@ -91,6 +91,8 @@ getPregnantCohorts <- function(db, cdm, mother_table_schema, mother_table_name) 
 }
 
 getSourcePopulation <- function(cdm, objective, enrollment) {
+  # cohort start date = pregnant day within enrollment period from which patient is eligible to receive dose of interest
+  
   name <- paste0("source_", objective)
   cdm[[name]] <- cdm$mother_table |>
     mutate(cohort_definition_id = objective) |>
@@ -141,21 +143,26 @@ getSourcePopulation <- function(cdm, objective, enrollment) {
         by = "subject_id"
       ) |>
       rename("previous_dose" = "any_covid_vaccine_1", "vaccine_date" = "any_covid_vaccine_2") |>
-      filter(vaccine_date >= pregnancy_start_date | is.na(vaccine_date)) |>
+      filter(previous_dose < cohort_end_date) |>
       compute(name = name, temporary = FALSE) |>
-      recordCohortAttrition(reason = "No 2nd dose before pregnancy") %>% 
-      mutate(new_cohort_start = !!dateadd("previous_dose", 16)) |>
-      filter(new_cohort_start < .data$cohort_end_date & !is.na(new_cohort_start)) %>% 
-      mutate(cohort_start_date = if_else(
-        new_cohort_start < cohort_start_date, cohort_start_date, new_cohort_start
-      )) |>
-      select(!c("new_cohort_start")) |>
+      recordCohortAttrition(reason = "First dose before pregnant enrolment end") |>
+      filter(vaccine_date >= cohort_start_date | is.na(vaccine_date)) |>
       compute(name = name, temporary = FALSE) |>
-      recordCohortAttrition(reason = "Eligible for 2nd during pregnancy") 
+      recordCohortAttrition(reason = "No 2nd dose before entering the study") %>% 
+      mutate(eligible_second_date = !!dateadd("previous_dose", 16)) |>
+      filter(eligible_second_date < .data$cohort_end_date) %>% 
+      mutate(
+        cohort_start_date = if_else(
+          eligible_second_date < cohort_start_date, cohort_start_date, eligible_second_date
+        )
+      ) |>
+      select(!c("eligible_second_date")) |>
+      compute(name = name, temporary = FALSE) |>
+      recordCohortAttrition(reason = "Eligible for 2nd dose during pregnancy") 
   }
   
   if (objective == 3) {
-    ## 2nd Objective
+    ## 3rd Objective
     cdm[[name]] <- cdm[[name]] |>
       left_join(
         cdm$covid_vaccines_dose |> 
@@ -173,7 +180,7 @@ getSourcePopulation <- function(cdm, objective, enrollment) {
         censorDate = NULL,
         targetDate = "cohort_start_date",
         order = "first",
-        window = c(-Inf, 0),
+        window = c(-Inf, Inf),
         nameStyle = "booster_previous",
         name = name
       ) |>
@@ -187,16 +194,27 @@ getSourcePopulation <- function(cdm, objective, enrollment) {
         window = c(0, Inf),
         nameStyle = "vaccine_date",
         name = name
-      ) %>% 
+      ) |>
       mutate(
-        previous_dose = if_else(
-          is.na(booster_previous), any_covid_vaccine_2, booster_previous
+        previous_dose = case_when(
+          booster_previous < vaccine_date ~ booster_previous,
+          is.na(booster_previous) ~ any_covid_vaccine_2, 
+          .default = NA
         )
-      ) %>% 
-      filter(!!dateadd("previous_dose", 90) < pregnancy_end_date) |>
-      select(!c("any_covid_vaccine_2", "booster_previous")) |>
+      ) |>
+      filter(!is.na(previous_dose)) |>
       compute(name = name, temporary = FALSE) |>
-      recordCohortAttrition(reason = "Eligible for booster during pregnancy") 
+      recordCohortAttrition(reason = "If excluded > 0 --> issue!") %>% 
+      mutate(eligible_booster_date = !!dateadd("previous_dose", 90)) |>
+      filter(eligible_booster_date < .data$cohort_end_date) %>% 
+      mutate(
+        cohort_start_date = if_else(
+          eligible_booster_date < cohort_start_date, cohort_start_date, eligible_booster_date
+        )
+      ) |>
+      select(!c("any_covid_vaccine_2", "eligible_booster_date", "booster_previous")) |>
+      compute(name = name, temporary = FALSE) |>
+      recordCohortAttrition(reason = "Eligible for booster dose during pregnancy") 
   }
   
   return(cdm[[name]])
@@ -332,22 +350,19 @@ getBaselineCharacteristics <- function(cdm, strata, weights) {
     'previous_observation' = c('min', 'q25', 'median', 'q75', 'max', "mean", "sd"), 
     "previous_healthcare_visits" = c('min', 'q25', 'median', 'q75', 'max', "mean", "sd"),
     "previous_pregnancies" = c('min', 'q25', 'median', 'q75', 'max', "mean", "sd"), 
+    'gestationa_day' = c('min', 'q25', 'median', 'q75', 'max', "mean", "sd"), 
     'age_group' = c('count', 'percentage'), 
     'gestational_trimester' = c('count', 'percentage'), 
     'vaccine_brand' = c('count', 'percentage'), 
     'smoking_status' = c('count', 'percentage'),
     "alcohol_misuse_dependence" = c('count', 'percentage'), 
     "obesity" = c('count', 'percentage'),
-    "substance_misuse_dependence" = c('count', 'percentage')
+    "substance_misuse_dependence" = c('count', 'percentage'),
+    "previous_covid_vaccines" = c('count', 'percentage'),
+    "previous_pregnant_covid_vaccines" = c('count', 'percentage')
   )
   estimates <- estimates[names(estimates) %in% colnames(cdm$study_population)]
-  otherVariables = c(
-    "age", "age_group", "gestational_trimester", "vaccine_brand", 
-    "days_previous_dose", "previous_observation", "smoking_status",
-    "alcohol_misuse_dependence", "obesity", "substance_misuse_dependence",
-    "previous_healthcare_visits", "previous_pregnancies"
-  )
-  otherVariables <- otherVariables[otherVariables %in% colnames(cdm$study_population)]
+  otherVariables = names(estimates)
   baseline <- cdm$study_population |> 
     summariseCharacteristics(
       strata = strata,
@@ -476,7 +491,7 @@ getFeaturesTable <- function(cdm, strata) {
         select(any_of(c(
           "cohort_definition_id", "cohort_name", "subject_id", "exposure",
           "pregnancy_id", "cohort_start_date", "cohort_end_date", "exposed_match_id", 
-          "care_site_id", unlist(strata)
+          "region", unlist(strata)
         ))),
       by = c("cohort_name", "subject_id", "cohort_start_date")
     ) |>
@@ -497,9 +512,9 @@ getFeaturesTable <- function(cdm, strata) {
 
 getLargeScaleCharacteristics <- function(cdm, strata, weights) {
   features <- colnames(cdm$features)
-  features <- features[grepl("_minf_m366|_m30_0|_m365_31|_m180_m31", features) | features == "care_site_id"]
+  features <- features[grepl("_minf_m366|_m30_0|_m365_31|_m180_m31", features) | features == "region"]
   summarisedResult <- cdm$features |>
-    mutate(care_site_id = as.character(care_site_id)) |>
+    mutate(region = as.character(region)) |>
     summariseResult(
       group = list("cohort_name"),
       includeOverallGroup = FALSE,
@@ -513,7 +528,7 @@ getLargeScaleCharacteristics <- function(cdm, strata, weights) {
   weighting <- "FALSE"
   if (!is.null(weights)) weighting <- "TRUE"
   lsc <- summarisedResult |>
-    filter(variable_name != "care_site_id") |>
+    filter(variable_name != "region") |>
     mutate(
       additional_level = gsub("_minf_m366|_m30_0|_m365_31|_m180_m31", "", variable_name),
       additional_name = "concept_id",
@@ -530,7 +545,7 @@ getLargeScaleCharacteristics <- function(cdm, strata, weights) {
     ) |> 
     bind_rows(
       summarisedResult |>
-        filter(variable_name == "care_site_id") |>
+        filter(variable_name == "region") |>
         mutate(
           additional_level = variable_level,
           additional_name = "concept_id",
@@ -549,7 +564,7 @@ getLargeScaleCharacteristics <- function(cdm, strata, weights) {
   return(lsc)
 }
 
-selectStrata <- function(cdm, strata = c("vaccine_brand", "gestational_trimester", "vaccine_valency")) {
+selectStrata <- function(cdm, strata = c("vaccine_brand", "gestational_trimester", "age_group")) {
   strataLevels <- cdm$study_population  |>
     select(any_of(strata)) |>
     colnames()
@@ -826,7 +841,8 @@ estimateSurvivalRisk <- function(cohort, outcomes, end, strata, group, weights =
   for (outcome in outcomes) {
     survival_data <- getSurvivalData(cohort, outcome, end = end, strata = strata, group = group)
     results[[kk]] <- getRiskEstimate(survival_data, group = group, strata = strata, weights = NULL) |>
-      mutate(additional_name = "outcome_name", additional_level = outcome)
+      mutate(outcome_name = outcome, follow_up_end = end) |>
+      omopgenerics::uniteAdditional(cols = c("outcome_name", "follow_up_end"))
     kk <- kk + 1
   }
   results |> 
@@ -838,7 +854,6 @@ estimateSurvivalRisk <- function(cohort, outcomes, end, strata, group, weights =
         result_type = "incidence_rate_ratio",
         package_name = "study_code",
         package_version = "v0.0.1",
-        study = study,
         weighting = weighting
       )
     )
@@ -946,4 +961,32 @@ summariseTimeDistribution <- function(cdm, strata, weights = NULL) {
       )
     )
   return(results)
+}
+
+getRegion <- function(x, database_name) {
+  if (database_name == "CPRD GOLD") {
+    x |>
+      left_join(
+        cdm$person |> select("subject_id" = "person_id", "care_site_id"),
+        by = "subject_id"
+      ) |>
+      left_join(
+        cdm$care_site |> 
+          select("care_site_id", "location_id") |>
+          left_join(cdm$location |> select("location_id", "region" = "location_source_value"), by = "location_id"),
+        by = "care_site_id"
+      ) |>
+      select(!"care_site_id")
+  } else {
+    x |>
+      left_join(
+        cdm$person |> select("subject_id" = "person_id", "location_id"),
+        by = "subject_id"
+      ) |>
+      left_join(
+        cdm$location |> select("location_id", "region" = "location_source_value"),
+        by = "location_id"
+      ) |>
+      select(!"location_id")
+  }
 }

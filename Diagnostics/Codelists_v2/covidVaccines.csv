@@ -1,0 +1,122 @@
+codelist_name,concept_id,concept_name,standard_concept
+any_covid_vaccine,1525734,"0.3 ML SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.05 MG/ML / SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 OMICRON (BA.4/BA.5) 0.05 MG/ML Injection",S
+any_covid_vaccine,36968470,0.5 ML COVID-19 vaccine 0.08 MG/ML Injectable Suspension,S
+any_covid_vaccine,36948476,0.5 ML COVID-19 vaccine 0.08 MG/ML Injectable Suspension by Hipra Human Health S.L.U.,S
+any_covid_vaccine,36969696,0.5 ML COVID-19 vaccine 1200 UNT/ML Injectable Suspension,S
+any_covid_vaccine,36964076,0.5 ML COVID-19 vaccine 1200 UNT/ML Injectable Suspension [CoronaVac],S
+any_covid_vaccine,36962147,0.5 ML COVID-19 vaccine 1200 UNT/ML Injectable Suspension [CoronaVac] by Sinovac Life Sciences,S
+any_covid_vaccine,36967747,0.5 ML COVID-19 vaccine 13 UNT/ML Injectable Suspension,S
+any_covid_vaccine,36950030,0.5 ML COVID-19 vaccine 13 UNT/ML Injectable Suspension by Beijing Institute of Biological Products,S
+any_covid_vaccine,36953390,100 ML COVID-19 vaccine 0.08 MG/ML Injectable Suspension,S
+any_covid_vaccine,36923477,100 ML COVID-19 vaccine 0.08 MG/ML Injectable Suspension by Hipra Human Health S.L.U.,S
+any_covid_vaccine,36945265,10 ML COVID-19 vaccine 0.08 MG/ML Injectable Suspension,S
+any_covid_vaccine,36962290,10 ML COVID-19 vaccine 0.08 MG/ML Injectable Suspension by Hipra Human Health S.L.U.,S
+any_covid_vaccine,36962954,1 ML COVID-19 vaccine 1200 UNT/ML Injectable Suspension,S
+any_covid_vaccine,36941610,1 ML COVID-19 vaccine 1200 UNT/ML Injectable Suspension [CoronaVac],S
+any_covid_vaccine,36929895,1 ML COVID-19 vaccine 1200 UNT/ML Injectable Suspension [CoronaVac] by Sinovac Life Sciences,S
+any_covid_vaccine,36944687,1 ML COVID-19 vaccine 13 UNT/ML Injectable Suspension,S
+any_covid_vaccine,36936425,1 ML COVID-19 vaccine 13 UNT/ML Injectable Suspension by Beijing Institute of Biological Products,S
+any_covid_vaccine,35894915,COVID-19 vaccine,S
+any_covid_vaccine,36935277,COVID-19 vaccine 0.08 MG/ML,S
+any_covid_vaccine,36950950,COVID-19 vaccine 0.08 MG/ML Injectable Suspension,S
+any_covid_vaccine,36963203,COVID-19 vaccine 1200 UNT/ML,S
+any_covid_vaccine,36926164,COVID-19 vaccine 1200 UNT/ML [CoronaVac],S
+any_covid_vaccine,36925409,COVID-19 vaccine 1200 UNT/ML Injectable Suspension,S
+any_covid_vaccine,36949344,COVID-19 vaccine 1200 UNT/ML Injectable Suspension [CoronaVac],S
+any_covid_vaccine,36958820,COVID-19 vaccine 13 UNT/ML,S
+any_covid_vaccine,36959693,COVID-19 vaccine 13 UNT/ML Injectable Suspension,S
+any_covid_vaccine,35897994,COVID-19 vaccine Injectable Solution,S
+any_covid_vaccine,36939163,COVID-19 vaccine Injectable Suspension,S
+any_covid_vaccine,36943268,COVID-19 vaccine Injectable Suspension [CoronaVac],S
+any_covid_vaccine,36118949,"COVID-19 vaccine, recombinant, full-length nanoparticle spike (S) protein, adjuvanted with Matrix-M",S
+any_covid_vaccine,36929908,"COVID-19 vaccine, recombinant, full-length nanoparticle spike (S) protein, adjuvanted with Matrix-M Injectable Solution",S
+any_covid_vaccine,36119721,"COVID-19 vaccine, recombinant, full-length nanoparticle spike (S) protein, adjuvanted with Matrix-M Injectable Suspension",S
+any_covid_vaccine,36126197,"COVID-19 vaccine, recombinant, plant-derived Virus-Like Particle (VLP) spike (S) protein, adjuvanted with AS03",S
+any_covid_vaccine,36119722,"COVID-19 vaccine, recombinant, plant-derived Virus-Like Particle (VLP) spike (S) protein, adjuvanted with AS03 Injectable Suspension",S
+any_covid_vaccine,36118948,"COVID-19 vaccine, whole virus, inactivated, adjuvanted with Alum and CpG 1018",S
+any_covid_vaccine,36119720,"COVID-19 vaccine, whole virus, inactivated, adjuvanted with Alum and CpG 1018 Injectable Suspension",S
+any_covid_vaccine,716025,"SARS-COV-2 COVID-19 mRNA, bivalent, original/Omicron BA.1, Non-US Vaccine Product (Comirnaty Bivalent), Pfizer-BioNTech",S
+any_covid_vaccine,716024,"SARS-COV-2 COVID-19 mRNA, bivalent, original/Omicron BA.1, Non-US Vaccine (Spikevax Bivalent), Moderna",S
+any_covid_vaccine,742038,"SARS-CoV-2 (COVID-19) vaccine, mRNA-1273 0.025 MG/ML / SARS-CoV-2 (COVID-19) vaccine, mRNA-1273 OMICRON (BA.4/BA.5) 0.025 MG/ML Injectable Suspension",S
+any_covid_vaccine,1525543,"SARS-CoV-2 (COVID-19) vaccine, mRNA-1273 0.05 MG/ML / SARS-CoV-2 (COVID-19) vaccine, mRNA-1273 OMICRON (BA.4/BA.5) 0.05 MG/ML Injectable Suspension",S
+any_covid_vaccine,37003517,"SARS-CoV-2 (COVID-19) vaccine, mRNA-1273 0.2 MG/ML",S
+any_covid_vaccine,36391504,"SARS-CoV-2 (COVID-19) vaccine, mRNA-1273 0.2 MG/ML Injectable Suspension",N
+any_covid_vaccine,829421,"SARS-CoV-2 (COVID-19) vaccine, mRNA-1273 0.2 MG/ML Injectable Suspension",N
+any_covid_vaccine,36398553,"SARS-CoV-2 (COVID-19) vaccine, mRNA-1273 0.2 MG/ML Injectable Suspension",N
+any_covid_vaccine,37003518,"SARS-CoV-2 (COVID-19) vaccine, mRNA-1273 0.2 MG/ML Injectable Suspension",S
+any_covid_vaccine,42796198,"SARS-CoV-2 (COVID-19) vaccine, mRNA-1273 0.2 MG/ML Injectable Suspension",N
+any_covid_vaccine,2998096,"SARS-CoV-2 (COVID-19) vaccine, mRNA-1273 0.2 MG/ML Injectable Suspension [Spikevax]",N
+any_covid_vaccine,1994903,"SARS-CoV-2 (COVID-19) vaccine, mRNA-1273 0.2 MG/ML Injectable Suspension [Spikevax]",N
+any_covid_vaccine,2998095,"SARS-CoV-2 (COVID-19) vaccine, mRNA-1273 0.2 MG/ML Injectable Suspension [Spikevax]",N
+any_covid_vaccine,779679,"SARS-CoV-2 (COVID-19) vaccine, mRNA-1273 0.2 MG/ML Injectable Suspension [Spikevax]",S
+any_covid_vaccine,1994915,"SARS-CoV-2 (COVID-19) vaccine, mRNA-1273 0.2 MG/ML Injectable Suspension [Spikevax]",N
+any_covid_vaccine,742037,"SARS-CoV-2 (COVID-19) vaccine, mRNA-1273 OMICRON (BA.4/BA.5) 0.025 MG/ML",S
+any_covid_vaccine,1525542,"SARS-CoV-2 (COVID-19) vaccine, mRNA-1273 OMICRON (BA.4/BA.5) 0.05 MG/ML",S
+any_covid_vaccine,742041,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.0075 MG/ML / SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 OMICRON (BA.4/BA.5) 0.0075 MG/ML Injectable Suspension",S
+any_covid_vaccine,742009,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.025 MG/ML / SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 OMICRON (BA.4/BA.5) 0.025 MG/ML Injectable Suspension",S
+any_covid_vaccine,1525538,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.05 MG/ML / SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 OMICRON (BA.4/BA.5) 0.05 MG/ML Injectable Suspension",S
+any_covid_vaccine,1525545,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.05 MG/ML / SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 OMICRON (BA.4/BA.5) 0.05 MG/ML Injection",S
+any_covid_vaccine,1219271,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.1 MG/ML Injectable Suspension",N
+any_covid_vaccine,37003436,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.1 MG/ML Injectable Suspension",S
+any_covid_vaccine,1799560,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.1 MG/ML Injectable Suspension",N
+any_covid_vaccine,1799559,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.1 MG/ML Injectable Suspension",N
+any_covid_vaccine,1799558,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.1 MG/ML Injectable Suspension",N
+any_covid_vaccine,1779597,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.1 MG/ML Injectable Suspension",N
+any_covid_vaccine,42797616,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.1 MG/ML Injectable Suspension",N
+any_covid_vaccine,42797615,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.1 MG/ML Injectable Suspension",N
+any_covid_vaccine,36900251,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.1 MG/ML Injectable Suspension [Comirnaty]",N
+any_covid_vaccine,36868891,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.1 MG/ML Injectable Suspension [Comirnaty]",N
+any_covid_vaccine,595835,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.1 MG/ML Injectable Suspension [Comirnaty]",N
+any_covid_vaccine,1759206,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.1 MG/ML Injectable Suspension [Comirnaty]",S
+any_covid_vaccine,1626478,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.1 MG/ML Injectable Suspension [Comirnaty]",N
+any_covid_vaccine,36868892,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.1 MG/ML Injectable Suspension [Comirnaty]",N
+any_covid_vaccine,36900252,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.1 MG/ML Injectable Suspension [Comirnaty]",N
+any_covid_vaccine,742040,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 OMICRON (BA.4/BA.5) 0.0075 MG/ML",S
+any_covid_vaccine,742007,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 OMICRON (BA.4/BA.5) 0.025 MG/ML",S
+any_covid_vaccine,1525544,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 OMICRON (BA.4/BA.5) 0.05 MG/ML",S
+any_covid_vaccine,37003432,"SARS-CoV-2 (COVID-19) vaccine, mRNA spike protein",S
+any_covid_vaccine,37003435,"SARS-CoV-2 (COVID-19) vaccine, mRNA spike protein Injectable Suspension",S
+any_covid_vaccine,1759205,"SARS-CoV-2 (COVID-19) vaccine, mRNA spike protein Injectable Suspension [Comirnaty]",S
+any_covid_vaccine,779678,"SARS-CoV-2 (COVID-19) vaccine, mRNA spike protein Injectable Suspension [Spikevax]",S
+any_covid_vaccine,739906,"SARS-COV-2 (COVID-19) vaccine, vector - Ad26 100000000000 UNT/ML Injectable Suspension",S
+any_covid_vaccine,702866,"SARS-COV-2 (COVID-19) vaccine, vector non-replicating, recombinant spike protein-Ad26, preservative free, 0.5 mL",N
+any_covid_vaccine,724905,"SARS-COV-2 (COVID-19) vaccine, vector non-replicating, recombinant spike protein-ChAdOx1, preservative free, 0.5 mL (non-US)",S
+moderna,37003517,"SARS-CoV-2 (COVID-19) vaccine, mRNA-1273 0.2 MG/ML",S
+moderna,829421,"SARS-CoV-2 (COVID-19) vaccine, mRNA-1273 0.2 MG/ML Injectable Suspension",N
+moderna,42796198,"SARS-CoV-2 (COVID-19) vaccine, mRNA-1273 0.2 MG/ML Injectable Suspension",N
+moderna,36391504,"SARS-CoV-2 (COVID-19) vaccine, mRNA-1273 0.2 MG/ML Injectable Suspension",N
+moderna,36398553,"SARS-CoV-2 (COVID-19) vaccine, mRNA-1273 0.2 MG/ML Injectable Suspension",N
+moderna,37003518,"SARS-CoV-2 (COVID-19) vaccine, mRNA-1273 0.2 MG/ML Injectable Suspension",S
+moderna,2998096,"SARS-CoV-2 (COVID-19) vaccine, mRNA-1273 0.2 MG/ML Injectable Suspension [Spikevax]",N
+moderna,779679,"SARS-CoV-2 (COVID-19) vaccine, mRNA-1273 0.2 MG/ML Injectable Suspension [Spikevax]",S
+moderna,1994903,"SARS-CoV-2 (COVID-19) vaccine, mRNA-1273 0.2 MG/ML Injectable Suspension [Spikevax]",N
+moderna,1994915,"SARS-CoV-2 (COVID-19) vaccine, mRNA-1273 0.2 MG/ML Injectable Suspension [Spikevax]",N
+moderna,2998095,"SARS-CoV-2 (COVID-19) vaccine, mRNA-1273 0.2 MG/ML Injectable Suspension [Spikevax]",N
+moderna,37003432,"SARS-CoV-2 (COVID-19) vaccine, mRNA spike protein",S
+moderna,37003435,"SARS-CoV-2 (COVID-19) vaccine, mRNA spike protein Injectable Suspension",S
+moderna,779678,"SARS-CoV-2 (COVID-19) vaccine, mRNA spike protein Injectable Suspension [Spikevax]",S
+pfizer,1525734,"0.3 ML SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.05 MG/ML / SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 OMICRON (BA.4/BA.5) 0.05 MG/ML Injection",S
+pfizer,716025,"SARS-COV-2 COVID-19 mRNA, bivalent, original/Omicron BA.1, Non-US Vaccine Product (Comirnaty Bivalent), Pfizer-BioNTech",S
+pfizer,742041,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.0075 MG/ML / SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 OMICRON (BA.4/BA.5) 0.0075 MG/ML Injectable Suspension",S
+pfizer,742009,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.025 MG/ML / SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 OMICRON (BA.4/BA.5) 0.025 MG/ML Injectable Suspension",S
+pfizer,1525538,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.05 MG/ML / SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 OMICRON (BA.4/BA.5) 0.05 MG/ML Injectable Suspension",S
+pfizer,1525545,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.05 MG/ML / SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 OMICRON (BA.4/BA.5) 0.05 MG/ML Injection",S
+pfizer,1799560,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.1 MG/ML Injectable Suspension",N
+pfizer,1779597,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.1 MG/ML Injectable Suspension",N
+pfizer,42797616,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.1 MG/ML Injectable Suspension",N
+pfizer,1799558,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.1 MG/ML Injectable Suspension",N
+pfizer,1799559,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.1 MG/ML Injectable Suspension",N
+pfizer,42797615,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.1 MG/ML Injectable Suspension",N
+pfizer,1219271,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.1 MG/ML Injectable Suspension",N
+pfizer,37003436,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.1 MG/ML Injectable Suspension",S
+pfizer,595835,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.1 MG/ML Injectable Suspension [Comirnaty]",N
+pfizer,1626478,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.1 MG/ML Injectable Suspension [Comirnaty]",N
+pfizer,1759206,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.1 MG/ML Injectable Suspension [Comirnaty]",S
+pfizer,36868891,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.1 MG/ML Injectable Suspension [Comirnaty]",N
+pfizer,36868892,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.1 MG/ML Injectable Suspension [Comirnaty]",N
+pfizer,36900251,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.1 MG/ML Injectable Suspension [Comirnaty]",N
+pfizer,36900252,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.1 MG/ML Injectable Suspension [Comirnaty]",N
+pfizer,742040,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 OMICRON (BA.4/BA.5) 0.0075 MG/ML",S
+pfizer,742007,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 OMICRON (BA.4/BA.5) 0.025 MG/ML",S
+pfizer,1525544,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 OMICRON (BA.4/BA.5) 0.05 MG/ML",S
+pfizer,1759205,"SARS-CoV-2 (COVID-19) vaccine, mRNA spike protein Injectable Suspension [Comirnaty]",S
