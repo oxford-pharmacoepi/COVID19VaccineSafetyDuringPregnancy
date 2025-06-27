@@ -34,6 +34,7 @@ db <- dbConnect(
 
 cdm_database_schema <- "..."
 results_database_schema <- "..."
+achilles_database_schema <- "..."
 
 # cohort stem where cohorts will be instantiated
 table_stem <- "..."
@@ -43,7 +44,7 @@ cdm <- cdmFromCon(
   cdmSchema = cdm_database_schema,
   writeSchema = results_database_schema,
   writePrefix = tolower(table_stem),
-  achillesSchema = results_database_schema,
+  achillesSchema = achilles_database_schema,
   cdmName = database_name,
   .softValidation = TRUE
 )
@@ -67,7 +68,7 @@ cdm <- cdmFromCon(
   cdmName = database_name,
   .softValidation = TRUE
 )
-cdm <- dropSourceTable(cdm = cdm, name = starts_with(table_stem))
+# cdm <- dropSourceTable(cdm = cdm, name = starts_with(table_stem))
 
 # Disconnect
 cdmDisconnect(cdm)
