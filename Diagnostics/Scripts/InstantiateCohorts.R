@@ -6,13 +6,13 @@ if (!dir.exists(output_folder)) {
 source(here("Scripts", "functions.R"))
 
 # SQL ----
-dir_sql <- file.path(here::here(output_folder), "sql_diagnostics")
-dir.create(dir_sql)
-options("omopgenerics.log_sql_path" = dir_sql)
-
-dir_explain <- file.path(here::here(output_folder), "sql_diagnostics_explain")
-dir.create(dir_explain)
-options("omopgenerics.log_sql_explain_path" = dir_explain)
+# dir_sql <- file.path(here::here(output_folder), "sql_diagnostics")
+# dir.create(dir_sql)
+# options("omopgenerics.log_sql_path" = dir_sql)
+# 
+# dir_explain <- file.path(here::here(output_folder), "sql_diagnostics_explain")
+# dir.create(dir_explain)
+# options("omopgenerics.log_sql_explain_path" = dir_explain)
 
 # Logger ----
 log_file <- here(output_folder, paste0("log", "_", gsub("-", "", Sys.Date()), ".txt"))
