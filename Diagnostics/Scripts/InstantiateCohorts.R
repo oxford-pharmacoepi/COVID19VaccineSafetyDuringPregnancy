@@ -282,8 +282,12 @@ cdm$mae_omop <- cdm$mae_omop |>
   newCohortTable(cohortSetRef = settingsSQL |> collect(), cohortAttritionRef = NULL)
 
 ## Maternal death
-cdm$maternal_death <- deathCohort(name = "maternal_death") |>
-  inner_join(cdm$mother_table, by = "subject_id") %>% 
+cdm$maternal_death <- deathCohort(cdm = cdm, name = "maternal_death") |>
+  inner_join(
+    cdm$mother_table |> 
+    select("subject_id", "pregnancy_start_date", "pregnancy_end_date"), 
+    by = "subject_id"
+  ) %>% 
   filter(cohort_start_date <= !!dateadd("pregnancy_end_date", 7*6)) |>
   filter(cohort_start_date >= pregnancy_start_date) |>
   select(
