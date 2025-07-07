@@ -28,7 +28,7 @@ for (nm in cohortNames) {
         mutate(unique_id = paste0(subject_id, "_", exposed_match_id, "_", pregnancy_id)) |>
         select(any_of(c(
           "subject_id", "unique_id", "exposure", "age", "region", "gestational_day", "cohort_start_date", 
-          "previous_observation", "smoking_status", "previous_pregnancies", "previous_healthcare_visits",
+          "previous_observation", "previous_pregnancies", "previous_healthcare_visits",
           "alcohol_misuse_dependence", "obesity", vax 
         )))
     ) |>
@@ -66,7 +66,7 @@ for (nm in cohortNames) {
     ) |>
     select(any_of(c(
       "subject_id", "unique_id", "exposure", "age", "care_site_id", "gestational_day", "cohort_start_date", 
-      "previous_observation", "smoking_status", "previous_pregnancies", "previous_healthcare_visits",
+      "previous_observation", "previous_pregnancies", "previous_healthcare_visits",
       "alcohol_misuse_dependence", "obesity", vax , selectedLassoFeatures[[nm]]
     ))) |>
     collect() |>
@@ -171,14 +171,14 @@ ps |>
   exportSummarisedResult(fileName = paste0("ps_values_", cdmName(cdm)), path = output_folder)
 
 # Characterise ---- 
-info(logger, "- Baseline characteristics")
+info(logger, "- Baseline characteristics (weighted)")
 strata <- selectStrata(cdm, strata = c("vaccine_brand", "gestational_trimester", "age_group"))
 
 ## table one
 baseline_characteristics <- getBaselineCharacteristics(cdm, strata, weights = "weight")
 
 ## large scale
-info(logger, "- Large Scale characteristics")
+info(logger, "- Large Scale characteristics (weighted)")
 cdm$features <- cdm$features |>
   inner_join(
     cdm$study_population |> select("unique_id", "weight"), by = "unique_id"
@@ -187,7 +187,7 @@ cdm$features <- cdm$features |>
 large_scale_characteristics <- getLargeScaleCharacteristics(cdm, strata, weights = "weight")
 
 ## censoring 
-info(logger, "- Censoring summary")
+info(logger, "- Censoring summary (weighted)")
 censoring <- summariseCohortExit(cdm = cdm, strata = strata, weights = "weight")
 
 ## index date and gestational age
@@ -195,7 +195,7 @@ timeDistribution <- summariseTimeDistribution(cdm = cdm, strata = strata, weight
 
 # Confounding ----
 ## SMD
-info(logger, "- Standardised Mean Differences")
+info(logger, "- Standardised Mean Differences (weighted)")
 smdBinary <- summariseBinarySMD(large_scale_characteristics) |>
   filter(!is.na(estimate_value))
 smdNumeric <- summariseNumericSMD(baseline_characteristics) |>
@@ -204,7 +204,7 @@ bind(baseline_characteristics, large_scale_characteristics, smdBinary, smdNumeri
   exportSummarisedResult(fileName = paste0("weighted_characteristics_", cdmName(cdm), ".csv"), path = output_folder)
 
 ## NCO 
-info(logger, "- Negative Control Outcomes")
+info(logger, "- Negative Control Outcomes (weighted)")
 cdm$study_population_nco <- cdm$study_population_nco |>
   mutate(unique_id = paste0(subject_id, "_", exposed_match_id, "_", pregnancy_id)) |>
   inner_join(
@@ -215,11 +215,13 @@ cdm$study_population_nco <- cdm$study_population_nco |>
 nco_weighted <- bind(
   estimateSurvivalRisk(
     cohort = cdm$study_population_nco, outcomes = settings(cdm$nco)$cohort_name, 
-    end = "cohort_end_date", strata = strata, group = "cohort_name", weights = "weight"
+    end = "cohort_end_date", strata = strata, group = "cohort_name", 
+    weights = "weight", outcomeGroup = "Negative Control Outcomes"
   ), 
   estimateSurvivalRisk(
     cohort = cdm$study_population_nco, outcomes = settings(cdm$nco)$cohort_name, 
-    end = "cohort_end_date_sensitivity", strata = strata, group = "cohort_name", weights = "weight"
+    end = "cohort_end_date_sensitivity", strata = strata, group = "cohort_name", 
+    weights = "weight", outcomeGroup = "Negative Control Outcomes"
   )
 )
 

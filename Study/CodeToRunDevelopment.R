@@ -12,9 +12,11 @@ library(SqlRender)
 library(omopgenerics)
 library(CohortConstructor)
 library(CohortCharacteristics)
+library(CodelistGenerator)
 library(OmopSketch)
 library(glmnet)
 library(Hmisc)
+library(IncidencePrevalence)
 
 # Database name
 database_name <- "CPRD GOLD"
@@ -63,10 +65,9 @@ results <- paste0("Results_", cdmName(cdm))
 # Choose code to run
 runInstantiateCohorts <- FALSE
 runRiskSetSampling <- FALSE
-runPSWeighting <- TRUE
-runOutcomeModel <- FALSE
+runPSWeighting <- FALSE
+runOutcomeModel <- TRUE
 runBackgroundRates <- FALSE
-runBackgroundCharacteristics <- FALSE
 
 source(here("RunStudy.R"))
 

@@ -144,6 +144,10 @@ ischaemic_stroke,4043732,Posterior cerebral circulation hemorrhagic infarction,S
 ischaemic_stroke,4045737,Pure motor lacunar infarction,S
 ischaemic_stroke,4146185,Right sided cerebral infarction,S
 ischaemic_stroke,36717605,Silent cerebral infarct,S
+ischaemic_stroke,4111716,Occlusion and stenosis of anterior cerebral artery,S
+ischaemic_stroke_v5,4111717,Occlusion and stenosis of posterior cerebral artery,S
+ischaemic_stroke_v6,4112023,Occlusion and stenosis of middle cerebral artery,S
+ischaemic_stroke_v7,443239,Precerebral arterial occlusion,S
 ischaemic_stroke,4142739,Thalamic infarction,S
 ischaemic_stroke,4046358,Total anterior cerebral circulation infarction,S
 ischaemic_stroke,4045738,Pure sensory lacunar infarction,S
@@ -437,6 +441,7 @@ deep_vein_thrombosis,199837,Portal vein thrombosis,S
 deep_vein_thrombosis,193512,Embolism and thrombosis of the renal vein,S
 deep_vein_thrombosis,4111861,Phlebitis of popliteal vein,S
 deep_vein_thrombosis,440738,Phlebitis of the femoral vein,S
+deep_vein_thrombosis,435887,Antepartum deep vein thrombosis,S
 deep_vein_thrombosis,438820,Deep venous thrombosis in puerperium,S
 anaphylaxis,37207726,Anaphylaxis due to allergen immunotherapy,NA
 anaphylaxis,42539054,Shock co-occurrent and due to anaphylaxis caused by serum,S
@@ -489,6 +494,7 @@ myocarditis_or_pericarditis,312334,constrictive pericarditis,S
 myocarditis_or_pericarditis,4238032,Acute pericardial effusion,S
 myocarditis_or_pericarditis,4108814,Pericardial effusion - noninflammatory,S
 myocarditis_or_pericarditis,4203625,Chronic constrictive pericarditis,S
+myocarditis_or_pericarditis,4121477,Post-infarction pericarditis,S
 thrombosis,45766075,Acute anterior ST segment elevation myocardial infarction,S
 thrombosis,4178129,Acute anteroapical myocardial infarction,S
 thrombosis,4267568,Acute anteroseptal myocardial infarction,S
@@ -822,6 +828,7 @@ thrombosis,761737,Acute ST segment elevation myocardial infarction due to occlus
 thrombosis,77310,Deep vein phlebitis and thrombophlebitis of the leg,NA
 thrombosis,4189004,Deep vein thrombosis of leg related to intravenous drug use,NA
 thrombosis,4154704,Myocardial infarction with complication,NA
+thrombosis,4062269,Cerebral venous thrombosis in pregnancy,S
 thrombocytopenia,432870,Thrombocytopenic disorder,S
 thrombocytopenia,46272950,"Thrombocytopathy, asplenia and miosis",S
 thrombocytopenia,44782445,Thrombocytopenia due to alcohol,S
@@ -842,7 +849,7 @@ thrombocytopenia,36713112,Pancytopenia due to antineoplastic chemotherapy,S
 thrombocytopenia,35623407,Adult pure red cell aplasia,S
 thrombocytopenia,4345236,Parvoviral aplastic crisis,S
 thrombocytopenia,4338386,Thrombocytopenia due to non-immune destruction,S
-thrombocytopenia,4316372,HELLP syndrome,S
+thrombocytopenia,441264,Primary thrombocytopenia,S
 thrombocytopenia,4301602,Thrombotic thrombocytopenic purpura,S
 thrombocytopenia,4301128,Thrombocytopenia due to diminished platelet production,S
 thrombocytopenia,4299560,Thrombocytopenic purpura due to defective platelet production,S

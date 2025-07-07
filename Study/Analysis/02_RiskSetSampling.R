@@ -54,8 +54,7 @@ sampling_summary <- omopgenerics::bind(
 
 cdm$exposed_source <- cdm$exposed_source |>
   filter(vaccine_brand %in% c("pfizer", "moderna")) |>
-  compute(name = "exposed_source", temporary = FALSE) |>
-  newCohortTable() 
+  compute(name = "exposed_source", temporary = FALSE) 
 
 sampling_summary <- omopgenerics::bind(
   sampling_summary,
@@ -65,6 +64,20 @@ sampling_summary <- omopgenerics::bind(
     mutate(
       variable_name = "Number exposed", 
       variable_level = "Vaccinated with recommended vaccines"
+    )
+)
+
+cdm$exposed_source <- cdm$exposed_source |>
+  applyPopulationWashout() 
+
+sampling_summary <- omopgenerics::bind(
+  sampling_summary,
+  cdm$exposed_source |> 
+    summariseResult(group = "cohort_name") |> 
+    filter(variable_name == "number records") |>
+    mutate(
+      variable_name = "Number exposed", 
+      variable_level = "Eligible to contirbute at vaccination day"
     )
 )
 
@@ -131,45 +144,27 @@ sampling_source <- sampling_source %>%
   select(!c("age_group_sample")) |>
   compute(name = "sampling_source", temporary = FALSE) |>
   ## WASH OUT
-  # No COVID-19
-  requireCohortIntersect(
-    targetCohortTable = "covid_washout",
-    window = list(c(-90, 0)),
-    intersections = 0,
-    indexDate = "exposure_date",
-    targetStartDate = "cohort_start_date",
-    targetEndDate = NULL
-  )  |>
-  # No acute AESI (90)
-  requireCohortIntersect(
-    targetCohortTable = "aesi90_washout",
-    window = list(c(-90, 0)),
-    intersections = 0,
-    indexDate = "exposure_date",
-    targetStartDate = "cohort_start_date",
-    targetEndDate = NULL
-  ) |>
-  # No recurrent AESI (30)
-  requireCohortIntersect(
-    targetCohortTable = "aesi30_washout",
-    window = list(c(-30, 0)),
-    intersections = 0,
-    indexDate = "exposure_date",
-    targetStartDate = "cohort_start_date",
-    targetEndDate = NULL
-  ) |>
-  # No chronic AESI (Inf)
-  requireCohortIntersect(
-    targetCohortTable = "aesi_inf",
-    window = list(c(-Inf, 0)),
-    intersections = 0,
-    indexDate = "exposure_date",
-    targetStartDate = "cohort_start_date",
-    targetEndDate = NULL
-  ) # TODO MAE WASHOUT
+  applyPopulationWashout(censorDate = "comparator_pregnancy_start_date")
 
 # Wash-out summary 
-sampling_summary <- samplingSummary(sampling_source, "Apply wash-out", sampling_summary)
+sampling_summary <- omopgenerics::bind(
+  sampling_summary,
+  sampling_source |> 
+    summariseResult(group = "cohort_name") |> 
+    filter(variable_name == "number records") |>
+    mutate(
+      variable_name = "Number comparator", 
+      variable_level = "Eligible comparators at vaccination date of exposed match"
+    ),
+  sampling_source |>
+    group_by(cohort_name, exposed_id) |> 
+    tally() |>
+    summariseResult(
+      group = list("cohort_name"), variables = "n", counts = FALSE, 
+      estimates = c("min", "max", "median", "q25", "q75")
+    ) |>
+    mutate(variable_name = "exposed:comparator", variable_level = "Eligible comparators at vaccination date of exposed match")
+)
 
 # Sample 
 info(logger, "- Sampling")
@@ -196,7 +191,7 @@ cdm$study_population <- sampling_source |>
     cohort_end_date = exposure_date,
     !!!datesPivotLongerExprs(
       c("pregnancy_start_date", "pregnancy_end_date", "pregnancy_id", "pregnancy_outcome_study",
-        "observation_start", "observation_end", "previous_dose")
+        "observation_start", "observation_end", "previous_dose", "age_group")
     )
   ) |>
   select(all_of(c(
@@ -263,31 +258,6 @@ cdm$study_population <- cdm$study_population %>%
     previous_dose = if_else(previous_dose > 0, previous_dose, NA)
   ) |>
   rename("days_previous_dose" = "previous_dose") |>
-  # TODO smoking status -- make sure it is useful and lookback days match
-  addCohortIntersectDate(
-    targetCohortTable = "smoking",
-    indexDate = "cohort_start_date",
-    censorDate = NULL,
-    targetDate = "cohort_start_date",
-    window = list(c(-5*365, 0)),
-    nameStyle = "{cohort_name}"
-  ) |>
-  mutate(
-    # smoking_status = pmax(non_smoker, smoker, former_smoker, na.rm = TRUE), #will not work in sql?
-    smoking_status = case_when(
-      non_smoker < smoker & non_smoker < former_smoker & !is.na(non_smoker) ~ non_smoker,
-      smoker < non_smoker & smoker < former_smoker & !is.na(smoker) ~ smoker,
-      former_smoker < non_smoker & former_smoker < smoker & !is.na(former_smoker) ~ former_smoker,
-      .default = NA
-    ),
-    smoking_status = case_when(
-      is.na(smoking_status) ~ "Missing/Other",
-      smoking_status == .data$non_smoker ~ "Non-smoker",
-      smoking_status == .data$smoker ~ "Smoker",
-      smoking_status == .data$former_smoker ~ "Former smoker"
-    )
-  ) |>
-  select(!any_of(c("non_smoker", "smoker", "former_smoker" ))) |>
   compute(name = "study_population", temporary = FALSE) |>
   # more covariates that will be used later
   addCohortIntersectCount(
@@ -385,11 +355,13 @@ cdm$study_population_nco <- cdm$study_population |>
 nco_unweighted <- bind(
   estimateSurvivalRisk(
     cohort = cdm$study_population_nco, outcomes = settings(cdm$nco)$cohort_name, 
-    end = "cohort_end_date", strata = strata, group = "cohort_name", weights = NULL
+    end = "cohort_end_date", strata = strata, group = "cohort_name", 
+    weights = NULL, outcomeGroup = "Negative Control Outcomes"
   ), 
   estimateSurvivalRisk(
     cohort = cdm$study_population_nco, outcomes = settings(cdm$nco)$cohort_name, 
-    end = "cohort_end_date_sensitivity", strata = strata, group = "cohort_name", weights = NULL
+    end = "cohort_end_date_sensitivity", strata = strata, group = "cohort_name", 
+    weights = NULL, outcomeGroup = "Negative Control Outcomes"
   )
 )
 

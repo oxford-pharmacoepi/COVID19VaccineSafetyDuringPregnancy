@@ -1,10 +1,10 @@
 # AESI ----
+strata <- selectStrata(cdm, strata = c("vaccine_brand", "gestational_trimester", "age_group"))
 toKeep <- c(
   "cohort_definition_id", "cohort_name", "subject_id", "cohort_start_date", 
   "cohort_end_date", "cohort_end_date_sensitivity", "pregnancy_end_date",
   unique(unlist(strata)), "weight"
 )
-strata <- selectStrata(cdm, strata = c("vaccine_brand", "gestational_trimester", "age_group"))
 cdm$aesi_outcome <- cdm$study_population |>
   dplyr::select(dplyr::all_of(toKeep)) %>% 
   mutate(start_42 = as.Date(!!CDMConnector::dateadd("cohort_start_date", 42))) |>
@@ -17,12 +17,12 @@ cdm$aesi_outcome <- cdm$study_population |>
     end_42_days_sensitivity = if_else(start_42 < cohort_end_date_sensitivity, start_42, cohort_end_date_sensitivity)
   ) |>
   addCohortIntersectDate(
-    targetCohortTable = "aesi90",
+    targetCohortTable = "aesi_90",
     nameStyle = "{cohort_name}",
     name = "aesi_outcome"
   ) |>
   addCohortIntersectDate(
-    targetCohortTable = "aesi30",
+    targetCohortTable = "aesi_30",
     nameStyle = "{cohort_name}",
     name = "aesi_outcome"
   ) |>
@@ -39,24 +39,115 @@ aesiResults <- list()
 jj <- 1
 for (end in endDates) {
   aesiResults[[jj]] <- estimateSurvivalRisk(
-    cohort = cdm$aesi_outcome, outcomes = aesiOutcomes,
+    cohort = cdm$aesi_outcome, outcomes = aesiOutcomes, outcomeGroup = "Adverse Events of Special Interest",
     end = end, strata = strata, group = "cohort_name", weights = NULL
   )
   aesiResults[[jj]] <- estimateSurvivalRisk(
-    cohort = cdm$aesi_outcome, outcomes = aesiOutcomes,
+    cohort = cdm$aesi_outcome, outcomes = aesiOutcomes, outcomeGroup = "Adverse Events of Special Interest",
     end = end, strata = strata, group = "cohort_name", weights = "weight"
   )
   jj <- jj + 1
 }
 
-aesiResults <- omopgenerics::bind(!!!aesiResults)
-
-
-
 # MAE ----
+cdm$mae_outcome <- cdm$study_population |>
+  addCohortIntersectDate(
+    targetCohortTable = "mae",
+    nameStyle = "{cohort_name}",
+    name = "mae_outcome"
+  )
+maeResults <- list()
+jj <- 1
+
 ## Group 1: < 20 weeks (miscarriage)
-### Main
-### Sensitvity
+cdm$mea_miscarriage <- cdm$mae_outcome %>% 
+  mutate(week_19_end = !!dateadd("pregnancy_start_date", 19*7 + 6)) |>
+  filter(cohort_start_date < week_19_end) |>
+  mutate(
+    week_19_end =  if_else(week_19_end < cohort_end_date, week_19_end, cohort_end_date),
+    week_19_end_sensitivity =  if_else(week_19_end < cohort_end_date_sensitivity, week_19_end, cohort_end_date_sensitivity)
+  ) |>
+  compute(name = "mea_miscarriage", temporary = FALSE)
+for (endDate in c("week_19_end", "week_19_end_sensitivity")) {
+  maeResults[[jj]] <- estimateSurvivalRisk(
+    cohort = cdm$mea_miscarriage, outcomes = "miscarriage", outcomeGroup = "Maternal Adverse Events",
+    end = endDate, strata = strata, group = "cohort_name", weights = NULL
+  )
+  jj <- 1 + jj
+  maeResults[[jj]] <- estimateSurvivalRisk(
+    cohort = cdm$mea_miscarriage, outcomes = "miscarriage", outcomeGroup = "Maternal Adverse Events",
+    end = endDate, strata = strata, group = "cohort_name", weights = "weight"
+  )
+  jj <- 1 + jj
+}
+
 ## Group 2: during pregnancy
+cdm$mea_pregnancy <- cdm$mae_outcome %>% 
+  mutate(
+    pregnancy_end =  if_else(pregnancy_end_date < cohort_end_date, pregnancy_end_date, cohort_end_date),
+    pregnancy_end_sensitivity =  if_else(pregnancy_end_date < cohort_end_date_sensitivity, pregnancy_end_date, cohort_end_date_sensitivity)
+  ) |>
+  compute(name = "mea_pregnancy", temporary = FALSE)
+for (endDate in c("pregnancy_end", "pregnancy_end_sensitivity")) {
+  outcomes <- c('antepartum_haemorrhage', 'eclampsia', 'hellp', 'preterm_labour', 'dysfunctional_labour')
+  maeResults[[jj]] <- estimateSurvivalRisk(
+    cohort = cdm$mea_pregnancy, outcomes = outcomes, outcomeGroup = "Maternal Adverse Events",
+    end = endDate, strata = strata, group = "cohort_name", weights = NULL
+  )
+  jj <- 1 + jj
+  maeResults[[jj]] <- estimateSurvivalRisk(
+    cohort = cdm$mea_pregnancy, outcomes = outcomes, outcomeGroup = "Maternal Adverse Events",
+    end = endDate, strata = strata, group = "cohort_name", weights = "weight"
+  )
+  jj <- 1 + jj
+}
+
 ## Group 3: up to 6 weeks after pregnancy
+cdm$mea_postpartum_6 <- cdm$mae_outcome %>% 
+  mutate(postpartum_6_weeks = !!dateadd("pregnancy_end_date", 6*7)) |>
+  mutate(
+    postpartum_6_weeks =  if_else(postpartum_6_weeks < cohort_end_date, postpartum_6_weeks, cohort_end_date),
+    postpartum_6_weeks_sensitivity =  if_else(postpartum_6_weeks < cohort_end_date_sensitivity, postpartum_6_weeks, cohort_end_date_sensitivity)
+  ) |>
+  compute(name = "mea_postpartum_6", temporary = FALSE)
+for (endDate in c("postpartum_6_weeks", "postpartum_6_weeks_sensitivity")) {
+  outcomes <- c('postpartum_endometritis', 'maternal_death')
+  maeResults[[jj]] <- estimateSurvivalRisk(
+    cohort = cdm$mea_postpartum_6, outcomes = outcomes, outcomeGroup = "Maternal Adverse Events",
+    end = endDate, strata = strata, group = "cohort_name", weights = NULL
+  )
+  jj <- 1 + jj
+  maeResults[[jj]] <- estimateSurvivalRisk(
+    cohort = cdm$mea_postpartum_6, outcomes = outcomes, outcomeGroup = "Maternal Adverse Events",
+    end = endDate, strata = strata, group = "cohort_name", weights = "weight"
+  )
+  jj <- 1 + jj
+}
+
 ## Group 4: up to 12 weeks after pregnancy
+cdm$mea_postpartum_12 <- cdm$mae_outcome %>% 
+  mutate(postpartum_12_weeks = !!dateadd("pregnancy_end_date", 12*7)) |>
+  mutate(
+    postpartum_12_weeks =  if_else(postpartum_12_weeks < cohort_end_date, postpartum_12_weeks, cohort_end_date),
+    postpartum_12_weeks_sensitivity =  if_else(postpartum_12_weeks < cohort_end_date_sensitivity, postpartum_12_weeks, cohort_end_date_sensitivity)
+  ) |>
+  compute(name = "mea_postpartum_12", temporary = FALSE)
+for (endDate in c("postpartum_12_weeks", "postpartum_12_weeks_sensitivity")) {
+  outcomes <- c('postpartum_haemorrhage')
+  maeResults[[jj]] <- estimateSurvivalRisk(
+    cohort = cdm$mea_postpartum_12, outcomes = outcomes, outcomeGroup = "Maternal Adverse Events",
+    end = endDate, strata = strata, group = "cohort_name", weights = NULL
+  )
+  jj <- 1 + jj
+  maeResults[[jj]] <- estimateSurvivalRisk(
+    cohort = cdm$mea_postpartum_12, outcomes = outcomes, outcomeGroup = "Maternal Adverse Events",
+    end = endDate, strata = strata, group = "cohort_name", weights = "weight"
+  )
+  jj <- 1 + jj
+}
+
+# Export results ----
+aesiResults <- omopgenerics::bind(aesiResults) 
+maeResults <- omopgenerics::bind(maeResults) 
+omopgenerics::bind(aesiResults, maeResults) |>
+  exportSummarisedResult(fileName = paste0("outcome_risk_estimates_", cdmName(cdm), ".csv"), path = output_folder)

@@ -45,9 +45,10 @@ if (runRiskSetSampling) {
       cdmName = database_name,
       cohortTables = c(
         "mother_table", "base", "covid_vaccines", "covid_vaccines_dose", "source_population", 
-        "covid", "smoking", "covariates_inf", "covariates_5", "covariates_1", "other_vaccines",
-        "covid_test", "aesi90", "aesi30", "aesi_inf", "nco", "covid_washout",
-        "aesi90_washout", "aesi30_washout", "covid_vaccines_booster"
+        "covid", "covariates_inf", "covariates_5", "covariates_1", "other_vaccines",
+        "covid_test", "aesi_90", "aesi_30", "aesi_inf", "nco", "covid_washout",
+        "aesi_90_washout", "aesi_30_washout", "covid_vaccines_booster", "mae",
+        "mae_washout"
       ),
       .softValidation = TRUE
     )
@@ -67,9 +68,9 @@ if (runPSWeighting) {
       cdmName = database_name,
       cohortTables = c(
         "mother_table", "base", "covid_vaccines", "covid_vaccines_dose", "source_population", 
-        "covid", "smoking", "covariates_inf", "covariates_5", "covariates_1", "other_vaccines",
-        "covid_test", "aesi90", "aesi30", "aesi_inf", "nco", "covid_washout", 
-        "aesi90_washout", "aesi30_washout", "study_population", "study_population_nco",
+        "covid", "covariates_inf", "covariates_5", "covariates_1", "other_vaccines",
+        "covid_test", "aesi_90", "aesi_30", "aesi_inf", "nco", "covid_washout", 
+        "aesi_90_washout", "aesi_30_washout", "study_population", "study_population_nco",
         "features"
       ),
       .softValidation = TRUE
@@ -89,16 +90,32 @@ if (runOutcomeModel) {
       cdmName = database_name,
       cohortTables = c(
         "mother_table", "base", "covid_vaccines", "covid_vaccines_dose", "source_population", 
-        "covid", "smoking", "covariates_inf", "covariates_5", "covariates_1", "other_vaccines",
-        "covid_test", "aesi90", "aesi30", "aesi_inf", "nco", "covid_washout", 
-        "aesi90_washout", "aesi30_washout", "study_population", "study_population_nco",
-        "features"
+        "covid", "covariates_inf", "covariates_5", "covariates_1", "other_vaccines",
+        "covid_test", "aesi_90", "aesi_30", "aesi_inf", "nco", "covid_washout", 
+        "aesi_90_washout", "aesi_30_washout", "study_population", "study_population_nco",
+        "mae", "features"
       ),
       .softValidation = TRUE
     )
   }
   info(logger, "STEP 4 OUTCOME MODEL ----")
   source(here("Analysis", "04_OutcomeModel.R"))
+}
+
+if (runBackgroundRates) {
+  if (!runInstantiateCohorts | !runOutcomeModel) {
+    cdm <- cdmFromCon(
+      con = db,
+      cdmSchema = cdm_database_schema,
+      writeSchema = results_database_schema,
+      writePrefix = tolower(table_stem),
+      cdmName = database_name,
+      cohortTables = c("mother_table", "aesi_90", "aesi_30", "aesi_inf", "mae"),
+      .softValidation = TRUE
+    )
+  }
+  info(logger, "STEP 5 BACKGROUND RATES ----")
+  source(here("Analysis", "05_BackgroundRates.R"))
 }
 
 # info(logger, "STEP XXX ZIP RESULTS ----")
