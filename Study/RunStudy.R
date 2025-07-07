@@ -71,7 +71,7 @@ if (runPSWeighting) {
         "covid", "covariates_inf", "covariates_5", "covariates_1", "other_vaccines",
         "covid_test", "aesi_90", "aesi_30", "aesi_inf", "nco", "covid_washout", 
         "aesi_90_washout", "aesi_30_washout", "study_population", "study_population_nco",
-        "features"
+        "features", "mae"
       ),
       .softValidation = TRUE
     )
@@ -118,13 +118,13 @@ if (runBackgroundRates) {
   source(here("Analysis", "05_BackgroundRates.R"))
 }
 
-# info(logger, "STEP XXX ZIP RESULTS ----")
-# output_folder <- basename(output_folder)
-# zip(
-#   zipfile = paste0(output_folder, "_", gsub("-", "", Sys.Date()), ".zip"),
-#   files = list.files(output_folder, full.names = TRUE)
-# )
-# 
-# dbDisconnect(db)
-# 
-# info(logger, " -- DONE! --")
+info(logger, "STEP 6 ZIP RESULTS ----")
+output_folder <- basename(output_folder)
+zip(
+  zipfile = paste0(output_folder, "_", gsub("-", "", Sys.Date()), ".zip"),
+  files = list.files(output_folder, full.names = TRUE)
+)
+
+dbDisconnect(db)
+
+info(logger, " -- DONE! --")
