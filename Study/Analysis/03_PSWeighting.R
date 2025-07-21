@@ -144,7 +144,7 @@ psCovariates |>
     estimate_value = as.character(estimate_value)
   ) |>
   newSummarisedResult(
-    settings = tibble(result_id = 1L, package_name = "study_code", package_version = "v0.0.1")
+    settings = tibble(result_id = 1L, package_name = "study_code", package_version = "v0.0.1", result_type = "propensity_score_coeficcients")
   ) |>
   exportSummarisedResult(fileName = paste0("ps_coefficients_", cdmName(cdm)), path = output_folder)
 
@@ -159,14 +159,14 @@ ps |>
   mutate(
     result_id = 1L,
     cdm_name = cdmName(cdm),
-    variable_name = paste0("propensity_score", row_number()),
-    variable_level = NA_character_,
+    variable_name = "propensity_score",
+    variable_level = row_number(),
     estimate_name = "propensity_score",
     estimate_type = "numeric",
     estimate_value = as.character(estimate_value)
   ) |>
   newSummarisedResult(
-    settings = tibble(result_id = 1L, package_name = "study_code", package_version = "v0.0.1")
+    settings = tibble(result_id = 1L, package_name = "study_code", package_version = "v0.0.1", result_type = "propensity_scores")
   ) |>
   exportSummarisedResult(fileName = paste0("ps_values_", cdmName(cdm)), path = output_folder)
 
@@ -227,10 +227,10 @@ nco_weighted <- bind(
 
 nco_weighted <- nco_weighted |>
   newSummarisedResult(
-    settings = settings(nco_weighted) |> mutate(result_type = "negative_control_outcomes_weighted")
+    settings = settings(nco_weighted) |> mutate(result_type = "negative_control_outcomes")
   ) |>
   suppressRiskEstimates()
 
 nco_weighted |> 
-  exportSummarisedResult(fileName = paste0("weighted_nco", cdmName(cdm), ".csv"), path = output_folder)
+  exportSummarisedResult(fileName = paste0("weighted_nco_", cdmName(cdm), ".csv"), path = output_folder)
 

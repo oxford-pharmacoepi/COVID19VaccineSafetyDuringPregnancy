@@ -1,4 +1,5 @@
 # AESI ----
+info(logger, "- Create AESI outcome cohort")
 strata <- selectStrata(cdm, strata = c("vaccine_brand", "gestational_trimester", "age_group"))
 toKeep <- c(
   "cohort_definition_id", "cohort_name", "subject_id", "cohort_start_date", 
@@ -38,6 +39,7 @@ endDates <- c("end_42_days_or_pregnancy", "end_42_days", "end_42_days_or_pregnan
 aesiResults <- list()
 jj <- 1
 for (end in endDates) {
+  info(logger, glue::glue{"- Get IRR for AESI : analysis '{end}'"})
   aesiResults[[jj]] <- estimateSurvivalRisk(
     cohort = cdm$aesi_outcome, outcomes = aesiOutcomes, outcomeGroup = "Adverse Events of Special Interest",
     end = end, strata = strata, group = "cohort_name", weights = NULL
@@ -50,6 +52,7 @@ for (end in endDates) {
 }
 
 # MAE ----
+info(logger, "- Create MAE outcome cohort")
 cdm$mae_outcome <- cdm$study_population |>
   addCohortIntersectDate(
     targetCohortTable = "mae",
@@ -60,6 +63,7 @@ maeResults <- list()
 jj <- 1
 
 ## Group 1: < 20 weeks (miscarriage)
+info(logger, "Get IRR for miscarriage")
 cdm$mea_miscarriage <- cdm$mae_outcome %>% 
   mutate(week_19_end = !!dateadd("pregnancy_start_date", 19*7 + 6)) |>
   filter(cohort_start_date < week_19_end) |>
@@ -82,6 +86,7 @@ for (endDate in c("week_19_end", "week_19_end_sensitivity")) {
 }
 
 ## Group 2: during pregnancy
+info(logger, "Get IRR for MAE during pregnancy")
 cdm$mea_pregnancy <- cdm$mae_outcome %>% 
   mutate(
     pregnancy_end =  if_else(pregnancy_end_date < cohort_end_date, pregnancy_end_date, cohort_end_date),
@@ -103,28 +108,30 @@ for (endDate in c("pregnancy_end", "pregnancy_end_sensitivity")) {
 }
 
 ## Group 3: up to 6 weeks after pregnancy
-cdm$mea_postpartum_6 <- cdm$mae_outcome %>% 
+info(logger, "Get IRR for 6 weeks postpartum")
+cdm$mae_postpartum_6 <- cdm$mae_outcome %>% 
   mutate(postpartum_6_weeks = !!dateadd("pregnancy_end_date", 6*7)) |>
   mutate(
     postpartum_6_weeks =  if_else(postpartum_6_weeks < cohort_end_date, postpartum_6_weeks, cohort_end_date),
     postpartum_6_weeks_sensitivity =  if_else(postpartum_6_weeks < cohort_end_date_sensitivity, postpartum_6_weeks, cohort_end_date_sensitivity)
   ) |>
-  compute(name = "mea_postpartum_6", temporary = FALSE)
+  compute(name = "mae_postpartum_6", temporary = FALSE)
 for (endDate in c("postpartum_6_weeks", "postpartum_6_weeks_sensitivity")) {
   outcomes <- c('postpartum_endometritis', 'maternal_death')
   maeResults[[jj]] <- estimateSurvivalRisk(
-    cohort = cdm$mea_postpartum_6, outcomes = outcomes, outcomeGroup = "Maternal Adverse Events",
+    cohort = cdm$mae_postpartum_6, outcomes = outcomes, outcomeGroup = "Maternal Adverse Events",
     end = endDate, strata = strata, group = "cohort_name", weights = NULL
   )
   jj <- 1 + jj
   maeResults[[jj]] <- estimateSurvivalRisk(
-    cohort = cdm$mea_postpartum_6, outcomes = outcomes, outcomeGroup = "Maternal Adverse Events",
+    cohort = cdm$mae_postpartum_6, outcomes = outcomes, outcomeGroup = "Maternal Adverse Events",
     end = endDate, strata = strata, group = "cohort_name", weights = "weight"
   )
   jj <- 1 + jj
 }
 
 ## Group 4: up to 12 weeks after pregnancy
+info(logger, "Get IRR for 12 weeks after pregnancy")
 cdm$mea_postpartum_12 <- cdm$mae_outcome %>% 
   mutate(postpartum_12_weeks = !!dateadd("pregnancy_end_date", 12*7)) |>
   mutate(
@@ -147,6 +154,7 @@ for (endDate in c("postpartum_12_weeks", "postpartum_12_weeks_sensitivity")) {
 }
 
 # Export results ----
+info(logger, "Export outcome risk results")
 aesiResults <- omopgenerics::bind(aesiResults) 
 maeResults <- omopgenerics::bind(maeResults) 
 omopgenerics::bind(aesiResults, maeResults) |>

@@ -118,6 +118,22 @@ if (runBackgroundRates) {
   source(here("Analysis", "05_BackgroundRates.R"))
 }
 
+if (runBRCharacteristics) {
+  if (!runBackgroundRates) {
+    cdm <- cdmFromCon(
+      con = db,
+      cdmSchema = cdm_database_schema,
+      writeSchema = results_database_schema,
+      writePrefix = tolower(table_stem),
+      cdmName = database_name,
+      cohortTables = c("mother_table", "aesi", "mae", "overall_period"),
+      .softValidation = TRUE
+    )
+  }
+  info(logger, "STEP 5 BACKGROUND RATES CHARACTERISTICS ----")
+  source(here("Analysis", "06_BRCharacterisation.R"))
+}
+
 info(logger, "STEP 6 ZIP RESULTS ----")
 output_folder <- basename(output_folder)
 zip(

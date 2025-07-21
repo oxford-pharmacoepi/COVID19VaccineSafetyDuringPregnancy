@@ -295,27 +295,23 @@ exitAtFirstDateStudy <- function(cohort, dateColumns, endColumn, keepDates, reas
       .data$cohort_definition_id,
       .data$subject_id,
       .data$cohort_start_date_0123456789,
-      .data$cohort_end_date_0123456789
+      .data$cohort_end_date_0123456789,
+      .data$pregnancy_id,
+      .data$exposure,
+      .data$exposed_match_id
     ) |>
     dplyr::filter(.data$new_date_0123456789 == !!atDateFunction) |>
     dplyr::ungroup() |>
     dplyr::group_by(dplyr::across(!dplyr::all_of(reason))) |>
     dplyr::arrange(.data[[reason]]) |>
-    dplyr::summarise(!!reason := stringr::str_flatten(.data[[reason]], collapse = '; '),
-                     .groups = "drop") |>
+    dplyr::summarise(
+      !!reason := stringr::str_flatten(.data[[reason]], collapse = '; '),
+      .groups = "drop"
+    ) |> 
     dplyr::mutate(!!newDate := .data$new_date_0123456789, !!keptDate := .data[[paste0(keptDate, "_0123456789")]]) |>
-    dplyr::select(
-      !c(
-        "new_date_0123456789",
-        "cohort_end_date_0123456789",
-        "cohort_start_date_0123456789"
-      )
-    ) |>
+    dplyr::select(!c("new_date_0123456789", "cohort_start_date_0123456789", "cohort_end_date_0123456789")) |>
     dplyr::distinct() |>
     dplyr::compute(name = tmpName, temporary = FALSE)
-  
-  # checks with informative errors
-  # CohortConstructor:::validateNewCohort(newCohort, cdm, tmpPrefix)
   
   newCohort <- newCohort |>
     dplyr::relocate(dplyr::all_of(omopgenerics::cohortColumns("cohort")))
@@ -324,7 +320,7 @@ exitAtFirstDateStudy <- function(cohort, dateColumns, endColumn, keepDates, reas
     newCohort <- newCohort |>
       dplyr::inner_join(
         cohort |> 
-          dplyr::select(any_of(c("cohort_definition_id", "subject_id", "cohort_start_date", dateColumns)))
+          dplyr::select(!any_of(c(newDate, "cohort_start_date_0123456789", "cohort_end_date_0123456789")))
       ) |>
       dplyr::compute(name = tmpName, temporary = FALSE)
   }
@@ -673,17 +669,20 @@ summariseCohortExit <- function(cdm, strata, weights) {
   for (st in strata) {
     strataCens <- c(strataCens, list(c(st, "exit_reason")))
   }
+  strataCens <- c(strataCens, strata)
   main <- cdm$study_population %>%  
     mutate(
       "follow-up" = !!datediff("cohort_start_date", "cohort_end_date")
     ) |>
+    compute() |>
     summariseResult(
       group = "cohort_name", 
       strata = strataCens,
       variables = c("follow-up"),
       weights = weights
     ) |>
-    mutate(additional_name = "analysis", additional_level = "main")
+    mutate("analysis" = "main") |>
+    addExitReasonPercentages()
   sensitvity <- cdm$study_population %>%  
     mutate(
       "follow-up" = !!datediff("cohort_start_date", "cohort_end_date_sensitivity"),
@@ -695,7 +694,8 @@ summariseCohortExit <- function(cdm, strata, weights) {
       variables = c("follow-up"),
       weights = weights
     ) |>
-    mutate(additional_name = "analysis", additional_level = "sensitivity")
+    mutate("analysis" = "sensitivity") |>
+    addExitReasonPercentages()
   
   weighting <- "FALSE"
   if (!is.null(weights)) weighting <- "TRUE"
@@ -703,11 +703,47 @@ summariseCohortExit <- function(cdm, strata, weights) {
   bind(main, sensitvity) |>
     newSummarisedResult(
       settings = settings(main) |> 
-        mutate(additional = "analysis", result_type = "cohort_exit", weighting = weighting) |>
+        mutate(result_type = "cohort_exit", weighting = weighting) |>
         select(!any_of("weights"))
     ) 
 }
 
+addExitReasonPercentages <- function(x) {
+  overall <- x |> 
+    splitStrata() |>
+    filter(exit_reason == "overall") |>
+    filter(estimate_name == "count") |>
+    mutate(estimate_value = as.numeric(estimate_value)) |>
+    rename("overall" = "estimate_value") |>
+    select(!"exit_reason")
+  percentages <- x |> 
+    filter(estimate_name == "count") |>
+    splitStrata() |>
+    filter(exit_reason != "overall") |>
+    mutate(estimate_value = as.numeric(estimate_value)) |>
+    inner_join(
+      overall,
+      by = c(
+        "result_id", "cdm_name", "group_name", "group_level", "exposure", "vaccine_brand", 
+        "gestational_trimester", "age_group", "variable_name", "variable_level", "estimate_name",
+        "estimate_type", "additional_name", "additional_level", "analysis"
+      )
+    ) |>
+    mutate(
+      estimate_value = as.character(estimate_value/overall*100),
+      estimate_name = "percentage",
+      estimate_type = "percentage"
+    ) |>
+    select(!"overall")
+  rbind(
+    x |> splitStrata(),
+    percentages
+  ) |>
+    select(!starts_with("additional")) |>
+    uniteAdditional(cols = c("exit_reason", "analysis")) |>
+    uniteStrata(cols = unique(unlist(strata))) |>
+    newSummarisedResult() 
+}
 getSurvivalData <- function(data, outcome, group, strata, start = "cohort_start_date", end = "cohort_end_date", weights = NULL) {
   data |>
     rename("start_date" := !!start, "end_date" := !!end) %>% 
@@ -782,7 +818,7 @@ getRiskEstimate <- function(data, group, strata, weights = NULL) {
             strata_level = strataLevel.k,
             estimate_type = "numeric",
             variable_name = "Risk estimate",
-            variable_level = NA
+            variable_level = NA_character_
           ) 
         k <- k + 1
         
@@ -961,7 +997,7 @@ summariseTimeDistribution <- function(cdm, strata, weights = NULL) {
     newSummarisedResult(
       settings = tibble(
         result_id = 1L,
-        result_type = "time_distributions",
+        result_type = "gestational_time_distributions",
         package_name = "study_code",
         package_version = "v0.0.1",
         weighting = weighting
@@ -1047,3 +1083,98 @@ applyPopulationWashout <- function(x, censorDate = "pregnancy_start_date") {
       censorDate = censorDate
     )
 }
+
+getIncidence <- function(cdm, targetCohortDenominator, outcomeTable, outcomeCohortId) {
+  # overall
+  overallIds <- settings(cdm$overall_period) |>
+    filter(cohort_name %in% targetCohortDenominator) |>
+    pull(cohort_definition_id)
+  overall <- estimateIncidence(
+    cdm = cdm,
+    denominatorTable = "overall_period",
+    outcomeTable = outcomeTable,
+    censorTable = NULL,
+    denominatorCohortId = overallIds,
+    outcomeCohortId = outcomeCohortId,
+    censorCohortId = NULL,
+    interval = c("overall", "years"),
+    completeDatabaseIntervals = FALSE,
+    outcomeWashout = 0,
+    repeatedEvents = FALSE,
+    strata = list("maternal_age"),
+    includeOverallStrata = TRUE
+  )
+  # pre-covid
+  preCovidIds <- settings(cdm$pre_covid_period) |>
+    filter(cohort_name %in% targetCohortDenominator) |>
+    pull(cohort_definition_id)
+  preCovid <- estimateIncidence(
+    cdm = cdm,
+    denominatorTable = "pre_covid_period",
+    outcomeTable = outcomeTable,
+    censorTable = NULL,
+    denominatorCohortId = preCovidIds,
+    outcomeCohortId = outcomeCohortId,
+    censorCohortId = NULL,
+    interval = c("overall"),
+    completeDatabaseIntervals = FALSE,
+    outcomeWashout = 0,
+    repeatedEvents = FALSE,
+    strata = list("maternal_age"),
+    includeOverallStrata = TRUE
+  )
+  # covid
+  covidIds <- settings(cdm$main_covid_period) |>
+    filter(cohort_name %in% targetCohortDenominator) |>
+    pull(cohort_definition_id)
+  covid <- estimateIncidence(
+    cdm = cdm,
+    denominatorTable = "main_covid_period",
+    outcomeTable = outcomeTable,
+    censorTable = NULL,
+    denominatorCohortId = covidIds,
+    outcomeCohortId = outcomeCohortId,
+    censorCohortId = NULL,
+    interval = c("overall"),
+    completeDatabaseIntervals = FALSE,
+    outcomeWashout = 0,
+    repeatedEvents = FALSE,
+    strata = list("maternal_age"),
+    includeOverallStrata = TRUE
+  )
+  # post-covid
+  postCovidIds <- settings(cdm$post_main_covid_period) |>
+    filter(cohort_name %in% targetCohortDenominator) |>
+    pull(cohort_definition_id)
+  postCovid <- estimateIncidence(
+    cdm = cdm,
+    denominatorTable = "post_main_covid_period",
+    outcomeTable = outcomeTable,
+    censorTable = NULL,
+    denominatorCohortId = postCovidIds,
+    outcomeCohortId = outcomeCohortId,
+    censorCohortId = NULL,
+    interval = c("overall"),
+    completeDatabaseIntervals = FALSE,
+    outcomeWashout = 0,
+    repeatedEvents = FALSE,
+    strata = list("maternal_age"),
+    includeOverallStrata = TRUE
+  )
+  # return results
+  bind(overall, preCovid, covid, postCovid)
+}
+
+asIncidencePrevalence <- function(cohort, startDate, endDate) {
+  cohort |>
+    newCohortTable(
+      settings(cohort) |>
+        mutate(
+          start_date = startDate,
+          end_date = endDate
+        ) |>
+        rename("days_prior_observation" = "min_prior_observation") |>
+        select(!c("min_future_observation", "sex", "age_range"))
+    )
+}
+

@@ -16,6 +16,7 @@ library(CodelistGenerator)
 library(OmopSketch)
 library(glmnet)
 library(Hmisc)
+library(glue)
 library(IncidencePrevalence)
 
 # Database name
@@ -64,10 +65,11 @@ results <- paste0("Results_", cdmName(cdm))
 
 # Choose code to run
 runInstantiateCohorts <- FALSE
-runRiskSetSampling <- FALSE
-runPSWeighting <- FALSE
+runRiskSetSampling <- TRUE
+runPSWeighting <- TRUE
 runOutcomeModel <- TRUE
-runBackgroundRates <- FALSE
+runBackgroundRates <- TRUE
+runBRCharacteristics <- TRUE
 
 source(here("RunStudy.R"))
 

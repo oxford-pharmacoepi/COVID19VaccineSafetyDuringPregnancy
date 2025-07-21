@@ -41,14 +41,14 @@ sampling_summary <- omopgenerics::bind(
     filter(variable_name == "number records") |>
     mutate(
       variable_name = "Number exposed", 
-      variable_level = "Qualifying initial records"
+      variable_level = "Source population"
     ),
   cdm$comparator_source |> 
     summariseResult(group = "cohort_name") |> 
     filter(variable_name == "number records") |>
     mutate(
       variable_name = "Number comparator", 
-      variable_level = "Qualifying initial records"
+      variable_level = "Source population"
     )
 )
 
@@ -150,11 +150,12 @@ sampling_source <- sampling_source %>%
 sampling_summary <- omopgenerics::bind(
   sampling_summary,
   sampling_source |> 
+    distinct(cohort_definition_id, cohort_name, subject_id, cohort_start_date, cohort_end_date) |>
     summariseResult(group = "cohort_name") |> 
     filter(variable_name == "number records") |>
     mutate(
       variable_name = "Number comparator", 
-      variable_level = "Eligible comparators at vaccination date of exposed match"
+      variable_level = "Eligible to contirbute at pair vaccination day"
     ),
   sampling_source |>
     group_by(cohort_name, exposed_id) |> 
@@ -163,7 +164,7 @@ sampling_summary <- omopgenerics::bind(
       group = list("cohort_name"), variables = "n", counts = FALSE, 
       estimates = c("min", "max", "median", "q25", "q75")
     ) |>
-    mutate(variable_name = "exposed:comparator", variable_level = "Eligible comparators at vaccination date of exposed match")
+    mutate(variable_name = "exposed:comparator", variable_level = "Eligible to contirbute at pair vaccination day")
 )
 
 # Sample 
@@ -177,6 +178,9 @@ sampling_source <- sampling_source |>
 
 sampling_summary <- samplingSummary(sampling_source, "Sampling", sampling_summary)
 sampling_summary |>
+  newSummarisedResult(
+    settings = settings(sampling_summary) |> mutate(result_type = "summarise_sampling")
+  ) |>
   exportSummarisedResult(fileName = paste0("sampling_summary", cdmName(cdm), ".csv"), path = output_folder)
 
 # Study population ----
@@ -221,14 +225,23 @@ cdm$study_population <- cdm$study_population |>
     window = c(1, Inf),
     nameStyle = "covid_infection",
     name = "study_population"
+  )  |>
+  mutate(
+    date_of_death_1 = date_of_death,
+    next_covid_vaccine_1 = next_covid_vaccine,
+    observation_end_1 = observation_end
   ) |>
-  mutate(next_covid_vaccine_comparator = if_else(exposure == "exposed", NA, next_covid_vaccine)) |>
   exitAtFirstDateStudy(
-    dateColumns = c("date_of_death", "next_covid_vaccine_comparator", "observation_end"),
+    dateColumns = c("date_of_death", "next_covid_vaccine", "observation_end"),
     endColumn = "cohort_end_date",
-    keepDates = TRUE,
+    keepDates = FALSE,
     reason = "exit_reason",
     name = "study_population"
+  ) |>
+  rename(
+    "date_of_death" = "date_of_death_1",
+    "next_covid_vaccine" = "next_covid_vaccine_1",
+    "observation_end" = "observation_end_1"
   ) |>
   exitAtFirstDateStudy(
     dateColumns = c("date_of_death", "next_covid_vaccine", "covid_infection", "observation_end"),
@@ -236,8 +249,23 @@ cdm$study_population <- cdm$study_population |>
     keepDates = FALSE,
     reason = "exit_reason_sensitivty",
     name = "study_population"
-  ) |>
-  select(!"next_covid_vaccine_comparator")
+  )  |>
+  mutate(
+    "exit_reason" = case_when(
+      exit_reason == "date_of_death; observation_end" ~ "date_of_death",
+      exit_reason == "observation_end; date_of_death" ~ "date_of_death",
+      exit_reason == "next_covid_vaccine; observation_end" ~ "next_covid_vaccine",
+      exit_reason == "observation_end; next_covid_vaccine" ~ "next_covid_vaccine",
+      .default = exit_reason
+    ),
+    "exit_reason_sensitivty" = case_when(
+      exit_reason_sensitivty == "date_of_death; observation_end" ~ "date_of_death",
+      exit_reason_sensitivty == "observation_end; date_of_death" ~ "date_of_death",
+      exit_reason_sensitivty == "next_covid_vaccine; observation_end" ~ "next_covid_vaccine",
+      exit_reason_sensitivty == "observation_end; next_covid_vaccine" ~ "next_covid_vaccine",
+      .default = exit_reason_sensitivty
+    )
+  )
 
 # Strata and covariates ----
 info(logger, "- Study population cohort - set strata and covariates")
@@ -298,7 +326,8 @@ cdm$study_population <- cdm$study_population %>%
     previous_covid_vaccines = as.character(previous_covid_vaccines),
     previous_pregnant_covid_vaccines = as.character(previous_pregnant_covid_vaccines)
   ) |>
-  newCohortTable(.softValidation = TRUE)
+  newCohortTable(.softValidation = TRUE) |>
+  addCohortName()
 
 summaryCohort(cdm$study_population) |>
   exportSummarisedResult(path = output_folder, fileName = paste0("unweighted_study_cohort_summary_", cdmName(cdm), ".csv"))
@@ -372,4 +401,4 @@ nco_unweighted <- nco_unweighted |>
   suppressRiskEstimates()
 
 nco_unweighted |> 
-  exportSummarisedResult(fileName = paste0("unweighted_nco", cdmName(cdm), ".csv"), path = output_folder)
+  exportSummarisedResult(fileName = paste0("unweighted_nco_", cdmName(cdm), ".csv"), path = output_folder)
