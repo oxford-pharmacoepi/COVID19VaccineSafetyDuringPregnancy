@@ -143,7 +143,8 @@ cdm$obesity <- unionCohorts(cdm$obesity, cohortName = "obesity")
 # covid test, influenza, tdap and smoking apart
 covariatesInf <- c(
   "asthma", "diabetes", "essential_hypertension", "hiv", "uterus_malformations",       
-  "polycystic_ovary_syndrome", "systemic_lupus_erythematosus", "thyroid_disorder"       
+  "polycystic_ovary_syndrome", "systemic_lupus_erythematosus", "thyroid_disorder",
+  "epilepsy"
 )
 covariates5 <- c(
   "alcohol_misuse_dependence"
@@ -171,6 +172,14 @@ cdm$other_vaccines <- cdm$base |>
 # covid test
 cdm$covid_test <- cdm$base |>
   subsetCohorts(cohortId = "covid_test", name = "covid_test")
+
+# Comedications ----
+comedications <- c(
+  "nsaids", "antidepressants", "antiepileptics", "antiinflammatory_antirheumatic", 
+  "diabetes_treatments", "opioids", "treatment_acid_related_disorder"
+)
+cdm$comedications <- cdm$base |>
+  subsetCohorts(cohortId = comedications, name = "comedications") 
 
 # AESI ----
 info(logger, "- AESI")

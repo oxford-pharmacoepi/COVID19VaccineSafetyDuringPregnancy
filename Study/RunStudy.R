@@ -48,7 +48,7 @@ if (runRiskSetSampling) {
         "covid", "covariates_inf", "covariates_5", "covariates_1", "other_vaccines",
         "covid_test", "aesi_90", "aesi_30", "aesi_inf", "nco", "covid_washout",
         "aesi_90_washout", "aesi_30_washout", "covid_vaccines_booster", "mae",
-        "mae_washout"
+        "mae_washout", "comedications"
       ),
       .softValidation = TRUE
     )
@@ -71,7 +71,7 @@ if (runPSWeighting) {
         "covid", "covariates_inf", "covariates_5", "covariates_1", "other_vaccines",
         "covid_test", "aesi_90", "aesi_30", "aesi_inf", "nco", "covid_washout", 
         "aesi_90_washout", "aesi_30_washout", "study_population", "study_population_nco",
-        "features", "mae"
+        "features", "mae", "comedications"
       ),
       .softValidation = TRUE
     )
@@ -93,7 +93,7 @@ if (runOutcomeModel) {
         "covid", "covariates_inf", "covariates_5", "covariates_1", "other_vaccines",
         "covid_test", "aesi_90", "aesi_30", "aesi_inf", "nco", "covid_washout", 
         "aesi_90_washout", "aesi_30_washout", "study_population", "study_population_nco",
-        "mae", "features"
+        "mae", "features", "comedications"
       ),
       .softValidation = TRUE
     )
@@ -110,7 +110,11 @@ if (runBackgroundRates) {
       writeSchema = results_database_schema,
       writePrefix = tolower(table_stem),
       cdmName = database_name,
-      cohortTables = c("mother_table", "aesi_90", "aesi_30", "aesi_inf", "mae"),
+      cohortTables = c(
+        "mother_table", "aesi_90", "aesi_30", "aesi_inf", "mae", "comedications",
+        "covariates_inf", "covariates_5", "covariates_1", "other_vaccines",
+        "covid", "covid_test"
+        ),
       .softValidation = TRUE
     )
   }
@@ -126,7 +130,11 @@ if (runBRCharacteristics) {
       writeSchema = results_database_schema,
       writePrefix = tolower(table_stem),
       cdmName = database_name,
-      cohortTables = c("mother_table", "aesi", "mae", "overall_period"),
+      cohortTables = c(
+        "mother_table", "aesi", "mae", "overall_period", "comedications",
+        "covariates_inf", "covariates_5", "covariates_1", "other_vaccines",
+        "covid", "covid_test"
+        ),
       .softValidation = TRUE
     )
   }

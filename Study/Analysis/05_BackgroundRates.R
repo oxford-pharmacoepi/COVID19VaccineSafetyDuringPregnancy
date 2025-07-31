@@ -190,7 +190,7 @@ cdm$denominator <- cdm$denominator |>
 ### Overall
 info(logger, "-  Trim denominator: overall period")
 cdm$overall_period <- cdm$denominator |>
-  trimToDateRange(
+  requireInDateRange(
     dateRange = as.Date(c("2018-01-01", NA)),
     name = "overall_period"
   )

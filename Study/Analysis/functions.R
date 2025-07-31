@@ -242,6 +242,7 @@ getWashOut <- function(washout, source) {
     distinct() 
 }
 
+
 samplingSummary <- function(sampling_source, reason, results = NULL) {
   omopgenerics::bind(
     results,
@@ -382,6 +383,10 @@ getBaselineCharacteristics <- function(cdm, strata, weights) {
         # influenza and tdap (-5, 5)
         "Other vaccines within 5 days" = list(
           targetCohortTable = "other_vaccines", window = c(-5, 5)
+        ),
+        # Comedications
+        "Medications in the past year" = list(
+          targetCohortTable = "comedications", window = c(-365, 0)
         )
       ),
       cohortIntersectCount = list(
@@ -1178,3 +1183,105 @@ asIncidencePrevalence <- function(cohort, startDate, endDate) {
     )
 }
 
+addSeason <- function(cohort) {
+  name <- omopgenerics::tableName(cohort)
+  cohort |>
+    dplyr::mutate(
+      season_yearly = dplyr::case_when(
+        clock::get_month(.data$cohort_start_date) %in% 3:5 ~ paste0("Spring ", clock::get_year(.data$cohort_start_date)),
+        clock::get_month(.data$cohort_start_date) %in% 6:8 ~ paste0("Summer ", clock::get_year(.data$cohort_start_date)),
+        clock::get_month(.data$cohort_start_date) %in% 9:11 ~ paste0("Autumn ", clock::get_year(.data$cohort_start_date)),
+        clock::get_month(.data$cohort_start_date) %in% c(12, 1:2) ~ paste0("Winter ", clock::get_year(.data$cohort_start_date))
+      ),
+      season = dplyr::case_when(
+        clock::get_month(.data$cohort_start_date) %in% 3:5 ~ "Spring",
+        clock::get_month(.data$cohort_start_date) %in% 6:8 ~ "Summer",
+        clock::get_month(.data$cohort_start_date) %in% 9:11 ~ "Autumn",
+        clock::get_month(.data$cohort_start_date) %in% c(12, 1:2) ~ "Winter"
+      )
+    ) |>
+    dplyr::compute(name = name, temporary = FALSE)
+}
+
+addEthnicity <- function(cohort) {
+  name <- omopgenerics::tableName(cohort)
+  cohort |>
+    inner_join(
+      cdm$person |>
+        dplyr::select("subject_id" = "person_id", "concept_id" = "race_concept_id"),
+      by = "subject_id"
+    ) |>
+    inner_join(
+      cdm$concept |>
+        dplyr::select("concept_id", "ethnicity" = "concept_name")
+    ) |>
+    dplyr::mutate(
+      ethnicity = dplyr::if_else(.data$concept_id == 0, "Missing", .data$ethnicity)
+    ) |>
+    dplyr::select(!"concept_id") |>
+    dplyr::compute(name = name, temporary = FALSE)
+}
+
+addSocioeconomicStatus <- function(cohort, database) {
+  name <- omopgenerics::tableName(cohort)
+  if (database == "CPRD GOLD") {
+    cohort <- cohort |>
+      dplyr::left_join(
+        cdm$measurement |>
+          dplyr::filter(measurement_concept_id == 715996) |>
+          dplyr::select("subject_id" = "person_id", "socioeconomic_status" = "value_as_number"),
+        by = "subject_id"
+      ) |>
+      dplyr::compute(name = name, temporary = FALSE)
+  }
+  return(cohort)
+}
+
+getBRDenominatorCharacteristics <- function(cohort) {
+  # Variables to add: socioeconomic status, ethnicity, season pregnancy start
+  # Pregnancy: previous pregnancy
+  # Comorbidities: alchohol, obesity, diabetes, hypertension, asthma, depression/anxiety, epilepsy
+  # Medications: omeprazole/antiacids, diabetes treatment/s, nsaids, opioids, antidepressants, antiepilepsy, corticosteroids
+  
+  estimates = list(
+    'season' = c('count', 'percentage'), 
+    'season_yearly' = c('count', 'percentage'), 
+    'ethnicity' = c('count', 'percentage'),
+    'socioeconomic_status' = c('count', 'percentage'),
+    'maternal_age' = c('count', 'percentage')
+  )
+  estimates <- estimates[names(estimates) %in% colnames(cohort)]
+  otherVariables = names(estimates)
+  cohort |> 
+    summariseCharacteristics(
+      cohortId = "pregnancy_episode",
+      counts = TRUE,
+      demographics = TRUE,
+      cohortIntersectFlag = list(
+        # covariatesInf (-Inf, 0)
+        "History of comorbidities" = list(
+          targetCohortTable = "covariates_inf", window = c(-Inf, 0)
+        ),
+        # covariates1 (-365, 0)
+        "Mental heatlh problems in the last year" = list(
+          targetCohortTable = "covariates_1", window = c(-365, 0)
+        ),
+        # covariates1 (-365, 0)
+        "Covariates in the past 5 years" = list(
+          targetCohortTable = "covariates_5", window = c(-365*5, 0)
+        ),
+        # Comedications
+        "Medications in the past year" = list(
+          targetCohortTable = "comedications", window = c(-365, 0)
+        )
+      ),
+      cohortIntersectCount = list(
+        # covid infections (-Inf, 0)
+        "Previous pregnancies" = list(
+          targetCohortTable = "mother_table", window = c(-Inf, 0)
+        )
+      ),
+      otherVariables = otherVariables,
+      estimates = estimates
+    )
+}

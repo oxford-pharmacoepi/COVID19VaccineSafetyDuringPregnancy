@@ -18,6 +18,7 @@ library(glmnet)
 library(Hmisc)
 library(glue)
 library(IncidencePrevalence)
+library(clock)
 
 # Database name
 database_name <- "CPRD GOLD"
@@ -64,12 +65,12 @@ minimum_counts <- 5
 results <- paste0("Results_", cdmName(cdm))
 
 # Choose code to run
-runInstantiateCohorts <- FALSE
-runRiskSetSampling <- TRUE
-runPSWeighting <- TRUE
-runOutcomeModel <- TRUE
-runBackgroundRates <- TRUE
-runBRCharacteristics <- TRUE
+runInstantiateCohorts <- TRUE
+runRiskSetSampling <- FALSE
+runPSWeighting <- FALSE
+runOutcomeModel <- FALSE
+runBackgroundRates <- FALSE
+runBRCharacteristics <- FALSE
 
 source(here("RunStudy.R"))
 
