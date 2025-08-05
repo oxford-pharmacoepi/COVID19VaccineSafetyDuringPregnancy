@@ -39,7 +39,7 @@ endDates <- c("end_42_days_or_pregnancy", "end_42_days", "end_42_days_or_pregnan
 aesiResults <- list()
 jj <- 1
 for (end in endDates) {
-  info(logger, glue::glue{"- Get IRR for AESI : analysis '{end}'"})
+  info(logger, glue::glue("- Get IRR for AESI : analysis '{end}'"))
   aesiResults[[jj]] <- estimateSurvivalRisk(
     cohort = cdm$aesi_outcome, outcomes = aesiOutcomes, outcomeGroup = "Adverse Events of Special Interest",
     end = end, strata = strata, group = "cohort_name", weights = NULL

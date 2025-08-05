@@ -184,11 +184,11 @@ cdm$denominator <- cdm$denominator |>
   addAge(
     indexDate = "pregnancy_start_date",
     ageGroup = list("maternal_age" = list(c(12, 17), c(18, 34), c(35, 55))),
-    name = "overall_period"
+    name = "denominator"
   )
 ## IncidencePrevalence denominator ----
 ### Overall
-info(logger, "-  Trim denominator: overall period")
+info(logger, "-  Require denominator: overall period")
 cdm$overall_period <- cdm$denominator |>
   requireInDateRange(
     dateRange = as.Date(c("2018-01-01", NA)),

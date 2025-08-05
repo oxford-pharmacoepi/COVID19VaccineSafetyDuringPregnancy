@@ -1237,7 +1237,7 @@ addSocioeconomicStatus <- function(cohort, database) {
   return(cohort)
 }
 
-getBRDenominatorCharacteristics <- function(cohort) {
+getBRCharacteristics <- function(cohort) {
   # Variables to add: socioeconomic status, ethnicity, season pregnancy start
   # Pregnancy: previous pregnancy
   # Comorbidities: alchohol, obesity, diabetes, hypertension, asthma, depression/anxiety, epilepsy
@@ -1248,13 +1248,13 @@ getBRDenominatorCharacteristics <- function(cohort) {
     'season_yearly' = c('count', 'percentage'), 
     'ethnicity' = c('count', 'percentage'),
     'socioeconomic_status' = c('count', 'percentage'),
-    'maternal_age' = c('count', 'percentage')
+    'maternal_age' = c('count', 'percentage'),
+    'trimester' = c('count', 'percentage')
   )
   estimates <- estimates[names(estimates) %in% colnames(cohort)]
   otherVariables = names(estimates)
   cohort |> 
     summariseCharacteristics(
-      cohortId = "pregnancy_episode",
       counts = TRUE,
       demographics = TRUE,
       cohortIntersectFlag = list(

@@ -65,12 +65,12 @@ minimum_counts <- 5
 results <- paste0("Results_", cdmName(cdm))
 
 # Choose code to run
-runInstantiateCohorts <- TRUE
+runInstantiateCohorts <- FALSE
 runRiskSetSampling <- FALSE
 runPSWeighting <- FALSE
 runOutcomeModel <- FALSE
-runBackgroundRates <- FALSE
-runBRCharacteristics <- FALSE
+runBackgroundRates <- TRUE
+runBRCharacteristics <- TRUE
 
 source(here("RunStudy.R"))
 
