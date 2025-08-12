@@ -1,0 +1,41 @@
+INFO  [2025-08-04 15:35:37] CREATE LOGGER
+INFO  [2025-08-04 15:35:37] STEP 0 INITIAL SETTINGS ----
+INFO  [2025-08-04 15:35:37] Load study functions and parameters
+INFO  [2025-08-04 15:36:20] STEP 5 BACKGROUND RATES ----
+INFO  [2025-08-04 15:36:20] Prepare denominator:
+INFO  [2025-08-04 15:36:20] -  Overall pregnancy
+INFO  [2025-08-04 15:36:45] -  By trimester
+INFO  [2025-08-04 15:37:34] -  Miscarriage
+INFO  [2025-08-04 15:37:58] -  Stillbirth
+INFO  [2025-08-04 15:38:16] -  12 and 6 weeks postpartum
+INFO  [2025-08-04 15:39:04] -  Maternal death
+INFO  [2025-08-04 15:39:25] -  Bind all
+INFO  [2025-08-04 15:54:28] -  Require denominator: overall period
+INFO  [2025-08-04 15:55:15] -  Trim denominator: pre-covid period
+INFO  [2025-08-04 15:56:44] -  Trim denominator: covid period
+INFO  [2025-08-04 15:58:19] -  Trim denominator: post-covid period
+INFO  [2025-08-04 15:59:41] Background rates:
+INFO  [2025-08-04 15:59:41] - Miscarriage
+INFO  [2025-08-04 16:00:28] - Stillbirth
+INFO  [2025-08-04 16:00:29] - Maternal death
+INFO  [2025-08-04 16:01:08] - 6 weeks postpartum
+INFO  [2025-08-04 16:02:04] - 12 weeks postpartum
+INFO  [2025-08-04 16:02:50] - Pregnancy MAE
+INFO  [2025-08-04 16:12:07] - AESI
+INFO  [2025-08-04 16:26:32] Exposrt background rates results
+INFO  [2025-08-04 16:26:34] STEP 5 BACKGROUND RATES CHARACTERISTICS ----
+INFO  [2025-08-04 16:26:34] Characterise denominator
+INFO  [2025-08-04 17:30:19] Create outcome cohorts
+INFO  [2025-08-04 17:30:19] - AESI outcome cohort
+INFO  [2025-08-04 17:30:25] - Pregnancy outcome cohort
+INFO  [2025-08-04 17:30:35] - Postpartum 6 weeks outcome cohort
+INFO  [2025-08-04 17:30:42] - Postpartum 12 weeks outcome cohort
+INFO  [2025-08-04 17:30:51] - Maternal death outcome cohort
+INFO  [2025-08-04 17:31:07] Create matched outcome cohorts
+INFO  [2025-08-04 17:31:07] - Match pregnancy outcome cohort
+INFO  [2025-08-04 17:33:04] - Match postpartum outcome cohort
+INFO  [2025-08-04 17:33:19] - Match maternal death outcome cohort
+INFO  [2025-08-04 17:33:52] Outcome characterisation
+INFO  [2025-08-04 17:33:52] - Baseline characteristics
+INFO  [2025-08-04 17:41:36] - Large scale characteristics
+INFO  [2025-08-04 19:34:42] STEP 6 ZIP RESULTS ----

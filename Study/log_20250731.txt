@@ -1,0 +1,29 @@
+INFO  [2025-07-31 12:58:53] CREATE LOGGER
+INFO  [2025-07-31 12:58:53] STEP 0 INITIAL SETTINGS ----
+INFO  [2025-07-31 12:58:53] Load study functions and parameters
+INFO  [2025-07-31 13:03:51] STEP 2 RISK SET SAMPLING ----
+INFO  [2025-07-31 13:03:51] - Potential comparator cohort
+INFO  [2025-07-31 13:03:53] - Potential exposed cohort
+INFO  [2025-07-31 13:07:41] - Matching and washout
+INFO  [2025-07-31 13:13:09] - Sampling
+INFO  [2025-07-31 13:13:19] - Study population cohort
+INFO  [2025-07-31 13:13:31] - Study population cohort - set end dates
+INFO  [2025-07-31 13:16:21] - Study population cohort - set strata and covariates
+INFO  [2025-07-31 15:32:15] - Baseline characteristics
+INFO  [2025-07-31 15:37:38] - Large Scale characteristics
+INFO  [2025-07-31 18:44:24] - Censoring summary
+INFO  [2025-07-31 18:44:44] - Standardised Mean Differences
+INFO  [2025-07-31 18:44:48] - Negative Control Outcomes
+INFO  [2025-07-31 21:59:17] STEP 3 PROPENSITY SCORE WEIGHTING ----
+INFO  [2025-07-31 21:59:17] - Compute PS and Weights
+INFO  [2025-07-31 21:59:17]   - Cohort: source_1
+INFO  [2025-07-31 21:59:41]   - Cohort: source_2
+INFO  [2025-07-31 21:59:56]   - Cohort: source_3
+INFO  [2025-07-31 22:00:16] - Export PS results
+INFO  [2025-07-31 22:00:35] - Baseline characteristics (weighted)
+INFO  [2025-07-31 22:05:50] - Large Scale characteristics (weighted)
+INFO  [2025-07-31 22:15:03] - Censoring summary (weighted)
+INFO  [2025-07-31 22:15:19] - Standardised Mean Differences (weighted)
+INFO  [2025-07-31 22:15:24] - Negative Control Outcomes (weighted)
+INFO  [2025-08-01 01:38:09] STEP 4 OUTCOME MODEL ----
+INFO  [2025-08-04 09:32:02] - Create AESI outcome cohort
