@@ -1,8 +1,8 @@
 .Rproj.user
 .Rhistory
 **/Results_CPRD GOLD/*
-**/data
 **/CodeToRunLocal.R
 Downloads/*
 *.zip
-
+**/data/*.csv
+**/data/*.RData
