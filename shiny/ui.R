@@ -337,7 +337,7 @@ ui <- bslib::page_navbar(
   bslib::nav_menu(
     title = "Population",
     icon = shiny::icon("list"),
-    # Risk Set Sampling ----
+    # Population ----
     bslib::nav_panel(
       title = "Population",
       icon = shiny::icon("fa-hexagon-nodes"),
@@ -389,34 +389,61 @@ ui <- bslib::page_navbar(
               ),
               bslib::layout_sidebar(
                 sidebar = bslib::sidebar(
-                  shinyWidgets::pickerInput(
-                    inputId = "summarise_cohort_count_table_format_strata_pop",
-                    label = "Strata",
-                    choices = c("vaccine_brand", "gestational_trimester", "age_group"),
-                    selected = NULL,
-                    multiple = FALSE,
-                    options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
+                  div(
+                    style = "margin-left: 20px;",
+                    shinyWidgets::pickerInput(
+                      inputId = "summarise_cohort_count_exposure_pop",
+                      label = "Exposure",
+                      choices = choices$summarise_characteristics_exposure,
+                      selected = c("comparator", "exposed"),
+                      multiple = TRUE,
+                      options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
+                    ),
+                    shinyWidgets::pickerInput(
+                      inputId = "summarise_cohort_count_vaccine_brand_pop",
+                      label = "Vaccine brand",
+                      choices = choices$summarise_characteristics_vaccine_brand,
+                      selected = "overall",
+                      multiple = TRUE,
+                      options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
+                    ),
+                    shinyWidgets::pickerInput(
+                      inputId = "summarise_cohort_count_gestational_trimester_pop",
+                      label = "Gestational trimester",
+                      choices = choices$summarise_characteristics_gestational_trimester,
+                      selected = "overall",
+                      multiple = TRUE,
+                      options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
+                    ),
+                    shinyWidgets::pickerInput(
+                      inputId = "summarise_cohort_count_age_group_pop",
+                      label = "Age group",
+                      choices = choices$summarise_characteristics_age_group,
+                      selected = "overall",
+                      multiple = TRUE,
+                      options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
+                    )
                   ),
                   sortable::bucket_list(
-                    header = NULL,
+                    header = "Table formatting",
                     sortable::add_rank_list(
                       text = "None",
-                      labels = c("variable_name", "estimate_name", "vaccine_brand", "age_group", "gestational_trimester"),
+                      labels = c("variable_name", "estimate_name"),
                       input_id = "summarise_cohort_count_table_none_pop"
                     ),
                     sortable::add_rank_list(
                       text = "Header",
-                      labels = C("cohort_name", "exposure"),
+                      labels = c("cdm_name", "exposure"),
                       input_id = "summarise_cohort_count_table_header_pop"
                     ),
                     sortable::add_rank_list(
                       text = "Group columns",
-                      labels = "cdm_name",
+                      labels = "cohort_name",
                       input_id = "summarise_cohort_count_table_group_column_pop"
                     ),
                     sortable::add_rank_list(
                       text = "Hide",
-                      labels = c("variable_level", "table_name", "weighting"),
+                      labels = c("vaccine_brand", "age_group", "gestational_trimester", "variable_level", "table_name", "weighting"),
                       input_id = "summarise_cohort_count_table_hide_pop"
                     )
                   ),
@@ -508,7 +535,7 @@ ui <- bslib::page_navbar(
                     inputId = "summarise_cohort_attrition_diagram_show_pop",
                     label = "Show",
                     choices = c("subjects", "records"),
-                    selected = c("subjects", "records"),
+                    selected = c("records"),
                     multiple = TRUE,
                     options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
                   ),
@@ -859,7 +886,7 @@ ui <- bslib::page_navbar(
             inputId = "summarise_characteristics_exposure",
             label = "Exposure",
             choices = choices$summarise_characteristics_exposure,
-            selected = selected$summarise_characteristics_exposure,
+            selected = c("exposed", "comparator"),
             multiple = TRUE,
             options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
           ),
@@ -867,7 +894,7 @@ ui <- bslib::page_navbar(
             inputId = "summarise_characteristics_vaccine_brand",
             label = "Vaccine brand",
             choices = choices$summarise_characteristics_vaccine_brand,
-            selected = selected$summarise_characteristics_vaccine_brand,
+            selected = "overall",
             multiple = TRUE,
             options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
           ),
@@ -875,7 +902,7 @@ ui <- bslib::page_navbar(
             inputId = "summarise_characteristics_gestational_trimester",
             label = "Gestational trimester",
             choices = choices$summarise_characteristics_gestational_trimester,
-            selected = selected$summarise_characteristics_gestational_trimester,
+            selected = "overall",,
             multiple = TRUE,
             options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
           ),
@@ -883,7 +910,7 @@ ui <- bslib::page_navbar(
             inputId = "summarise_characteristics_age_group",
             label = "Age group",
             choices = choices$summarise_characteristics_age_group,
-            selected = selected$summarise_characteristics_age_group,
+            selected = "overall",
             multiple = TRUE,
             options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
           ),
@@ -903,6 +930,14 @@ ui <- bslib::page_navbar(
             multiple = TRUE,
             options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
           ),
+          shinyWidgets::pickerInput(
+            inputId = "summarise_characteristics_weighting",
+            label = "Estimate name",
+            choices = c(TRUE, FALSE),
+            selected = TRUE,
+            multiple = TRUE,
+            options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
+          ),
           position = "left"
         ),
         shiny::actionButton(
@@ -912,39 +947,6 @@ ui <- bslib::page_navbar(
         ),
         shiny::div(shiny::textOutput(outputId = "update_message_summarise_characteristics"), class = "ov_update_button"),
         bslib::navset_card_tab(
-          bslib::nav_panel(
-            title = "Tidy",
-            bslib::card(
-              full_screen = TRUE,
-              bslib::card_header(
-                bslib::popover(
-                  shiny::icon("download"),
-                  shiny::downloadButton(outputId = "summarise_characteristics_tidy_download", label = "Download csv")
-                ),
-                class = "text-end"
-              ),
-              bslib::layout_sidebar(
-                sidebar = bslib::sidebar(
-                  shinyWidgets::pickerInput(
-                    inputId = "summarise_characteristics_tidy_columns",
-                    label = "Columns",
-                    choices = c("cdm_name", "cohort_name", "exposure", "vaccine_brand", "gestational_trimester", "age_group", "table_name", "weighting", "variable_name", "variable_level"),
-                    selected = c("cdm_name", "cohort_name", "exposure", "vaccine_brand", "gestational_trimester", "age_group", "variable_name", "variable_level"),
-                    multiple = TRUE,
-                    options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
-                  ),
-                  shiny::checkboxInput(
-                    inputId = "summarise_characteristics_tidy_pivot_estimates",
-                    label = "Pivot estimates",
-                    value = TRUE
-                  ),
-                  position = "right"
-                ),
-                DT::DTOutput("summarise_characteristics_tidy") |>
-                  shinycssloaders::withSpinner()
-              )
-            )
-          ),
           bslib::nav_panel(
             title = "Table Characteristics",
             bslib::card(
@@ -970,22 +972,22 @@ ui <- bslib::page_navbar(
                     header = NULL,
                     sortable::add_rank_list(
                       text = "None",
-                      labels = c("exposure", "vaccine_brand", "gestational_trimester", "age_group", "variable_name", "variable_level", "estimate_name"),
+                      labels = c("variable_name", "variable_level", "estimate_name"),
                       input_id = "summarise_characteristics_table_none"
                     ),
                     sortable::add_rank_list(
                       text = "Header",
-                      labels = c("cdm_name", "cohort_name"),
+                      labels = c("cdm_name", "exposure"),
                       input_id = "summarise_characteristics_table_header"
                     ),
                     sortable::add_rank_list(
                       text = "Group columns",
-                      labels = character(),
+                      labels = c("cohort_name"),
                       input_id = "summarise_characteristics_table_group_column"
                     ),
                     sortable::add_rank_list(
                       text = "Hide",
-                      labels = c("table_name", "weighting"),
+                      labels = c("table_name", "vaccine_brand", "gestational_trimester", "age_group", "weighting"),
                       input_id = "summarise_characteristics_table_hide"
                     )
                   ),

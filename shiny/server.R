@@ -290,7 +290,8 @@ server <- function(input, output, session) {
         .data$vaccine_brand %in% input$summarise_characteristics_vaccine_brand,
         .data$gestational_trimester %in% input$summarise_characteristics_gestational_trimester,
         .data$age_group %in% input$summarise_characteristics_age_group
-      )
+      ) |>
+      filterSettings(.data$weighting %in% input$summarise_characteristics_weighting)
   })
   getSummariseCharacteristicsTidy <- shiny::reactive({
     tidyDT(getSummariseCharacteristicsData(), input$summarise_characteristics_tidy_columns, input$summarise_characteristics_tidy_pivot_estimates)
@@ -797,7 +798,10 @@ server <- function(input, output, session) {
       dplyr::filter(.data$cdm_name %in% input$summarise_sampling_cdm_name) |>
       omopgenerics::filterGroup(.data$cohort_name %in% input$summarise_sampling_cohort_name) |>
       omopgenerics::filterStrata(
-        .data$vaccine_brand == 
+        .data$exposure %in% input$summarise_cohort_count_exposure_pop,
+        .data$vaccine_brand %in% input$summarise_cohort_count_vaccine_brand_pop,
+        .data$gestational_trimester %in% input$summarise_cohort_count_gestational_trimester_pop,
+        .data$age_group %in% input$summarise_cohort_count_age_group_pop
       )
   })
   getSummariseCohortCountTablePop <- shiny::reactive({
@@ -849,7 +853,7 @@ server <- function(input, output, session) {
     }
   )
   getSummariseCohortAttritionDiagramPop <- shiny::reactive({
-    getSummariseCohortAttritionData() |>
+    getSummariseCohortAttritionDataPop() |>
       dplyr::filter(.data$variable_name %in% input$summarise_cohort_attrition_variable_name_pop) |>
       CohortCharacteristics::plotCohortAttrition(
         show = input$summarise_cohort_attrition_diagram_show_pop
@@ -1166,7 +1170,8 @@ server <- function(input, output, session) {
           'cdm_name', 'cohort_name', 'exposure', 'vaccine_brand', 'gestational_trimester', 
           'age_group', 'exit_reason', 'variable_name', 'variable_level', 'analysis', 'weighting',
           'estimate_name'
-        )
+        ),
+        factor = list("exit_reason" = c("overall", "date_of_death", "next_covid_vaccine", "observation_end", "covid_infection" ))
       )
   })
   output$cohort_exit_table <- gt::render_gt({

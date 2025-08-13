@@ -32,15 +32,9 @@ attr(result, "settings") <- omopgenerics::settings(result) |>
       table_name == "covid_vaccines_dose" ~ "COVID-19 vaccines by dose",
       table_name == "nco" ~ "NCO",
       table_name == "mae" ~ "MAE",
-      # table_name == "study_population" & result_type %in% c("summarise_cohort_count", "summarise_cohort_attrition") ~ "Study population",
       .default = stringr::str_to_sentence(gsub("_", " ", table_name))
     )
   )
-
-# idsCohortSum <- omopgenerics::settings(result) |> 
-#   dplyr::filter(result_type %in% c("summarise_cohort_attrition", "summarise_cohort_count"))
-# result <- resultCrude |>
-#   dplyr::filter(!(group_level %in% paste0("source_", 1:3) & result_id %in% idsCohortSum))
 
 data <- prepareResult(result, resultList)
 values <- getValues(result, resultList)
