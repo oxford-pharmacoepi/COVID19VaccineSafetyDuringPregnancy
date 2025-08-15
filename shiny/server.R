@@ -437,41 +437,39 @@ server <- function(input, output, session) {
         .data$age_group %in% input$summarise_large_scale_characteristics_age_group
       ) |>
       omopgenerics::filterSettings(
-        .data$analysis %in% input$summarise_large_scale_characteristics_analysis,
-        .data$type %in% input$summarise_large_scale_characteristics_type,
         .data$weighting %in% input$summarise_large_scale_characteristics_weighting
       )
   })
   getSummariseLargeScaleCharacteristicsTableLsc <- shiny::reactive({
-    if (identical(input$summarise_large_scale_characteristics_table_lsc_compare_by, "no compare")) {
-      cb <- NULL
-    } else {
-      cb <- input$summarise_large_scale_characteristics_table_lsc_compare_by
-    }
-    if (identical(input$summarise_large_scale_characteristics_table_lsc_smd_reference, "no SMD")) {
-      sr <- NULL
-    } else {
-      sr <- input$summarise_large_scale_characteristics_table_lsc_smd_reference
-    }
+    # if (identical(input$summarise_large_scale_characteristics_table_lsc_compare_by, "no compare")) {
+    #   cb <- NULL
+    # } else {
+    #   cb <- input$summarise_large_scale_characteristics_table_lsc_compare_by
+    # }
+    # if (identical(input$summarise_large_scale_characteristics_table_lsc_smd_reference, "no SMD")) {
+    #   sr <- NULL
+    # } else {
+    #   sr <- input$summarise_large_scale_characteristics_table_lsc_smd_reference
+    # }
     getSummariseLargeScaleCharacteristicsData() |>
       CohortCharacteristics::tableLargeScaleCharacteristics(
-        compareBy = cb,
+        compareBy = "exposure",
         hide = input$summarise_large_scale_characteristics_table_lsc_hide,
-        smdReference = sr
-      )
+        smdReference = "comparator"
+      ) 
   })
   output$summarise_large_scale_characteristics_table_lsc <- reactable::renderReactable({
     getSummariseLargeScaleCharacteristicsTableLsc()
   })
-  shiny::observeEvent(input$summarise_large_scale_characteristics_table_lsc_compare_by, {
-    opts <- values[[paste0("summarise_large_scale_characteristics_", input$summarise_large_scale_characteristics_table_lsc_compare_by)]]
-    opts <- c("no SMD", opts)
-    shinyWidgets::updatePickerInput(
-      inputId = "summarise_large_scale_characteristics_table_lsc_smd_reference",
-      choices = opts,
-      selected = "no SMD"
-    )
-  })
+  # shiny::observeEvent(input$summarise_large_scale_characteristics_table_lsc_compare_by, {
+  #   opts <- values[[paste0("summarise_large_scale_characteristics_", input$summarise_large_scale_characteristics_table_lsc_compare_by)]]
+  #   opts <- c("no SMD", opts)
+  #   shinyWidgets::updatePickerInput(
+  #     inputId = "summarise_large_scale_characteristics_table_lsc_smd_reference",
+  #     choices = opts,
+  #     selected = "no SMD"
+  #   )
+  # })
   output$summarise_large_scale_characteristics_table_lsc_download <- shiny::downloadHandler(
     filename = "smd_results.csv",
     content = function(file) {
@@ -483,35 +481,22 @@ server <- function(input, output, session) {
         readr::write_csv(file)
     }
   )
-  getSummariseLargeScaleCharacteristicsTableMostCommon <- shiny::reactive({
-    getSummariseLargeScaleCharacteristicsData() |>
-      CohortCharacteristics::tableTopLargeScaleCharacteristics(
-        topConcepts = input$summarise_large_scale_characteristics_table_most_common_top_concepts,
-        type = "gt"
-      )
-  })
-  output$summarise_large_scale_characteristics_table_most_common <- gt::render_gt({
-    getSummariseLargeScaleCharacteristicsTableMostCommon()
-  })
-  output$summarise_large_scale_characteristics_table_most_common_download <- shiny::downloadHandler(
-    filename = paste0("top_concepts.", input$summarise_large_scale_characteristics_table_most_common_format),
-    content = function(file) {
-      gt::gtsave(getSummariseLargeScaleCharacteristicsTableMostCommon(), file)
-    }
-  )
   getSummariseLargeScaleCharacteristicsPlotCompared <- shiny::reactive({
-    if (input$summarise_large_scale_characteristics_plot_compared_missings) {
-      mis <- 0
-    } else {
-      mis <- NULL
-    }
-    getSummariseLargeScaleCharacteristicsData() |>
+    res <- getSummariseLargeScaleCharacteristicsData() |>
+      dplyr::mutate(
+        additional_level = dplyr::if_else(additional_name == "overall", "-", additional_level),
+        additional_name = dplyr::if_else(additional_name == "overall", "concept_id", additional_name)
+      ) 
+    res <- res |>
+      omopgenerics::newSummarisedResult(settings = omopgenerics::settings(res) |> dplyr::mutate(additional = "concept_id"))
+    res |>
       CohortCharacteristics::plotComparedLargeScaleCharacteristics(
-        colour = input$summarise_large_scale_characteristics_plot_compared_colour,
-        reference = input$summarise_large_scale_characteristics_plot_compared_reference,
+        colour = "exposure",
+        reference = "comparator",
         facet = input$summarise_large_scale_characteristics_plot_compared_facet,
-        missings = mis
-      )
+        missings = NULL
+      ) + 
+      theme(legend.position="none")
   })
   output$summarise_large_scale_characteristics_plot_compared <- plotly::renderPlotly({
     getSummariseLargeScaleCharacteristicsPlotCompared()
@@ -897,163 +882,6 @@ server <- function(input, output, session) {
       gt::gtsave(getSummariseSamplingTable(), file)
     }
   )
-  # summarise_standardised_mean_differences -----
-  ## update message if filter is changed
-  shiny::observeEvent(input$summarise_standardised_mean_differences_cdm_name,
-                      {
-                        updateButtons$summarise_standardised_mean_differences <- TRUE
-                      },
-                      ignoreInit = TRUE
-  )
-  shiny::observeEvent(input$summarise_standardised_mean_differences_cohort_name,
-                      {
-                        updateButtons$summarise_standardised_mean_differences <- TRUE
-                      },
-                      ignoreInit = TRUE
-  )
-  shiny::observeEvent(input$summarise_standardised_mean_differences_exposure,
-                      {
-                        updateButtons$summarise_standardised_mean_differences <- TRUE
-                      },
-                      ignoreInit = TRUE
-  )
-  shiny::observeEvent(input$summarise_standardised_mean_differences_vaccine_brand,
-                      {
-                        updateButtons$summarise_standardised_mean_differences <- TRUE
-                      },
-                      ignoreInit = TRUE
-  )
-  shiny::observeEvent(input$summarise_standardised_mean_differences_gestational_trimester,
-                      {
-                        updateButtons$summarise_standardised_mean_differences <- TRUE
-                      },
-                      ignoreInit = TRUE
-  )
-  shiny::observeEvent(input$summarise_standardised_mean_differences_age_group,
-                      {
-                        updateButtons$summarise_standardised_mean_differences <- TRUE
-                      },
-                      ignoreInit = TRUE
-  )
-  shiny::observeEvent(input$summarise_standardised_mean_differences_estimate_name,
-                      {
-                        updateButtons$summarise_standardised_mean_differences <- TRUE
-                      },
-                      ignoreInit = TRUE
-  )
-  shiny::observeEvent(input$summarise_standardised_mean_differences_analysis,
-                      {
-                        updateButtons$summarise_standardised_mean_differences <- TRUE
-                      },
-                      ignoreInit = TRUE
-  )
-  shiny::observeEvent(input$summarise_standardised_mean_differences_table_name,
-                      {
-                        updateButtons$summarise_standardised_mean_differences <- TRUE
-                      },
-                      ignoreInit = TRUE
-  )
-  shiny::observeEvent(input$summarise_standardised_mean_differences_type,
-                      {
-                        updateButtons$summarise_standardised_mean_differences <- TRUE
-                      },
-                      ignoreInit = TRUE
-  )
-  shiny::observeEvent(input$summarise_standardised_mean_differences_weighting,
-                      {
-                        updateButtons$summarise_standardised_mean_differences <- TRUE
-                      },
-                      ignoreInit = TRUE
-  )
-  shiny::observeEvent(updateButtons$summarise_standardised_mean_differences, {
-    if (updateButtons$summarise_standardised_mean_differences == TRUE) {
-      output$update_message_summarise_standardised_mean_differences <- shiny::renderText("Filters have changed please consider to use the update content button!")
-    } else {
-      output$update_message_summarise_standardised_mean_differences <- shiny::renderText("")
-    }
-  })
-  shiny::observeEvent(input$update_summarise_standardised_mean_differences, {
-    updateButtons$summarise_standardised_mean_differences <- FALSE
-  })
-  
-  ## get summarise_standardised_mean_differences data
-  getSummariseStandardisedMeanDifferencesData <- shiny::eventReactive(input$update_summarise_standardised_mean_differences, {
-    data[["summarise_standardised_mean_differences"]] |>
-      dplyr::filter(.data$cdm_name %in% input$summarise_standardised_mean_differences_cdm_name) |>
-      omopgenerics::filterGroup(.data$cohort_name %in% input$summarise_standardised_mean_differences_cohort_name) |>
-      omopgenerics::filterStrata(
-        .data$vaccine_brand %in% input$summarise_standardised_mean_differences_vaccine_brand,
-        .data$gestational_trimester %in% input$summarise_standardised_mean_differences_gestational_trimester,
-        .data$age_group %in% input$summarise_standardised_mean_differences_age_group
-      )
-  })
-  getSummariseStandardisedMeanDifferencesTidy <- shiny::reactive({
-    getSummariseStandardisedMeanDifferencesData() |>
-      omopgenerics::filterSettings(.data$weighting %in% input$summarise_standardised_mean_differences_weighting) |>
-      omopgenerics::splitAll() |>
-      dplyr::select(!c("estimate_name", "estimate_type", "result_id")) |>
-      dplyr::rename("smd" = "estimate_value") |>
-      dplyr::relocate("smd", .after = dplyr::last_col()) |>
-      DT::datatable(
-        filter = "top",
-        rownames = FALSE,
-        options = list(searching = FALSE)
-      )
-  })
-  output$summarise_standardised_mean_differences_tidy <- DT::renderDT({
-    getSummariseStandardisedMeanDifferencesTidy()
-  })
-  output$summarise_standardised_mean_differences_tidy_download <- shiny::downloadHandler(
-    filename = "tidy_results.csv",
-    content = function(file) {
-      getSummariseStandardisedMeanDifferencesData() |>
-        omopgenerics::tidy() |>
-        readr::write_csv(file = file)
-    }
-  )
-  getSummariseStandardisedMeanDifferencesPlot <- shiny::reactive({
-    getSummariseStandardisedMeanDifferencesData() |>
-      omopgenerics::splitAll() |>
-      omopgenerics::addSettings(settingsColumn = "weighting") |>
-      dplyr::mutate(weighting = if_else(weighting, "smd_weighted", "smd_unweighted")) |>
-      tidyr::pivot_wider(names_from = "weighting", values_from = "estimate_value") |>
-      tidyr::unite("facet", input$summarise_standardised_mean_differences_plot_facet) |>
-      ggplot(
-        aes(x = smd_unweighted, y = smd_weighted),
-        colours = input$summarise_standardised_mean_differences_plot_colour,
-        fill = input$summarise_standardised_mean_differences_plot_colour,
-        label1 = "cdm_name",
-        label2 = "cohort_name",
-        label3 = "vaccine_brand",
-        label4 = "gestational",
-        label5 = "variable_name",
-        label6 = "variable_level"
-      ) + 
-      ylab("SMD after weighting") +
-      xlab("SMD before weighting") +  
-      geom_point(size = 1, col = rgb(0, 0, 1, alpha = 0.5)) +
-      ylim(c(0,0.35)) + xlim(c(0,0.35)) +
-      geom_vline(xintercept = 0.1, col = "grey") +
-      geom_hline(yintercept = 0.1, col = "grey") +
-      ggplot2::facet_wrap(. ~ vars(facet))
-  })
-  output$summarise_standardised_mean_differences_plot <- shiny::renderUI({
-    x <- getSummariseStandardisedMeanDifferencesPlot()
-    renderInteractivePlot(x, input$summarise_standardised_mean_differences_plot_interactive)
-  })
-  output$summarise_standardised_mean_differences_plot_download <- shiny::downloadHandler(
-    filename = "plot_smd.png",
-    content = function(file) {
-      ggplot2::ggsave(
-        filename = file,
-        plot = getSummariseStandardisedMeanDifferencesPlot(),
-        width = as.numeric(input$summarise_standardised_mean_differences_plot_width),
-        height = as.numeric(input$summarise_standardised_mean_differences_plot_height),
-        units = input$summarise_standardised_mean_differences_plot_units,
-        dpi = as.numeric(input$summarise_standardised_mean_differences_plot_dpi)
-      )
-    }
-  )
   # cohort_exit -----
   ## update message if filter is changed
   shiny::observeEvent(input$cohort_exit_cdm_name,
@@ -1255,8 +1083,7 @@ server <- function(input, output, session) {
     data[["gestational_time_distributions"]] |>
       dplyr::filter(
         .data$cdm_name %in% input$gestational_time_distributions_cdm_name,
-        .data$variable_name %in% input$gestational_time_distributions_variable_name,
-        .data$estimate_name %in% input$gestational_time_distributions_estimate_name
+        .data$variable_name %in% input$gestational_time_distributions_variable_name
       ) |>
       omopgenerics::filterGroup(.data$cohort_name %in% input$gestational_time_distributions_cohort_name) |>
       omopgenerics::filterStrata(
@@ -1281,23 +1108,60 @@ server <- function(input, output, session) {
         readr::write_csv(file = file)
     }
   )
-  getGestationalTimeDistributionsTable <- shiny::reactive({
-    getGestationalTimeDistributionsData() |>
-      simpleTable(
-        header = input$gestational_time_distributions_table_header,
-        group = input$gestational_time_distributions_table_group_column,
-        hide = input$gestational_time_distributions_table_hide
-      )
+  getTimeDistributionsPlot <- shiny::reactive({
+    if (input$gestational_time_distributions_plot_type == "calendar_time") {
+      getGestationalTimeDistributionsData() |>
+        dplyr::mutate(variable_name = dplyr::if_else(.data$variable_name != "gestational_day", "calendar_week", .data$variable_name)) |>
+        dplyr::filter(.data$variable_name != "gestational_day") |>
+        omopgenerics::tidy() |>
+        dplyr::mutate(variable_level = as.Date(variable_level)) |>
+        visOmopResults::barPlot(
+          x = "variable_level",
+          y = "count",
+          colour = input$gestational_time_distributions_plot_colour,
+          facet = input$gestational_time_distributions_plot_facet
+        ) +
+        ggplot2::theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +
+        ggplot2::scale_x_date(breaks = "2 month") +
+        ggplot2::xlab("")
+    } else {
+      getGestationalTimeDistributionsData() |>
+        dplyr::mutate(variable_name = dplyr::if_else(.data$variable_name != "gestational_day", "calendar_week", .data$variable_name)) |>
+        dplyr::filter(.data$variable_name == "gestational_day") |>
+        omopgenerics::tidy() |>
+        dplyr::mutate(
+          gestational_week = as.numeric(.data$variable_level),
+          variable_level = cut(x = .data$gestational_week, breaks = seq.int(0, 400, 7), labels = paste0("Week ", 0:56), right = FALSE)
+        ) |>
+        dplyr::select(!"gestational_week") |>
+        dplyr::group_by(cdm_name, cohort_name, exposure, vaccine_brand, gestational_trimester, age_group, variable_name, weighting, variable_level) |>
+        dplyr::summarise(count = sum(count)) |>
+        visOmopResults::barPlot(
+          x = "variable_level",
+          y = "count",
+          colour = input$gestational_time_distributions_plot_colour,
+          facet = input$gestational_time_distributions_plot_facet
+        ) +
+        ggplot2::theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) 
+    }
   })
-  output$gestational_time_distributions_table <- gt::render_gt({
-    getGestationalTimeDistributionsTable()
+  output$gestational_time_distributions_plot <- shiny::renderPlot({
+    getTimeDistributionsPlot()
   })
-  output$gestational_time_distributions_table_download <- shiny::downloadHandler(
-    filename = paste0("table.", input$gestational_time_distributions_table_format),
+  output$gestational_time_distributions_plot_download <- shiny::downloadHandler(
+    filename = "plot_time_distributions.png",
     content = function(file) {
-      gt::gtsave(getGestationalTimeDistributionsTable(), file)
+      ggplot2::ggsave(
+        filename = file,
+        plot = getTimeDistributionsPlot(),
+        width = as.numeric(input$gestational_time_distributions_plot_width),
+        height = as.numeric(input$gestational_time_distributions_plot_height),
+        units = input$gestational_time_distributions_plot_units,
+        dpi = as.numeric(input$gestational_time_distributions_plot_dpi)
+      )
     }
   )
+  
   # negative_control_outcomes -----
   ## update message if filter is changed
   shiny::observeEvent(input$negative_control_outcomes_cdm_name,
@@ -1381,9 +1245,7 @@ server <- function(input, output, session) {
   getNegativeControlOutcomesData <- shiny::eventReactive(input$update_negative_control_outcomes, {
     data[["negative_control_outcomes"]] |>
       dplyr::filter(
-        .data$cdm_name %in% input$negative_control_outcomes_cdm_name,
-        .data$variable_name %in% input$negative_control_outcomes_variable_name,
-        .data$estimate_name %in% input$negative_control_outcomes_estimate_name
+        .data$cdm_name %in% input$negative_control_outcomes_cdm_name
       ) |>
       omopgenerics::filterGroup(.data$cohort_name %in% input$negative_control_outcomes_cohort_name) |>
       omopgenerics::filterStrata(
@@ -1420,32 +1282,59 @@ server <- function(input, output, session) {
         readr::write_csv(file = file)
     }
   )
-  getNegativeControlOutcomesTable <- shiny::reactive({
+  getNegativeControlOutcomesTableSummary <- shiny::reactive({
     getNegativeControlOutcomesData() |>
+      dplyr::filter(.data$variable_name %in% c("Person-Days", "Number persons", "Number events")) |>
+      dplyr::mutate(variable_name = dplyr::if_else(.data$variable_name == "Number persons", "Number subjects", .data$variable_name)) |>
       visOmopResults::visOmopTable(
         estimateName = c(
           "N" = "<count>",
-          "IRR [95% CI]" = "<exp_coef> [<lower_ci> - <upper_ci>]",
           "Median [Q25 - Q75]" = "<median> [<q25> - <q75>]",
           "Range" = "<min> - <max>"
         ),
         settingsColumn = "weighting",
-        header = input$negative_control_outcomes_table_header,
-        groupColumn = input$negative_control_outcomes_table_group_column,
-        hide = input$negative_control_outcomes_table_hide,
+        header = input$negative_control_outcomes_table_header_summary,
+        groupColumn = input$negative_control_outcomes_table_group_column_summary,
+        hide = input$negative_control_outcomes_table_hide_summary,
         columnOrder = c(
           'cdm_name', 'cohort_name', 'vaccine_brand', 'gestational_trimester', 
           'age_group', 'follow_up_end', 'outcome_name', 'variable_name', 'variable_level', 
-          'follow_up_end', 'weighting', 'estimate_name', 'estimate_value')
+          'follow_up_end', 'weighting', 'estimate_name', 'estimate_value'),
+        .options = list(includeHeaderName = FALSE)
       )
   })
-  output$negative_control_outcomes_table <- gt::render_gt({
-    getNegativeControlOutcomesTable()
+  output$negative_control_outcomes_table_summary <- gt::render_gt({
+    getNegativeControlOutcomesTableSummary()
   })
-  output$negative_control_outcomes_table_download <- shiny::downloadHandler(
-    filename = paste0("table.", input$negative_control_outcomes_table_format),
+  output$negative_control_outcomes_table_download_summary <- shiny::downloadHandler(
+    filename = paste0("table_nco_summary.", input$negative_control_outcomes_table_format_summary),
     content = function(file) {
-      gt::gtsave(getNegativeControlOutcomesTable(), file)
+      gt::gtsave(getNegativeControlOutcomesTableSummary(), file)
+    }
+  )
+  getNegativeControlOutcomesTableIRR <- shiny::reactive({
+    getNegativeControlOutcomesData() |>
+      dplyr::filter(.data$variable_name == "Risk estimate") |>
+      visOmopResults::visOmopTable(
+        estimateName = c("IRR [95% CI]" = "<exp_coef> [<lower_ci> - <upper_ci>]"),
+        settingsColumn = "weighting",
+        header = input$negative_control_outcomes_table_header_irr,
+        groupColumn = input$negative_control_outcomes_table_group_column_irr,
+        hide = input$negative_control_outcomes_table_hide_irr,
+        columnOrder = c(
+          'cdm_name', 'cohort_name', 'vaccine_brand', 'gestational_trimester', 
+          'age_group', 'follow_up_end', 'outcome_name', 'variable_name', 'variable_level', 
+          'follow_up_end', 'weighting', 'estimate_name', 'estimate_value'),
+        .options = list(includeHeaderName = FALSE)
+      )
+  })
+  output$negative_control_outcomes_table_irr <- gt::render_gt({
+    getNegativeControlOutcomesTableIRR()
+  })
+  output$negative_control_outcomes_table_download_irr <- shiny::downloadHandler(
+    filename = paste0("table.", input$negative_control_outcomes_table_format_irr),
+    content = function(file) {
+      gt::gtsave(getNegativeControlOutcomesTableIRR(), file)
     }
   )
   getNCOPlot <- shiny::reactive({
@@ -1462,11 +1351,12 @@ server <- function(input, output, session) {
         colour = input$negative_control_outcomes_plot_colour,
         label = character()
       ) +
-      ggplot2::coord_flip()
+      ggplot2::coord_flip() +
+      visOmopResults::themeVisOmop(fontsizeRef = 11) +
+      ggplot2::xlab("IRR") 
   })
-  output$negative_control_outcomes_plot <- shiny::renderUI({
-    x <- getNCOPlot()
-    renderInteractivePlot(x, input$negative_control_outcomes_plot_interactive)
+  output$negative_control_outcomes_plot <- shiny::renderPlot({
+    getNCOPlot() 
   })
   output$negative_control_outcomes_plot_download <- shiny::downloadHandler(
     filename = "plot_nco.png",

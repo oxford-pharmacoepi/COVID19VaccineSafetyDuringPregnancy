@@ -1,0 +1,12 @@
+name: PregnantVaccineSafetyPhenotypeRv2
+title: PregnantVaccineSafetyPhenotypeRv2
+username: dpa-pde-oxford
+account: dpa-pde-oxford
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 15032469
+bundleId: 10593875
+url: https://dpa-pde-oxford.shinyapps.io/PregnantVaccineSafetyPhenotypeRv2/
+version: 1
+asMultiple: FALSE
+asStatic: FALSE
