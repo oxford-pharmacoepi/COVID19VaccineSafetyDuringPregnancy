@@ -18,19 +18,38 @@ server <- function(input, output, session) {
     summarise_cohort_attrition = FALSE,
     summarise_characteristics = FALSE,
     summarise_large_scale_characteristics = FALSE,
-    incidence_rate_ratio = FALSE,
-    propensity_score_coeficcients = FALSE,
-    propensity_scores = FALSE,
-    summarise_sampling = FALSE,
-    summarise_standardised_mean_differences = FALSE,
-    cohort_exit = FALSE,
-    gestational_time_distributions = FALSE,
-    negative_control_outcomes = FALSE
+    incidence = FALSE,
+    incidence_attrition = FALSE
   )
   
   # summarise_omop_snapshot -----
+  ## update message if filter is changed
+  shiny::observeEvent(input$summarise_omop_snapshot_cdm_name,
+                      {
+                        updateButtons$summarise_omop_snapshot <- TRUE
+                      },
+                      ignoreInit = TRUE
+  )
+  shiny::observeEvent(input$summarise_omop_snapshot_variable_name,
+                      {
+                        updateButtons$summarise_omop_snapshot <- TRUE
+                      },
+                      ignoreInit = TRUE
+  )
+  shiny::observeEvent(updateButtons$summarise_omop_snapshot, {
+    if (updateButtons$summarise_omop_snapshot == TRUE) {
+      output$update_message_summarise_omop_snapshot <- shiny::renderText("Filters have changed please consider to use the update content button!")
+    } else {
+      output$update_message_summarise_omop_snapshot <- shiny::renderText("")
+    }
+  })
+  shiny::observeEvent(input$update_summarise_omop_snapshot, {
+    updateButtons$summarise_omop_snapshot <- FALSE
+  })
+  
+  ## get summarise_omop_snapshot data
   getSummariseOmopSnapshotTable <- shiny::reactive({
-    data[["summarise_omop_snapshot"]] |>
+    data[["summarise_omop_snapshot"]]  |>
       OmopSketch::tableOmopSnapshot()
   })
   output$summarise_omop_snapshot_table <- gt::render_gt({
@@ -50,12 +69,6 @@ server <- function(input, output, session) {
                       },
                       ignoreInit = TRUE
   )
-  shiny::observeEvent(input$summarise_cohort_count_cohort_name,
-                      {
-                        updateButtons$summarise_cohort_count <- TRUE
-                      },
-                      ignoreInit = TRUE
-  )
   shiny::observeEvent(input$summarise_cohort_count_variable_name,
                       {
                         updateButtons$summarise_cohort_count <- TRUE
@@ -63,12 +76,6 @@ server <- function(input, output, session) {
                       ignoreInit = TRUE
   )
   shiny::observeEvent(input$summarise_cohort_count_table_name,
-                      {
-                        updateButtons$summarise_cohort_count <- TRUE
-                      },
-                      ignoreInit = TRUE
-  )
-  shiny::observeEvent(input$summarise_cohort_count_weighting,
                       {
                         updateButtons$summarise_cohort_count <- TRUE
                       },
@@ -87,20 +94,27 @@ server <- function(input, output, session) {
   
   ## get summarise_cohort_count data
   getSummariseCohortCountData <- shiny::eventReactive(input$update_summarise_cohort_count, {
-    x <- data[["summarise_cohort_count"]] |>
+    data[["summarise_cohort_count"]] |>
       dplyr::filter(
         .data$cdm_name %in% input$summarise_cohort_count_cdm_name,
         .data$variable_name %in% input$summarise_cohort_count_variable_name
       ) |>
-      omopgenerics::filterGroup(.data$cohort_name %in% input$summarise_cohort_count_cohort_name) |>
-      omopgenerics::filterSettings(
-        .data$table_name %in% input$summarise_cohort_count_table_name
-      ) |>
-      dplyr::group_by(group_level) |>
-      dplyr::filter(result_id == min(result_id)) |>
-      dplyr::ungroup() |> 
-      omopgenerics::newSummarisedResult(settings = omopgenerics::settings(data$summarise_cohort_count))
+      omopgenerics::filterSettings(.data$table_name %in% input$summarise_cohort_count_table_name)
   })
+  getSummariseCohortCountTidy <- shiny::reactive({
+    tidyDT(getSummariseCohortCountData(), input$summarise_cohort_count_tidy_columns, input$summarise_cohort_count_tidy_pivot_estimates)
+  })
+  output$summarise_cohort_count_tidy <- DT::renderDT({
+    getSummariseCohortCountTidy()
+  })
+  output$summarise_cohort_count_tidy_download <- shiny::downloadHandler(
+    filename = "tidy_results.csv",
+    content = function(file) {
+      getSummariseCohortCountData() |>
+        omopgenerics::tidy() |>
+        readr::write_csv(file = file)
+    }
+  )
   getSummariseCohortCountTable <- shiny::reactive({
     getSummariseCohortCountData() |>
       CohortCharacteristics::tableCohortCount(
@@ -150,12 +164,6 @@ server <- function(input, output, session) {
                       },
                       ignoreInit = TRUE
   )
-  shiny::observeEvent(input$summarise_cohort_attrition_cohort_name,
-                      {
-                        updateButtons$summarise_cohort_attrition <- TRUE
-                      },
-                      ignoreInit = TRUE
-  )
   shiny::observeEvent(input$summarise_cohort_attrition_variable_name,
                       {
                         updateButtons$summarise_cohort_attrition <- TRUE
@@ -179,9 +187,22 @@ server <- function(input, output, session) {
       dplyr::filter(
         .data$cdm_name %in% input$summarise_cohort_attrition_cdm_name,
         .data$variable_name %in% input$summarise_cohort_attrition_variable_name
-      ) |>
-      omopgenerics::filterGroup(.data$cohort_name %in% input$summarise_cohort_attrition_cohort_name)
+      )
   })
+  getSummariseCohortAttritionTidy <- shiny::reactive({
+    tidyDT(getSummariseCohortAttritionData(), input$summarise_cohort_attrition_tidy_columns, input$summarise_cohort_attrition_tidy_pivot_estimates)
+  })
+  output$summarise_cohort_attrition_tidy <- DT::renderDT({
+    getSummariseCohortAttritionTidy()
+  })
+  output$summarise_cohort_attrition_tidy_download <- shiny::downloadHandler(
+    filename = "tidy_results.csv",
+    content = function(file) {
+      getSummariseCohortAttritionData() |>
+        omopgenerics::tidy() |>
+        readr::write_csv(file = file)
+    }
+  )
   getSummariseCohortAttritionTable <- shiny::reactive({
     getSummariseCohortAttritionData() |>
       CohortCharacteristics::tableCohortAttrition(
@@ -229,30 +250,6 @@ server <- function(input, output, session) {
                       },
                       ignoreInit = TRUE
   )
-  shiny::observeEvent(input$summarise_characteristics_exposure,
-                      {
-                        updateButtons$summarise_characteristics <- TRUE
-                      },
-                      ignoreInit = TRUE
-  )
-  shiny::observeEvent(input$summarise_characteristics_vaccine_brand,
-                      {
-                        updateButtons$summarise_characteristics <- TRUE
-                      },
-                      ignoreInit = TRUE
-  )
-  shiny::observeEvent(input$summarise_characteristics_gestational_trimester,
-                      {
-                        updateButtons$summarise_characteristics <- TRUE
-                      },
-                      ignoreInit = TRUE
-  )
-  shiny::observeEvent(input$summarise_characteristics_age_group,
-                      {
-                        updateButtons$summarise_characteristics <- TRUE
-                      },
-                      ignoreInit = TRUE
-  )
   shiny::observeEvent(input$summarise_characteristics_variable_name,
                       {
                         updateButtons$summarise_characteristics <- TRUE
@@ -284,31 +281,26 @@ server <- function(input, output, session) {
         .data$variable_name %in% input$summarise_characteristics_variable_name,
         .data$estimate_name %in% input$summarise_characteristics_estimate_name
       ) |>
-      omopgenerics::filterGroup(.data$cohort_name %in% input$summarise_characteristics_cohort_name) |>
-      omopgenerics::filterStrata(
-        .data$exposure %in% input$summarise_characteristics_exposure,
-        .data$vaccine_brand %in% input$summarise_characteristics_vaccine_brand,
-        .data$gestational_trimester %in% input$summarise_characteristics_gestational_trimester,
-        .data$age_group %in% input$summarise_characteristics_age_group
-      ) |>
-      filterSettings(.data$weighting %in% input$summarise_characteristics_weighting)
+      omopgenerics::filterGroup(.data$cohort_name %in% input$summarise_characteristics_cohort_name)
   })
-  getSummariseCharacteristicsTidy <- shiny::reactive({
-    tidyDT(getSummariseCharacteristicsData(), input$summarise_characteristics_tidy_columns, input$summarise_characteristics_tidy_pivot_estimates)
-  })
-  output$summarise_characteristics_tidy <- DT::renderDT({
-    getSummariseCharacteristicsTidy()
-  })
-  output$summarise_characteristics_tidy_download <- shiny::downloadHandler(
-    filename = "tidy_results.csv",
-    content = function(file) {
-      getSummariseCharacteristicsData() |>
-        omopgenerics::tidy() |>
-        readr::write_csv(file = file)
-    }
-  )
   getSummariseCharacteristicsTable <- shiny::reactive({
     getSummariseCharacteristicsData() |>
+      dplyr::filter(
+        !variable_name %in% c("Cohort start date", "Cohort end date", "Age", "Sex", "Prior observation", "Future observation", "Days in cohort")
+      ) |>
+      dplyr::mutate(
+        variable_level = dplyr::if_else(variable_name == "Previous pregnancies", "-", variable_level),
+        variable_name = factor(
+          variable_name, 
+          levels = c(
+            "Number records", "Number subjects", "Maternal age", "Trimester", "Season", "Season yearly",
+            "Ethnicity", "History of comorbidities", "Mental heatlh problems in the last year",
+            "Covariates in the past 5 years", "Medications in the past year", 
+            "Previous pregnancies"  
+          )
+        )
+      ) |>
+      dplyr::arrange(variable_name, variable_level) |>
       CohortCharacteristics::tableCharacteristics(
         header = input$summarise_characteristics_table_header,
         groupColumn = input$summarise_characteristics_table_group_column,
@@ -363,30 +355,6 @@ server <- function(input, output, session) {
                       },
                       ignoreInit = TRUE
   )
-  shiny::observeEvent(input$summarise_large_scale_characteristics_exposure,
-                      {
-                        updateButtons$summarise_large_scale_characteristics <- TRUE
-                      },
-                      ignoreInit = TRUE
-  )
-  shiny::observeEvent(input$summarise_large_scale_characteristics_vaccine_brand,
-                      {
-                        updateButtons$summarise_large_scale_characteristics <- TRUE
-                      },
-                      ignoreInit = TRUE
-  )
-  shiny::observeEvent(input$summarise_large_scale_characteristics_gestational_trimester,
-                      {
-                        updateButtons$summarise_large_scale_characteristics <- TRUE
-                      },
-                      ignoreInit = TRUE
-  )
-  shiny::observeEvent(input$summarise_large_scale_characteristics_age_group,
-                      {
-                        updateButtons$summarise_large_scale_characteristics <- TRUE
-                      },
-                      ignoreInit = TRUE
-  )
   shiny::observeEvent(input$summarise_large_scale_characteristics_variable_level,
                       {
                         updateButtons$summarise_large_scale_characteristics <- TRUE
@@ -399,13 +367,13 @@ server <- function(input, output, session) {
                       },
                       ignoreInit = TRUE
   )
-  shiny::observeEvent(input$summarise_large_scale_characteristics_type,
+  shiny::observeEvent(input$summarise_large_scale_characteristics_table_name,
                       {
                         updateButtons$summarise_large_scale_characteristics <- TRUE
                       },
                       ignoreInit = TRUE
   )
-  shiny::observeEvent(input$summarise_large_scale_characteristics_weighting,
+  shiny::observeEvent(input$summarise_large_scale_characteristics_type,
                       {
                         updateButtons$summarise_large_scale_characteristics <- TRUE
                       },
@@ -430,46 +398,42 @@ server <- function(input, output, session) {
         .data$variable_level %in% input$summarise_large_scale_characteristics_variable_level
       ) |>
       omopgenerics::filterGroup(.data$cohort_name %in% input$summarise_large_scale_characteristics_cohort_name) |>
-      omopgenerics::filterStrata(
-        .data$exposure %in% input$summarise_large_scale_characteristics_exposure,
-        .data$vaccine_brand %in% input$summarise_large_scale_characteristics_vaccine_brand,
-        .data$gestational_trimester %in% input$summarise_large_scale_characteristics_gestational_trimester,
-        .data$age_group %in% input$summarise_large_scale_characteristics_age_group
-      ) |>
       omopgenerics::filterSettings(
-        .data$weighting %in% input$summarise_large_scale_characteristics_weighting
+        .data$analysis %in% input$summarise_large_scale_characteristics_analysis,
+        .data$table_name %in% input$summarise_large_scale_characteristics_table_name,
+        .data$type %in% input$summarise_large_scale_characteristics_type
       )
   })
   getSummariseLargeScaleCharacteristicsTableLsc <- shiny::reactive({
-    # if (identical(input$summarise_large_scale_characteristics_table_lsc_compare_by, "no compare")) {
-    #   cb <- NULL
-    # } else {
-    #   cb <- input$summarise_large_scale_characteristics_table_lsc_compare_by
-    # }
-    # if (identical(input$summarise_large_scale_characteristics_table_lsc_smd_reference, "no SMD")) {
-    #   sr <- NULL
-    # } else {
-    #   sr <- input$summarise_large_scale_characteristics_table_lsc_smd_reference
-    # }
+    if (identical(input$summarise_large_scale_characteristics_table_lsc_compare_by, "no compare")) {
+      cb <- NULL
+    } else {
+      cb <- input$summarise_large_scale_characteristics_table_lsc_compare_by
+    }
+    if (identical(input$summarise_large_scale_characteristics_table_lsc_smd_reference, "no SMD")) {
+      sr <- NULL
+    } else {
+      sr <- input$summarise_large_scale_characteristics_table_lsc_smd_reference
+    }
     getSummariseLargeScaleCharacteristicsData() |>
       CohortCharacteristics::tableLargeScaleCharacteristics(
-        compareBy = "exposure",
+        compareBy = cb,
         hide = input$summarise_large_scale_characteristics_table_lsc_hide,
-        smdReference = "comparator"
-      ) 
+        smdReference = sr
+      )
   })
   output$summarise_large_scale_characteristics_table_lsc <- reactable::renderReactable({
     getSummariseLargeScaleCharacteristicsTableLsc()
   })
-  # shiny::observeEvent(input$summarise_large_scale_characteristics_table_lsc_compare_by, {
-  #   opts <- values[[paste0("summarise_large_scale_characteristics_", input$summarise_large_scale_characteristics_table_lsc_compare_by)]]
-  #   opts <- c("no SMD", opts)
-  #   shinyWidgets::updatePickerInput(
-  #     inputId = "summarise_large_scale_characteristics_table_lsc_smd_reference",
-  #     choices = opts,
-  #     selected = "no SMD"
-  #   )
-  # })
+  shiny::observeEvent(input$summarise_large_scale_characteristics_table_lsc_compare_by, {
+    opts <- values[[paste0("summarise_large_scale_characteristics_", input$summarise_large_scale_characteristics_table_lsc_compare_by)]]
+    opts <- c("no SMD", opts)
+    shinyWidgets::updatePickerInput(
+      inputId = "summarise_large_scale_characteristics_table_lsc_smd_reference",
+      choices = opts,
+      selected = "no SMD"
+    )
+  })
   output$summarise_large_scale_characteristics_table_lsc_download <- shiny::downloadHandler(
     filename = "smd_results.csv",
     content = function(file) {
@@ -481,22 +445,35 @@ server <- function(input, output, session) {
         readr::write_csv(file)
     }
   )
+  getSummariseLargeScaleCharacteristicsTableMostCommon <- shiny::reactive({
+    getSummariseLargeScaleCharacteristicsData() |>
+      CohortCharacteristics::tableTopLargeScaleCharacteristics(
+        topConcepts = input$summarise_large_scale_characteristics_table_most_common_top_concepts,
+        type = "gt"
+      )
+  })
+  output$summarise_large_scale_characteristics_table_most_common <- gt::render_gt({
+    getSummariseLargeScaleCharacteristicsTableMostCommon()
+  })
+  output$summarise_large_scale_characteristics_table_most_common_download <- shiny::downloadHandler(
+    filename = paste0("top_concepts.", input$summarise_large_scale_characteristics_table_most_common_format),
+    content = function(file) {
+      gt::gtsave(getSummariseLargeScaleCharacteristicsTableMostCommon(), file)
+    }
+  )
   getSummariseLargeScaleCharacteristicsPlotCompared <- shiny::reactive({
-    res <- getSummariseLargeScaleCharacteristicsData() |>
-      dplyr::mutate(
-        additional_level = dplyr::if_else(additional_name == "overall", "-", additional_level),
-        additional_name = dplyr::if_else(additional_name == "overall", "concept_id", additional_name)
-      ) 
-    res <- res |>
-      omopgenerics::newSummarisedResult(settings = omopgenerics::settings(res) |> dplyr::mutate(additional = "concept_id"))
-    res |>
+    if (input$summarise_large_scale_characteristics_plot_compared_missings) {
+      mis <- 0
+    } else {
+      mis <- NULL
+    }
+    getSummariseLargeScaleCharacteristicsData() |>
       CohortCharacteristics::plotComparedLargeScaleCharacteristics(
-        colour = "exposure",
-        reference = "comparator",
+        colour = input$summarise_large_scale_characteristics_plot_compared_colour,
+        reference = input$summarise_large_scale_characteristics_plot_compared_reference,
         facet = input$summarise_large_scale_characteristics_plot_compared_facet,
-        missings = NULL
-      ) + 
-      theme(legend.position="none")
+        missings = mis
+      )
   })
   output$summarise_large_scale_characteristics_plot_compared <- plotly::renderPlotly({
     getSummariseLargeScaleCharacteristicsPlotCompared()
@@ -509,866 +486,307 @@ server <- function(input, output, session) {
       selected = opts[1]
     )
   })
-  # incidence_rate_ratio -----
+  # incidence -----
   ## update message if filter is changed
-  shiny::observeEvent(input$incidence_rate_ratio_cdm_name,
+  shiny::observeEvent(input$incidence_cdm_name,
                       {
-                        updateButtons$incidence_rate_ratio <- TRUE
+                        updateButtons$incidence <- TRUE
                       },
                       ignoreInit = TRUE
   )
-  shiny::observeEvent(input$incidence_rate_ratio_cohort_name,
+  shiny::observeEvent(input$incidence_outcome_cohort_name,
                       {
-                        updateButtons$incidence_rate_ratio <- TRUE
+                        updateButtons$incidence <- TRUE
                       },
                       ignoreInit = TRUE
   )
-  shiny::observeEvent(input$incidence_rate_ratio_vaccine_brand,
+  shiny::observeEvent(input$incidence_maternal_age,
                       {
-                        updateButtons$incidence_rate_ratio <- TRUE
+                        updateButtons$incidence <- TRUE
                       },
                       ignoreInit = TRUE
   )
-  shiny::observeEvent(input$incidence_rate_ratio_gestational_trimester,
+  shiny::observeEvent(input$incidence_incidence_start_date,
                       {
-                        updateButtons$incidence_rate_ratio <- TRUE
+                        updateButtons$incidence <- TRUE
                       },
                       ignoreInit = TRUE
   )
-  shiny::observeEvent(input$incidence_rate_ratio_age_group,
+  shiny::observeEvent(input$incidence_analysis_interval,
                       {
-                        updateButtons$incidence_rate_ratio <- TRUE
+                        updateButtons$incidence <- TRUE
                       },
                       ignoreInit = TRUE
   )
-  shiny::observeEvent(input$incidence_rate_ratio_outcome_name,
+  shiny::observeEvent(input$incidence_analysis_censor_cohort_name,
                       {
-                        updateButtons$incidence_rate_ratio <- TRUE
+                        updateButtons$incidence <- TRUE
                       },
                       ignoreInit = TRUE
   )
-  shiny::observeEvent(input$incidence_rate_ratio_follow_up_end,
+  shiny::observeEvent(input$incidence_analysis_complete_database_intervals,
                       {
-                        updateButtons$incidence_rate_ratio <- TRUE
+                        updateButtons$incidence <- TRUE
                       },
                       ignoreInit = TRUE
   )
-  shiny::observeEvent(input$incidence_rate_ratio_variable_name,
+  shiny::observeEvent(input$incidence_analysis_outcome_washout,
                       {
-                        updateButtons$incidence_rate_ratio <- TRUE
+                        updateButtons$incidence <- TRUE
                       },
                       ignoreInit = TRUE
   )
-  shiny::observeEvent(input$incidence_rate_ratio_estimate_name,
+  shiny::observeEvent(input$incidence_analysis_repeated_events,
                       {
-                        updateButtons$incidence_rate_ratio <- TRUE
+                        updateButtons$incidence <- TRUE
                       },
                       ignoreInit = TRUE
   )
-  shiny::observeEvent(input$incidence_rate_ratio_outcome_group,
+  shiny::observeEvent(input$incidence_denominator_days_prior_observation,
                       {
-                        updateButtons$incidence_rate_ratio <- TRUE
+                        updateButtons$incidence <- TRUE
                       },
                       ignoreInit = TRUE
   )
-  shiny::observeEvent(input$incidence_rate_ratio_weighting,
+  shiny::observeEvent(input$incidence_denominator_end_date,
                       {
-                        updateButtons$incidence_rate_ratio <- TRUE
+                        updateButtons$incidence <- TRUE
                       },
                       ignoreInit = TRUE
   )
-  shiny::observeEvent(updateButtons$incidence_rate_ratio, {
-    if (updateButtons$incidence_rate_ratio == TRUE) {
-      output$update_message_incidence_rate_ratio <- shiny::renderText("Filters have changed please consider to use the update content button!")
+  shiny::observeEvent(input$incidence_denominator_start_date,
+                      {
+                        updateButtons$incidence <- TRUE
+                      },
+                      ignoreInit = TRUE
+  )
+  shiny::observeEvent(input$incidence_variable_name,
+                      {
+                        updateButtons$incidence <- TRUE
+                      },
+                      ignoreInit = TRUE
+  )
+  shiny::observeEvent(input$incidence_estimate_name,
+                      {
+                        updateButtons$incidence <- TRUE
+                      },
+                      ignoreInit = TRUE
+  )
+  shiny::observeEvent(updateButtons$incidence, {
+    if (updateButtons$incidence == TRUE) {
+      output$update_message_incidence <- shiny::renderText("Filters have changed please consider to use the update content button!")
     } else {
-      output$update_message_incidence_rate_ratio <- shiny::renderText("")
+      output$update_message_incidence <- shiny::renderText("")
     }
   })
-  shiny::observeEvent(input$update_incidence_rate_ratio, {
-    updateButtons$incidence_rate_ratio <- FALSE
+  shiny::observeEvent(input$update_incidence, {
+    updateButtons$incidence <- FALSE
   })
   
-  ## get incidence_rate_ratio data
-  getIncidenceRateRatioData <- shiny::eventReactive(input$update_incidence_rate_ratio, {
-    data[["incidence_rate_ratio"]] |>
+  ## get incidence data
+  getIncidenceData <- shiny::eventReactive(input$update_incidence, {
+    data[["incidence"]] |>
       dplyr::filter(
-        .data$cdm_name %in% input$incidence_rate_ratio_cdm_name,
-        .data$variable_name %in% input$incidence_rate_ratio_variable_name,
-        .data$estimate_name %in% input$incidence_rate_ratio_estimate_name
+        .data$cdm_name %in% input$incidence_cdm_name,
+        .data$variable_name %in% input$incidence_variable_name,
+        .data$estimate_name %in% input$incidence_estimate_name
       ) |>
-      omopgenerics::filterGroup(.data$cohort_name %in% input$incidence_rate_ratio_cohort_name) |>
-      omopgenerics::filterStrata(
-        .data$vaccine_brand %in% input$incidence_rate_ratio_vaccine_brand,
-        .data$gestational_trimester %in% input$incidence_rate_ratio_gestational_trimester,
-        .data$age_group %in% input$incidence_rate_ratio_age_group
-      ) |>
+      omopgenerics::filterGroup(.data$outcome_cohort_name %in% input$incidence_outcome_cohort_name) |>
+      omopgenerics::filterStrata(.data$maternal_age %in% input$incidence_maternal_age) |>
       omopgenerics::filterAdditional(
-        .data$outcome_name %in% input$incidence_rate_ratio_outcome_name,
-        .data$follow_up_end %in% input$incidence_rate_ratio_follow_up_end
+        .data$incidence_start_date %in% input$incidence_incidence_start_date,
       ) |>
       omopgenerics::filterSettings(
-        .data$outcome_group %in% input$incidence_rate_ratio_outcome_group,
-        .data$weighting %in% input$incidence_rate_ratio_weighting
+        .data$denominator_end_date %in% input$incidence_denominator_end_date,
+        .data$denominator_start_date %in% input$incidence_denominator_start_date
       )
   })
-  getIncidenceRateRatioTidy <- shiny::reactive({
-    tidyDT(getIncidenceRateRatioData(), input$incidence_rate_ratio_tidy_columns, input$incidence_rate_ratio_tidy_pivot_estimates)
+  getIncidenceTidy <- shiny::reactive({
+    tidyDT(getIncidenceData(), input$incidence_tidy_columns, input$incidence_tidy_pivot_estimates)
   })
-  output$incidence_rate_ratio_tidy <- DT::renderDT({
-    getIncidenceRateRatioTidy()
+  output$incidence_tidy <- DT::renderDT({
+    getIncidenceTidy()
   })
-  output$incidence_rate_ratio_tidy_download <- shiny::downloadHandler(
+  output$incidence_tidy_download <- shiny::downloadHandler(
     filename = "tidy_results.csv",
     content = function(file) {
-      getIncidenceRateRatioData() |>
+      getIncidenceData() |>
         omopgenerics::tidy() |>
         readr::write_csv(file = file)
     }
   )
-  getIncidenceRateRatioTable <- shiny::reactive({
-    getIncidenceRateRatioData() |>
-      simpleTable(
-        header = input$incidence_rate_ratio_table_header,
-        group = input$incidence_rate_ratio_table_group_column,
-        hide = input$incidence_rate_ratio_table_hide
+  getIncidenceTable <- shiny::reactive({
+    res <- getIncidenceData()
+    res |>
+      IncidencePrevalence::tableIncidence(
+        header = input$incidence_table_header,
+        groupColumn = input$incidence_table_group_column,
+        hide = input$incidence_table_hide,
+        settingsColumn = omopgenerics::settingsColumns(res)
       )
   })
-  output$incidence_rate_ratio_table <- gt::render_gt({
-    getIncidenceRateRatioTable()
+  output$incidence_table <- gt::render_gt({
+    getIncidenceTable()
   })
-  output$incidence_rate_ratio_table_download <- shiny::downloadHandler(
-    filename = paste0("table.", input$incidence_rate_ratio_table_format),
+  output$incidence_table_download <- shiny::downloadHandler(
+    filename = paste0("table_incidence.", input$incidence_table_format),
     content = function(file) {
-      gt::gtsave(getIncidenceRateRatioTable(), file)
+      gt::gtsave(getIncidenceTable(), file)
     }
   )
-  # propensity_scores -----
-  ## update message if filter is changed
-  shiny::observeEvent(input$propensity_scores_cdm_name,
-                      {
-                        updateButtons$propensity_scores <- TRUE
-                      },
-                      ignoreInit = TRUE
-  )
-  shiny::observeEvent(input$propensity_scores_cohort_name,
-                      {
-                        updateButtons$propensity_scores <- TRUE
-                      },
-                      ignoreInit = TRUE
-  )
-  shiny::observeEvent(input$propensity_scores_exposure,
-                      {
-                        updateButtons$propensity_scores <- TRUE
-                      },
-                      ignoreInit = TRUE
-  )
-  shiny::observeEvent(input$propensity_scores_variable_name,
-                      {
-                        updateButtons$propensity_scores <- TRUE
-                      },
-                      ignoreInit = TRUE
-  )
-  shiny::observeEvent(input$propensity_scores_estimate_name,
-                      {
-                        updateButtons$propensity_scores <- TRUE
-                      },
-                      ignoreInit = TRUE
-  )
-  shiny::observeEvent(updateButtons$propensity_scores, {
-    if (updateButtons$propensity_scores == TRUE) {
-      output$update_message_propensity_scores <- shiny::renderText("Filters have changed please consider to use the update content button!")
-    } else {
-      output$update_message_propensity_scores <- shiny::renderText("")
-    }
+  getIncidencePlot <- shiny::reactive({
+    getIncidenceData() |>
+      IncidencePrevalence::plotIncidence(
+        x = input$incidence_plot_x,
+        facet = input$incidence_plot_facet,
+        colour = input$incidence_plot_colour,
+        ribbon = input$incidence_plot_ribbon,
+        line = input$incidence_plot_line
+      )
   })
-  shiny::observeEvent(input$update_propensity_scores, {
-    updateButtons$propensity_scores <- FALSE
+  output$incidence_plot <- shiny::renderUI({
+    x <- getIncidencePlot()
+    renderInteractivePlot(x, input$incidence_plot_interactive)
   })
-  
-  ## propensity_score_coeficcients -----
-  getPropensityScoreCoeficcientsTidy <- shiny::reactive({
-    data[["propensity_score_coeficcients"]] |>
-      dplyr::filter(
-        .data$cdm_name %in% input$propensity_scores_cdm_name,
-        .data$group_level %in% input$propensity_scores_cohort_name
-      ) |> 
-      visOmopResults::tidy()
-  })
-  output$propensity_score_coeficcients_tidy <- DT::renderDT({
-    getPropensityScoreCoeficcientsTidy()
-  })
-  output$propensity_score_coeficcients_tidy_download <- shiny::downloadHandler(
-    filename = "tidy_results.csv",
-    content = function(file) {
-      getPropensityScoreCoeficcientsTidy() |>
-        readr::write_csv(file = file)
-    }
-  )
-  ## propensity_scores plot ----
-  getPropensityScoresData <- shiny::eventReactive(input$update_propensity_scores, {
-    data[["propensity_scores"]] |>
-      dplyr::filter(
-        .data$cdm_name %in% input$propensity_scores_cdm_name,
-        .data$group_level %in% input$propensity_scores_cohort_name
-      ) |>
-      visOmopResults::tidy()
-  })
-  getPropensityScorePlot <- shiny::reactive({
-    getPropensityScoresData() |>
-      tidyr::unite(
-        col = "facet", input$propensity_score_plot_facet
-      ) |>
-      ggplot2::ggplot(ggplot2::aes(x = propensity_score, colour = exposure, fill = exposure)) +
-      ggplot2::geom_density(alpha = 0.3) +
-      ggplot2::facet_wrap(facets = vars(facet), scales = "free_y")
-  })
-  output$propensity_score_plot <- shiny::renderUI({
-    x <- getPropensityScorePlot()
-    renderInteractivePlot(x, input$propensity_score_plot_interactive)
-  })
-  output$propensity_score_plot_download <- shiny::downloadHandler(
-    filename = "plot_propensity_score.png",
+  output$incidence_plot_download <- shiny::downloadHandler(
+    filename = "plot_incidence.png",
     content = function(file) {
       ggplot2::ggsave(
         filename = file,
-        plot = getPropensityScorePlot(),
-        width = as.numeric(input$propensity_score_plot_width),
-        height = as.numeric(input$propensity_score_plot_height),
-        units = input$propensity_score_plot_units,
-        dpi = as.numeric(input$propensity_score_plot_dpi)
+        plot = getIncidencePlot(),
+        width = as.numeric(input$incidence_plot_width),
+        height = as.numeric(input$incidence_plot_height),
+        units = input$incidence_plot_units,
+        dpi = as.numeric(input$incidence_plot_dpi)
       )
     }
   )
-  # sampling and population-----
+  getIncidencePlotPopulation <- shiny::reactive({
+    getIncidenceData() |>
+      IncidencePrevalence::plotIncidencePopulation(
+        facet = input$incidence_plot_population_facet,
+        colour = input$incidence_plot_population_colour
+      )
+  })
+  output$incidence_plot_population <- shiny::renderUI({
+    x <- getIncidencePlotPopulation()
+    renderInteractivePlot(x, input$incidence_plot_population_interactive)
+  })
+  # incidence_attrition -----
   ## update message if filter is changed
-  shiny::observeEvent(input$summarise_sampling_cdm_name,
+  shiny::observeEvent(input$incidence_attrition_cdm_name,
                       {
-                        updateButtons$summarise_sampling <- TRUE
+                        updateButtons$incidence_attrition <- TRUE
                       },
                       ignoreInit = TRUE
   )
-  shiny::observeEvent(input$summarise_sampling_cohort_name,
+  shiny::observeEvent(input$incidence_attrition_analysis_censor_cohort_name,
                       {
-                        updateButtons$summarise_sampling <- TRUE
+                        updateButtons$incidence_attrition <- TRUE
                       },
                       ignoreInit = TRUE
   )
-  shiny::observeEvent(input$summarise_sampling_variable_name,
+  shiny::observeEvent(input$incidence_attrition_analysis_complete_database_intervals,
                       {
-                        updateButtons$summarise_sampling <- TRUE
+                        updateButtons$incidence_attrition <- TRUE
                       },
                       ignoreInit = TRUE
   )
-  shiny::observeEvent(input$summarise_sampling_estimate_name,
+  shiny::observeEvent(input$incidence_attrition_analysis_outcome_washout,
                       {
-                        updateButtons$summarise_sampling <- TRUE
+                        updateButtons$incidence_attrition <- TRUE
                       },
                       ignoreInit = TRUE
   )
-  shiny::observeEvent(updateButtons$summarise_sampling, {
-    if (updateButtons$summarise_sampling == TRUE) {
-      output$update_message_summarise_sampling <- shiny::renderText("Filters have changed please consider to use the update content button!")
+  shiny::observeEvent(input$incidence_attrition_analysis_repeated_events,
+                      {
+                        updateButtons$incidence_attrition <- TRUE
+                      },
+                      ignoreInit = TRUE
+  )
+  shiny::observeEvent(input$incidence_attrition_denominator_days_prior_observation,
+                      {
+                        updateButtons$incidence_attrition <- TRUE
+                      },
+                      ignoreInit = TRUE
+  )
+  shiny::observeEvent(input$incidence_attrition_denominator_end_date,
+                      {
+                        updateButtons$incidence_attrition <- TRUE
+                      },
+                      ignoreInit = TRUE
+  )
+  shiny::observeEvent(input$incidence_attrition_denominator_start_date,
+                      {
+                        updateButtons$incidence_attrition <- TRUE
+                      },
+                      ignoreInit = TRUE
+  )
+  shiny::observeEvent(input$incidence_attrition_variable_name,
+                      {
+                        updateButtons$incidence_attrition <- TRUE
+                      },
+                      ignoreInit = TRUE
+  )
+  shiny::observeEvent(updateButtons$incidence_attrition, {
+    if (updateButtons$incidence_attrition == TRUE) {
+      output$update_message_incidence_attrition <- shiny::renderText("Filters have changed please consider to use the update content button!")
     } else {
-      output$update_message_summarise_sampling <- shiny::renderText("")
+      output$update_message_incidence_attrition <- shiny::renderText("")
     }
   })
-  shiny::observeEvent(input$update_summarise_sampling, {
-    updateButtons$summarise_sampling <- FALSE
-  })
-  ## population count ----
-  getSummariseCohortCountDataPop <- shiny::eventReactive(input$update_summarise_sampling, {
-    data[["summarise_characteristics"]] |>
-      omopgenerics::filterSettings(weighting == FALSE) |>
-      dplyr::filter(variable_name %in% c("Number records", "Number subjects")) |>
-      dplyr::filter(.data$cdm_name %in% input$summarise_sampling_cdm_name) |>
-      omopgenerics::filterGroup(.data$cohort_name %in% input$summarise_sampling_cohort_name) |>
-      omopgenerics::filterStrata(
-        .data$exposure %in% input$summarise_cohort_count_exposure_pop,
-        .data$vaccine_brand %in% input$summarise_cohort_count_vaccine_brand_pop,
-        .data$gestational_trimester %in% input$summarise_cohort_count_gestational_trimester_pop,
-        .data$age_group %in% input$summarise_cohort_count_age_group_pop
-      )
-  })
-  getSummariseCohortCountTablePop <- shiny::reactive({
-    getSummariseCohortCountDataPop() |>
-      CohortCharacteristics::tableCharacteristics(
-        header = input$summarise_cohort_count_table_header_pop,
-        groupColumn = input$summarise_cohort_count_table_group_column_pop,
-        hide = input$summarise_cohort_count_table_hide_pop
-      )
-  })
-  output$summarise_cohort_count_table_pop <- gt::render_gt({
-    getSummariseCohortCountTablePop()
-  })
-  output$summarise_cohort_count_table_download_pop <- shiny::downloadHandler(
-    filename = paste0("table_population_count.", input$summarise_cohort_count_table_format_pop),
-    content = function(file) {
-      gt::gtsave(getSummariseCohortCountTablePop(), file)
-    }
-  )
-  ## population attrition ----
-  getSummariseCohortAttritionDataPop <- shiny::eventReactive(input$update_summarise_sampling, {
-    data[["summarise_cohort_attrition"]] |>
-      dplyr::filter(.data$cdm_name %in% input$summarise_sampling_cdm_name) |>
-      omopgenerics::filterGroup(.data$cohort_name %in% input$summarise_sampling_cohort_name) |>
-      omopgenerics::filterSettings(.data$table_name %in% "Study population") |>
-      omopgenerics::filterSettings(.data$table_name %in% "Study population") |>
-      dplyr::mutate(additional_level = as.numeric(additional_level)) |>
-      dplyr::filter(additional_level < 15 | additional_level > 23) |>
-      dplyr::filter(!(additional_level == 24 & group_level %in% c("population_objective_2", "population_objective_3"))) |>
-      dplyr::filter(!(additional_level == 14 & group_level %in% c("population_objective_1"))) |>
-      dplyr::mutate(additional_level = as.character(additional_level)) 
-  })
-  getSummariseCohortAttritionTablePop <- shiny::reactive({
-    getSummariseCohortAttritionDataPop() |>
-      dplyr::filter(.data$variable_name %in% input$summarise_cohort_attrition_variable_name_pop) |>
-      CohortCharacteristics::tableCohortAttrition(
-        header = input$summarise_cohort_attrition_table_header_pop,
-        groupColumn = input$summarise_cohort_attrition_table_group_column_pop,
-        hide = input$summarise_cohort_attrition_table_hide_pop
-      )
-  })
-  output$summarise_cohort_attrition_table_pop <- gt::render_gt({
-    getSummariseCohortAttritionTablePop()
-  })
-  output$summarise_cohort_attrition_table_download_pop <- shiny::downloadHandler(
-    filename = paste0("table_population_attrition.", input$summarise_cohort_attrition_table_format_pop),
-    content = function(file) {
-      gt::gtsave(getSummariseCohortAttritionTablePop(), file)
-    }
-  )
-  getSummariseCohortAttritionDiagramPop <- shiny::reactive({
-    getSummariseCohortAttritionDataPop() |>
-      dplyr::filter(.data$variable_name %in% input$summarise_cohort_attrition_variable_name_pop) |>
-      CohortCharacteristics::plotCohortAttrition(
-        show = input$summarise_cohort_attrition_diagram_show_pop
-      )
-  })
-  output$summarise_cohort_attrition_diagram_pop <- DiagrammeR::renderGrViz({
-    getSummariseCohortAttritionDiagramPop()
-  })
-  output$summarise_cohort_attrition_diagram_download_pop <- shiny::downloadHandler(
-    filename = "attrition_population_diagram.png",
-    content = function(file) {
-      svg <- DiagrammeRsvg::export_svg(getSummariseCohortAttritionDiagramPop())
-      rsvg::rsvg_png(charToRaw(svg), file, width = input$summarise_cohort_attrition_diagram_width_pop)
-    }
-  )
-  ## summarise_sampling ----
-  getSummariseSamplingData <- shiny::eventReactive(input$update_summarise_sampling, {
-    data[["summarise_sampling"]] |>
-      dplyr::filter(.data$cdm_name %in% input$summarise_sampling_cdm_name) |>
-      omopgenerics::filterGroup(.data$cohort_name %in% paste0("source_", input$summarise_sampling_cohort_name))
-  })
-  getSummariseSamplingTable <- shiny::reactive({
-    getSummariseSamplingData() |>
-      visOmopResults::visOmopTable(
-        estimateName = c(
-          "N" = "<count>",
-          "Median [Q25 - Q75]" = "<median> [<q25> - <q75>]",
-          "Range" = "<min> - <max>"
-        ),
-        header = input$summarise_sampling_table_header, 
-        groupColumn = input$summarise_sampling_table_group_column,
-        hide = input$summarise_sampling_table_hide
-      )
-  })
-  output$summarise_sampling_table <- gt::render_gt({
-    getSummariseSamplingTable()
-  })
-  output$summarise_sampling_table_download <- shiny::downloadHandler(
-    filename = paste0("table.", input$summarise_sampling_table_format),
-    content = function(file) {
-      gt::gtsave(getSummariseSamplingTable(), file)
-    }
-  )
-  # cohort_exit -----
-  ## update message if filter is changed
-  shiny::observeEvent(input$cohort_exit_cdm_name,
-                      {
-                        updateButtons$cohort_exit <- TRUE
-                      },
-                      ignoreInit = TRUE
-  )
-  shiny::observeEvent(input$cohort_exit_cohort_name,
-                      {
-                        updateButtons$cohort_exit <- TRUE
-                      },
-                      ignoreInit = TRUE
-  )
-  shiny::observeEvent(input$cohort_exit_exposure,
-                      {
-                        updateButtons$cohort_exit <- TRUE
-                      },
-                      ignoreInit = TRUE
-  )
-  shiny::observeEvent(input$cohort_exit_vaccine_brand,
-                      {
-                        updateButtons$cohort_exit <- TRUE
-                      },
-                      ignoreInit = TRUE
-  )
-  shiny::observeEvent(input$cohort_exit_gestational_trimester,
-                      {
-                        updateButtons$cohort_exit <- TRUE
-                      },
-                      ignoreInit = TRUE
-  )
-  shiny::observeEvent(input$cohort_exit_age_group,
-                      {
-                        updateButtons$cohort_exit <- TRUE
-                      },
-                      ignoreInit = TRUE
-  )
-  shiny::observeEvent(input$cohort_exit_exit_reason,
-                      {
-                        updateButtons$cohort_exit <- TRUE
-                      },
-                      ignoreInit = TRUE
-  )
-  shiny::observeEvent(input$cohort_exit_analysis,
-                      {
-                        updateButtons$cohort_exit <- TRUE
-                      },
-                      ignoreInit = TRUE
-  )
-  shiny::observeEvent(input$cohort_exit_variable_name,
-                      {
-                        updateButtons$cohort_exit <- TRUE
-                      },
-                      ignoreInit = TRUE
-  )
-  shiny::observeEvent(input$cohort_exit_estimate_name,
-                      {
-                        updateButtons$cohort_exit <- TRUE
-                      },
-                      ignoreInit = TRUE
-  )
-  shiny::observeEvent(input$cohort_exit_weighting,
-                      {
-                        updateButtons$cohort_exit <- TRUE
-                      },
-                      ignoreInit = TRUE
-  )
-  shiny::observeEvent(updateButtons$cohort_exit, {
-    if (updateButtons$cohort_exit == TRUE) {
-      output$update_message_cohort_exit <- shiny::renderText("Filters have changed please consider to use the update content button!")
-    } else {
-      output$update_message_cohort_exit <- shiny::renderText("")
-    }
-  })
-  shiny::observeEvent(input$update_cohort_exit, {
-    updateButtons$cohort_exit <- FALSE
+  shiny::observeEvent(input$update_incidence_attrition, {
+    updateButtons$incidence_attrition <- FALSE
   })
   
-  ## get cohort_exit data
-  getCohortExitData <- shiny::eventReactive(input$update_cohort_exit, {
-    data[["cohort_exit"]] |>
+  ## get incidence_attrition data
+  getIncidenceAttritionData <- shiny::eventReactive(input$update_incidence_attrition, {
+    data[["incidence_attrition"]] |>
       dplyr::filter(
-        .data$cdm_name %in% input$cohort_exit_cdm_name,
-        .data$variable_name %in% input$cohort_exit_variable_name,
-        .data$estimate_name %in% input$cohort_exit_estimate_name
-      ) |>
-      omopgenerics::filterGroup(.data$cohort_name %in% input$cohort_exit_cohort_name) |>
-      omopgenerics::filterStrata(
-        .data$exposure %in% input$cohort_exit_exposure,
-        .data$vaccine_brand %in% input$cohort_exit_vaccine_brand,
-        .data$gestational_trimester %in% input$cohort_exit_gestational_trimester,
-        .data$age_group %in% input$cohort_exit_age_group
-      ) |>
-      omopgenerics::filterAdditional(
-        .data$exit_reason %in% input$cohort_exit_exit_reason,
-        .data$analysis %in% input$cohort_exit_analysis
-      ) |>
-      omopgenerics::filterSettings(.data$weighting %in% input$cohort_exit_weighting) 
-  })
-  getCohortExitTable <- shiny::reactive({
-    getCohortExitData() |>
-      visOmopResults::visOmopTable(
-        estimateName = c(
-          "N (%)" = "<count> (<percentage>%)",
-          "N" = "<count>",
-          "Median [Q25 - Q75]" = "<median> [<q25> - <q75>]",
-          "Range" = "<min> - <max>"
-        ),
-        header = input$cohort_exit_table_header,
-        groupColumn = input$cohort_exit_table_group_column,
-        hide = input$cohort_exit_table_hide,
-        columnOrder =  c(
-          'cdm_name', 'cohort_name', 'exposure', 'vaccine_brand', 'gestational_trimester', 
-          'age_group', 'exit_reason', 'variable_name', 'variable_level', 'analysis', 'weighting',
-          'estimate_name'
-        ),
-        factor = list("exit_reason" = c("overall", "date_of_death", "next_covid_vaccine", "observation_end", "covid_infection" ))
-      )
-  })
-  output$cohort_exit_table <- gt::render_gt({
-    getCohortExitTable()
-  })
-  output$cohort_exit_table_download <- shiny::downloadHandler(
-    filename = paste0("table_cohort_exit.", input$cohort_exit_table_format),
-    content = function(file) {
-      gt::gtsave(getCohortExitTable(), file)
-    }
-  )
-  # gestational_time_distributions -----
-  ## update message if filter is changed
-  shiny::observeEvent(input$gestational_time_distributions_cdm_name,
-                      {
-                        updateButtons$gestational_time_distributions <- TRUE
-                      },
-                      ignoreInit = TRUE
-  )
-  shiny::observeEvent(input$gestational_time_distributions_cohort_name,
-                      {
-                        updateButtons$gestational_time_distributions <- TRUE
-                      },
-                      ignoreInit = TRUE
-  )
-  shiny::observeEvent(input$gestational_time_distributions_exposure,
-                      {
-                        updateButtons$gestational_time_distributions <- TRUE
-                      },
-                      ignoreInit = TRUE
-  )
-  shiny::observeEvent(input$gestational_time_distributions_vaccine_brand,
-                      {
-                        updateButtons$gestational_time_distributions <- TRUE
-                      },
-                      ignoreInit = TRUE
-  )
-  shiny::observeEvent(input$gestational_time_distributions_gestational_trimester,
-                      {
-                        updateButtons$gestational_time_distributions <- TRUE
-                      },
-                      ignoreInit = TRUE
-  )
-  shiny::observeEvent(input$gestational_time_distributions_age_group,
-                      {
-                        updateButtons$gestational_time_distributions <- TRUE
-                      },
-                      ignoreInit = TRUE
-  )
-  shiny::observeEvent(input$gestational_time_distributions_variable_name,
-                      {
-                        updateButtons$gestational_time_distributions <- TRUE
-                      },
-                      ignoreInit = TRUE
-  )
-  shiny::observeEvent(input$gestational_time_distributions_estimate_name,
-                      {
-                        updateButtons$gestational_time_distributions <- TRUE
-                      },
-                      ignoreInit = TRUE
-  )
-  shiny::observeEvent(input$gestational_time_distributions_weighting,
-                      {
-                        updateButtons$gestational_time_distributions <- TRUE
-                      },
-                      ignoreInit = TRUE
-  )
-  shiny::observeEvent(updateButtons$gestational_time_distributions, {
-    if (updateButtons$gestational_time_distributions == TRUE) {
-      output$update_message_gestational_time_distributions <- shiny::renderText("Filters have changed please consider to use the update content button!")
-    } else {
-      output$update_message_gestational_time_distributions <- shiny::renderText("")
-    }
-  })
-  shiny::observeEvent(input$update_gestational_time_distributions, {
-    updateButtons$gestational_time_distributions <- FALSE
-  })
-  
-  ## get gestational_time_distributions data
-  getGestationalTimeDistributionsData <- shiny::eventReactive(input$update_gestational_time_distributions, {
-    data[["gestational_time_distributions"]] |>
-      dplyr::filter(
-        .data$cdm_name %in% input$gestational_time_distributions_cdm_name,
-        .data$variable_name %in% input$gestational_time_distributions_variable_name
-      ) |>
-      omopgenerics::filterGroup(.data$cohort_name %in% input$gestational_time_distributions_cohort_name) |>
-      omopgenerics::filterStrata(
-        .data$exposure %in% input$gestational_time_distributions_exposure,
-        .data$vaccine_brand %in% input$gestational_time_distributions_vaccine_brand,
-        .data$gestational_trimester %in% input$gestational_time_distributions_gestational_trimester,
-        .data$age_group %in% input$gestational_time_distributions_age_group
-      ) |>
-      omopgenerics::filterSettings(.data$weighting %in% input$gestational_time_distributions_weighting)
-  })
-  getGestationalTimeDistributionsTidy <- shiny::reactive({
-    tidyDT(getGestationalTimeDistributionsData(), input$gestational_time_distributions_tidy_columns, input$gestational_time_distributions_tidy_pivot_estimates)
-  })
-  output$gestational_time_distributions_tidy <- DT::renderDT({
-    getGestationalTimeDistributionsTidy()
-  })
-  output$gestational_time_distributions_tidy_download <- shiny::downloadHandler(
-    filename = "tidy_results.csv",
-    content = function(file) {
-      getGestationalTimeDistributionsData() |>
-        omopgenerics::tidy() |>
-        readr::write_csv(file = file)
-    }
-  )
-  getTimeDistributionsPlot <- shiny::reactive({
-    if (input$gestational_time_distributions_plot_type == "calendar_time") {
-      getGestationalTimeDistributionsData() |>
-        dplyr::mutate(variable_name = dplyr::if_else(.data$variable_name != "gestational_day", "calendar_week", .data$variable_name)) |>
-        dplyr::filter(.data$variable_name != "gestational_day") |>
-        omopgenerics::tidy() |>
-        dplyr::mutate(variable_level = as.Date(variable_level)) |>
-        visOmopResults::barPlot(
-          x = "variable_level",
-          y = "count",
-          colour = input$gestational_time_distributions_plot_colour,
-          facet = input$gestational_time_distributions_plot_facet
-        ) +
-        ggplot2::theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +
-        ggplot2::scale_x_date(breaks = "2 month") +
-        ggplot2::xlab("")
-    } else {
-      getGestationalTimeDistributionsData() |>
-        dplyr::mutate(variable_name = dplyr::if_else(.data$variable_name != "gestational_day", "calendar_week", .data$variable_name)) |>
-        dplyr::filter(.data$variable_name == "gestational_day") |>
-        omopgenerics::tidy() |>
-        dplyr::mutate(
-          gestational_week = as.numeric(.data$variable_level),
-          variable_level = cut(x = .data$gestational_week, breaks = seq.int(0, 400, 7), labels = paste0("Week ", 0:56), right = FALSE)
-        ) |>
-        dplyr::select(!"gestational_week") |>
-        dplyr::group_by(cdm_name, cohort_name, exposure, vaccine_brand, gestational_trimester, age_group, variable_name, weighting, variable_level) |>
-        dplyr::summarise(count = sum(count)) |>
-        visOmopResults::barPlot(
-          x = "variable_level",
-          y = "count",
-          colour = input$gestational_time_distributions_plot_colour,
-          facet = input$gestational_time_distributions_plot_facet
-        ) +
-        ggplot2::theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) 
-    }
-  })
-  output$gestational_time_distributions_plot <- shiny::renderPlot({
-    getTimeDistributionsPlot()
-  })
-  output$gestational_time_distributions_plot_download <- shiny::downloadHandler(
-    filename = "plot_time_distributions.png",
-    content = function(file) {
-      ggplot2::ggsave(
-        filename = file,
-        plot = getTimeDistributionsPlot(),
-        width = as.numeric(input$gestational_time_distributions_plot_width),
-        height = as.numeric(input$gestational_time_distributions_plot_height),
-        units = input$gestational_time_distributions_plot_units,
-        dpi = as.numeric(input$gestational_time_distributions_plot_dpi)
-      )
-    }
-  )
-  
-  # negative_control_outcomes -----
-  ## update message if filter is changed
-  shiny::observeEvent(input$negative_control_outcomes_cdm_name,
-                      {
-                        updateButtons$negative_control_outcomes <- TRUE
-                      },
-                      ignoreInit = TRUE
-  )
-  shiny::observeEvent(input$negative_control_outcomes_cohort_name,
-                      {
-                        updateButtons$negative_control_outcomes <- TRUE
-                      },
-                      ignoreInit = TRUE
-  )
-  shiny::observeEvent(input$negative_control_outcomes_vaccine_brand,
-                      {
-                        updateButtons$negative_control_outcomes <- TRUE
-                      },
-                      ignoreInit = TRUE
-  )
-  shiny::observeEvent(input$negative_control_outcomes_gestational_trimester,
-                      {
-                        updateButtons$negative_control_outcomes <- TRUE
-                      },
-                      ignoreInit = TRUE
-  )
-  shiny::observeEvent(input$negative_control_outcomes_age_group,
-                      {
-                        updateButtons$negative_control_outcomes <- TRUE
-                      },
-                      ignoreInit = TRUE
-  )
-  shiny::observeEvent(input$negative_control_outcomes_outcome_name,
-                      {
-                        updateButtons$negative_control_outcomes <- TRUE
-                      },
-                      ignoreInit = TRUE
-  )
-  shiny::observeEvent(input$negative_control_outcomes_follow_up_end,
-                      {
-                        updateButtons$negative_control_outcomes <- TRUE
-                      },
-                      ignoreInit = TRUE
-  )
-  shiny::observeEvent(input$negative_control_outcomes_variable_name,
-                      {
-                        updateButtons$negative_control_outcomes <- TRUE
-                      },
-                      ignoreInit = TRUE
-  )
-  shiny::observeEvent(input$negative_control_outcomes_estimate_name,
-                      {
-                        updateButtons$negative_control_outcomes <- TRUE
-                      },
-                      ignoreInit = TRUE
-  )
-  shiny::observeEvent(input$negative_control_outcomes_outcome_group,
-                      {
-                        updateButtons$negative_control_outcomes <- TRUE
-                      },
-                      ignoreInit = TRUE
-  )
-  shiny::observeEvent(input$negative_control_outcomes_weighting,
-                      {
-                        updateButtons$negative_control_outcomes <- TRUE
-                      },
-                      ignoreInit = TRUE
-  )
-  shiny::observeEvent(updateButtons$negative_control_outcomes, {
-    if (updateButtons$negative_control_outcomes == TRUE) {
-      output$update_message_negative_control_outcomes <- shiny::renderText("Filters have changed please consider to use the update content button!")
-    } else {
-      output$update_message_negative_control_outcomes <- shiny::renderText("")
-    }
-  })
-  shiny::observeEvent(input$update_negative_control_outcomes, {
-    updateButtons$negative_control_outcomes <- FALSE
-  })
-  
-  ## get negative_control_outcomes data
-  getNegativeControlOutcomesData <- shiny::eventReactive(input$update_negative_control_outcomes, {
-    data[["negative_control_outcomes"]] |>
-      dplyr::filter(
-        .data$cdm_name %in% input$negative_control_outcomes_cdm_name
-      ) |>
-      omopgenerics::filterGroup(.data$cohort_name %in% input$negative_control_outcomes_cohort_name) |>
-      omopgenerics::filterStrata(
-        .data$vaccine_brand %in% input$negative_control_outcomes_vaccine_brand,
-        .data$gestational_trimester %in% input$negative_control_outcomes_gestational_trimester,
-        .data$age_group %in% input$negative_control_outcomes_age_group
-      ) |>
-      omopgenerics::filterAdditional(
-        .data$outcome_name %in% input$negative_control_outcomes_outcome_name,
-        .data$follow_up_end %in% input$negative_control_outcomes_follow_up_end
+        .data$cdm_name %in% input$incidence_attrition_cdm_name,
+        .data$variable_name %in% input$incidence_attrition_variable_name
       ) |>
       omopgenerics::filterSettings(
-        .data$weighting %in% input$negative_control_outcomes_weighting
+        .data$analysis_censor_cohort_name %in% input$incidence_attrition_analysis_censor_cohort_name,
+        .data$analysis_complete_database_intervals %in% input$incidence_attrition_analysis_complete_database_intervals,
+        .data$analysis_outcome_washout %in% input$incidence_attrition_analysis_outcome_washout,
+        .data$analysis_repeated_events %in% input$incidence_attrition_analysis_repeated_events,
+        .data$denominator_days_prior_observation %in% input$incidence_attrition_denominator_days_prior_observation,
+        .data$denominator_end_date %in% input$incidence_attrition_denominator_end_date,
+        .data$denominator_start_date %in% input$incidence_attrition_denominator_start_date
       )
   })
-  getNegativeControlOutcomesTidy <- shiny::reactive({
-    getNegativeControlOutcomesData() |>
-      omopgenerics::tidy() |>
-      dplyr::select(dplyr::any_of(c(input$negative_control_outcomes_tidy_columns, "exp_coef", "lower_ci", "upper_ci", "median", "q25", "q75", "min", "max", "count"))) |>
-      DT::datatable(
-        filter = "top",
-        rownames = FALSE,
-        options = list(searching = FALSE)
-      )
+  getIncidenceAttritionTidy <- shiny::reactive({
+    tidyDT(getIncidenceAttritionData(), input$incidence_attrition_tidy_columns, input$incidence_attrition_tidy_pivot_estimates)
   })
-  output$negative_control_outcomes_tidy <- DT::renderDT({
-    getNegativeControlOutcomesTidy()
+  output$incidence_attrition_tidy <- DT::renderDT({
+    getIncidenceAttritionTidy()
   })
-  output$negative_control_outcomes_tidy_download <- shiny::downloadHandler(
-    filename = "tidy_nco_results.csv",
+  output$incidence_attrition_tidy_download <- shiny::downloadHandler(
+    filename = "tidy_results.csv",
     content = function(file) {
-      getNegativeControlOutcomesData() |>
+      getIncidenceAttritionData() |>
         omopgenerics::tidy() |>
         readr::write_csv(file = file)
     }
   )
-  getNegativeControlOutcomesTableSummary <- shiny::reactive({
-    getNegativeControlOutcomesData() |>
-      dplyr::filter(.data$variable_name %in% c("Person-Days", "Number persons", "Number events")) |>
-      dplyr::mutate(variable_name = dplyr::if_else(.data$variable_name == "Number persons", "Number subjects", .data$variable_name)) |>
-      visOmopResults::visOmopTable(
-        estimateName = c(
-          "N" = "<count>",
-          "Median [Q25 - Q75]" = "<median> [<q25> - <q75>]",
-          "Range" = "<min> - <max>"
-        ),
-        settingsColumn = "weighting",
-        header = input$negative_control_outcomes_table_header_summary,
-        groupColumn = input$negative_control_outcomes_table_group_column_summary,
-        hide = input$negative_control_outcomes_table_hide_summary,
-        columnOrder = c(
-          'cdm_name', 'cohort_name', 'vaccine_brand', 'gestational_trimester', 
-          'age_group', 'follow_up_end', 'outcome_name', 'variable_name', 'variable_level', 
-          'follow_up_end', 'weighting', 'estimate_name', 'estimate_value'),
-        .options = list(includeHeaderName = FALSE)
+  getIncidenceAttritionTable <- shiny::reactive({
+    res <- getIncidenceAttritionData()
+    res |>
+      IncidencePrevalence::tableIncidenceAttrition(
+        header = input$incidence_attrition_table_header,
+        settingsColumn = omopgenerics::settingsColumns(res),
+        groupColumn = input$incidence_attrition_table_group_column,
+        hide = input$incidence_attrition_table_hide
       )
   })
-  output$negative_control_outcomes_table_summary <- gt::render_gt({
-    getNegativeControlOutcomesTableSummary()
+  output$incidence_attrition_table <- gt::render_gt({
+    getIncidenceAttritionTable()
   })
-  output$negative_control_outcomes_table_download_summary <- shiny::downloadHandler(
-    filename = paste0("table_nco_summary.", input$negative_control_outcomes_table_format_summary),
+  output$incidence_attrition_table_download <- shiny::downloadHandler(
+    filename = paste0("table_incidence_attrition.", input$incidence_attrition_table_format),
     content = function(file) {
-      gt::gtsave(getNegativeControlOutcomesTableSummary(), file)
-    }
-  )
-  getNegativeControlOutcomesTableIRR <- shiny::reactive({
-    getNegativeControlOutcomesData() |>
-      dplyr::filter(.data$variable_name == "Risk estimate") |>
-      visOmopResults::visOmopTable(
-        estimateName = c("IRR [95% CI]" = "<exp_coef> [<lower_ci> - <upper_ci>]"),
-        settingsColumn = "weighting",
-        header = input$negative_control_outcomes_table_header_irr,
-        groupColumn = input$negative_control_outcomes_table_group_column_irr,
-        hide = input$negative_control_outcomes_table_hide_irr,
-        columnOrder = c(
-          'cdm_name', 'cohort_name', 'vaccine_brand', 'gestational_trimester', 
-          'age_group', 'follow_up_end', 'outcome_name', 'variable_name', 'variable_level', 
-          'follow_up_end', 'weighting', 'estimate_name', 'estimate_value'),
-        .options = list(includeHeaderName = FALSE)
-      )
-  })
-  output$negative_control_outcomes_table_irr <- gt::render_gt({
-    getNegativeControlOutcomesTableIRR()
-  })
-  output$negative_control_outcomes_table_download_irr <- shiny::downloadHandler(
-    filename = paste0("table.", input$negative_control_outcomes_table_format_irr),
-    content = function(file) {
-      gt::gtsave(getNegativeControlOutcomesTableIRR(), file)
-    }
-  )
-  getNCOPlot <- shiny::reactive({
-    getNegativeControlOutcomesData() |>
-      visOmopResults::scatterPlot(
-        x = input$negative_control_outcomes_plot_y,
-        y = "exp_coef",
-        line = FALSE,
-        point = TRUE,
-        ribbon = FALSE,
-        ymin = "lower_ci",
-        ymax = "upper_ci",
-        facet = input$negative_control_outcomes_plot_facet,
-        colour = input$negative_control_outcomes_plot_colour,
-        label = character()
-      ) +
-      ggplot2::coord_flip() +
-      visOmopResults::themeVisOmop(fontsizeRef = 11) +
-      ggplot2::xlab("IRR") 
-  })
-  output$negative_control_outcomes_plot <- shiny::renderPlot({
-    getNCOPlot() 
-  })
-  output$negative_control_outcomes_plot_download <- shiny::downloadHandler(
-    filename = "plot_nco.png",
-    content = function(file) {
-      ggplot2::ggsave(
-        filename = file,
-        plot = getNCOPlot(),
-        width = as.numeric(input$negative_control_outcomes_plot_width),
-        height = as.numeric(input$negative_control_outcomes_plot_height),
-        units = input$negative_control_outcomes_plot_units,
-        dpi = as.numeric(input$negative_control_outcomes_plot_dpi)
-      )
+      gt::gtsave(getIncidenceAttritionTable(), file)
     }
   )
 }

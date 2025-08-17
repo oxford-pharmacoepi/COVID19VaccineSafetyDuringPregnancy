@@ -5,37 +5,14 @@ resultList <- list(
   summarise_cohort_attrition = list(result_type = "summarise_cohort_attrition"),
   summarise_characteristics = list(result_type = "summarise_characteristics"),
   summarise_large_scale_characteristics = list(result_type = "summarise_large_scale_characteristics"),
-  incidence_rate_ratio = list(result_type = "incidence_rate_ratio"),
-  propensity_score_coeficcients = list(result_type = "propensity_score_coeficcients"),
-  propensity_scores = list(result_type = "propensity_scores"),
-  summarise_sampling = list(result_type = "summarise_sampling"),
-  summarise_standardised_mean_differences = list(result_type = "summarise_standardised_mean_differences"),
-  cohort_exit = list(result_type = "cohort_exit"),
-  gestational_time_distributions = list(result_type = "gestational_time_distributions"),
-  negative_control_outcomes = list(result_type = "negative_control_outcomes")
+  incidence = list(result_type = "incidence"),
+  incidence_attrition = list(result_type = "incidence_attrition")
 )
 
 source(file.path(getwd(), "functions.R"))
 
-result <- omopgenerics::importSummarisedResult(file.path(getwd(), "data"))
-attr(result, "settings") <- omopgenerics::settings(result) |>
-  dplyr::mutate(
-    table_name = dplyr::case_when(
-      table_name == "aesi_30" ~ "AESI recurrent",
-      table_name == "aesi_90" ~ "AESI acute",
-      table_name == "aesi_inf" ~ "AESI chronic",
-      table_name == "covariates_1" ~ "Covariates at 1 year prior",
-      table_name == "covariates_5" ~ "Covariates at 5 years prior",
-      table_name == "covariates_inf" ~ "Covariates anytime prior",
-      table_name == "covid" ~ "COVID-19",
-      table_name == "covid_vaccines" ~ "COVID-19 vaccines",
-      table_name == "covid_vaccines_dose" ~ "COVID-19 vaccines by dose",
-      table_name == "nco" ~ "NCO",
-      table_name == "mae" ~ "MAE",
-      .default = stringr::str_to_sentence(gsub("_", " ", table_name))
-    )
-  )
-
+result <- omopgenerics::importSummarisedResult(file.path(getwd(), "data")) |>
+  omopgenerics::filterSettings(!.data$table_name %in% c("nco", "source_population", "covid", "covid_vaccines", "covid_vaccines_dose", "other_vaccines"))
 data <- prepareResult(result, resultList)
 values <- getValues(result, resultList)
 
