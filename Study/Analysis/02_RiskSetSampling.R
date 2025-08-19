@@ -135,10 +135,10 @@ sampling_summary <- samplingSummary(sampling_source, "Maternal (2-year band) and
 sampling_source <- sampling_source %>% 
   mutate(
     comparator_previous_dose = !!datediff("comparator_previous_dose", "exposure_date"),
-    comparator_previous_dose = cut(comparator_previous_dose, !!seq(0, 90000, 90), include.lowest = TRUE),
-    exposed_previous_dose = cut(exposed_previous_dose, !!seq(0, 90000, 90), include.lowest = TRUE)
+    comparator_previous_dose_band = cut(comparator_previous_dose, !!seq(0, 90000, 90), include.lowest = TRUE),
+    exposed_previous_dose_band = cut(exposed_previous_dose, !!seq(0, 90000, 90), include.lowest = TRUE)
   ) |>
-  filter((is.na(exposed_previous_dose) & is.na(comparator_previous_dose)) | (comparator_previous_dose == exposed_previous_dose)) |>
+  filter((is.na(exposed_previous_dose_band) & is.na(comparator_previous_dose_band)) | (comparator_previous_dose_band == exposed_previous_dose_band)) |>
   compute(name = "sampling_source", temporary = FALSE) 
 
 sampling_summary <- samplingSummary(sampling_source, "Previous vaccine time-window (90-days band) matching", sampling_summary)
