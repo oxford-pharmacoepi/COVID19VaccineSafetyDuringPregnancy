@@ -1,7 +1,7 @@
 # Base cohorts subsetted to pregnant people ----
 # pregnant table clean
 info(logger, "- Mother table")
-cdm$mother_table <- getPregnantCohorts(db, cdm, mother_table_schema, mother_table_name)
+cdm$mother_table <- getPregnantCohort(db, cdm, mother_table_schema, mother_table_name)
 # read codes
 info(logger, "- Base cohort")
 csvs <- list.files(here("Codelists"))
@@ -147,9 +147,8 @@ covariatesInf <- c(
   "epilepsy"
 )
 covariates5 <- c(
-  "alcohol_misuse_dependence"
+  "alcohol_misuse_dependence", "anxiety", "depression"
 )
-covariates1 <- c("anxiety", "depression")
 ## All history
 cdm$covariates_inf <- cdm$base |>
   subsetCohorts(cohortId = covariatesInf, name = "covariates_inf") |>
@@ -158,14 +157,6 @@ cdm$covariates_inf <- cdm$base |>
 cdm$covariates_5 <-  cdm$base |>
   subsetCohorts(cohortId = covariates5, name = "covariates_5")  
 cdm <- omopgenerics::bind(cdm$obesity, cdm$covariates_5, name = "covariates_5")
-cdm$covariates_5 <- cdm$covariates_5 |>
-  mutate(days = 365*5) |>
-  getWashOut(cdm$source_population)
-## 1 year
-cdm$covariates_1 <-  cdm$base |>
-  subsetCohorts(cohortId = covariates1, name = "covariates_1")  |>
-  mutate(days = 365) |>
-  getWashOut(cdm$source_population)
 # other vax
 cdm$other_vaccines <- cdm$base |>
   subsetCohorts(cohortId = c("influenza_vaccine", "tdap_vaccine"), name = "other_vaccines")
@@ -333,7 +324,7 @@ cdm$mae_washout <- cdm$mae_pregnancy |>
 
 # Export cohort counts ----
 bind(
-  summaryCohort(cdm$nco), summaryCohort(cdm$covariates_1), summaryCohort(cdm$covariates_5), 
+  summaryCohort(cdm$nco), summaryCohort(cdm$covariates_5), 
   summaryCohort(cdm$covariates_inf), summaryCohort(cdm$covid), summaryCohort(cdm$covid_vaccines),
   summaryCohort(cdm$covid_vaccines_dose), summaryCohort(cdm$aesi_30), summaryCohort(cdm$aesi_90), 
   summaryCohort(cdm$aesi_inf), summaryCohort(cdm$other_vaccines), summaryCohort(cdm$source_population), 

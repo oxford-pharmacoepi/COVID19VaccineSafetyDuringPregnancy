@@ -121,9 +121,9 @@ cdm$postpartum_denominator <- cdm$mother_table %>%
   ungroup() %>% 
   mutate(
     cohort_end_date = if_else(
-      next_pregnancy <= cohort_end_date & !is.na(next_pregnancy),
-      as.Date(!!dateadd("next_pregnancy", -1)),
-      cohort_end_date
+      next_pregnancy > cohort_end_date | is.na(next_pregnancy),
+      cohort_end_date,
+      as.Date(!!dateadd("next_pregnancy", -1))
     )
   ) |>
   select(all_of(c(
@@ -178,22 +178,24 @@ cdm$denominator <- cdm$denominator |>
   requireDemographics(
     sex = "Female",
     ageRange = list(c(12, 55)),
-    minPriorObservation = 365
+    minPriorObservation = 365,
+    indexDate = "pregnancy_start_date"
   ) |>
   mutate(cohort_end_date = as.Date(cohort_end_date)) |>
   addAge(
     indexDate = "pregnancy_start_date",
     ageGroup = list("maternal_age" = list(c(12, 17), c(18, 34), c(35, 55))),
     name = "denominator"
+  ) |>
+  requireInDateRange(
+    dateRange = as.Date(c("2018-01-01", NA)),
+    indexDate = "pregnancy_start_date"
   )
 ## IncidencePrevalence denominator ----
 ### Overall
 info(logger, "-  Require denominator: overall period")
 cdm$overall_period <- cdm$denominator |>
-  requireInDateRange(
-    dateRange = as.Date(c("2018-01-01", NA)),
-    name = "overall_period"
-  )
+  dplyr::compute(name = "overall_period", temporary = FALSE)
 cdm$overall_period <- asIncidencePrevalence(
   cohort = cdm$overall_period, startDate = as.Date("2018-01-01"), 
   endDate = as.Date(NA)
@@ -201,7 +203,7 @@ cdm$overall_period <- asIncidencePrevalence(
 ### Pre COVID
 info(logger, "-  Trim denominator: pre-covid period")
 cdm$pre_covid_period <- cdm$denominator |>
-  trimToDateRange(
+  requireInDateRange(
     dateRange = as.Date(c("2018-01-01", "2019-12-31")),
     name = "pre_covid_period"
   )
@@ -212,7 +214,7 @@ cdm$pre_covid_period <- asIncidencePrevalence(
 ### During COVID
 info(logger, "-  Trim denominator: covid period")
 cdm$main_covid_period <- cdm$denominator |>
-  trimToDateRange(
+  requireInDateRange(
     dateRange = as.Date(c("2020-01-01", "2021-12-31")),
     name = "main_covid_period"
   )
@@ -223,7 +225,7 @@ cdm$main_covid_period <- asIncidencePrevalence(
 ### Post COVID
 info(logger, "-  Trim denominator: post-covid period")
 cdm$post_main_covid_period <- cdm$denominator |>
-  trimToDateRange(
+  requireInDateRange(
     dateRange = as.Date(c("2022-01-01", NA)),
     name = "post_main_covid_period"
   )
@@ -239,7 +241,7 @@ info(logger, "- Miscarriage")
 if ("miscarriage" %in% settings(cdm$mae)$cohort_name) {
   miscarriage <- getIncidence(
     cdm = cdm, targetCohortDenominator = "miscarriage_denominator", 
-    outcomeTable = "mae", outcomeCohortId = "miscarriage"
+    outcomeTable = "mae", outcomeCohortId = "miscarriage", washOut = 0
   )
 } else {
   miscarriage <- emptySummarisedResult()
@@ -249,7 +251,7 @@ info(logger, "- Stillbirth")
 if ("stillbirth" %in% settings(cdm$mae)$cohort_name) {
   stillbirth <- getIncidence(
     cdm = cdm, targetCohortDenominator = "stillbirth_denominator", 
-    outcomeTable = "mae", outcomeCohortId = "stillbirth"
+    outcomeTable = "mae", outcomeCohortId = "stillbirth", washOut = 0
   )
 } else {
   stillbirth <- emptySummarisedResult()
@@ -259,7 +261,7 @@ info(logger, "- Maternal death")
 if ("maternal_death" %in% settings(cdm$mae)$cohort_name) {
   maternal_death <- getIncidence(
     cdm = cdm, targetCohortDenominator = "maternal_death_denominator", 
-    outcomeTable = "mae", outcomeCohortId = "maternal_death"
+    outcomeTable = "mae", outcomeCohortId = "maternal_death", washOut = Inf
   )
 } else {
   maternal_death <- emptySummarisedResult()
@@ -268,13 +270,15 @@ if ("maternal_death" %in% settings(cdm$mae)$cohort_name) {
 info(logger, "- 6 weeks postpartum")
 postpartum_6weeks <- getIncidence(
   cdm = cdm, targetCohortDenominator = "postpartum_6weeks", 
-  outcomeTable = "mae", outcomeCohortId = c("maternal_death", "postpartum_endometritis")
+  outcomeTable = "mae", washOut = 6*7,
+  outcomeCohortId = c("maternal_death", "postpartum_endometritis")
 )
 ## Postpartum 12 weeks
 info(logger, "- 12 weeks postpartum")
 postpartum_12weeks <- getIncidence(
   cdm = cdm, targetCohortDenominator = "postpartum_12weeks", 
-  outcomeTable = "mae", outcomeCohortId = "postpartum_haemorrhage"
+  outcomeTable = "mae", outcomeCohortId = "postpartum_haemorrhage", 
+  washOut = 12*7
 )
 ## Pregnancy MAE
 info(logger, "- Pregnancy MAE")
@@ -285,25 +289,47 @@ pregnancy_mae <- getIncidence(
   outcomeCohortId = c(
     "maternal_death", "antepartum_haemorrhage", "dysfunctional_labour", "eclampsia",
     "ectopic_pregnancy", "gestational_diabetes", "hellp", "preeclampsia", "preterm_labour"
-  )
+  ),
+  washOut = 180
 )
 ## AESI
 info(logger, "- AESI")
 cdm <- bind(cdm$aesi_30, cdm$aesi_90, cdm$aesi_inf, name = "aesi")
-aesi <- getIncidence(
+aesi_inf <- getIncidence(
   cdm = cdm, 
   targetCohortDenominator = c(
     "pregnancy_episode", "first_trimester", "second_trimester", 
     "third_trimester", "postpartum_6weeks"
   ), 
-  outcomeTable = "aesi", 
-  outcomeCohortId = NULL
+  outcomeTable = "aesi_inf", 
+  outcomeCohortId = NULL,
+  washOut = Inf
+)
+aesi_30 <- getIncidence(
+  cdm = cdm, 
+  targetCohortDenominator = c(
+    "pregnancy_episode", "first_trimester", "second_trimester", 
+    "third_trimester", "postpartum_6weeks"
+  ), 
+  outcomeTable = "aesi_30", 
+  outcomeCohortId = NULL,
+  washOut = 30
+)
+aesi_90 <- getIncidence(
+  cdm = cdm, 
+  targetCohortDenominator = c(
+    "pregnancy_episode", "first_trimester", "second_trimester", 
+    "third_trimester", "postpartum_6weeks"
+  ), 
+  outcomeTable = "aesi_90", 
+  outcomeCohortId = NULL,
+  washOut = 90
 )
 ## Export results
 info(logger, "Exposrt background rates results")
 exportSummarisedResult(
   miscarriage, stillbirth, maternal_death, postpartum_6weeks, postpartum_12weeks,
-  pregnancy_mae, aesi,
+  pregnancy_mae, aesi_inf, aesi_30, aesi_90,
   path = output_folder, 
   fileName = paste0("background_rates_", cdmName(cdm), ".csv")
 )

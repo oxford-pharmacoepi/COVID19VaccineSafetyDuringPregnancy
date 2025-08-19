@@ -66,9 +66,9 @@ results <- paste0("Results_", cdmName(cdm))
 
 # Choose code to run
 runInstantiateCohorts <- FALSE
-runRiskSetSampling <- FALSE
-runPSWeighting <- FALSE
-runOutcomeModel <- FALSE
+runRiskSetSampling <- TRUE
+runPSWeighting <- TRUE
+runOutcomeModel <- TRUE
 runBackgroundRates <- TRUE
 runBRCharacteristics <- TRUE
 

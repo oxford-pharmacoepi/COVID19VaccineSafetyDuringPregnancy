@@ -12,14 +12,16 @@ cdm$study_population <- cdm$study_population |>
 for (nm in cohortNames) {
   info(logger, paste0("  - Cohort: ", nm))
   
-  if (nm == "source_1") {
+  if (nm == "population_objective_1") {
     vax <- NULL
-  } else if (nm == "source_2") {
-    vax <- c("days_previous_dose", "previous_pregnant_covid_vaccines")
-  } else if (nm == "source_3") {
-    vax <- c("days_previous_dose", "previous_covid_vaccines", "previous_pregnant_covid_vaccines")
+  } else if (nm == "population_objective_2") {
+    vax <- c("days_previous_dose")
+    # vax <- c("days_previous_dose", "previous_pregnant_covid_vaccines")
+  } else if (nm == "population_objective_3") {
+    vax <- c("days_previous_dose")
+    # vax <- c("days_previous_dose", "previous_covid_vaccines", "previous_pregnant_covid_vaccines")
   }
-  
+
   ## LASSO 
   lassoData <- cdm$features |>
     filter(cohort_name == nm) |>
@@ -106,7 +108,7 @@ for (nm in cohortNames) {
 
 info(logger, "- Export PS results")
 # Export cohort summary
-cdm <- bind(cdm$weighted_source_1, cdm$weighted_source_2, cdm$weighted_source_3, name = "study_population")
+cdm <- bind(cdm$weighted_population_objective_1, cdm$weighted_population_objective_2, cdm$weighted_population_objective_3, name = "study_population")
 
 sumCohort <- summaryCohort(cdm$study_population)
 newSummarisedResult(sumCohort, settings = settings(sumCohort) |> mutate(weighting = "TRUE")) |>
@@ -225,10 +227,20 @@ nco_weighted <- bind(
   )
 )
 
-nco_weighted <- nco_weighted |>
-  newSummarisedResult(
-    settings = settings(nco_weighted) |> mutate(result_type = "negative_control_outcomes")
-  ) |>
+pco_weighted <- bind(
+  estimateSurvivalRisk(
+    cohort = cdm$study_population_nco, outcomes = "covid", 
+    end = "cohort_end_date", strata = strata, group = "cohort_name", 
+    weights = "weight", outcomeGroup = "Positive Control Outcomes"
+  ), 
+  estimateSurvivalRisk(
+    cohort = cdm$study_population_nco, outcomes = "covid", 
+    end = "cohort_end_date_sensitivity", strata = strata, group = "cohort_name", 
+    weights = "weight", outcomeGroup = "Positive Control Outcomes"
+  )
+)
+
+nco_weighted <- bind(nco_weighted, pco_weighted) |>
   suppressRiskEstimates()
 
 nco_weighted |> 

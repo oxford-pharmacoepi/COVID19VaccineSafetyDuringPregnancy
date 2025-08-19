@@ -19,16 +19,19 @@ cdm$aesi_outcome <- cdm$study_population |>
   ) |>
   addCohortIntersectDate(
     targetCohortTable = "aesi_90",
+    window = c(1, Inf),
     nameStyle = "{cohort_name}",
     name = "aesi_outcome"
   ) |>
   addCohortIntersectDate(
     targetCohortTable = "aesi_30",
+    window = c(1, Inf),
     nameStyle = "{cohort_name}",
     name = "aesi_outcome"
   ) |>
   addCohortIntersectDate(
     targetCohortTable = "aesi_inf",
+    window = c(1, Inf),
     nameStyle = "{cohort_name}",
     name = "aesi_outcome"
   )
@@ -56,6 +59,7 @@ info(logger, "- Create MAE outcome cohort")
 cdm$mae_outcome <- cdm$study_population |>
   addCohortIntersectDate(
     targetCohortTable = "mae",
+    window = c(1, Inf),
     nameStyle = "{cohort_name}",
     name = "mae_outcome"
   )

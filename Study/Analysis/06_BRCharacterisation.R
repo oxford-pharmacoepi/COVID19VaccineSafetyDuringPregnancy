@@ -23,7 +23,7 @@ info(logger, "Outcome characterisation")
 info(logger, "- Baseline characteristics")
 ### Baseline Characteristcs
 cdm$outcome_characterisation <- cdm$outcome_characterisation %>% 
-  mutate(trimester = !!datediff("pregnancy_start_date", "outcome_date")) |>
+  mutate(trimester = !!datediff("pregnancy_start_date", "cohort_start_date")) |>
   mutate(
     trimester = case_when(
       cohort_start_date > pregnancy_end_date ~ "Postpartum",

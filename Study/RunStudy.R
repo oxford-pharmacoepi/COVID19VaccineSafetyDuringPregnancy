@@ -45,7 +45,7 @@ if (runRiskSetSampling) {
       cdmName = database_name,
       cohortTables = c(
         "mother_table", "base", "covid_vaccines", "covid_vaccines_dose", "source_population", 
-        "covid", "covariates_inf", "covariates_5", "covariates_1", "other_vaccines",
+        "covid", "covariates_inf", "covariates_5", "other_vaccines",
         "covid_test", "aesi_90", "aesi_30", "aesi_inf", "nco", "covid_washout",
         "aesi_90_washout", "aesi_30_washout", "covid_vaccines_booster", "mae",
         "mae_washout", "comedications"
@@ -68,7 +68,7 @@ if (runPSWeighting) {
       cdmName = database_name,
       cohortTables = c(
         "mother_table", "base", "covid_vaccines", "covid_vaccines_dose", "source_population", 
-        "covid", "covariates_inf", "covariates_5", "covariates_1", "other_vaccines",
+        "covid", "covariates_inf", "covariates_5", "other_vaccines",
         "covid_test", "aesi_90", "aesi_30", "aesi_inf", "nco", "covid_washout", 
         "aesi_90_washout", "aesi_30_washout", "study_population", "study_population_nco",
         "features", "mae", "comedications"
@@ -90,7 +90,7 @@ if (runOutcomeModel) {
       cdmName = database_name,
       cohortTables = c(
         "mother_table", "base", "covid_vaccines", "covid_vaccines_dose", "source_population", 
-        "covid", "covariates_inf", "covariates_5", "covariates_1", "other_vaccines",
+        "covid", "covariates_inf", "covariates_5", "other_vaccines",
         "covid_test", "aesi_90", "aesi_30", "aesi_inf", "nco", "covid_washout", 
         "aesi_90_washout", "aesi_30_washout", "study_population", "study_population_nco",
         "mae", "features", "comedications"
@@ -112,7 +112,7 @@ if (runBackgroundRates) {
       cdmName = database_name,
       cohortTables = c(
         "mother_table", "aesi_90", "aesi_30", "aesi_inf", "mae", "comedications",
-        "covariates_inf", "covariates_5", "covariates_1", "other_vaccines",
+        "covariates_inf", "covariates_5", "other_vaccines",
         "covid", "covid_test"
         ),
       .softValidation = TRUE
@@ -132,7 +132,7 @@ if (runBRCharacteristics) {
       cdmName = database_name,
       cohortTables = c(
         "mother_table", "aesi", "mae", "overall_period", "comedications",
-        "covariates_inf", "covariates_5", "covariates_1", "other_vaccines",
+        "covariates_inf", "covariates_5", "other_vaccines",
         "covid", "covid_test"
         ),
       .softValidation = TRUE

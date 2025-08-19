@@ -4,7 +4,7 @@ getId <- function(cohort, name) {
     pull(cohort_definition_id)
 }
 
-getPregnantCohorts <- function(db, cdm, mother_table_schema, mother_table_name) {
+getPregnantCohort <- function(db, cdm, mother_table_schema, mother_table_name) {
   cdm$mother_table_original <- tbl(
     db, inSchema(schema = mother_table_schema, table = mother_table_name)
   ) |>
@@ -92,6 +92,7 @@ getPregnantCohorts <- function(db, cdm, mother_table_schema, mother_table_name) 
 
 getSourcePopulation <- function(cdm, objective, enrollment) {
   name <- paste0("source_", objective)
+  cohortName <- paste0("source_population_objective_", objective)
   cdm[[name]] <- cdm$mother_table |>
     mutate(cohort_definition_id = objective) |>
     # pregnancy end after enrollment start
@@ -99,7 +100,7 @@ getSourcePopulation <- function(cdm, objective, enrollment) {
     compute(name = name, temporary = FALSE) |>
     newCohortTable(
       cohortSetRef = tibble(
-        cohort_definition_id = objective, cohort_name = name
+        cohort_definition_id = objective, cohort_name = cohortName
       ),
       cohortAttritionRef = attrition(cdm$mother_table) |>
         mutate(cohort_definition_id = objective)
@@ -166,7 +167,7 @@ getSourcePopulation <- function(cdm, objective, enrollment) {
       ) |>
       filter(.data$any_covid_vaccine_2 < .data$cohort_end_date) |>
       compute(name = name, temporary = FALSE) |>
-      recordCohortAttrition(reason = "2 doses any time before pregnancy end") |>
+      recordCohortAttrition(reason = "At least 2 doses any time before pregnancy end") |>
       addCohortIntersectDate(
         targetCohortTable = "covid_vaccines_booster",
         targetCohortId = NULL,
@@ -359,8 +360,6 @@ getBaselineCharacteristics <- function(cdm, strata, weights) {
     'age_group' = c('count', 'percentage'), 
     'gestational_trimester' = c('count', 'percentage'), 
     'vaccine_brand' = c('count', 'percentage'), 
-    "alcohol_misuse_dependence" = c('count', 'percentage'), 
-    "obesity" = c('count', 'percentage'),
     "previous_covid_vaccines" = c('count', 'percentage'),
     "previous_pregnant_covid_vaccines" = c('count', 'percentage')
   )
@@ -377,8 +376,8 @@ getBaselineCharacteristics <- function(cdm, strata, weights) {
           targetCohortTable = "covariates_inf", window = c(-Inf, 0)
         ),
         # covariates1 (-365, 0)
-        "Mental heatlh problems in the last year" = list(
-          targetCohortTable = "covariates_1", window = c(-365, 0)
+        "Comorbidities in the last 5 years" = list(
+          targetCohortTable = "covariates_5", window = c(-365*5, 0)
         ),
         # influenza and tdap (-5, 5)
         "Other vaccines within 5 days" = list(
@@ -393,10 +392,6 @@ getBaselineCharacteristics <- function(cdm, strata, weights) {
         # covid infections (-Inf, 0)
         "Previous COVID-19 infections" = list(
           targetCohortTable = "covid", window = c(-Inf, 0)
-        ),
-        # covid test (-Inf, 0)
-        "Previous COVID-19 tests" = list(
-          targetCohortTable = "covid_test", window = c(-Inf, 0)
         )
       ),
       otherVariables = otherVariables,
@@ -554,9 +549,8 @@ getLargeScaleCharacteristics <- function(cdm, strata, weights) {
       summarisedResult |>
         filter(variable_name == "region") |>
         mutate(
-          additional_level = variable_level,
-          additional_name = "concept_id",
-          variable_level = "-inf to inf"
+          additional_level = "overall",
+          additional_name = "overall"
         )
     ) |>
     newSummarisedResult(
@@ -674,29 +668,29 @@ summariseCohortExit <- function(cdm, strata, weights) {
   for (st in strata) {
     strataCens <- c(strataCens, list(c(st, "exit_reason")))
   }
-  strataCens <- c(strataCens, strata)
+  strataCens <- c(strataCens, strata, "exit_reason")
   main <- cdm$study_population %>%  
     mutate(
-      "follow-up" = !!datediff("cohort_start_date", "cohort_end_date")
+      "follow-up time" = !!datediff("cohort_start_date", "cohort_end_date")
     ) |>
     compute() |>
     summariseResult(
       group = "cohort_name", 
       strata = strataCens,
-      variables = c("follow-up"),
+      variables = c("follow-up time"),
       weights = weights
     ) |>
     mutate("analysis" = "main") |>
     addExitReasonPercentages()
   sensitvity <- cdm$study_population %>%  
     mutate(
-      "follow-up" = !!datediff("cohort_start_date", "cohort_end_date_sensitivity"),
+      "follow-up time" = !!datediff("cohort_start_date", "cohort_end_date_sensitivity"),
       "exit_reason" = exit_reason_sensitivty
     ) |>
     summariseResult(
       group = "cohort_name", 
       strata = strataCens,
-      variables = c("follow-up"),
+      variables = c("follow-up time"),
       weights = weights
     ) |>
     mutate("analysis" = "sensitivity") |>
@@ -754,9 +748,9 @@ getSurvivalData <- function(data, outcome, group, strata, start = "cohort_start_
     rename("start_date" := !!start, "end_date" := !!end) %>% 
     mutate(
       # status 1 if outcome in window
-      status = if_else(.data[[outcome]] > start_date & .data[[outcome]] <= .data$end_date, 1, 0),
+      status = if_else(.data[[outcome]] >= start_date & .data[[outcome]] <= .data$end_date, 1, 0),
       status = if_else(is.na(status), 0, status),
-      time = if_else(status == 1, !!datediff("start_date", outcome), !!datediff("start_date", "end_date")),
+      time = if_else(status == 1, !!datediff("start_date", outcome), !!datediff("start_date", "end_date"))
     ) |>
     select(any_of(unique(c(
       "cohort_name", "subject_id", "exposed_match_id", "pregnancy_id", "exposure",
@@ -771,8 +765,8 @@ getRiskEstimate <- function(data, group, strata, weights = NULL) {
   groupLevel = unique(data |> pull(.data[[group]]))
   k <- 1
   if (is.null(weights)) {
-    data <- data |> mutate(weight = 1)
-    weights <- "weight"
+    data <- data |> mutate(weight_1 = 1)
+    weights <- "weight_1"
   }
   strata <- unlist(strata)
   strata <- c(strata[strata != "exposure"], "overall")
@@ -786,32 +780,27 @@ getRiskEstimate <- function(data, group, strata, weights = NULL) {
           filter(cohort_name == group.k, .data[[strata.k]] == strataLevel.k) |>
           collect() 
         # boostrap rate ratio
-        exp_coefs <- NULL
-        sampleSize <- round(nrow(data.k)*0.9)
+        coef <- NULL
         for (ii in 1:500) {
           data.ii <- data.k |>
-            slice_sample(n = sampleSize) |>
+            slice_sample(prop = 0.9) |>
             group_by(exposure) |>
             summarise(person_days = sum(time*.data[[weights]]), cases = sum(status*.data[[weights]]))
-          res <- exp(
-            (data.ii$cases[data.ii$exposure == "exposed"]/data.ii$person_days[data.ii$exposure == "exposed"])/
+          res <- (data.ii$cases[data.ii$exposure == "exposed"]/data.ii$person_days[data.ii$exposure == "exposed"])/
               (data.ii$cases[data.ii$exposure == "comparator"]/data.ii$person_days[data.ii$exposure == "comparator"])
-          )
-          exp_coefs <- c(exp_coefs, res)
+          coef <- c(coef, res)
         }
         
         data.all <- data.k |>
           group_by(exposure) |>
           summarise(person_days = sum(time*.data[[weights]]), cases = sum(status*.data[[weights]]))
-        res <- exp(
-          (data.all$cases[data.all$exposure == "exposed"]/data.all$person_days[data.all$exposure == "exposed"])/
+        res <- (data.all$cases[data.all$exposure == "exposed"]/data.all$person_days[data.all$exposure == "exposed"])/
             (data.all$cases[data.all$exposure == "comparator"]/data.all$person_days[data.all$exposure == "comparator"])
-        )
         
         results[[k]] <- tibble(
-          exp_coef = res,
-          lower_ci = quantile(exp_coefs, 0.025, na.rm = TRUE),
-          upper_ci = quantile(exp_coefs, 0.975, na.rm = TRUE)
+          coef = res,
+          lower_ci = quantile(coef, 0.025, na.rm = TRUE),
+          upper_ci = quantile(coef, 0.975, na.rm = TRUE)
         ) |>
           regressionToSummarised(
             cols = c("exp_coef", "lower_ci", "upper_ci")
@@ -852,7 +841,7 @@ getRiskEstimate <- function(data, group, strata, weights = NULL) {
           ) |>
           mutate(
             variable_name = case_when(
-              estimate_name == "subject_count" ~ "Number persons",
+              estimate_name == "subject_count" ~ "Number subjects",
               estimate_name == "outcome_count" ~ "Number events",
               .default = "Person-Days"
             ),
@@ -886,8 +875,8 @@ estimateSurvivalRisk <- function(cohort, outcomes, outcomeGroup, end, strata, gr
   results <- list()
   kk <- 1
   for (outcome in outcomes) {
-    survival_data <- getSurvivalData(cohort, outcome, end = end, strata = strata, group = group)
-    results[[kk]] <- getRiskEstimate(survival_data, group = group, strata = strata, weights = NULL) |>
+    survival_data <- getSurvivalData(cohort, outcome, end = end, strata = strata, group = group, weights = weights)
+    results[[kk]] <- getRiskEstimate(survival_data, group = group, strata = strata, weights = weights) |>
       mutate(outcome_name = outcome, follow_up_end = end) |>
       omopgenerics::uniteAdditional(cols = c("outcome_name", "follow_up_end"))
     kk <- kk + 1
@@ -940,9 +929,9 @@ summaryCohort <- function(cohort) {
 summariseTimeDistribution <- function(cdm, strata, weights = NULL) {
   if (is.null(weights)) {
     weighting <- "FALSE"
-    weights <- "weight"
+    weights <- "weight_1"
     tab <- cdm$study_population |>
-      mutate(weight = 1) 
+      mutate(weight_1 = 1) 
   } else {
     weighting <- "TRUE"
     tab <- cdm$study_population
@@ -955,8 +944,12 @@ summariseTimeDistribution <- function(cdm, strata, weights = NULL) {
       union_all(
         tab |>
           collect() |>
-          group_by_at(c("cohort_name", strataLevel, "gestational_day")) |>
-          tally(name = "estimate_value", wt = .data$weight) |>
+          dplyr::mutate(
+            gestational_week = as.numeric(.data$gestational_day),
+            gestational_week = cut(x = .data$gestational_week, breaks = seq.int(0, 400, 7), labels = paste0("Week ", 0:56), right = FALSE)
+          ) |>
+          group_by_at(c("cohort_name", strataLevel, "gestational_week")) |>
+          tally(name = "estimate_value", wt = .data[[weights]]) |>
           ungroup() |>
           uniteGroup("cohort_name") |>
           uniteStrata(strataLevel) |>
@@ -964,8 +957,8 @@ summariseTimeDistribution <- function(cdm, strata, weights = NULL) {
           mutate(
             result_id = 1L,
             cdm_name = cdmName(cdm),
-            variable_name = "gestational_day",
-            variable_level = as.character(gestational_day),
+            variable_name = "gestational_week",
+            variable_level = as.character(gestational_week),
             estimate_name = "count",
             estimate_type = "numeric"
           ) |>
@@ -974,15 +967,15 @@ summariseTimeDistribution <- function(cdm, strata, weights = NULL) {
   }
   # index date
   tab <- tab |>
-    mutate(index_week = lubridate::floor_date(cohort_start_date, unit = "week")) 
+    mutate(calendar_week = lubridate::floor_date(cohort_start_date, unit = "week")) 
   for (ii in 1:length(strata)) {
     strataLevel = strata[[ii]]
     results <- results |>
       union_all(
         tab |>
           collect() |>
-          group_by_at(c("cohort_name", strataLevel, "index_week")) |>
-          tally(name = "estimate_value", wt = .data$weight) |>
+          group_by_at(c("cohort_name", strataLevel, "calendar_week")) |>
+          tally(name = "estimate_value", wt = .data[[weights]]) |>
           ungroup() |>
           uniteGroup("cohort_name") |>
           uniteStrata(strataLevel) |>
@@ -990,8 +983,8 @@ summariseTimeDistribution <- function(cdm, strata, weights = NULL) {
           mutate(
             result_id = 1L,
             cdm_name = cdmName(cdm),
-            variable_name = "index_week",
-            variable_level = as.character(index_week),
+            variable_name = "calendar_week",
+            variable_level = as.character(calendar_week),
             estimate_name = "count",
             estimate_type = "numeric"
           ) |>
@@ -1089,7 +1082,7 @@ applyPopulationWashout <- function(x, censorDate = "pregnancy_start_date") {
     )
 }
 
-getIncidence <- function(cdm, targetCohortDenominator, outcomeTable, outcomeCohortId) {
+getIncidence <- function(cdm, targetCohortDenominator, outcomeTable, outcomeCohortId, washOut) {
   # overall
   overallIds <- settings(cdm$overall_period) |>
     filter(cohort_name %in% targetCohortDenominator) |>
@@ -1104,10 +1097,13 @@ getIncidence <- function(cdm, targetCohortDenominator, outcomeTable, outcomeCoho
     censorCohortId = NULL,
     interval = c("overall", "years"),
     completeDatabaseIntervals = FALSE,
-    outcomeWashout = 0,
-    repeatedEvents = FALSE,
+    outcomeWashout = washOut,
+    repeatedEvents = TRUE,
     strata = list("maternal_age"),
     includeOverallStrata = TRUE
+  )
+  overall <- omopgenerics::newSummarisedResult(
+    overall, settings = omopgenerics::settings(overall) |> dplyr::mutate(denominator_table_name = "overall")
   )
   # pre-covid
   preCovidIds <- settings(cdm$pre_covid_period) |>
@@ -1123,10 +1119,13 @@ getIncidence <- function(cdm, targetCohortDenominator, outcomeTable, outcomeCoho
     censorCohortId = NULL,
     interval = c("overall"),
     completeDatabaseIntervals = FALSE,
-    outcomeWashout = 0,
-    repeatedEvents = FALSE,
+    outcomeWashout = washOut,
+    repeatedEvents = TRUE,
     strata = list("maternal_age"),
     includeOverallStrata = TRUE
+  )
+  preCovid <- omopgenerics::newSummarisedResult(
+    preCovid, settings = omopgenerics::settings(preCovid) |> dplyr::mutate(denominator_table_name = "pre_covid")
   )
   # covid
   covidIds <- settings(cdm$main_covid_period) |>
@@ -1142,10 +1141,13 @@ getIncidence <- function(cdm, targetCohortDenominator, outcomeTable, outcomeCoho
     censorCohortId = NULL,
     interval = c("overall"),
     completeDatabaseIntervals = FALSE,
-    outcomeWashout = 0,
-    repeatedEvents = FALSE,
+    outcomeWashout = washOut,
+    repeatedEvents = TRUE,
     strata = list("maternal_age"),
     includeOverallStrata = TRUE
+  )
+  covid <- omopgenerics::newSummarisedResult(
+    covid, settings = omopgenerics::settings(covid) |> dplyr::mutate(denominator_table_name = "covid")
   )
   # post-covid
   postCovidIds <- settings(cdm$post_main_covid_period) |>
@@ -1161,10 +1163,13 @@ getIncidence <- function(cdm, targetCohortDenominator, outcomeTable, outcomeCoho
     censorCohortId = NULL,
     interval = c("overall"),
     completeDatabaseIntervals = FALSE,
-    outcomeWashout = 0,
-    repeatedEvents = FALSE,
+    outcomeWashout = washOut,
+    repeatedEvents = TRUE,
     strata = list("maternal_age"),
     includeOverallStrata = TRUE
+  )
+  postCovid <- omopgenerics::newSummarisedResult(
+    postCovid, settings = omopgenerics::settings(postCovid) |> dplyr::mutate(denominator_table_name = "post_covid")
   )
   # return results
   bind(overall, preCovid, covid, postCovid)
@@ -1261,10 +1266,6 @@ getBRCharacteristics <- function(cohort) {
         # covariatesInf (-Inf, 0)
         "History of comorbidities" = list(
           targetCohortTable = "covariates_inf", window = c(-Inf, 0)
-        ),
-        # covariates1 (-365, 0)
-        "Mental heatlh problems in the last year" = list(
-          targetCohortTable = "covariates_1", window = c(-365, 0)
         ),
         # covariates1 (-365, 0)
         "Covariates in the past 5 years" = list(
