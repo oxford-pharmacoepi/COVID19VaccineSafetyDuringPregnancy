@@ -871,7 +871,7 @@ ui <- fluidPage(
               shinyWidgets::pickerInput(
                 inputId = "compare_large_scale_characteristics_cohort_name",
                 label = NULL,
-                selected = selected$shared_cohort_names,
+                selected = selected$shared_cohort_names[1],
                 choices = choices$shared_cohort_names,
                 multiple = TRUE,
                 options = list(`actions-box` = TRUE, `selected-text-format` = "count > 1",
@@ -896,8 +896,8 @@ ui <- fluidPage(
                                        shinyWidgets::pickerInput(
                                          inputId = "compare_large_scale_characteristics_cohort_compare",
                                          label = "Comparator cohort",
-                                         choices = NULL,
-                                         selected = NULL,
+                                         choices = choices$compare_large_scale_characteristics_cohort_name,
+                                         selected = selected$compare_large_scale_characteristics_cohort_name[2],
                                          multiple = FALSE,
                                          options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
                                        ),

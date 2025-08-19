@@ -80,19 +80,19 @@ server <- function(input, output, session) {
     }
   })
 
-  shiny::observe({
-    cohort_values <- names(choices)[grepl("cohort_name", names(choices)) & names(choices) != "shared_cohort_names"]
-    for (inputId in cohort_values) {
-      local({
-        inputId_local <- inputId  # capture value to avoid scoping issue
-        shiny::observeEvent(shared_cohort_names(), {
-          updatePickerInput(session, inputId_local, selected = shared_cohort_names())
-        })
-      })
-    }
-
-    updatePickerInput(session, "compare_large_scale_characteristics_cohort_compare", selected = shared_cohort_names())
-  })
+  # shiny::observe({
+  #   cohort_values <- names(choices)[grepl("cohort_name", names(choices)) & names(choices) != "shared_cohort_names"]
+  #   for (inputId in cohort_values) {
+  #     local({
+  #       inputId_local <- inputId  # capture value to avoid scoping issue
+  #       shiny::observeEvent(shared_cohort_names(), {
+  #         updatePickerInput(session, inputId_local, selected = shared_cohort_names())
+  #       })
+  #     })
+  #   }
+  #
+  #   # updatePickerInput(session, "compare_large_scale_characteristics_cohort_compare", selected = shared_cohort_names())
+  # })
 
   # download raw data -----
   output$download_raw <- shiny::downloadHandler(
