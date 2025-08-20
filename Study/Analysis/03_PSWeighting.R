@@ -31,7 +31,7 @@ for (nm in cohortNames) {
         select(any_of(c(
           "subject_id", "unique_id", "exposure", "age", "region", "gestational_day", "cohort_start_date", 
           "previous_observation", "previous_pregnancies", "previous_healthcare_visits",
-          "alcohol_misuse_dependence", "obesity", vax 
+          "alcohol_misuse_dependence", "obesity", "anxiety", "depression", vax 
         )))
     ) |>
     select(
@@ -69,7 +69,7 @@ for (nm in cohortNames) {
     select(any_of(c(
       "subject_id", "unique_id", "exposure", "age", "care_site_id", "gestational_day", "cohort_start_date", 
       "previous_observation", "previous_pregnancies", "previous_healthcare_visits",
-      "alcohol_misuse_dependence", "obesity", vax , selectedLassoFeatures[[nm]]
+      "alcohol_misuse_dependence", "obesity", "anxiety", "depression", vax , selectedLassoFeatures[[nm]]
     ))) |>
     collect() |>
     mutate(exposure = factor(exposure, levels = c("comparator", "exposed")))

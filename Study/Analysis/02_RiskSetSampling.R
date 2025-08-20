@@ -309,7 +309,6 @@ cdm$study_population <- cdm$study_population |>
   # obesisty, and alcohol and substance missuse dependenacy - 5 years back
   addCohortIntersectFlag(
     targetCohortTable = "covariates_5", 
-    targetCohortId = c("obesity", "alcohol_misuse_dependence"),
     window = list(c(-5*365, 0)), 
     nameStyle = "{cohort_name}",
     name = "study_population"

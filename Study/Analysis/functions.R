@@ -803,7 +803,7 @@ getRiskEstimate <- function(data, group, strata, weights = NULL) {
           upper_ci = quantile(coef, 0.975, na.rm = TRUE)
         ) |>
           regressionToSummarised(
-            cols = c("exp_coef", "lower_ci", "upper_ci")
+            cols = c("coef", "lower_ci", "upper_ci")
           ) |>
           mutate(
             group_name = "cohort_name",
@@ -856,7 +856,7 @@ getRiskEstimate <- function(data, group, strata, weights = NULL) {
 
 regressionToSummarised <- function(
     x, 
-    cols = c("coef", "se_coef", "exp_coef", "z", "p", "lower_ci", "upper_ci"),
+    cols = c("coef", "lower_ci", "upper_ci"),
     estimate = "numeric") {
   x |>
     pivot_longer(
@@ -910,7 +910,7 @@ suppressRiskEstimates <- function(result) {
       estimate_value = case_when(
         estimate_name != "count" & sup_group ~ "-",
         estimate_name == "count" & sup_row ~ "-",
-        estimate_name %in% c("exp_coef", "lower_ci", "upper_ci") & sup_estimate ~ NA_character_,
+        estimate_name %in% c("coef", "lower_ci", "upper_ci") & sup_estimate ~ NA_character_,
         .default = estimate_value
       )
     ) |>
