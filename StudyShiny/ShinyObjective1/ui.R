@@ -981,6 +981,7 @@ ui <- bslib::page_navbar(
         )
       )
     ),
+    # Large Scale Characteristics ----
     bslib::nav_panel(
       title = "Large Scale Characteristics",
       icon = shiny::icon("arrow-up-right-dots"),

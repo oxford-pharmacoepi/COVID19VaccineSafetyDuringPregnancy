@@ -1099,7 +1099,7 @@ ui <- bslib::page_navbar(
             inputId = "summarise_large_scale_characteristics_exposure",
             label = "Exposure",
             choices = choices$summarise_large_scale_characteristics_exposure,
-            selected = c("comparator", "exposed"),
+            selected = c("exposed"),
             multiple = TRUE,
             options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
           ),
@@ -1139,7 +1139,7 @@ ui <- bslib::page_navbar(
             inputId = "summarise_large_scale_characteristics_weighting",
             label = "Weighting",
             choices = choices$summarise_large_scale_characteristics_weighting,
-            selected = "TRUE",
+            selected = TRUE,
             multiple = FALSE,
             options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
           ),
@@ -1152,78 +1152,32 @@ ui <- bslib::page_navbar(
         ),
         shiny::div(shiny::textOutput(outputId = "update_message_summarise_large_scale_characteristics"), class = "ov_update_button"),
         bslib::navset_card_tab(
-          bslib::nav_panel(
-            title = "Table",
-            bslib::card(
-              full_screen = TRUE,
-              bslib::card_header(
-                bslib::popover(
-                  shiny::icon("download"),
-                  shiny::downloadButton(outputId = "summarise_large_scale_characteristics_table_lsc_download", label = "Download table")
-                ),
-                class = "text-end"
+          bslib::card(
+            full_screen = TRUE,
+            bslib::card_header(
+              bslib::popover(
+                shiny::icon("download"),
+                shiny::downloadButton(outputId = "summarise_large_scale_characteristics_table_lsc_download", label = "Download table")
               ),
-              bslib::layout_sidebar(
-                sidebar = bslib::sidebar(
-                  shinyWidgets::pickerInput(
-                    inputId = "summarise_large_scale_characteristics_table_lsc_hide",
-                    label = "Hide",
-                    choices = c("cdm_name", "cohort_name", "type", "exposure", "vaccine_brand", "gestational_trimester", "age_group", "variable_level", "weighting"),
-                    selected = c("type", "exposure", "vaccine_brand", "gestational_trimester", "age_group"),
-                    multiple = TRUE,
-                    options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
-                  ),
-                  position = "right"
+              class = "text-end"
+            ),
+            bslib::layout_sidebar(
+              sidebar = bslib::sidebar(
+                shinyWidgets::pickerInput(
+                  inputId = "summarise_large_scale_characteristics_table_lsc_hide",
+                  label = "Hide",
+                  choices = c("cdm_name", "cohort_name", "exposure", "vaccine_brand", "gestational_trimester", "age_group", "variable_level", "weighting"),
+                  selected = c("vaccine_brand", "gestational_trimester", "age_group", "weighting"),
+                  multiple = TRUE,
+                  options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
                 ),
-                reactable::reactableOutput("summarise_large_scale_characteristics_table_lsc") |>
-                  shinycssloaders::withSpinner()
-              )
-            )
-          ),
-          bslib::nav_panel(
-            title = "Plot Compared",
-            bslib::card(
-              full_screen = TRUE,
-              bslib::layout_sidebar(
-                sidebar = bslib::sidebar(
-                  # shiny.fluent::Toggle.shinyInput(
-                  #   label = "Missing data",
-                  #   onText = "Interpolate 0",
-                  #   offText = "Eliminate",
-                  #   value = TRUE,
-                  #   inputId = "summarise_large_scale_characteristics_plot_compared_missings"
-                  # ),
-                  # shinyWidgets::pickerInput(
-                  #   inputId = "summarise_large_scale_characteristics_plot_compared_colour",
-                  #   label = "Colour",
-                  #   choices = c("cdm_name", "cohort_name", "exposure", "vaccine_brand", "gestational_trimester", "age_group", "type", "variable_level"),
-                  #   selected = NULL,
-                  #   multiple = FALSE,
-                  #   options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
-                  # ),
-                  # shinyWidgets::pickerInput(
-                  #   inputId = "summarise_large_scale_characteristics_plot_compared_reference",
-                  #   label = "Reference",
-                  #   choices = NULL,
-                  #   selected = NULL,
-                  #   multiple = FALSE,
-                  #   options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
-                  # ),
-                  shinyWidgets::pickerInput(
-                    inputId = "summarise_large_scale_characteristics_plot_compared_facet",
-                    label = "Facet",
-                    choices = c("cdm_name", "cohort_name", "vaccine_brand", "gestational_trimester", "age_group", "variable_level"),
-                    selected = c("cdm_name", "cohort_name"),
-                    multiple = TRUE,
-                    options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
-                  ),
-                  position = "right"
-                ),
-                plotly::plotlyOutput("summarise_large_scale_characteristics_plot_compared") |>
-                  shinycssloaders::withSpinner()
-              )
+                position = "right"
+              ),
+              reactable::reactableOutput("summarise_large_scale_characteristics_table_lsc") |>
+                shinycssloaders::withSpinner()
             )
           )
+          
         )
       )
     ),
@@ -1370,72 +1324,56 @@ ui <- bslib::page_navbar(
         )
       )
     ),
-    # NCO ----
+    # Standardised Mean Differences ----
     bslib::nav_panel(
-      title = "Negative control outcomes",
-      icon = shiny::icon("chart-bar"),
+      title = "Standardised Mean Differences",
+      icon = shiny::icon("scale-balanced"),
       bslib::layout_sidebar(
         sidebar = bslib::sidebar(
           shinyWidgets::pickerInput(
-            inputId = "negative_control_outcomes_cdm_name",
+            inputId = "summarise_standardised_mean_differences_cdm_name",
             label = "CDM name",
-            choices = choices$negative_control_outcomes_cdm_name,
-            selected = selected$negative_control_outcomes_cdm_name,
+            choices = choices$summarise_standardised_mean_differences_cdm_name,
+            selected = selected$summarise_standardised_mean_differences_cdm_name,
             multiple = TRUE,
             options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
           ),
           shinyWidgets::pickerInput(
-            inputId = "negative_control_outcomes_cohort_name",
+            inputId = "summarise_standardised_mean_differences_cohort_name",
             label = "Cohort name",
-            choices = choices$negative_control_outcomes_cohort_name,
-            selected = selected$negative_control_outcomes_cohort_name,
+            choices = choices$summarise_standardised_mean_differences_cohort_name,
+            selected = "population_objective_1",
             multiple = TRUE,
             options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
           ),
           shinyWidgets::pickerInput(
-            inputId = "negative_control_outcomes_vaccine_brand",
+            inputId = "summarise_standardised_mean_differences_vaccine_brand",
             label = "Vaccine brand",
-            choices = choices$negative_control_outcomes_vaccine_brand,
+            choices = choices$summarise_standardised_mean_differences_vaccine_brand,
             selected = "overall",
             multiple = TRUE,
             options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
           ),
           shinyWidgets::pickerInput(
-            inputId = "negative_control_outcomes_gestational_trimester",
+            inputId = "summarise_standardised_mean_differences_gestational_trimester",
             label = "Gestational trimester",
-            choices = choices$negative_control_outcomes_gestational_trimester,
+            choices = choices$summarise_standardised_mean_differences_gestational_trimester,
             selected = "overall",
             multiple = TRUE,
             options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
           ),
           shinyWidgets::pickerInput(
-            inputId = "negative_control_outcomes_age_group",
+            inputId = "summarise_standardised_mean_differences_age_group",
             label = "Age group",
-            choices = choices$negative_control_outcomes_age_group,
+            choices = choices$summarise_standardised_mean_differences_age_group,
             selected = "overall",
             multiple = TRUE,
             options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
           ),
           shinyWidgets::pickerInput(
-            inputId = "negative_control_outcomes_outcome_name",
-            label = "Outcome name",
-            choices = choices$negative_control_outcomes_outcome_name,
-            selected = selected$negative_control_outcomes_outcome_name,
-            multiple = TRUE,
-            options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
-          ),
-          shinyWidgets::pickerInput(
-            inputId = "negative_control_outcomes_follow_up_end",
-            label = "Follow up end",
-            choices = choices$negative_control_outcomes_follow_up_end,
-            selected = "cohort_end_date",
-            multiple = TRUE,
-            options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
-          ),
-          shinyWidgets::pickerInput(
-            inputId = "negative_control_outcomes_weighting",
+            inputId = "summarise_standardised_mean_differences_weighting",
             label = "Weighting",
-            choices = choices$negative_control_outcomes_weighting,
+            choices = choices$summarise_standardised_mean_differences_weighting,
             selected = TRUE,
             multiple = TRUE,
             options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
@@ -1443,133 +1381,59 @@ ui <- bslib::page_navbar(
           position = "left"
         ),
         shiny::actionButton(
-          inputId = "update_negative_control_outcomes",
+          inputId = "update_summarise_standardised_mean_differences",
           label = "Update content",
           width = "200px"
         ),
-        shiny::div(shiny::textOutput(outputId = "update_message_negative_control_outcomes"), class = "ov_update_button"),
+        shiny::div(shiny::textOutput(outputId = "update_message_summarise_standardised_mean_differences"), class = "ov_update_button"),
         bslib::navset_card_tab(
           bslib::nav_panel(
-            title = "Summary",
+            title = "Table",
             bslib::card(
               full_screen = TRUE,
               bslib::card_header(
                 bslib::popover(
                   shiny::icon("download"),
-                  shinyWidgets::pickerInput(
-                    inputId = "negative_control_outcomes_table_format_summary",
-                    label = "Format",
-                    choices = c("docx", "png", "pdf", "html"),
-                    selected = "docx",
-                    multiple = FALSE,
-                    options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
-                  ),
-                  shiny::downloadButton(outputId = "negative_control_outcomes_table_download_summary", label = "Download table")
+                  shiny::downloadButton(outputId = "summarise_standardised_mean_differences_table_download", label = "Download table")
                 ),
                 class = "text-end"
               ),
               bslib::layout_sidebar(
                 sidebar = bslib::sidebar(
-                  sortable::bucket_list(
-                    header = NULL,
-                    sortable::add_rank_list(
-                      text = "None",
-                      labels = c("outcome_name", "variable_name", "estimate_name"),
-                      input_id = "negative_control_outcomes_table_none_summary"
-                    ),
-                    sortable::add_rank_list(
-                      text = "Header",
-                      labels = c("cdm_name", "variable_level"),
-                      input_id = "negative_control_outcomes_table_header_summary"
-                    ),
-                    sortable::add_rank_list(
-                      text = "Group columns",
-                      labels = c("cohort_name"),
-                      input_id = "negative_control_outcomes_table_group_column_summary"
-                    ),
-                    sortable::add_rank_list(
-                      text = "Hide",
-                      labels = c("vaccine_brand", "gestational_trimester", "age_group", "outcome_group", "follow_up_end", "weighting"),
-                      input_id = "negative_control_outcomes_table_hide_summary"
-                    )
-                  ),
-                  position = "right"
-                ),
-                gt::gt_output("negative_control_outcomes_table_summary") |>
-                  shinycssloaders::withSpinner()
-              )
-            )
-          ),
-          bslib::nav_panel(
-            title = "Incidence Rate Ratio Table",
-            bslib::card(
-              full_screen = TRUE,
-              bslib::card_header(
-                bslib::popover(
-                  shiny::icon("download"),
                   shinyWidgets::pickerInput(
-                    inputId = "negative_control_outcomes_table_format_irr",
-                    label = "Format",
-                    choices = c("docx", "png", "pdf", "html"),
-                    selected = "docx",
-                    multiple = FALSE,
+                    inputId = "summarise_standardised_mean_differences_table_hide",
+                    label = "Hide",
+                    choices = c("cdm_name", "cohort_name", "exposure", "vaccine_brand", "gestational_trimester", "age_group", "variable_level", "weighting"),
+                    selected = c("vaccine_brand", "gestational_trimester", "age_group", "weighting"),
+                    multiple = TRUE,
                     options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
                   ),
-                  shiny::downloadButton(outputId = "negative_control_outcomes_table_download_irr", label = "Download table")
-                ),
-                class = "text-end"
-              ),
-              bslib::layout_sidebar(
-                sidebar = bslib::sidebar(
-                  sortable::bucket_list(
-                    header = NULL,
-                    sortable::add_rank_list(
-                      text = "None",
-                      labels = c("outcome_name"),
-                      input_id = "negative_control_outcomes_table_none_irr"
-                    ),
-                    sortable::add_rank_list(
-                      text = "Header",
-                      labels = c("cdm_name", "estimate_name"),
-                      input_id = "negative_control_outcomes_table_header_irr"
-                    ),
-                    sortable::add_rank_list(
-                      text = "Group columns",
-                      labels = c("cohort_name"),
-                      input_id = "negative_control_outcomes_table_group_column_irr"
-                    ),
-                    sortable::add_rank_list(
-                      text = "Hide",
-                      labels = c("vaccine_brand", "gestational_trimester", "age_group", "outcome_group", "follow_up_end", "weighting", "variable_name", "variable_level"),
-                      input_id = "negative_control_outcomes_table_hide_irr"
-                    )
-                  ),
                   position = "right"
                 ),
-                gt::gt_output("negative_control_outcomes_table_irr") |>
+                reactable::reactableOutput("summarise_standardised_mean_differences_table") |>
                   shinycssloaders::withSpinner()
               )
             )
           ),
           bslib::nav_panel(
-            title = "Incidence Rate Ratio Plot",
+            title = "Plot",
             bslib::card(
               full_screen = TRUE,
               bslib::card_header(
                 bslib::popover(
                   shiny::icon("download"),
                   shiny::numericInput(
-                    inputId = "negative_control_outcomes_plot_width",
+                    inputId = "summarise_standardised_mean_differences_plot_width",
                     label = "Width",
                     value = 15
                   ),
                   shiny::numericInput(
-                    inputId = "negative_control_outcomes_plot_height",
+                    inputId = "summarise_standardised_mean_differences_plot_height",
                     label = "Height",
                     value = 15
                   ),
                   shinyWidgets::pickerInput(
-                    inputId = "negative_control_outcomes_plot_units",
+                    inputId = "summarise_standardised_mean_differences_plot_units",
                     label = "Units",
                     choices = c("px", "cm", "inch"),
                     selected = "cm",
@@ -1577,54 +1441,37 @@ ui <- bslib::page_navbar(
                     options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
                   ),
                   shiny::numericInput(
-                    inputId = "negative_control_outcomes_plot_dpi",
+                    inputId = "summarise_standardised_mean_differences_plot_dpi",
                     label = "DPI",
                     value = 300
                   ),
-                  shiny::downloadButton(outputId = "negative_control_outcomes_plot_download", label = "Download plot")
+                  shiny::downloadButton(outputId = "summarise_standardised_mean_differences_plot_download", label = "Download plot")
                 ),
                 class = "text-end"
               ),
               bslib::layout_sidebar(
                 fill = TRUE,
                 sidebar = bslib::sidebar(
-                  #   shiny::radioButtons(
-                  #     inputId = "negative_control_outcomes_plot_type",
-                  #     label = "Plot type",
-                  #     choices = c("Forest plot", "Fuunel plot"),
-                  #     selected = "Forest plot",
-                  #   ),
                   shinyWidgets::pickerInput(
-                    inputId = "negative_control_outcomes_plot_y",
-                    label = "Vertical component",
-                    choices = c("cdm_name", "cohort_name", "vaccine_brand", "gestational_trimester", "age_group", "weighting", "outcome_name", "follow_up_end"),
-                    selected = "outcome_name",
-                    multiple = TRUE,
-                    options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
-                  ),
-                  shinyWidgets::pickerInput(
-                    inputId = "negative_control_outcomes_plot_facet",
+                    inputId = "summarise_standardised_mean_differences_plot_facet",
                     label = "Facet",
-                    choices = c("cdm_name", "cohort_name", "vaccine_brand", "gestational_trimester", "age_group", "weighting", "outcome_name", "follow_up_end"),
-                    selected = "cdm_name",
+                    choices = c("cdm_name", "cohort_name", "vaccine_brand", "gestational_trimester", "age_group"),
+                    selected = c("cdm_name", "cohort_name") ,
                     multiple = TRUE,
                     options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
                   ),
                   shinyWidgets::pickerInput(
-                    inputId = "negative_control_outcomes_plot_colour",
+                    inputId = "summarise_standardised_mean_differences_plot_colour",
                     label = "Colour",
-                    choices = c("cdm_name", "cohort_name", "vaccine_brand", "gestational_trimester", "age_group", "weighting", "outcome_name", "follow_up_end"),
-                    selected = "cohort_name",
+                    choices = c("cdm_name", "cohort_name", "vaccine_brand", "gestational_trimester", "age_group", "concept_id"),
+                    selected = "concept_id",
                     multiple = TRUE,
                     options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
                   ),
                   position = "right"
                 ),
-                div(
-                  style = "height: 100%;",
-                  shiny::plotOutput("negative_control_outcomes_plot", height = "800px") |>
-                    shinycssloaders::withSpinner()
-                )
+                shiny::uiOutput("summarise_standardised_mean_differences_plot") |>
+                  shinycssloaders::withSpinner()
               )
             )
           )
@@ -1861,7 +1708,7 @@ ui <- bslib::page_navbar(
                 shinyWidgets::pickerInput(
                   inputId = "incidence_rate_ratio_plot_y",
                   label = "Vertical component",
-                  choices = c("cdm_name", "cohort_name", "vaccine_brand", "gestational_trimester", "age_group", "weighting", "outcome_name", "follow_up_end"),
+                  choices = c("cdm_name", "cohort_name", "vaccine_brand", "gestational_trimester", "age_group", "weighting", "outcome_name", "outcome_group", "follow_up_end"),
                   selected = "outcome_name",
                   multiple = TRUE,
                   options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
@@ -1869,16 +1716,16 @@ ui <- bslib::page_navbar(
                 shinyWidgets::pickerInput(
                   inputId = "incidence_rate_ratio_plot_facet",
                   label = "Facet",
-                  choices = c("cdm_name", "cohort_name", "vaccine_brand", "gestational_trimester", "age_group", "weighting", "outcome_name", "follow_up_end"),
-                  selected = "cdm_name",
+                  choices = c("cdm_name", "cohort_name", "vaccine_brand", "gestational_trimester", "age_group", "weighting", "outcome_name", "outcome_group", "follow_up_end"),
+                  selected = c("cdm_name", "cohort_name"),
                   multiple = TRUE,
                   options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
                 ),
                 shinyWidgets::pickerInput(
                   inputId = "incidence_rate_ratio_plot_colour",
                   label = "Colour",
-                  choices = c("cdm_name", "cohort_name", "vaccine_brand", "gestational_trimester", "age_group", "weighting", "outcome_name", "follow_up_end"),
-                  selected = "cohort_name",
+                  choices = c("cdm_name", "cohort_name", "vaccine_brand", "gestational_trimester", "age_group", "weighting", "outcome_name", "outcome_group", "follow_up_end"),
+                  selected = "outcome_group",
                   multiple = TRUE,
                   options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
                 ),
@@ -1886,7 +1733,7 @@ ui <- bslib::page_navbar(
               ),
               div(
                 style = "height: 100%;",
-                shiny::plotOutput("incidence_rate_ratio_plot", height = "800px") |>
+                shiny::uiOutput("incidence_rate_ratio_plot") |>
                   shinycssloaders::withSpinner()
               )
             )
