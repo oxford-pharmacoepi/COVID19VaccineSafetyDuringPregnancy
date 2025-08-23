@@ -798,9 +798,9 @@ getRiskEstimate <- function(data, group, strata, weights = NULL) {
             (data.all$cases[data.all$exposure == "comparator"]/data.all$person_days[data.all$exposure == "comparator"])
         
         results[[k]] <- tibble(
-          coef = res,
           lower_ci = quantile(coef, 0.025, na.rm = TRUE),
-          upper_ci = quantile(coef, 0.975, na.rm = TRUE)
+          upper_ci = quantile(coef, 0.975, na.rm = TRUE),
+          coef = res
         ) |>
           regressionToSummarised(
             cols = c("coef", "lower_ci", "upper_ci")
@@ -825,8 +825,8 @@ getRiskEstimate <- function(data, group, strata, weights = NULL) {
             q75 = quantile(time*.data[[weights]], 0.75),
             min = min(time*.data[[weights]]),
             max = max(time*.data[[weights]]),
-            subject_count = n(),
-            outcome_count = sum(.data$status == 1)
+            subject_count = sum(.data[[weights]]),
+            outcome_count = sum(.data$status*.data[[weights]])
           ) |>
           mutate(
             group_name = "cohort_name",
@@ -841,7 +841,7 @@ getRiskEstimate <- function(data, group, strata, weights = NULL) {
           ) |>
           mutate(
             variable_name = case_when(
-              estimate_name == "subject_count" ~ "Number subjects",
+              estimate_name == "subject_count" ~ "Number persons",
               estimate_name == "outcome_count" ~ "Number events",
               .default = "Person-Days"
             ),
@@ -867,7 +867,7 @@ regressionToSummarised <- function(
 }
 
 estimateSurvivalRisk <- function(cohort, outcomes, outcomeGroup, end, strata, group, weights = NULL) {
-  cdm <- cdmReference(cohort)
+  cdm <- omopgenerics::cdmReference(cohort)
   study <- "main"
   if (end != "cohort_end_date") study <- "sensitivity"
   weighting <- "FALSE"

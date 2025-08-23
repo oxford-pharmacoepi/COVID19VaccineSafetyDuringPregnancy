@@ -7,6 +7,7 @@ names(selectedLassoFeatures) <- cohortNames
 ps <- selectedLassoFeatures
 psCovariates <- selectedLassoFeatures
 cdm$study_population <- cdm$study_population |>
+  addCohortName() |>
   dplyr::select(!dplyr::starts_with("ps")) |>
   dplyr::select(!dplyr::starts_with("weight"))
 for (nm in cohortNames) {
@@ -39,9 +40,12 @@ for (nm in cohortNames) {
         "cohort_name", "cohort_definition_id", "pregnancy_id", "cohort_end_date",
         "exposed_match_id", "unique_id", "vaccine_brand", "gestational_trimester", "weight",
         "cohort_definition_id"
-      )))
-
-  x <- data.matrix(lassoData |> select(-c("subject_id", "exposure")) |> collect())
+      ))) |>
+    collect()
+  # drop any columsn with 1 level
+  columns <- sapply(lapply(lassoData, unique), length)
+  columns <- colnames(columns)[columns > 1]
+  x <- data.matrix(lassoData |> select(-any_of(c("subject_id", "exposure", columns))))
   y <- lassoData |> pull("exposure")
   lambdas <- 10^seq(2, -3, by = -.1)
   lasso_reg <- cv.glmnet(x, y, lambda = lambdas, standardize = FALSE, nfolds = 5, family = "binomial", alpha = 1)
@@ -53,6 +57,7 @@ for (nm in cohortNames) {
   
   ## Propensity Score 
   psData <- cdm$study_population |>
+    addCohortName() |>
     mutate(unique_id = paste0(subject_id, "_", exposed_match_id, "_", pregnancy_id)) |>
     filter(cohort_name == nm) |> 
     compute() |>
@@ -245,4 +250,3 @@ nco_weighted <- bind(nco_weighted, pco_weighted) |>
 
 nco_weighted |> 
   exportSummarisedResult(fileName = paste0("weighted_nco_", cdmName(cdm), ".csv"), path = output_folder)
-
