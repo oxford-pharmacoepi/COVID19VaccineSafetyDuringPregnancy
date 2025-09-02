@@ -12,16 +12,6 @@ cdm$study_population <- cdm$study_population |>
   dplyr::select(!dplyr::starts_with("weight"))
 for (nm in cohortNames) {
   info(logger, paste0("  - Cohort: ", nm))
-  
-  if (nm == "population_objective_1") {
-    vax <- NULL
-  } else if (nm == "population_objective_2") {
-    vax <- c("days_previous_dose")
-    # vax <- c("days_previous_dose", "previous_pregnant_covid_vaccines")
-  } else if (nm == "population_objective_3") {
-    vax <- c("days_previous_dose")
-    # vax <- c("days_previous_dose", "previous_covid_vaccines", "previous_pregnant_covid_vaccines")
-  }
 
   ## LASSO 
   lassoData <- cdm$features |>
@@ -32,7 +22,7 @@ for (nm in cohortNames) {
         select(any_of(c(
           "subject_id", "unique_id", "exposure", "age", "region", "gestational_day", "cohort_start_date", 
           "previous_observation", "previous_pregnancies", "previous_healthcare_visits",
-          "alcohol_misuse_dependence", "obesity", "anxiety", "depression", vax 
+          "alcohol_misuse_dependence", "obesity", "anxiety", "depression"
         )))
     ) |>
     select(
@@ -74,7 +64,7 @@ for (nm in cohortNames) {
     select(any_of(c(
       "subject_id", "unique_id", "exposure", "age", "care_site_id", "gestational_day", "cohort_start_date", 
       "previous_observation", "previous_pregnancies", "previous_healthcare_visits",
-      "alcohol_misuse_dependence", "obesity", "anxiety", "depression", vax , selectedLassoFeatures[[nm]]
+      "alcohol_misuse_dependence", "obesity", "anxiety", "depression", selectedLassoFeatures[[nm]]
     ))) |>
     collect() |>
     mutate(exposure = factor(exposure, levels = c("comparator", "exposed")))
@@ -82,7 +72,7 @@ for (nm in cohortNames) {
   glmResult <- glm(exposure ~ ., data = psData |> select(-c("unique_id", "subject_id")), family = binomial(link = "logit"))
   
   ps[[nm]] <- psData |>
-    select("unique_id", "cohort_start_date", "exposure") |>
+    # select("unique_id", "cohort_start_date", "exposure") |>
     bind_cols(
       predict.glm(glmResult, newdata = psData |> select(!c("unique_id", "subject_id", "exposure")), type = "response") |>
         as_tibble() |>
@@ -112,6 +102,9 @@ for (nm in cohortNames) {
 }
 
 info(logger, "- Export PS results")
+# Save PS covariates
+saveRDS(psCovariates, file = here::here(output_folder, "ps_covariates.RData"))
+
 # Export cohort summary
 cdm <- bind(cdm$weighted_population_objective_1, cdm$weighted_population_objective_2, cdm$weighted_population_objective_3, name = "study_population")
 

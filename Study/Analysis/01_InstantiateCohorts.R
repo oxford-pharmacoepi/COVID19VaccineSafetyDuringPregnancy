@@ -7,8 +7,13 @@ info(logger, "- Base cohort")
 csvs <- list.files(here("Codelists"))
 codes <- NULL
 for (csv in csvs) {
-  codes <- codes |>
-    union_all(read_csv(here("Codelists", csv)))
+  if (csv == "nco.csv") {
+    codes <- codes |>
+      union_all(read_csv(here("Codelists", csv)) |> filter(codelist_name != "Epilepsy"))
+  } else {
+    codes <- codes |>
+      union_all(read_csv(here("Codelists", csv)))
+  }
 }
 ncoNames <- read_csv(here("Codelists", "nco.csv")) |> 
   pull("codelist_name") |> 

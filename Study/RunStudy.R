@@ -97,6 +97,7 @@ if (runOutcomeModel) {
       ),
       .softValidation = TRUE
     )
+    load(here::here(output_folder, "ps_covariates.RData"))
   }
   info(logger, "STEP 4 OUTCOME MODEL ----")
   source(here("Analysis", "04_OutcomeModel.R"))

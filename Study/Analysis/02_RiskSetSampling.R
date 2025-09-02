@@ -1,5 +1,5 @@
 # Risk Set Sampling ----
-# Potential comparator cohort 
+## Potential comparator cohort ---- 
 info(logger, "- Potential comparator cohort")
 cdm$comparator_source <- cdm$source_population |>
   addCohortName() %>% 
@@ -14,7 +14,7 @@ cdm$comparator_source <- cdm$source_population |>
   filter(!is.na(cohort_start_date) & !is.na(cohort_end_date)) |>
   compute(name = "comparator_source", temporary = FALSE)
 
-# Potential exposed cohort 
+## Potential exposed cohort ----  
 info(logger, "- Potential exposed cohort")
 cdm$exposed_source <- cdm$source_population |>
   addCohortName() |>
@@ -34,24 +34,33 @@ cdm$exposed_source <- cdm$source_population |>
   compute(name = "exposed_source", temporary = FALSE) |>
   newCohortTable() 
 
-# summary sampling
+## Start summary sampling
 sampling_summary <- omopgenerics::bind(
   cdm$exposed_source |> 
     summariseResult(group = "cohort_name") |> 
-    filter(variable_name == "number records") |>
     mutate(
-      variable_name = "Number exposed", 
+      variable_name = dplyr::case_when(
+        variable_name == "number records" ~ "Number exposed",
+        variable_name == "number subjects" ~ "Number unique exposed",
+        .default = NA
+      ), 
       variable_level = "Source population"
-    ),
+    ) |>
+    filter(!is.na(.data$variable_name)),
   cdm$comparator_source |> 
     summariseResult(group = "cohort_name") |> 
-    filter(variable_name == "number records") |>
     mutate(
-      variable_name = "Number comparator", 
+      variable_name = dplyr::case_when(
+        variable_name == "number records" ~ "Number comparators",
+        variable_name == "number subjects" ~ "Number unique comparators",
+        .default = NA
+      ), 
       variable_level = "Source population"
-    )
+    ) |>
+    filter(!is.na(.data$variable_name))
 )
 
+## Vaccinated with recommended vaccines ---- 
 cdm$exposed_source <- cdm$exposed_source |>
   filter(vaccine_brand %in% c("pfizer", "moderna")) |>
   compute(name = "exposed_source", temporary = FALSE) 
@@ -60,13 +69,18 @@ sampling_summary <- omopgenerics::bind(
   sampling_summary,
   cdm$exposed_source |> 
     summariseResult(group = "cohort_name") |> 
-    filter(variable_name == "number records") |>
     mutate(
-      variable_name = "Number exposed", 
+      variable_name = dplyr::case_when(
+        variable_name == "number records" ~ "Number exposed",
+        variable_name == "number subjects" ~ "Number unique exposed",
+        .default = NA
+      ), 
       variable_level = "Vaccinated with recommended vaccines"
-    )
+    ) |>
+    filter(!is.na(.data$variable_name))
 )
 
+# Exposed eligible to contribute ----
 cdm$exposed_source <- cdm$exposed_source |>
   applyPopulationWashout() %>% 
   mutate(
@@ -83,14 +97,18 @@ sampling_summary <- omopgenerics::bind(
   sampling_summary,
   cdm$exposed_source |> 
     summariseResult(group = "cohort_name") |> 
-    filter(variable_name == "number records") |>
     mutate(
-      variable_name = "Number exposed", 
+      variable_name = dplyr::case_when(
+        variable_name == "number records" ~ "Number exposed",
+        variable_name == "number subjects" ~ "Number unique exposed",
+        .default = NA
+      ), 
       variable_level = "Eligible to contirbute at vaccination day"
-    )
+    ) |>
+    filter(!is.na(.data$variable_name))
 )
 
-# Matching and washout
+## Matching and washout ----
 info(logger, "- Matching and washout")
 sampling_source <- cdm$exposed_source |>
   select(
@@ -103,7 +121,8 @@ sampling_source <- cdm$exposed_source |>
     "exposed_observation_end" = "observation_period_end_date",
     "exposed_previous_dose" = "previous_dose",
     "exposed_pregnancy_outcome_study" = "pregnancy_outcome_study",
-    "exposed_age_group" = "age_group"
+    "exposed_age_group" = "age_group",
+    "exposed_number_previous_doses" = "number_previous_doses"
   ) |>
   left_join(
     cdm$comparator_source |>
@@ -117,7 +136,8 @@ sampling_source <- cdm$exposed_source |>
         "comparator_observation_end" = "observation_period_end_date",
         "comparator_previous_dose" = "previous_dose",
         "comparator_pregnancy_outcome_study" = "pregnancy_outcome_study",
-        "comparator_age_group" = "age_group"
+        "comparator_age_group" = "age_group",
+        "comparator_number_previous_doses" = "number_previous_doses"
       ),
     by = c("cohort_name", "age_group_sample", "pregnancy_start_band"),
     relationship = "many-to-many"
@@ -128,22 +148,38 @@ sampling_source <- cdm$exposed_source |>
   )  |>
   compute(name = "sampling_source", temporary = FALSE)
 
-## Summarise counts at matching
 sampling_summary <- samplingSummary(sampling_source, "Maternal (2-year band) and gestational age (2-weeks band) matching", sampling_summary)
 
-# Match on previous dose time
+## Match on previous dose time ----
 sampling_source <- sampling_source %>% 
   mutate(
     comparator_previous_dose = !!datediff("comparator_previous_dose", "exposure_date"),
-    comparator_previous_dose_band = cut(comparator_previous_dose, !!seq(0, 90000, 90), include.lowest = TRUE),
-    exposed_previous_dose_band = cut(exposed_previous_dose, !!seq(0, 90000, 90), include.lowest = TRUE)
+    #  previous dose days window: 16 days objecive 2, 90 days objective 3
+    comparator_previous_dose_band = case_when(
+      .data$cohort_definition_id == 1 ~ NA_character_,
+      .data$cohort_definition_id == 2 ~ cut(comparator_previous_dose, !!seq(0, 90000, 16), include.lowest = TRUE),
+      .data$cohort_definition_id == 3 ~ cut(comparator_previous_dose, !!seq(0, 90000, 90), include.lowest = TRUE)
+    ),
+    exposed_previous_dose_band = case_when(
+      .data$cohort_definition_id == 1 ~ NA_character_,
+      .data$cohort_definition_id == 2 ~ cut(exposed_previous_dose, !!seq(0, 90000, 16), include.lowest = TRUE),
+      .data$cohort_definition_id == 3 ~ cut(exposed_previous_dose, !!seq(0, 90000, 90), include.lowest = TRUE)
+    )
   ) |>
   filter((is.na(exposed_previous_dose_band) & is.na(comparator_previous_dose_band)) | (comparator_previous_dose_band == exposed_previous_dose_band)) |>
   compute(name = "sampling_source", temporary = FALSE) 
 
-sampling_summary <- samplingSummary(sampling_source, "Previous vaccine time-window (90-days band) matching", sampling_summary)
+sampling_summary <- samplingSummary(sampling_source, "Previous vaccine time-window (16-days band) matching", sampling_summary, cohortId = 2)
+sampling_summary <- samplingSummary(sampling_source, "Previous vaccine time-window (90-days band) matching", sampling_summary, cohortId = 3)
 
+## Match on number of previous doses (Objective 3) ----
+sampling_source <- sampling_source |>
+  filter((is.na(exposed_number_previous_doses) & is.na(comparator_number_previous_doses)) | (comparator_number_previous_doses == exposed_number_previous_doses)) |>
+  compute(name = "sampling_source", temporary = FALSE) 
 
+sampling_summary <- samplingSummary(sampling_source, "Number of previous COVID-19 vaccines matching", sampling_summary, cohortId = 3)
+
+## Check comparator eligibility ----
 sampling_source <- sampling_source |> 
   # days since previous vaccine - comparator
   filter(
@@ -156,19 +192,9 @@ sampling_source <- sampling_source |>
   ## WASH OUT
   applyPopulationWashout(censorDate = "comparator_pregnancy_start_date")
 
-# Wash-out summary 
-sampling_summary <- samplingSummary(sampling_source, "Eligible to contribute at matched vaccination day", sampling_summary)
+sampling_summary <- samplingSummary(sampling_source, "Comparator eligible to contribute at matched vaccination day", sampling_summary)
 
-# Sample 
-info(logger, "- Sampling")
-sampling_source <- sampling_source |>
-  slice_sample(
-    n =  samplig_fraction, # TODO update based on PhenotypeR
-    by = all_of(c("cohort_definition_id", "cohort_name", "exposed_id", "exposure_date", "exposed_pregnancy_id"))
-  ) |>
-  compute(name = "sampling_source", temporary = FALSE)
-
-sampling_summary <- samplingSummary(sampling_source, "Sampling", sampling_summary)
+## Export sampling summary ----
 sampling_summary |>
   newSummarisedResult(
     settings = settings(sampling_summary) |> mutate(result_type = "summarise_sampling")
@@ -187,7 +213,7 @@ cdm$study_population <- sampling_source |>
     cohort_end_date = exposure_date,
     !!!datesPivotLongerExprs(
       c("pregnancy_start_date", "pregnancy_end_date", "pregnancy_id", "pregnancy_outcome_study",
-        "observation_start", "observation_end", "previous_dose", "age_group")
+        "observation_start", "observation_end", "previous_dose", "age_group", "number_previous_doses")
     )
   ) |>
   select(all_of(c(
@@ -208,8 +234,6 @@ cdm$study_population <- sampling_source |>
           cohort_name == "source_population_objective_3" ~ "population_objective_3"
         )
       ),
-    # cohortAttritionRef = attrition(cdm$source_population) |>
-      # filter((reason_id < 14 & cohort_definition_id == 1) | (reason_id < 15 & cohort_definition_id != 1)),
     .softValidation = TRUE
   ) |>
   recordCohortAttrition("Risk Set Sampling")
@@ -309,7 +333,7 @@ cdm$study_population <- cdm$study_population |>
   # obesisty, and alcohol and substance missuse dependenacy - 5 years back
   addCohortIntersectFlag(
     targetCohortTable = "covariates_5", 
-    window = list(c(-5*365, 0)), 
+    window = list(c(-365, 0)), 
     nameStyle = "{cohort_name}",
     name = "study_population"
   ) |>
@@ -336,12 +360,10 @@ cdm$study_population <- cdm$study_population |>
   addCohortName()
 
 # Characterise ---- 
-info(logger, "- Baseline characteristics")
 strata <- selectStrata(cdm, strata = c("vaccine_brand", "gestational_trimester", "age_group"))
-
 ## table one
+info(logger, "- Baseline characteristics")
 baseline_characteristics <- getBaselineCharacteristics(cdm, strata, weights = NULL)
-
 ## large scale
 info(logger, "- Large Scale characteristics")
 cdm <- getFeaturesTable(cdm, strata)
