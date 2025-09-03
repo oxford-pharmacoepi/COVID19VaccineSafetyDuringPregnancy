@@ -21,7 +21,7 @@ library(IncidencePrevalence)
 library(clock)
 
 # Database name
-database_name <- "CPRD GOLD"
+database_name <- "CPRD GOLD 100k"
 
 # Connection details
 server_dbi <- Sys.getenv("DB_SERVER_DBI_gd")
@@ -39,11 +39,11 @@ db <- dbConnect(
   password = password
 )
 
-cdm_database_schema <- "public"
+cdm_database_schema <- "public_100k"
 results_database_schema <- "results"
 
 # cohort stem where cohorts will be instantiated
-table_stem <- "nmb_saf"
+table_stem <- "nmb_saf100k"
 
 cdm <- cdmFromCon(
   con = db,
@@ -65,12 +65,12 @@ minimum_counts <- 5
 results <- paste0("Results_", cdmName(cdm))
 
 # Choose code to run
-runInstantiateCohorts <- FALSE
-runRiskSetSampling <- TRUE
-runPSWeighting <- TRUE
-runOutcomeModel <- TRUE
-runBackgroundRates <- TRUE
-runBRCharacteristics <- TRUE
+runInstantiateCohorts <- TRUE
+runRiskSetSampling <- FALSE
+runPSWeighting <- FALSE
+runOutcomeModel <- FALSE
+runBackgroundRates <- FALSE
+runBRCharacteristics <- FALSE
 
 source(here("RunStudy.R"))
 
