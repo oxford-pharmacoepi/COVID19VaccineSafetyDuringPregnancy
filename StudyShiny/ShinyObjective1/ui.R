@@ -363,18 +363,18 @@ ui <- bslib::page_navbar(
             options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
           ),
           shinyWidgets::pickerInput(
-            inputId = "incidence_maternal_age",
-            label = "Maternal age",
-            choices = choices$incidence_maternal_age,
-            selected = selected$incidence_maternal_age,
+            inputId = "incidence_denominator_cohort_name",
+            label = "Denominator",
+            choices = choices$incidence_denominator_cohort_name,
+            selected = selected$incidence_denominator_cohort_name,
             multiple = TRUE,
             options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
           ),
           shinyWidgets::pickerInput(
-            inputId = "incidence_incidence_start_date",
-            label = "Incidence start date",
-            choices = choices$incidence_incidence_start_date,
-            selected = selected$incidence_incidence_start_date,
+            inputId = "incidence_denominator_table_name",
+            label = "Time period",
+            choices = choices$incidence_denominator_table_name,
+            selected = "overall",
             multiple = TRUE,
             options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
           ),
@@ -382,23 +382,15 @@ ui <- bslib::page_navbar(
             inputId = "incidence_analysis_interval",
             label = "Analysis interval",
             choices = choices$incidence_analysis_interval,
-            selected = selected$incidence_analysis_interval,
+            selected = "years",
             multiple = TRUE,
             options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
           ),
           shinyWidgets::pickerInput(
-            inputId = "incidence_denominator_end_date",
-            label = "Denominator end date",
-            choices = choices$incidence_denominator_end_date,
-            selected = selected$incidence_denominator_end_date,
-            multiple = TRUE,
-            options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
-          ),
-          shinyWidgets::pickerInput(
-            inputId = "incidence_denominator_start_date",
-            label = "Denominator start date",
-            choices = choices$incidence_denominator_start_date,
-            selected = selected$incidence_denominator_start_date,
+            inputId = "incidence_maternal_age",
+            label = "Maternal age",
+            choices = choices$incidence_maternal_age,
+            selected = "overall",
             multiple = TRUE,
             options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
           ),
@@ -485,7 +477,7 @@ ui <- bslib::page_navbar(
                     header = NULL,
                     sortable::add_rank_list(
                       text = "None",
-                      labels = c("maternal_age", "incidence_start_date", "incidence_end_date", "denominator_age_group", "denominator_sex"),
+                      labels = c("maternal_age", "denominator_age_group", "denominator_target_cohort_name", "denominator_cohort_name"),
                       input_id = "incidence_table_none"
                     ),
                     sortable::add_rank_list(
@@ -500,7 +492,7 @@ ui <- bslib::page_navbar(
                     ),
                     sortable::add_rank_list(
                       text = "Hide",
-                      labels = c("denominator_cohort_name", "analysis_interval", "analysis_censor_cohort_name", "analysis_complete_database_intervals", "analysis_outcome_washout", "analysis_repeated_events", "denominator_days_prior_observation", "denominator_end_date", "denominator_requirements_at_entry", "denominator_start_date", "denominator_target_cohort_name", "denominator_time_at_risk"),
+                      labels = c("analysis_interval", "denominator_sex", "analysis_censor_cohort_name", "analysis_complete_database_intervals", "analysis_outcome_washout", "analysis_repeated_events", "denominator_days_prior_observation", "denominator_end_date", "denominator_requirements_at_entry", "denominator_start_date", "denominator_time_at_risk", "incidence_start_date", "incidence_end_date"),
                       input_id = "incidence_table_hide"
                     )
                   ),
@@ -572,7 +564,7 @@ ui <- bslib::page_navbar(
                     inputId = "incidence_plot_colour",
                     label = "Colour",
                     choices = c("cdm_name", "denominator_cohort_name", "outcome_cohort_name", "maternal_age", "incidence_start_date", "incidence_end_date", "analysis_interval", "analysis_censor_cohort_name", "analysis_complete_database_intervals", "analysis_outcome_washout", "analysis_repeated_events", "denominator_days_prior_observation", "denominator_end_date", "denominator_start_date"),
-                    selected = "outcome_cohort_name",
+                    selected = "denominator_cohort_name",
                     multiple = TRUE,
                     options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
                   ),
@@ -825,8 +817,16 @@ ui <- bslib::page_navbar(
           shinyWidgets::pickerInput(
             inputId = "summarise_characteristics_cohort_name",
             label = "Cohort name",
-            choices = choices$summarise_characteristics_cohort_name,
-            selected = selected$summarise_characteristics_cohort_name,
+            choices = unique(gsub("_matched|_sampled", "", choices$summarise_characteristics_cohort_name)),
+            selected = unique(gsub("_matched|_sampled", "", selected$summarise_characteristics_cohort_name)),
+            multiple = TRUE,
+            options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
+          ),
+          shinyWidgets::pickerInput(
+            inputId = "summarise_characteristics_cohort_name_type",
+            label = "Cohort type",
+            choices = c("original", "matched", "sampled"),
+            selected = "original",
             multiple = TRUE,
             options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
           ),
@@ -998,9 +998,17 @@ ui <- bslib::page_navbar(
           shinyWidgets::pickerInput(
             inputId = "summarise_large_scale_characteristics_cohort_name",
             label = "Cohort name",
-            choices = choices$summarise_large_scale_characteristics_cohort_name,
-            selected = selected$summarise_large_scale_characteristics_cohort_name,
-            multiple = TRUE,
+            choices = unique(gsub("_matched|_sampled", "", choices$summarise_characteristics_cohort_name)),
+            selected = unique(gsub("_matched|_sampled", "", selected$summarise_characteristics_cohort_name))[1],
+            multiple = FALSE,
+            options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
+          ),
+          shinyWidgets::pickerInput(
+            inputId = "summarise_large_scale_characteristics_cohort_name_type",
+            label = "Cohort type",
+            choices = c("original", "matched", "sampled"),
+            selected = "original",
+            multiple = FALSE,
             options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
           ),
           shinyWidgets::pickerInput(
@@ -1008,14 +1016,6 @@ ui <- bslib::page_navbar(
             label = "Variable level",
             choices = choices$summarise_large_scale_characteristics_variable_level,
             selected = selected$summarise_large_scale_characteristics_variable_level,
-            multiple = TRUE,
-            options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
-          ),
-          shinyWidgets::pickerInput(
-            inputId = "summarise_large_scale_characteristics_analysis",
-            label = "Analysis",
-            choices = choices$summarise_large_scale_characteristics_analysis,
-            selected = selected$summarise_large_scale_characteristics_analysis,
             multiple = TRUE,
             options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
           ),
@@ -1058,27 +1058,11 @@ ui <- bslib::page_navbar(
               bslib::layout_sidebar(
                 sidebar = bslib::sidebar(
                   shinyWidgets::pickerInput(
-                    inputId = "summarise_large_scale_characteristics_table_lsc_compare_by",
-                    label = "Compare by",
-                    choices = c("no compare", "cdm_name", "cohort_name", "type", "variable_level"),
-                    selected = "no compare",
-                    multiple = FALSE,
-                    options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
-                  ),
-                  shinyWidgets::pickerInput(
                     inputId = "summarise_large_scale_characteristics_table_lsc_hide",
                     label = "Hide",
-                    choices = c("cdm_name", "cohort_name", "type", "variable_level"),
+                    choices = c("cdm_name", "type", "variable_name", "variable_level"),
                     selected = "type",
                     multiple = TRUE,
-                    options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
-                  ),
-                  shinyWidgets::pickerInput(
-                    inputId = "summarise_large_scale_characteristics_table_lsc_smd_reference",
-                    label = "SMD reference",
-                    choices = "no SMD",
-                    selected = "no SMD",
-                    multiple = FALSE,
                     options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
                   ),
                   position = "right"
@@ -1089,85 +1073,129 @@ ui <- bslib::page_navbar(
             )
           ),
           bslib::nav_panel(
-            title = "Most common codes",
+            title = "Table Compared",
             bslib::card(
               full_screen = TRUE,
               bslib::card_header(
                 bslib::popover(
                   shiny::icon("download"),
-                  shinyWidgets::pickerInput(
-                    inputId = "summarise_large_scale_characteristics_table_most_common_format",
-                    label = "Format",
-                    choices = c("docx", "png", "pdf", "html"),
-                    selected = "docx",
-                    multiple = FALSE,
-                    options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
-                  ),
-                  shiny::downloadButton(outputId = "summarise_large_scale_characteristics_table_most_common_download", label = "Download table")
+                  shiny::downloadButton(outputId = "summarise_large_scale_characteristics_table_lsc_compared_download", label = "Download table")
                 ),
                 class = "text-end"
               ),
               bslib::layout_sidebar(
                 sidebar = bslib::sidebar(
                   shinyWidgets::pickerInput(
-                    inputId = "summarise_large_scale_characteristics_table_most_common_top_concepts",
-                    label = "Top concepts",
-                    choices = c(10L, 25L, 100L),
-                    selected = 10L,
-                    multiple = FALSE,
-                    options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
-                  ),
-                  position = "right"
-                ),
-                gt::gt_output("summarise_large_scale_characteristics_table_most_common") |>
-                  shinycssloaders::withSpinner()
-              )
-            )
-          ),
-          bslib::nav_panel(
-            title = "Plot Compared",
-            bslib::card(
-              full_screen = TRUE,
-              bslib::layout_sidebar(
-                sidebar = bslib::sidebar(
-                  shiny.fluent::Toggle.shinyInput(
-                    label = "Missing data",
-                    onText = "Interpolate 0",
-                    offText = "Eliminate",
-                    value = TRUE,
-                    inputId = "summarise_large_scale_characteristics_plot_compared_missings"
-                  ),
-                  shinyWidgets::pickerInput(
-                    inputId = "summarise_large_scale_characteristics_plot_compared_colour",
-                    label = "Colour",
-                    choices = c("cdm_name", "cohort_name", "type", "variable_level"),
-                    selected = NULL,
+                    inputId = "summarise_large_scale_characteristics_compared_cohort_name",
+                    label = "Comparator cohort name",
+                    choices = unique(gsub("_matched|_sampled", "", choices$summarise_characteristics_cohort_name)),
+                    selected = unique(gsub("_matched|_sampled", "", selected$summarise_characteristics_cohort_name))[1],
                     multiple = FALSE,
                     options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
                   ),
                   shinyWidgets::pickerInput(
-                    inputId = "summarise_large_scale_characteristics_plot_compared_reference",
-                    label = "Reference",
-                    choices = NULL,
-                    selected = NULL,
+                    inputId = "summarise_large_scale_characteristics_compared_cohort_name_type",
+                    label = "Comparator chort type",
+                    choices = c("original", "matched", "sampled"),
+                    selected = "matched",
                     multiple = FALSE,
                     options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
                   ),
                   shinyWidgets::pickerInput(
-                    inputId = "summarise_large_scale_characteristics_plot_compared_facet",
-                    label = "Facet",
-                    choices = c("cdm_name", "cohort_name", "type", "variable_level"),
-                    selected = c("cdm_name", "cohort_name"),
+                    inputId = "summarise_large_scale_characteristics_table_lsc_compared_hide",
+                    label = "Hide",
+                    choices = c("cdm_name", "type", "variable_name", "variable_level", "smd", "asmd"),
+                    selected = "type",
                     multiple = TRUE,
                     options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
                   ),
                   position = "right"
                 ),
-                plotly::plotlyOutput("summarise_large_scale_characteristics_plot_compared") |>
+                reactable::reactableOutput("summarise_large_scale_characteristics_table_lsc_compared") |>
                   shinycssloaders::withSpinner()
               )
             )
           )
+          # bslib::nav_panel(
+          #   title = "Most common codes",
+          #   bslib::card(
+          #     full_screen = TRUE,
+          #     bslib::card_header(
+          #       bslib::popover(
+          #         shiny::icon("download"),
+          #         shinyWidgets::pickerInput(
+          #           inputId = "summarise_large_scale_characteristics_table_most_common_format",
+          #           label = "Format",
+          #           choices = c("docx", "png", "pdf", "html"),
+          #           selected = "docx",
+          #           multiple = FALSE,
+          #           options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
+          #         ),
+          #         shiny::downloadButton(outputId = "summarise_large_scale_characteristics_table_most_common_download", label = "Download table")
+          #       ),
+          #       class = "text-end"
+          #     ),
+          #     bslib::layout_sidebar(
+          #       sidebar = bslib::sidebar(
+          #         shinyWidgets::pickerInput(
+          #           inputId = "summarise_large_scale_characteristics_table_most_common_top_concepts",
+          #           label = "Top concepts",
+          #           choices = c(10L, 25L, 100L),
+          #           selected = 10L,
+          #           multiple = FALSE,
+          #           options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
+          #         ),
+          #         position = "right"
+          #       ),
+          #       gt::gt_output("summarise_large_scale_characteristics_table_most_common") |>
+          #         shinycssloaders::withSpinner()
+          #     )
+          #   )
+          # ),
+          # bslib::nav_panel(
+          #   title = "Plot Compared",
+          #   bslib::card(
+          #     full_screen = TRUE,
+          #     bslib::layout_sidebar(
+          #       sidebar = bslib::sidebar(
+          #         shiny.fluent::Toggle.shinyInput(
+          #           label = "Missing data",
+          #           onText = "Interpolate 0",
+          #           offText = "Eliminate",
+          #           value = TRUE,
+          #           inputId = "summarise_large_scale_characteristics_plot_compared_missings"
+          #         ),
+          #         shinyWidgets::pickerInput(
+          #           inputId = "summarise_large_scale_characteristics_plot_compared_colour",
+          #           label = "Colour",
+          #           choices = c("cdm_name", "cohort_name", "type", "variable_level"),
+          #           selected = NULL,
+          #           multiple = FALSE,
+          #           options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
+          #         ),
+          #         shinyWidgets::pickerInput(
+          #           inputId = "summarise_large_scale_characteristics_plot_compared_reference",
+          #           label = "Reference",
+          #           choices = NULL,
+          #           selected = NULL,
+          #           multiple = FALSE,
+          #           options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
+          #         ),
+          #         shinyWidgets::pickerInput(
+          #           inputId = "summarise_large_scale_characteristics_plot_compared_facet",
+          #           label = "Facet",
+          #           choices = c("cdm_name", "cohort_name", "type", "variable_level"),
+          #           selected = c("cdm_name", "cohort_name"),
+          #           multiple = TRUE,
+          #           options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
+          #         ),
+          #         position = "right"
+          #       ),
+          #       plotly::plotlyOutput("summarise_large_scale_characteristics_plot_compared") |>
+          #         shinycssloaders::withSpinner()
+          #     )
+          #   )
+          # )
         )
       )
     )

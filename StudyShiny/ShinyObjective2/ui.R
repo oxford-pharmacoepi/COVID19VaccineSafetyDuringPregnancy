@@ -353,7 +353,7 @@ ui <- bslib::page_navbar(
           ),
           shinyWidgets::pickerInput(
             inputId = "summarise_sampling_cohort_name",
-            label = "Cohort",
+            label = "Cohort name",
             choices = paste0("population_objective_", 1:3),
             selected = paste0("population_objective_", 1:3),
             multiple = TRUE,
@@ -422,6 +422,14 @@ ui <- bslib::page_navbar(
                       selected = "overall",
                       multiple = TRUE,
                       options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
+                    ),
+                    shinyWidgets::pickerInput(
+                      inputId = "summarise_cohort_count_weighting_pop",
+                      label = "Weighting",
+                      choices = c(TRUE, FALSE),
+                      selected = TRUE,
+                      multiple = TRUE,
+                      options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
                     )
                   ),
                   sortable::bucket_list(
@@ -443,7 +451,7 @@ ui <- bslib::page_navbar(
                     ),
                     sortable::add_rank_list(
                       text = "Hide",
-                      labels = c("vaccine_brand", "age_group", "gestational_trimester", "variable_level", "table_name", "weighting"),
+                      labels = c("vaccine_brand", "age_group", "gestational_trimester", "variable_level", "table_name", "weighting", "estimate_name"),
                       input_id = "summarise_cohort_count_table_hide_pop"
                     )
                   ),
@@ -1452,6 +1460,14 @@ ui <- bslib::page_navbar(
               bslib::layout_sidebar(
                 fill = TRUE,
                 sidebar = bslib::sidebar(
+                  shinyWidgets::pickerInput(
+                    inputId = "limit",
+                    label = "Scale limit",
+                    choices = c(1, 2, 5, 20),
+                    selected = c(NULL) ,
+                    multiple = TRUE,
+                    options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
+                  ),
                   shinyWidgets::pickerInput(
                     inputId = "summarise_standardised_mean_differences_plot_facet",
                     label = "Facet",

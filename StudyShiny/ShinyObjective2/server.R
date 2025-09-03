@@ -292,14 +292,14 @@ server <- function(input, output, session) {
         .data$age_group %in% input$summarise_characteristics_age_group
       ) |>
       filterSettings(.data$weighting %in% input$summarise_characteristics_weighting) |>
-      dplyr::filter(.data$variable_name != "Previous covid-19 tests", .data$variable_level != "0.0") |>
+      # dplyr::filter(.data$variable_name != "Previous covid-19 tests", .data$variable_level != "0.0") |>
       dplyr::mutate(
-        variable_level = dplyr::if_else(
-          .data$variable_name %in% c("Alcohol misuse dependence", "Obesity"), .data$variable_name, .data$variable_level
-        ),
-        variable_name = dplyr::if_else(
-          .data$variable_name %in% c("Alcohol misuse dependence", "Obesity"), "Health covariates in the past 5 years", .data$variable_name
-        ),
+        # variable_level = dplyr::if_else(
+        #   .data$variable_name %in% c("Alcohol misuse dependence", "Obesity"), .data$variable_name, .data$variable_level
+        # ),
+        # variable_name = dplyr::if_else(
+        #   .data$variable_name %in% c("Alcohol misuse dependence", "Obesity"), "Health covariates in the past 5 years", .data$variable_name
+        # ),
         variable_name = dplyr::case_when(
           .data$variable_name %in% c("Previous covid-19 infections") ~ "Previous COVID-19 infections",
           .data$variable_name %in% c("Previous covid vaccines") ~ "Previous COVID-19 vaccines",
@@ -328,7 +328,7 @@ server <- function(input, output, session) {
               "Number records", "Number subjects", "Age", "Age group", "Vaccine brand",
               "Gestational trimester", "Previous pregnancies", "Previous observation",
               "Other vaccines within 5 days", "Previous COVID-19 infections", "Previous healthcare visits",
-              "Mental heatlh problems in the last year","Health covariates in the past 5 years",
+              "Comorbidities in the last 5 years",
               "History of comorbidities", "Medications in the past year"
             )
           )
@@ -348,7 +348,7 @@ server <- function(input, output, session) {
               "Gestational trimester", "Days previous dose", "Previous COVID-19 vaccines",
               "Previous pregnant COVID-19 vaccines", "Previous pregnancies", "Previous observation",
               "Other vaccines within 5 days", "Previous COVID-19 infections", "Previous healthcare visits",
-              "Mental heatlh problems in the last year","Health covariates in the past 5 years",
+              "Comorbidities in the last 5 years",
               "History of comorbidities", "Medications in the past year"
             )
           )
@@ -364,7 +364,7 @@ server <- function(input, output, session) {
               "Gestational trimester", "Days previous dose", "Previous COVID-19 vaccines",
               "Previous pregnant COVID-19 vaccines", "Previous pregnancies", "Previous observation",
               "Other vaccines within 5 days", "Previous COVID-19 infections", "Previous healthcare visits",
-              "Mental heatlh problems in the last year","Health covariates in the past 5 years",
+              "Comorbidities in the last 5 years",
               "History of comorbidities", "Medications in the past year"
             )
           )
@@ -669,7 +669,7 @@ server <- function(input, output, session) {
   getIncidenceRateRatioTidy <- shiny::reactive({
     getIncidenceRateRatioData() |>
       omopgenerics::tidy() |>
-      dplyr::select(dplyr::any_of(c(input$incidence_rate_ratio_tidy_columns, "exp_coef", "lower_ci", "upper_ci", "median", "q25", "q75", "min", "max", "count"))) |>
+      dplyr::select(dplyr::any_of(c(input$incidence_rate_ratio_tidy_columns, "coef", "lower_ci", "upper_ci", "median", "q25", "q75", "min", "max", "count"))) |>
       DT::datatable(
         filter = "top",
         rownames = FALSE,
@@ -721,7 +721,7 @@ server <- function(input, output, session) {
     getIncidenceRateRatioData() |>
       dplyr::filter(.data$variable_name == "Risk estimate") |>
       visOmopResults::visOmopTable(
-        estimateName = c("IRR [95% CI]" = "<exp_coef> [<lower_ci> - <upper_ci>]"),
+        estimateName = c("IRR [95% CI]" = "<coef> [<lower_ci> - <upper_ci>]"),
         settingsColumn = "weighting",
         header = input$incidence_rate_ratio_table_header_irr,
         groupColumn = input$incidence_rate_ratio_table_group_column_irr,
@@ -746,7 +746,7 @@ server <- function(input, output, session) {
     getIncidenceRateRatioData() |>
       visOmopResults::scatterPlot(
         x = input$incidence_rate_ratio_plot_y,
-        y = "exp_coef",
+        y = "coef",
         line = FALSE,
         point = TRUE,
         ribbon = FALSE,
@@ -914,7 +914,6 @@ server <- function(input, output, session) {
   ## population count ----
   getSummariseCohortCountDataPop <- shiny::eventReactive(input$update_summarise_sampling, {
     data[["summarise_characteristics"]] |>
-      omopgenerics::filterSettings(weighting == FALSE) |>
       dplyr::filter(variable_name %in% c("Number records", "Number subjects")) |>
       dplyr::filter(.data$cdm_name %in% input$summarise_sampling_cdm_name) |>
       omopgenerics::filterGroup(.data$cohort_name %in% input$summarise_sampling_cohort_name) |>
@@ -923,6 +922,9 @@ server <- function(input, output, session) {
         .data$vaccine_brand %in% input$summarise_cohort_count_vaccine_brand_pop,
         .data$gestational_trimester %in% input$summarise_cohort_count_gestational_trimester_pop,
         .data$age_group %in% input$summarise_cohort_count_age_group_pop
+      )|>
+      omopgenerics::filterSettings(
+        .data$weighting %in% input$summarise_cohort_count_weighting_pop
       )
   })
   getSummariseCohortCountTablePop <- shiny::reactive({
@@ -1391,9 +1393,16 @@ server <- function(input, output, session) {
       ggplot2::geom_hline(yintercept = 0.1, color = "black", linewidth = 0.4) + 
       ggplot2::geom_abline(intercept = 0, slope = 1, color = "black", linewidth = 0.4, linetype = "dashed")
     
+    if (length(input$numeric) != 0) {
+      p <- p +
+        ggplot2::scale_x_continuous(limits = c(0, as.numeric(input$limit))) +
+        ggplot2::scale_y_continuous(limits = c(0, as.numeric(input$limit)))
+    }
+    
     if (input$summarise_standardised_mean_differences_plot_colour == "concept_id") {
       p <- p + ggplot2::theme(legend.position = "none")
     }
+    
     p + ggplot2::coord_equal()
   })
   output$summarise_standardised_mean_differences_plot <- shiny::renderUI({

@@ -97,6 +97,7 @@ server <- function(input, output, session) {
     data[["summarise_cohort_count"]] |>
       dplyr::filter(
         .data$cdm_name %in% input$summarise_cohort_count_cdm_name,
+        .data$group_level %in% input$summarise_cohort_count_cohort_name,
         .data$variable_name %in% input$summarise_cohort_count_variable_name
       ) |>
       omopgenerics::filterSettings(.data$table_name %in% input$summarise_cohort_count_table_name)
@@ -275,13 +276,17 @@ server <- function(input, output, session) {
   
   ## get summarise_characteristics data
   getSummariseCharacteristicsData <- shiny::eventReactive(input$update_summarise_characteristics, {
+    x1 <- input$summarise_characteristics_cohort_name
+    x2 <- input$summarise_characteristics_cohort_name_type
+    cohortName <- do.call(paste0, expand.grid(x1, paste0("_", x2)))
+    cohortName <- gsub("_original", "", cohortName)
     data[["summarise_characteristics"]] |>
       dplyr::filter(
         .data$cdm_name %in% input$summarise_characteristics_cdm_name,
         .data$variable_name %in% input$summarise_characteristics_variable_name,
         .data$estimate_name %in% input$summarise_characteristics_estimate_name
       ) |>
-      omopgenerics::filterGroup(.data$cohort_name %in% input$summarise_characteristics_cohort_name)
+      omopgenerics::filterGroup(.data$cohort_name %in% cohortName)
   })
   getSummariseCharacteristicsTable <- shiny::reactive({
     getSummariseCharacteristicsData() |>
@@ -392,50 +397,37 @@ server <- function(input, output, session) {
   
   ## get summarise_large_scale_characteristics data
   getSummariseLargeScaleCharacteristicsData <- shiny::eventReactive(input$update_summarise_large_scale_characteristics, {
+    x1 <- input$summarise_large_scale_characteristics_cohort_name
+    x2 <- input$summarise_large_scale_characteristics_cohort_name_type
+    cohortName <- do.call(paste0, expand.grid(x1, paste0("_", x2)))
+    cohortName <- gsub("_original", "", cohortName)
     data[["summarise_large_scale_characteristics"]] |>
       dplyr::filter(
         .data$cdm_name %in% input$summarise_large_scale_characteristics_cdm_name,
         .data$variable_level %in% input$summarise_large_scale_characteristics_variable_level
       ) |>
-      omopgenerics::filterGroup(.data$cohort_name %in% input$summarise_large_scale_characteristics_cohort_name) |>
+      omopgenerics::filterGroup(.data$cohort_name %in% cohortName) |>
       omopgenerics::filterSettings(
-        .data$analysis %in% input$summarise_large_scale_characteristics_analysis,
         .data$table_name %in% input$summarise_large_scale_characteristics_table_name,
         .data$type %in% input$summarise_large_scale_characteristics_type
       )
   })
   getSummariseLargeScaleCharacteristicsTableLsc <- shiny::reactive({
-    if (identical(input$summarise_large_scale_characteristics_table_lsc_compare_by, "no compare")) {
-      cb <- NULL
-    } else {
-      cb <- input$summarise_large_scale_characteristics_table_lsc_compare_by
-    }
-    if (identical(input$summarise_large_scale_characteristics_table_lsc_smd_reference, "no SMD")) {
-      sr <- NULL
-    } else {
-      sr <- input$summarise_large_scale_characteristics_table_lsc_smd_reference
-    }
+    dropCols <- input$summarise_large_scale_characteristics_table_lsc_hide
+    dropCols[dropCols == "variable_name"] <- "concept_name"
     getSummariseLargeScaleCharacteristicsData() |>
-      CohortCharacteristics::tableLargeScaleCharacteristics(
-        compareBy = cb,
-        hide = input$summarise_large_scale_characteristics_table_lsc_hide,
-        smdReference = sr
-      )
+      # omopgenerics::newSummarisedResult(settings = omopgenerics::settings(res) |> dplyr::mutate(additional = "concept_id")) |>
+      omopgenerics::tidy() |>
+      dplyr::rename("concept_name" = "variable_name") |>
+      dplyr::relocate(c("count", "percentage"), .after = dplyr::last_col()) |>
+      dplyr::select(!dplyr::any_of(c("analysis", "type", dropCols))) |>
+      visOmopResults::formatTable(type = "reactable")
   })
   output$summarise_large_scale_characteristics_table_lsc <- reactable::renderReactable({
     getSummariseLargeScaleCharacteristicsTableLsc()
   })
-  shiny::observeEvent(input$summarise_large_scale_characteristics_table_lsc_compare_by, {
-    opts <- values[[paste0("summarise_large_scale_characteristics_", input$summarise_large_scale_characteristics_table_lsc_compare_by)]]
-    opts <- c("no SMD", opts)
-    shinyWidgets::updatePickerInput(
-      inputId = "summarise_large_scale_characteristics_table_lsc_smd_reference",
-      choices = opts,
-      selected = "no SMD"
-    )
-  })
   output$summarise_large_scale_characteristics_table_lsc_download <- shiny::downloadHandler(
-    filename = "smd_results.csv",
+    filename = "lsc_results.csv",
     content = function(file) {
       rt <- getSummariseLargeScaleCharacteristicsTableLsc()
       rt$x$tag$attribs$data |>
@@ -445,47 +437,60 @@ server <- function(input, output, session) {
         readr::write_csv(file)
     }
   )
-  getSummariseLargeScaleCharacteristicsTableMostCommon <- shiny::reactive({
-    getSummariseLargeScaleCharacteristicsData() |>
-      CohortCharacteristics::tableTopLargeScaleCharacteristics(
-        topConcepts = input$summarise_large_scale_characteristics_table_most_common_top_concepts,
-        type = "gt"
-      )
+  getSummariseLargeScaleCharacteristicsComparedData <- shiny::eventReactive(input$update_summarise_large_scale_characteristics, {
+    x1 <- input$summarise_large_scale_characteristics_cohort_name
+    x2 <- input$summarise_large_scale_characteristics_cohort_name_type
+    cohortName1 <- do.call(paste0, expand.grid(x1, paste0("_", x2)))
+    cohortName1 <- gsub("_original", "", cohortName1)
+    y1 <- input$summarise_large_scale_characteristics_compared_cohort_name
+    y2 <- input$summarise_large_scale_characteristics_compared_cohort_name_type
+    cohortName2 <- do.call(paste0, expand.grid(y1, paste0("_", y2)))
+    cohortName2 <- gsub("_original", "", cohortName2)
+    data[["summarise_large_scale_characteristics"]] |>
+      dplyr::filter(
+        .data$cdm_name %in% input$summarise_large_scale_characteristics_cdm_name,
+        .data$variable_level %in% input$summarise_large_scale_characteristics_variable_level
+      ) |>
+      omopgenerics::filterGroup(.data$cohort_name %in% c(cohortName1, cohortName2)) |>
+      omopgenerics::filterSettings(
+        .data$table_name %in% input$summarise_large_scale_characteristics_table_name,
+        .data$type %in% input$summarise_large_scale_characteristics_type
+      ) |>
+      dplyr::filter(estimate_name == "percentage") |>
+      omopgenerics::tidy() |>
+      tidyr::pivot_wider(names_from = "cohort_name", values_from = "percentage") |>
+      dplyr::mutate(
+        SMD = if_else(
+          .data[[cohortName2]] == .data[[cohortName1]], 0,
+          (.data[[cohortName2]]/100 - .data[[cohortName1]]/100) / sqrt((.data[[cohortName1]]/100*(1-.data[[cohortName1]]/100) + .data[[cohortName2]]/100*(1-.data[[cohortName2]]/100))/2)
+        ),
+        ASMD = abs(SMD)
+      ) |>
+      dplyr::rename(!!paste0(cohortName1, " (%)") := cohortName1, !!paste0(cohortName2, " (%)") := cohortName2)
   })
-  output$summarise_large_scale_characteristics_table_most_common <- gt::render_gt({
-    getSummariseLargeScaleCharacteristicsTableMostCommon()
+  getSummariseLargeScaleCharacteristicsComparedTableLsc <- shiny::reactive({
+    dropCols <- input$summarise_large_scale_characteristics_table_lsc_compared_hide
+    dropCols[dropCols == "variable_name"] <- "concept_name"
+    getSummariseLargeScaleCharacteristicsComparedData() |>
+      dplyr::rename("concept_name" = "variable_name") |>
+      # dplyr::relocate(c("count", "percentage"), .after = dplyr::last_col()) |>
+      dplyr::select(!dplyr::any_of(c("analysis", dropCols))) |>
+      visOmopResults::formatTable(type = "reactable")
   })
-  output$summarise_large_scale_characteristics_table_most_common_download <- shiny::downloadHandler(
-    filename = paste0("top_concepts.", input$summarise_large_scale_characteristics_table_most_common_format),
+  output$summarise_large_scale_characteristics_table_lsc_compared <- reactable::renderReactable({
+    getSummariseLargeScaleCharacteristicsComparedTableLsc()
+  })
+  output$summarise_large_scale_characteristics_table_lsc_compared_download <- shiny::downloadHandler(
+    filename = "smd_results.csv",
     content = function(file) {
-      gt::gtsave(getSummariseLargeScaleCharacteristicsTableMostCommon(), file)
+      rt <- getSummariseLargeScaleCharacteristicsComparedTableLsc()
+      rt$x$tag$attribs$data |>
+        unclass() |>
+        jsonlite::fromJSON() |>
+        dplyr::as_tibble() |>
+        readr::write_csv(file)
     }
   )
-  getSummariseLargeScaleCharacteristicsPlotCompared <- shiny::reactive({
-    if (input$summarise_large_scale_characteristics_plot_compared_missings) {
-      mis <- 0
-    } else {
-      mis <- NULL
-    }
-    getSummariseLargeScaleCharacteristicsData() |>
-      CohortCharacteristics::plotComparedLargeScaleCharacteristics(
-        colour = input$summarise_large_scale_characteristics_plot_compared_colour,
-        reference = input$summarise_large_scale_characteristics_plot_compared_reference,
-        facet = input$summarise_large_scale_characteristics_plot_compared_facet,
-        missings = mis
-      )
-  })
-  output$summarise_large_scale_characteristics_plot_compared <- plotly::renderPlotly({
-    getSummariseLargeScaleCharacteristicsPlotCompared()
-  })
-  shiny::observeEvent(input$summarise_large_scale_characteristics_plot_compared_colour, {
-    opts <- values[[paste0("summarise_large_scale_characteristics_", input$summarise_large_scale_characteristics_plot_compared_colour)]]
-    shinyWidgets::updatePickerInput(
-      inputId = "summarise_large_scale_characteristics_plot_compared_reference",
-      choices = opts,
-      selected = opts[1]
-    )
-  })
   # incidence -----
   ## update message if filter is changed
   shiny::observeEvent(input$incidence_cdm_name,
@@ -591,15 +596,17 @@ server <- function(input, output, session) {
         .data$variable_name %in% input$incidence_variable_name,
         .data$estimate_name %in% input$incidence_estimate_name
       ) |>
-      omopgenerics::filterGroup(.data$outcome_cohort_name %in% input$incidence_outcome_cohort_name) |>
+      omopgenerics::filterGroup(
+        .data$denominator_cohort_name %in% input$incidence_denominator_cohort_name,
+        .data$outcome_cohort_name %in% input$incidence_outcome_cohort_name
+        ) |>
       omopgenerics::filterStrata(.data$maternal_age %in% input$incidence_maternal_age) |>
       omopgenerics::filterAdditional(
-        .data$incidence_start_date %in% input$incidence_incidence_start_date,
+        .data$analysis_interval %in% input$incidence_analysis_interval
       ) |>
       omopgenerics::filterSettings(
-        .data$denominator_end_date %in% input$incidence_denominator_end_date,
-        .data$denominator_start_date %in% input$incidence_denominator_start_date
-      )
+        .data$denominator_table_name %in% input$incidence_denominator_table_name
+      ) 
   })
   getIncidenceTidy <- shiny::reactive({
     tidyDT(getIncidenceData(), input$incidence_tidy_columns, input$incidence_tidy_pivot_estimates)
