@@ -100,7 +100,7 @@ cdm$source_population <- cdm$source_population |>
       paste0("01", month(pregnancy_start_date), year(pregnancy_start_date)),
       paste0("02", month(pregnancy_start_date), year(pregnancy_start_date))
     ),
-    age_group_sample = cut(age, !!seq(12, 56, 2), include.lowest = TRUE)
+    age_group_sample = cut(age, !!seq(12, 56, 2), include.lowest = TRUE, right = FALSE)
   ) |>
   compute(name = "source_population", temporary = FALSE)
 

@@ -166,6 +166,7 @@ sampling_source <- sampling_source %>%
       .data$cohort_definition_id == 3 ~ cut(exposed_previous_dose, !!seq(0, 90000, 90), include.lowest = TRUE)
     )
   ) |>
+  compute(name = "sampling_source", temporary = FALSE) |>
   filter((is.na(exposed_previous_dose_band) & is.na(comparator_previous_dose_band)) | (comparator_previous_dose_band == exposed_previous_dose_band)) |>
   compute(name = "sampling_source", temporary = FALSE) 
 
@@ -189,7 +190,7 @@ sampling_source <- sampling_source |>
   ) %>% 
   select(!c("age_group_sample")) |>
   compute(name = "sampling_source", temporary = FALSE) |>
-  ## WASH OUT
+  ## Wash out
   applyPopulationWashout(censorDate = "comparator_pregnancy_start_date")
 
 sampling_summary <- samplingSummary(sampling_source, "Comparator eligible to contribute at matched vaccination day", sampling_summary)
@@ -330,7 +331,7 @@ cdm$study_population <- cdm$study_population |>
     nameStyle = "previous_healthcare_visits",
     name = "study_population"
   ) |>
-  # obesisty, and alcohol and substance missuse dependenacy - 5 years back
+  # obesisty, and alcohol, anxiety and depression 1 year before
   addCohortIntersectFlag(
     targetCohortTable = "covariates_5", 
     window = list(c(-365, 0)), 
@@ -356,7 +357,11 @@ cdm$study_population <- cdm$study_population |>
     previous_covid_vaccines = as.character(previous_covid_vaccines),
     previous_pregnant_covid_vaccines = as.character(previous_pregnant_covid_vaccines)
   ) |>
-  newCohortTable(.softValidation = TRUE) |>
+  newCohortTable(
+    cohortSetRef = settings(cdm$source_population) |> 
+      mutate(cohort_name = gsub("source_", "", cohort_name)),
+    .softValidation = TRUE
+    ) |>
   addCohortName()
 
 # Characterise ---- 
@@ -368,11 +373,9 @@ baseline_characteristics <- getBaselineCharacteristics(cdm, strata, weights = NU
 info(logger, "- Large Scale characteristics")
 cdm <- getFeaturesTable(cdm, strata)
 large_scale_characteristics <- getLargeScaleCharacteristics(cdm, strata, weights = NULL)
-
 ## censoring 
 info(logger, "- Censoring summary")
 censoring <- summariseCohortExit(cdm = cdm, strata = strata, weights = NULL)
-
 ## index date and gestational age
 timeDistribution <- summariseTimeDistribution(cdm = cdm, strata = strata, weights = NULL)
 
@@ -415,34 +418,30 @@ cdm$study_population_nco <- cdm$study_population |>
     name = "study_population_nco"
   )
 
-nco_unweighted <- bind(
-  estimateSurvivalRisk(
-    cohort = cdm$study_population_nco, outcomes = settings(cdm$nco)$cohort_name, 
-    end = "cohort_end_date", strata = strata, group = "cohort_name", 
-    weights = NULL, outcomeGroup = "Negative Control Outcomes"
-  ), 
-  estimateSurvivalRisk(
-    cohort = cdm$study_population_nco, outcomes = settings(cdm$nco)$cohort_name, 
-    end = "cohort_end_date_sensitivity", strata = strata, group = "cohort_name", 
-    weights = NULL, outcomeGroup = "Negative Control Outcomes"
-  )
+nco_unweighted <- estimateSurvivalRisk(
+  cohort = cdm$study_population_nco, outcomes = settings(cdm$nco)$cohort_name, 
+  end = "cohort_end_date", strata = strata, group = "cohort_name", 
+  weights = NULL, outcomeGroup = "Negative Control Outcomes"
+)
+nco_unweighted_sensitivity <-   estimateSurvivalRisk(
+  cohort = cdm$study_population_nco, outcomes = settings(cdm$nco)$cohort_name, 
+  end = "cohort_end_date_sensitivity", strata = strata, group = "cohort_name", 
+  weights = NULL, outcomeGroup = "Negative Control Outcomes"
 )
 
-pco_unweighted <- bind(
-  estimateSurvivalRisk(
-    cohort = cdm$study_population_nco, outcomes = "covid", 
-    end = "cohort_end_date", strata = strata, group = "cohort_name", 
-    weights = NULL, outcomeGroup = "Positive Control Outcomes"
-  ), 
-  estimateSurvivalRisk(
-    cohort = cdm$study_population_nco, outcomes = "covid", 
-    end = "cohort_end_date_sensitivity", strata = strata, group = "cohort_name", 
-    weights = NULL, outcomeGroup = "Positive Control Outcomes"
-  )
+pco_unweighted <- estimateSurvivalRisk(
+  cohort = cdm$study_population_nco, outcomes = "covid", 
+  end = "cohort_end_date", strata = strata, group = "cohort_name", 
+  weights = NULL, outcomeGroup = "Positive Control Outcomes"
+)
+pco_unweighted_sensitivity <- estimateSurvivalRisk(
+  cohort = cdm$study_population_nco, outcomes = "covid", 
+  end = "cohort_end_date_sensitivity", strata = strata, group = "cohort_name", 
+  weights = NULL, outcomeGroup = "Positive Control Outcomes"
 )
 
-nco_unweighted <- bind(nco_unweighted, pco_unweighted) |>
+nco_pco_unweighted <- bind(nco_unweighted, nco_unweighted_sensitivity, pco_unweighted, pco_unweighted_sensitivity) |>
   suppressRiskEstimates()
 
-nco_unweighted |> 
+nco_pco_unweighted |> 
   exportSummarisedResult(fileName = paste0("unweighted_nco_", cdmName(cdm), ".csv"), path = output_folder)

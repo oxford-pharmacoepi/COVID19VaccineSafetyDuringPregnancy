@@ -19,6 +19,8 @@ library(Hmisc)
 library(glue)
 library(IncidencePrevalence)
 library(clock)
+library(purrr)
+library(furrr)
 
 # Database name
 database_name <- "CPRD GOLD 100k"
