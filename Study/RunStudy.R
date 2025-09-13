@@ -24,7 +24,7 @@ dataCutDate <- cdm$observation_period |> dplyr::pull("observation_period_end_dat
 enrollment1 <- as.Date(c("2021-04-01", "2022-02-28"))
 enrollment2 <- as.Date(c("2021-05-01", "2022-03-31"))
 enrollment3 <- c(as.Date("2021-10-01"), dataCutDate - lubridate::years(1))
-samplig_fraction <- 3
+set.seed(123)
 
 # Database snapshot:
 summariseOmopSnapshot(cdm) |>
@@ -97,7 +97,7 @@ if (runOutcomeModel) {
       ),
       .softValidation = TRUE
     )
-    load(here::here(output_folder, "ps_covariates.RData"))
+    load(here::here(output_folder, "lasso.RData"))
   }
   info(logger, "STEP 4 OUTCOME MODEL ----")
   source(here("Analysis", "04_OutcomeModel.R"))

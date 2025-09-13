@@ -443,7 +443,7 @@ getBaselineCharacteristics <- function(cdm, strata, weights) {
   } else {
     baseline <- NULL
     strata <- unlist(strata)
-    strata <- c(strata[strata != "exposure"], "overall")
+    strata <- unique(c(strata[strata != "exposure"], "overall"))
     data <- cdm$study_population |> mutate(overall = "overall")
     for (group in settings(cdm$study_population)$cohort_name) { # group level
       for (strata.k in strata) { # strata name
@@ -457,12 +457,25 @@ getBaselineCharacteristics <- function(cdm, strata, weights) {
             # weights
             data.k <- getWeights(data.k, weights[[group]])
             # characteristics
-            baseline.k <- data |> 
+            baselineData <- data |> 
               select(!any_of(c("weight", "ps"))) |> 
-              inner_join(data.k, copy = TRUE) |>  
+              inner_join(
+                data.k |> 
+                  select(cohort_definition_id, subject_id, exposure, cohort_start_date, exposed_match_id, pregnancy_id, weight), 
+                by = c("cohort_definition_id", "subject_id", "exposure", "cohort_start_date", "exposed_match_id", "pregnancy_id"),
+                copy = TRUE
+              ) |>
+              compute()
+            
+            if (nrow(data.k) != pull(tally(baselineData))) cli::cli_abort("Error in getBaselineCharacteristics")
+            
+            strataBaseline <- "exposure"
+            if (strata.k != "overall") strataBaseline <- (c("exposure", strata.k))
+            
+            baseline.k <- baselineData |>  
               summariseCharacteristics(
                 cohortId = group,
-                strata = "exposure",
+                strata = strataBaseline,
                 counts = TRUE,
                 demographics = FALSE,
                 cohortIntersectFlag = list(
@@ -492,13 +505,10 @@ getBaselineCharacteristics <- function(cdm, strata, weights) {
                 otherVariables = otherVariables,
                 estimates = estimates,
                 weights = "weight"
-              )
-            if (strata.k != "overall" & nrow(baseline.k) > 0) {
-              baseline.k <- baseline.k  |>
-                splitStrata() |>
-                mutate(!!strata.k := strataLevel.k) |>
-                uniteStrata(c("exposure", strata.k)) |>
-                newSummarisedResult(settings(baseline.k) |> mutate(strata = paste0("exposure &&& ", strata.k)))
+              ) 
+            if (strata.k != "overall") {
+              baseline.k <- baseline.k |>
+                filter(strata_name != "overall")
             }
             baseline <- omopgenerics::bind(baseline, baseline.k)
           }
@@ -510,6 +520,7 @@ getBaselineCharacteristics <- function(cdm, strata, weights) {
   weighting <- "FALSE"
   if (!is.null(weights)) weighting <- "TRUE"
   baseline |>
+    mutate(cdm_name = cdmName(cdm)) |>
     newSummarisedResult(
       settings = settings(baseline) |> 
         mutate(weighting = weighting) |> 
@@ -652,13 +663,17 @@ getLargeScaleCharacteristics <- function(cdm, strata, weights) {
           if (nrow(data.k) > 0) {
             # weights
             data.k <- getWeights(data.k, weights[[group]]) 
+            
+            strataBaseline <- "exposure"
+            if (strata.k != "overall") strataBaseline <- (c("exposure", strata.k))
+            
             # characteristics
             summarisedResult.k <- data.k |>
               mutate(exposure = as.character(exposure)) |>
               summariseResult(
                 group = list("cohort_name"),
                 includeOverallGroup = FALSE,
-                strata = list("exposure"),
+                strata = strataBaseline,
                 includeOverallStrata = FALSE,
                 variables = features,
                 estimates = c("count", "percentage"),
@@ -666,11 +681,8 @@ getLargeScaleCharacteristics <- function(cdm, strata, weights) {
                 weights = "weight"
               )
             if (strata.k != "overall") {
-              summarisedResult.k <- summarisedResult.k  |>
-                splitStrata() |>
-                mutate(!!strata.k := strataLevel.k) |>
-                uniteStrata(c("exposure", strata.k)) |>
-                newSummarisedResult(settings(summarisedResult.k) |> mutate(strata = paste0("exposure &&& ", strata.k)))
+              summarisedResult.k <- summarisedResult.k |>
+                filter(strata_name != "overall")
             }
             summarisedResult <- omopgenerics::bind(summarisedResult, summarisedResult.k)
           }
@@ -684,6 +696,7 @@ getLargeScaleCharacteristics <- function(cdm, strata, weights) {
   lsc <- summarisedResult |>
     filter(variable_name != "region") |>
     mutate(
+      cdm_name = cdmName(cdm),
       additional_level = gsub("_minf_m366|_m30_0|_m365_31|_m180_m31", "", variable_name),
       additional_name = "concept_id",
       variable_level = gsub(".*(m30_0|minf_m366|m365_31|m180_m31)", "\\1", variable_name),
@@ -701,6 +714,7 @@ getLargeScaleCharacteristics <- function(cdm, strata, weights) {
       summarisedResult |>
         filter(variable_name == "region") |>
         mutate(
+          cdm_name = cdmName(cdm),
           additional_level = "overall",
           additional_name = "overall"
         )
@@ -894,7 +908,7 @@ summariseCohortExit <- function(cdm, strata, weights) {
       }
     }
   }
-  return(summaryExit)
+  return(summaryExit |> mutate(cdm_name = cdmName(cdm)))
 }
 
 addExitReasonPercentages <- function(x) {
@@ -987,70 +1001,78 @@ getWeights <- function(x, coefs) {
 }
 
 processGroupStrata <- function(data, group, weights) {
-  set.seed(123)
-  
-  # parallelized bootstrap for coef
-  coefBootstrap <- future_map_dbl(1:500, ~{
-    data.ii <- data |> dplyr::sample_n(size = nrow(data), replace = TRUE)
-    if (length(weights) != 0) {
-      data.ii <- getWeights(data.ii, weights[[group]])
+  if (nrow(data) > 10) {
+    set.seed(123)
+    
+    coefBootstrap <- NULL
+    for (ii in 1:500) {
+      data.ii <- data |> dplyr::sample_n(size = nrow(data), replace = TRUE)
+      if (length(weights) != 0) {
+        data.ii <- getWeights(data.ii, weights[[group]])
+      }
+      coefBootstrap <- c(coefBootstrap, getIRR(data.ii))
     }
-    getIRR(data.ii)
-  })
-  
-  # calculate main estimate
-  if (length(weights) != 0) {
-    data <- getWeights(data, weights[[group]])
+    
+    # calculate main estimate
+    if (length(weights) != 0) {
+      data <- getWeights(data, weights[[group]])
+    }
+    res <- getIRR(data)
+    
+    # risk estimate tibble
+    resultsRisk <- tibble(
+      lower_ci = quantile(coefBootstrap, 0.025, na.rm = TRUE),
+      upper_ci = quantile(coefBootstrap, 0.975, na.rm = TRUE),
+      coef = res
+    ) |>
+      regressionToSummarised(cols = c("coef", "lower_ci", "upper_ci")) |>
+      mutate(
+        estimate_type = "numeric",
+        variable_name = "Risk estimate",
+        variable_level = NA_character_
+      )
+    
+    # follow-up stats tibble
+    resultsStats <- data |>
+      group_by(exposure) |>
+      summarise(
+        median = median(time * .data$weight),
+        q25 = quantile(time * .data$weight, 0.25),
+        q75 = quantile(time * .data$weight, 0.75),
+        min = min(time * .data$weight),
+        max = max(time * .data$weight),
+        subject_count = sum(.data$weight),
+        outcome_count = sum(.data$status * .data$weight),
+        .groups = "drop"
+      ) |>
+      mutate(estimate_type = "numeric") |>
+      rename("variable_level" = "exposure") |>
+      regressionToSummarised(
+        cols = c("median", "q25", "q75", "min", "max", "subject_count", "outcome_count")
+      ) |>
+      mutate(
+        variable_name = case_when(
+          estimate_name == "subject_count" ~ "Number persons",
+          estimate_name == "outcome_count" ~ "Number events",
+          .default = "Person-Days"
+        ),
+        estimate_name = if_else(grepl("_count", estimate_name), "count", estimate_name)
+      )
+    
+    # combine and return
+    bind_rows(resultsRisk, resultsStats)
+  } else {
+    tibble(
+      variable_level = character(),
+      estimate_type = character(),
+      estimate_name = character(),
+      estimate_value = character(),
+      variable_name = character()
+    )
   }
-  res <- getIRR(data)
-  
-  # risk estimate tibble
-  resultsRisk <- tibble(
-    lower_ci = quantile(coefBootstrap, 0.025, na.rm = TRUE),
-    upper_ci = quantile(coefBootstrap, 0.975, na.rm = TRUE),
-    coef = res
-  ) |>
-    regressionToSummarised(cols = c("coef", "lower_ci", "upper_ci")) |>
-    mutate(
-      estimate_type = "numeric",
-      variable_name = "Risk estimate",
-      variable_level = NA_character_
-    )
-  
-  # follow-up stats tibble
-  resultsStats <- data |>
-    group_by(exposure) |>
-    summarise(
-      median = median(time * .data$weight),
-      q25 = quantile(time * .data$weight, 0.25),
-      q75 = quantile(time * .data$weight, 0.75),
-      min = min(time * .data$weight),
-      max = max(time * .data$weight),
-      subject_count = sum(.data$weight),
-      outcome_count = sum(.data$status * .data$weight),
-      .groups = "drop"
-    ) |>
-    mutate(estimate_type = "numeric") |>
-    rename("variable_level" = "exposure") |>
-    regressionToSummarised(
-      cols = c("median", "q25", "q75", "min", "max", "subject_count", "outcome_count")
-    ) |>
-    mutate(
-      variable_name = case_when(
-        estimate_name == "subject_count" ~ "Number persons",
-        estimate_name == "outcome_count" ~ "Number events",
-        .default = "Person-Days"
-      ),
-      estimate_name = if_else(grepl("_count", estimate_name), "count", estimate_name)
-    )
-  
-  # combine and return
-  bind_rows(resultsRisk, resultsStats)
 }
 
 getRiskEstimate <- function(data, group, strata, weights = NULL) {
-  # initialize parallel processing (furrr's default)
-  plan(multisession, workers = availableCores() - 1)
   
   # prep data
   strata <- unlist(strata)
@@ -1089,97 +1111,6 @@ getRiskEstimate <- function(data, group, strata, weights = NULL) {
   
   return(results)
 }
-# getRiskEstimate <- function(data, group, strata, weights = NULL) {
-#   # for survival formatted data - 1 outcome
-#   results <- list()
-#   groupLevel = unique(data |> pull(.data[[group]]))
-#   k <- 1
-#   if (is.null(weights)) {
-#     data <- data |> mutate(weight = 1)
-#   }
-#   strata <- unlist(strata)
-#   strata <- c(strata[strata != "exposure"], "overall")
-#   data <- data |> mutate(overall = "overall")
-#   for (group.k in groupLevel) { # group level
-#     for (strata.k in strata) { # strata name
-#       strataLevels <- unique(data |> pull(strata.k))
-#       for(strataLevel.k in strataLevels) { # strata level
-#         # data
-#         data.k <- data |>
-#           filter(cohort_name == group.k, .data[[strata.k]] == strataLevel.k) |>
-#           collect() 
-#         # boostrap rate ratio
-#         coef <- NULL
-#         for (ii in 1:500) {
-#           data.ii <- data.k |> dplyr::slice_sample(prop = 1, replace = TRUE) 
-#           if (length(weights) != 0) {
-#             data.ii <- getWeights(data.ii, weights)
-#           }
-#           res <- getIRR(data.ii)
-#           coef <- c(coef, res)
-#         }
-#         
-#         if (length(weights) != 0) {
-#           data.k <- getWeights(data.k)
-#         }
-#         res <- getIRR(data.k)
-#         
-#         results[[k]] <- tibble(
-#           lower_ci = quantile(coef, 0.025, na.rm = TRUE),
-#           upper_ci = quantile(coef, 0.975, na.rm = TRUE),
-#           coef = res
-#         ) |>
-#           regressionToSummarised(
-#             cols = c("coef", "lower_ci", "upper_ci")
-#           ) |>
-#           mutate(
-#             group_name = "cohort_name",
-#             group_level = group.k,
-#             strata_name = strata.k, 
-#             strata_level = strataLevel.k,
-#             estimate_type = "numeric",
-#             variable_name = "Risk estimate",
-#             variable_level = NA_character_
-#           ) 
-#         k <- k + 1
-#         
-#         # follow-up stats 
-#         results[[k]] <- data.k |>
-#           group_by(exposure) |>
-#           summarise(
-#             median = median(time*.data$weight),
-#             q25 = quantile(time*.data$weight, 0.25),
-#             q75 = quantile(time*.data$weight, 0.75),
-#             min = min(time*.data$weight),
-#             max = max(time*.data$weight),
-#             subject_count = sum(.data$weight),
-#             outcome_count = sum(.data$status*.data$weight)
-#           ) |>
-#           mutate(
-#             group_name = "cohort_name",
-#             group_level = group.k,
-#             strata_name = strata.k, 
-#             strata_level = strataLevel.k,
-#             estimate_type = "numeric"
-#           ) |>
-#           rename("variable_level" = "exposure") |>
-#           regressionToSummarised(
-#             cols = c("median", "q25", "q75","min", "max", "subject_count", "outcome_count")
-#           ) |>
-#           mutate(
-#             variable_name = case_when(
-#               estimate_name == "subject_count" ~ "Number persons",
-#               estimate_name == "outcome_count" ~ "Number events",
-#               .default = "Person-Days"
-#             ),
-#             estimate_name = if_else(grepl("_count", estimate_name), "count", estimate_name)
-#           ) 
-#         k <- k + 1
-#       }
-#     }
-#   }
-#   return(results |> bind_rows())
-# }
 
 regressionToSummarised <- function(
     x, 
@@ -1217,22 +1148,8 @@ estimateSurvivalRisk <- function(cohort, outcomes, outcomeGroup, end, strata, gr
   # check if parallelization is possible
   cores <- parallel::detectCores(logical = FALSE)
   os_type <- .Platform$OS.type
-  # paralleization depending on system 
-  if (os_type == "windows" && cores > 1) {
-    tryCatch(
-      {
-        future::plan(future::multisession, workers = cores)
-        cat("Parallel processing allowed.\n")
-      },
-      error = function(e) {
-        warning("Parallel processing not allowed - back to sequential processing.")
-        future::plan(future::sequential)
-      }
-    )
-  } else {
-    # non-Windows/single-core machines
-    future::plan(future::sequential)
-  }
+  future::plan(future::multisession, workers = cores)
+  
   for (outcome in outcomes) {
     survival_data <- getSurvivalData(cohort, outcome, end = end, strata = strata, group = group, weights = weights)
     results[[kk]] <- getRiskEstimate(survival_data, group = group, strata = strata, weights = weights) |>
@@ -1376,7 +1293,10 @@ summariseTimeDistribution <- function(cdm, strata, weights = NULL) {
   
   # summarised result
   timeDistribution <- timeDistribution |>
-    dplyr::mutate(cdm_name = cdmName(cdm), estimate_value = as.character(estimate_value)) |>
+    dplyr::mutate(
+      cdm_name = cdmName(cdm), 
+      estimate_value = as.character(estimate_value)
+    ) |>
     select(omopgenerics::resultColumns()) |>
     newSummarisedResult(
       settings = tibble(

@@ -14,14 +14,14 @@ library(PhenotypeR)
 library(tidyr)
 
 # Database name
-database_name <- "..."
+database_name <- "CPRD GOLD"
 
 # Connection details
-server_dbi <- Sys.getenv("...")
-user <- Sys.getenv("...")
-password <- Sys.getenv("...")
-port <- Sys.getenv("...")
-host <- Sys.getenv("...")
+server_dbi <- Sys.getenv("DB_SERVER_DBI_gd")
+user <- Sys.getenv("DB_USER")
+password <- Sys.getenv("DB_PASSWORD")
+port <- Sys.getenv("DB_PORT")
+host <- Sys.getenv("DB_HOST")
 
 db <- dbConnect(
   RPostgres::Postgres(),
@@ -32,12 +32,12 @@ db <- dbConnect(
   password = password
 )
 
-cdm_database_schema <- "..."
-results_database_schema <- "..."
-achilles_database_schema <- "..."
+cdm_database_schema <- "public"
+results_database_schema <- "results"
+achilles_database_schema <- "results"
 
 # cohort stem where cohorts will be instantiated
-table_stem <- "..."
+table_stem <- "nmb_safe_ph"
 
 cdm <- cdmFromCon(
   con = db,
@@ -50,8 +50,8 @@ cdm <- cdmFromCon(
 )
 
 # Pregnancy tables details:
-mother_table_schema <- "..."
-mother_table_name <- "..."
+mother_table_schema <- "results"
+mother_table_name <- "pregnancy_episode"
 
 # minimum counts to report
 minimum_counts <- 5
@@ -61,13 +61,13 @@ source(here("Scripts", "InstantiateCohorts.R"))
 source(here("Scripts", "Diagnostics.R"))
 
 # Drop cohorts
-cdm <- cdmFromCon(
-  con = db,
-  cdmSchema = cdm_database_schema,
-  writeSchema = results_database_schema,
-  cdmName = database_name,
-  .softValidation = TRUE
-)
+# cdm <- cdmFromCon(
+#   con = db,
+#   cdmSchema = cdm_database_schema,
+#   writeSchema = results_database_schema,
+#   cdmName = database_name,
+#   .softValidation = TRUE
+# )
 # cdm <- dropSourceTable(cdm = cdm, name = starts_with(table_stem))
 
 # Disconnect

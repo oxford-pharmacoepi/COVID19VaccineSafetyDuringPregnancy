@@ -1,10 +1,7 @@
 getPregnantCohorts <- function(db, cdm, mother_table_schema, mother_table_name) {
   cdm$mother_table_original <- tbl(
     db, inSchema(schema = mother_table_schema, table = mother_table_name)
-  ) %>% 
-    {if (grepl("CPRD", database_name)) {
-      rename(., "pregnancy_outcome" = "original_outcome")
-    } else . } |>
+  ) |>
     compute(
       name = inSchema(results_database_schema, "mother_table_original"), 
       temporary = FALSE, 
