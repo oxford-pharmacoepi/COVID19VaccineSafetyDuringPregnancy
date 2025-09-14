@@ -21,6 +21,7 @@ library(IncidencePrevalence)
 library(clock)
 library(purrr)
 library(furrr)
+library(CohortSurvival)
 
 # Database name
 database_name <- "CPRD GOLD 100k"
