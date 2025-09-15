@@ -24,7 +24,7 @@ library(furrr)
 library(CohortSurvival)
 
 # Database name
-database_name <- "CPRD GOLD 100k"
+database_name <- "CPRD GOLD"
 
 # Connection details
 server_dbi <- Sys.getenv("DB_SERVER_DBI_gd")
@@ -42,11 +42,11 @@ db <- dbConnect(
   password = password
 )
 
-cdm_database_schema <- "public_100k"
+cdm_database_schema <- "public"
 results_database_schema <- "results"
 
 # cohort stem where cohorts will be instantiated
-table_stem <- "nmb_saf100k"
+table_stem <- "nmb_saf"
 
 cdm <- cdmFromCon(
   con = db,
@@ -68,10 +68,10 @@ minimum_counts <- 5
 results <- paste0("Results_", cdmName(cdm))
 
 # Choose code to run
-runInstantiateCohorts <- TRUE
-runRiskSetSampling <- FALSE
-runPSWeighting <- FALSE
-runOutcomeModel <- FALSE
+runInstantiateCohorts <- FALSE
+runRiskSetSampling <- TRUE
+runPSWeighting <- TRUE
+runOutcomeModel <- TRUE
 runBackgroundRates <- FALSE
 runBRCharacteristics <- FALSE
 
