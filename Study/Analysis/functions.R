@@ -1001,7 +1001,7 @@ getWeights <- function(x, coefs) {
 }
 
 processGroupStrata <- function(data, group, weights) {
-  if (nrow(data) > 10) {
+  if (nrow(data) > 10 & sum(data$status) > 5) {
     set.seed(123)
     
     coefBootstrap <- NULL
@@ -1074,40 +1074,52 @@ processGroupStrata <- function(data, group, weights) {
 
 getRiskEstimate <- function(data, group, strata, weights = NULL) {
   
-  # prep data
-  strata <- unlist(strata)
-  strata <- c(strata[strata != "exposure"], "overall")
-  if (is.null(weights)) {
-    data <- data |> mutate(weight = 1)
+  if (sum(data |> pull(status)) >= 5) {
+    
+    # prep data
+    strata <- unlist(strata)
+    strata <- c(strata[strata != "exposure"], "overall")
+    if (is.null(weights)) {
+      data <- data |> mutate(weight = 1)
+    }
+    
+    # nest the data by group and strata
+    nestedData <- data |>
+      mutate(overall = "overall") |>
+      tidyr::pivot_longer(
+        cols = all_of(strata),
+        names_to = "strata_name",
+        values_to = "strata_level"
+      ) |>
+      group_by(
+        group_name = "cohort_name",
+        group_level = .data[[group]],
+        strata_name,
+        strata_level
+      ) |>
+      collect() |> 
+      nest() 
+    
+    # get risk estimiate within each nest
+    results <- nestedData |>
+      mutate(
+        results = future_map(
+          .x = data,
+          .y = group_level,
+          .f = ~ processGroupStrata(data = .x, group = .y, weights = weights)
+        )) |>
+      select(-data) |>
+      tidyr::unnest(results)
+    
+  } else {
+    results <- tibble(
+      variable_level = character(),
+      estimate_type = character(),
+      estimate_name = character(),
+      estimate_value = character(),
+      variable_name = character()
+    )
   }
-  
-  # nest the data by group and strata
-  nestedData <- data |>
-    mutate(overall = "overall") |>
-    tidyr::pivot_longer(
-      cols = all_of(strata),
-      names_to = "strata_name",
-      values_to = "strata_level"
-    ) |>
-    group_by(
-      group_name = "cohort_name",
-      group_level = .data[[group]],
-      strata_name,
-      strata_level
-    ) |>
-    collect() |> 
-    nest() 
-  
-  # get risk estimiate within each nest
-  results <- nestedData |>
-    mutate(
-      results = future_map(
-        .x = data,
-        .y = group_level,
-        .f = ~ processGroupStrata(data = .x, group = .y, weights = weights)
-      )) |>
-    select(-data) |>
-    tidyr::unnest(results)
   
   return(results)
 }
