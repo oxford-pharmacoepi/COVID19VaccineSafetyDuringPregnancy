@@ -64,7 +64,6 @@ if (cdmName(cdm) %in% c("CPRD AURUM", "CPRD GOLD", "SIDIAP")) {
   strata <- c(strata, list("socioeconomic_status", "ethnicity"))
 }
 
-
 ## Estimate cumulative incidence ----
 info(logger, "- Estimate cumulative incidence")
 ### AESI
@@ -137,3 +136,8 @@ exportSummarisedResult(
   path = output_folder, 
   fileName = paste0("cumulative_incidence_", cdmName(cdm), ".csv")
 )
+
+# Incidence Rates ----
+info(logger, "Incidence Rates")
+
+
