@@ -4,7 +4,7 @@ strata <- selectStrata(cdm, strata = c("vaccine_brand", "gestational_trimester",
 toKeep <- c(
   "cohort_definition_id", "cohort_name", "subject_id", "cohort_start_date", 
   "cohort_end_date", "cohort_end_date_sensitivity", "pregnancy_end_date",
-  unique(unlist(strata)), "weight"
+  "exposed_match_id", "pregnancy_id", unique(unlist(strata)), "weight"
 )
 cdm$aesi_outcome <- cdm$study_population |>
   dplyr::select(dplyr::all_of(toKeep)) %>% 
@@ -49,7 +49,7 @@ for (end in endDates) {
   )
   aesiResults[[jj]] <- estimateSurvivalRisk(
     cohort = cdm$aesi_outcome, outcomes = aesiOutcomes, outcomeGroup = "Adverse Events of Special Interest",
-    end = end, strata = strata, group = "cohort_name", weights = "weight"
+    end = end, strata = strata, group = "cohort_name", weights = selectedLassoFeatures
   )
   jj <- jj + 1
 }
@@ -84,7 +84,7 @@ for (endDate in c("week_19_end", "week_19_end_sensitivity")) {
   jj <- 1 + jj
   maeResults[[jj]] <- estimateSurvivalRisk(
     cohort = cdm$mea_miscarriage, outcomes = "miscarriage", outcomeGroup = "Maternal Adverse Events",
-    end = endDate, strata = strata, group = "cohort_name", weights = "weight"
+    end = endDate, strata = strata, group = "cohort_name", weights = selectedLassoFeatures
   )
   jj <- 1 + jj
 }
@@ -106,7 +106,7 @@ for (endDate in c("pregnancy_end", "pregnancy_end_sensitivity")) {
   jj <- 1 + jj
   maeResults[[jj]] <- estimateSurvivalRisk(
     cohort = cdm$mea_pregnancy, outcomes = outcomes, outcomeGroup = "Maternal Adverse Events",
-    end = endDate, strata = strata, group = "cohort_name", weights = "weight"
+    end = endDate, strata = strata, group = "cohort_name", weights = selectedLassoFeatures
   )
   jj <- 1 + jj
 }
@@ -129,7 +129,7 @@ for (endDate in c("postpartum_6_weeks", "postpartum_6_weeks_sensitivity")) {
   jj <- 1 + jj
   maeResults[[jj]] <- estimateSurvivalRisk(
     cohort = cdm$mae_postpartum_6, outcomes = outcomes, outcomeGroup = "Maternal Adverse Events",
-    end = endDate, strata = strata, group = "cohort_name", weights = "weight"
+    end = endDate, strata = strata, group = "cohort_name", weights = selectedLassoFeatures
   )
   jj <- 1 + jj
 }
@@ -152,7 +152,7 @@ for (endDate in c("postpartum_12_weeks", "postpartum_12_weeks_sensitivity")) {
   jj <- 1 + jj
   maeResults[[jj]] <- estimateSurvivalRisk(
     cohort = cdm$mea_postpartum_12, outcomes = outcomes, outcomeGroup = "Maternal Adverse Events",
-    end = endDate, strata = strata, group = "cohort_name", weights = "weight"
+    end = endDate, strata = strata, group = "cohort_name", weights = selectedLassoFeatures
   )
   jj <- 1 + jj
 }

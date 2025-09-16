@@ -1150,7 +1150,9 @@ estimateSurvivalRisk <- function(cohort, outcomes, outcomeGroup, end, strata, gr
                            "pregnancy_end" = "main",
                            "pregnancy_end_sensitivity" = "sensitvity",
                            "postpartum_6_weeks" = "main",
-                           "postpartum_6_weeks_sensitivity" = "sensitivity"
+                           "postpartum_6_weeks_sensitivity" = "sensitivity",
+                           "postpartum_12_weeks" = "main",
+                           "postpartum_12_weeks_sensitivity" = "sensitivity"
   )
   weighting <- "FALSE"
   if (!is.null(weights)) weighting <- "TRUE"
