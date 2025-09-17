@@ -551,7 +551,7 @@ getFeaturesTable <- function(cdm, strata) {
         time_start < 366 ~ "m365_m181",
         .default = "none"
       ),
-      feature = paste0(concept_id, "_", window) 
+      feature = paste0(as.character(concept_id), "_", as.character(window)) 
     ) |>
     filter(window != "none") |>
     compute(name = "features", temporary = FALSE) |>
@@ -577,7 +577,7 @@ getFeaturesTable <- function(cdm, strata) {
             time_start < 181 ~ "m180_m31",
             .default = "none"
           ),
-          feature = paste0(concept_id, "_", window) 
+          feature = paste0(as.character(concept_id), "_", as.character(window)) 
         )
     ) |>
     filter(window != "none") |>
@@ -614,7 +614,7 @@ getFeaturesTable <- function(cdm, strata) {
         ))),
       by = c("cohort_name", "subject_id", "cohort_start_date")
     ) |>
-    mutate(value = 1, unique_id = paste0(subject_id, "_", exposed_match_id, "_", pregnancy_id)) |>
+    mutate(value = 1, unique_id = paste0(as.character(subject_id), "_", as.character(exposed_match_id), "_", as.character(pregnancy_id))) |>
     pivot_wider(names_from = "feature", values_from = "value", values_fill = 0) |>
     select(!"NA") |>
     mutate(across(contains("_m"), ~ if_else(is.na(.x), 0, .x))) |>
