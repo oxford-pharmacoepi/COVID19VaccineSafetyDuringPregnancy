@@ -1268,12 +1268,12 @@ summariseTimeDistribution <- function(cdm, strata, weights = NULL) {
   strata <- unlist(strata) |> unique()
   strataNew <- c(strata[strata != "exposure"], "overall")
   tab <- tab |> 
+    collect() |>
     mutate(
       overall = "overall",
       calendar_week = lubridate::floor_date(cohort_start_date, unit = "week"),
       gestational_week = as.numeric(.data$gestational_day)
     )  |>
-    collect() |>
     mutate(
       gestational_week = cut(
         x = .data$gestational_week, 
