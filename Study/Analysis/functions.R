@@ -75,7 +75,8 @@ getPregnantCohort <- function(db, cdm, mother_table_schema, mother_table_name) {
       pregnancy_outcome_study = case_when(
         pregnancy_outcome == 4092289  & gestational_length <= 37*7~ "preterm_labour",
         pregnancy_outcome == 4092289 ~ "livebirth",
-        pregnancy_outcome == 4067106 ~ "miscarriage",
+        pregnancy_outcome == 4067106 & gestational_length < 20*7 ~ "miscarriage",
+        pregnancy_outcome == 4067106 & gestational_length >= 20*7 ~ "stillbirth",
         pregnancy_outcome == 443213 & gestational_length < 20*7 ~ "miscarriage",
         pregnancy_outcome == 443213 & gestational_length >= 20*7 ~ "stillbirth",
         pregnancy_outcome == 4081422 ~ "elective_termination",
@@ -1415,112 +1416,6 @@ applyPopulationWashout <- function(x, censorDate = "pregnancy_start_date") {
     )
 }
 
-getIncidence <- function(cdm, targetCohortDenominator, outcomeTable, outcomeCohortId, washOut) {
-  # overall
-  overallIds <- settings(cdm$overall_period) |>
-    filter(cohort_name %in% targetCohortDenominator) |>
-    pull(cohort_definition_id)
-  overall <- estimateIncidence(
-    cdm = cdm,
-    denominatorTable = "overall_period",
-    outcomeTable = outcomeTable,
-    censorTable = NULL,
-    denominatorCohortId = overallIds,
-    outcomeCohortId = outcomeCohortId,
-    censorCohortId = NULL,
-    interval = c("overall", "years"),
-    completeDatabaseIntervals = FALSE,
-    outcomeWashout = washOut,
-    repeatedEvents = TRUE,
-    strata = list("maternal_age"),
-    includeOverallStrata = TRUE
-  )
-  overall <- omopgenerics::newSummarisedResult(
-    overall, settings = omopgenerics::settings(overall) |> dplyr::mutate(denominator_table_name = "overall")
-  )
-  # pre-covid
-  preCovidIds <- settings(cdm$pre_covid_period) |>
-    filter(cohort_name %in% targetCohortDenominator) |>
-    pull(cohort_definition_id)
-  preCovid <- estimateIncidence(
-    cdm = cdm,
-    denominatorTable = "pre_covid_period",
-    outcomeTable = outcomeTable,
-    censorTable = NULL,
-    denominatorCohortId = preCovidIds,
-    outcomeCohortId = outcomeCohortId,
-    censorCohortId = NULL,
-    interval = c("overall"),
-    completeDatabaseIntervals = FALSE,
-    outcomeWashout = washOut,
-    repeatedEvents = TRUE,
-    strata = list("maternal_age"),
-    includeOverallStrata = TRUE
-  )
-  preCovid <- omopgenerics::newSummarisedResult(
-    preCovid, settings = omopgenerics::settings(preCovid) |> dplyr::mutate(denominator_table_name = "pre_covid")
-  )
-  # covid
-  covidIds <- settings(cdm$main_covid_period) |>
-    filter(cohort_name %in% targetCohortDenominator) |>
-    pull(cohort_definition_id)
-  covid <- estimateIncidence(
-    cdm = cdm,
-    denominatorTable = "main_covid_period",
-    outcomeTable = outcomeTable,
-    censorTable = NULL,
-    denominatorCohortId = covidIds,
-    outcomeCohortId = outcomeCohortId,
-    censorCohortId = NULL,
-    interval = c("overall"),
-    completeDatabaseIntervals = FALSE,
-    outcomeWashout = washOut,
-    repeatedEvents = TRUE,
-    strata = list("maternal_age"),
-    includeOverallStrata = TRUE
-  )
-  covid <- omopgenerics::newSummarisedResult(
-    covid, settings = omopgenerics::settings(covid) |> dplyr::mutate(denominator_table_name = "covid")
-  )
-  # post-covid
-  postCovidIds <- settings(cdm$post_main_covid_period) |>
-    filter(cohort_name %in% targetCohortDenominator) |>
-    pull(cohort_definition_id)
-  postCovid <- estimateIncidence(
-    cdm = cdm,
-    denominatorTable = "post_main_covid_period",
-    outcomeTable = outcomeTable,
-    censorTable = NULL,
-    denominatorCohortId = postCovidIds,
-    outcomeCohortId = outcomeCohortId,
-    censorCohortId = NULL,
-    interval = c("overall"),
-    completeDatabaseIntervals = FALSE,
-    outcomeWashout = washOut,
-    repeatedEvents = TRUE,
-    strata = list("maternal_age"),
-    includeOverallStrata = TRUE
-  )
-  postCovid <- omopgenerics::newSummarisedResult(
-    postCovid, settings = omopgenerics::settings(postCovid) |> dplyr::mutate(denominator_table_name = "post_covid")
-  )
-  # return results
-  bind(overall, preCovid, covid, postCovid)
-}
-
-asIncidencePrevalence <- function(cohort, startDate, endDate) {
-  cohort |>
-    newCohortTable(
-      settings(cohort) |>
-        mutate(
-          start_date = startDate,
-          end_date = endDate
-        ) |>
-        rename("days_prior_observation" = "min_prior_observation") |>
-        select(!c("min_future_observation", "sex", "age_range"))
-    )
-}
-
 addSeason <- function(cohort) {
   name <- omopgenerics::tableName(cohort)
   cohort |>
@@ -1562,6 +1457,7 @@ addEthnicity <- function(cohort) {
 
 addSocioeconomicStatus <- function(cohort, database) {
   name <- omopgenerics::tableName(cohort)
+  database <- omopgenerics::cdmName(omopgenerics::cdmReference(cohort))
   if (database == "CPRD GOLD") {
     cohort <- cohort |>
       dplyr::left_join(
@@ -1575,19 +1471,20 @@ addSocioeconomicStatus <- function(cohort, database) {
   return(cohort)
 }
 
-getBRCharacteristics <- function(cohort) {
-  # Variables to add: socioeconomic status, ethnicity, season pregnancy start
+getBRCharacteristics <- function(cohort, strata) {
+  # Variables to add: socioeconomic status, ethnicity, season and period pregnancy start
   # Pregnancy: previous pregnancy
   # Comorbidities: alchohol, obesity, diabetes, hypertension, asthma, depression/anxiety, epilepsy
   # Medications: omeprazole/antiacids, diabetes treatment/s, nsaids, opioids, antidepressants, antiepilepsy, corticosteroids
-  
   estimates = list(
     'season' = c('count', 'percentage'), 
     'season_yearly' = c('count', 'percentage'), 
     'ethnicity' = c('count', 'percentage'),
     'socioeconomic_status' = c('count', 'percentage'),
-    'maternal_age' = c('count', 'percentage'),
-    'trimester' = c('count', 'percentage')
+    'maternal_age' = c('min', 'max', 'q25', 'q75', 'median', 'sd', 'mean'),
+    'maternal_age_group' = c('count', 'percentage'),
+    'trimester' = c('count', 'percentage'),
+    'pregnancy_start_period' = c('count', 'percentage')
   )
   estimates <- estimates[names(estimates) %in% colnames(cohort)]
   otherVariables = names(estimates)
@@ -1595,6 +1492,7 @@ getBRCharacteristics <- function(cohort) {
     summariseCharacteristics(
       counts = TRUE,
       demographics = TRUE,
+      strata = strata,
       cohortIntersectFlag = list(
         # covariatesInf (-Inf, 0)
         "History of comorbidities" = list(
@@ -1618,4 +1516,548 @@ getBRCharacteristics <- function(cohort) {
       otherVariables = otherVariables,
       estimates = estimates
     )
+}
+
+getMiscarriageDenominator <- function(cohort) {
+  cohort %>% 
+    mutate(
+      cohort_end_date = as.Date(!!dateadd("pregnancy_start_date", 19*7 + 6))
+    ) |>
+    mutate(
+      cohort_end_date = if_else(
+        cohort_end_date > pregnancy_end_date, pregnancy_end_date, cohort_end_date
+      )
+    ) |>
+    compute(name = "miscarriage_denominator", temporary = FALSE) |>
+    newCohortTable(
+      cohortSetRef = tibble(
+        cohort_definition_id = 1, cohort_name = c("miscarriage_denominator")
+      )
+    )
+}
+
+getStillbirhtDenominator <- function(cohort) {
+  cohort %>% 
+    mutate(
+      cohort_start_date = as.Date(!!dateadd("pregnancy_start_date", 20*7))
+    ) |>
+    filter(cohort_start_date <= cohort_end_date) |>
+    compute(name = "stillbirth_denominator", temporary = FALSE) |>
+    recordCohortAttrition("Stillbirth denominator") |>
+    newCohortTable(
+      cohortSetRef = tibble(
+        cohort_definition_id = 1, cohort_name = c("stillbirth_denominator")
+      )
+    )
+}
+
+getPretermDenominator <- function(cohort) {
+  cohort %>% 
+    mutate(
+      cohort_start_date = as.Date(!!dateadd("pregnancy_start_date", 20*7))
+    ) |>
+    filter(cohort_start_date <= cohort_end_date) |>
+    compute(name = "preterm_labour_denominator", temporary = FALSE) |>
+    recordCohortAttrition("Preterm labour denominator") %>% 
+    mutate(
+      cohort_end_date = as.Date(!!dateadd("pregnancy_start_date", 37*7))
+    ) |>
+    mutate(
+      cohort_end_date = if_else(
+        cohort_end_date > pregnancy_end_date, pregnancy_end_date, cohort_end_date
+      )
+    ) |>
+    compute(name = "preterm_labour_denominator", temporary = FALSE) |>
+    newCohortTable(
+      cohortSetRef = tibble(
+        cohort_definition_id = 1, cohort_name = c("preterm_labour_denominator")
+      )
+    )
+}
+
+getPostpartum6Denominator <- function(cohort) {
+  cohort |>
+    filter(pregnancy_outcome_study == "livebirth") |>
+    mutate(
+      cohort_start_date = pregnancy_end_date,
+      cohort_end_date = postpartum_6_weeks
+    ) |>
+    compute(name = "postpartum_6_weeks_denominator", temporary = FALSE) |>
+    recordCohortAttrition("Postpartum 6 weeks denominator") |>
+    newCohortTable(
+      cohortSetRef = tibble(
+        cohort_definition_id = 1, cohort_name = c("postpartum_6_weeks_denominator")
+      )
+    )
+}
+
+getPostpartum12Denominator <- function(cohort) {
+  cohort |>
+    filter(pregnancy_outcome_study == "livebirth") |>
+    mutate(
+      cohort_start_date = pregnancy_end_date,
+      cohort_end_date = postpartum_12_weeks
+    ) |>
+    compute(name = "postpartum_12_weeks_denominator", temporary = FALSE) |>
+    recordCohortAttrition("Postpartum 12 weeks denominator") |>
+    newCohortTable(
+      cohortSetRef = tibble(
+        cohort_definition_id = 1, cohort_name = c("postpartum_12_weeks_denominator")
+      )
+    )
+}
+
+getMaternalDeathDenominator <- function(cohort) {
+  cohort |>
+    mutate(
+      cohort_start_date = pregnancy_end_date,
+      cohort_end_date = postpartum_6_weeks
+    ) |>
+    compute(name = "maternal_death_denominator", temporary = FALSE) |>
+    newCohortTable(
+      cohortSetRef = tibble(
+        cohort_definition_id = 1, cohort_name = c("maternal_death_denominator")
+      )
+    )
+}
+
+getTimeToEvent <- function(cohort, washOut, outcomes) {
+  name <- omopgenerics::tableName(cohort)
+  if (washOut != 0) {
+    for (outcome in outcomes) {
+      cohort <- cohort %>% 
+        mutate(prior_outcome_washout = !!dateadd(glue::glue("prior_{outcome}"), washOut)) %>% 
+        mutate(
+          # time at risk considering wash-out
+          date_time_at_risk_start = case_when(
+            is.na(.data$prior_outcome_washout) ~ cohort_start_date,
+            .data$prior_outcome_washout < .data$cohort_start_date ~ cohort_start_date,
+            .data$prior_outcome_washout >= .data$cohort_start_date ~ prior_outcome_washout
+          ),
+          # time-status overall
+          status = case_when(
+            date_time_at_risk_start > cohort_end_date ~ NA, # don't contribute
+            is.na(.data[[outcome]]) ~ 0, # no outcome
+            .data[[outcome]] < date_time_at_risk_start ~ NA, # don't contribute (either no time at risk or outcome before)
+            .data[[outcome]] >= date_time_at_risk_start ~ 1 
+          ),
+          time = case_when(
+            status == 1 ~ !!datediff("date_time_at_risk_start", outcome),
+            status == 0 ~ !!datediff("date_time_at_risk_start", "cohort_end_date"),
+            is.na(status) ~ NA
+          ),
+          pregnancies = if_else(is.na(status), 0, 1),
+          # time-status trimester 1
+          status_t1 = case_when(
+            date_time_at_risk_start > trimester_1_end ~ NA, # don't contribute
+            is.na(.data[[outcome]]) ~ 0, # no outcome
+            .data[[outcome]] < date_time_at_risk_start ~ NA, # don't contribute
+            .data[[outcome]] >= date_time_at_risk_start & .data[[outcome]] <= trimester_1_end ~ 1, # outcome during time at risk
+            .data[[outcome]] > trimester_1_end ~ 0 # outcome after time at risk
+          ),
+          time_t1 = case_when(
+            status_t1 == 1 ~ !!datediff("date_time_at_risk_start", outcome),
+            status_t1 == 0 ~ !!datediff("date_time_at_risk_start", "trimester_1_end"),
+            is.na(status_t1) ~ NA
+          ),
+          pregnancies_t1 = if_else(is.na(status_t1), 0, 1),
+          # time-status trimester 2
+          status_t2 = case_when(
+            is.na(trimester_2_start) | date_time_at_risk_start > trimester_2_end ~ NA, # don't contribute
+            .data[[outcome]] < trimester_2_start & !is.na(.data[[outcome]]) ~ NA, # don't contribute: outcome before trimester start
+            is.na(.data[[outcome]]) ~ 0, # no outcome
+            .data[[outcome]] < date_time_at_risk_start ~ NA, # don't contribute
+            .data[[outcome]] >= trimester_2_start & .data[[outcome]] <= trimester_2_end ~ 1, # outcome during time at risk
+            .data[[outcome]] > trimester_2_end ~ 0 # outcome after time at risk
+          ),
+          time_t2 = case_when(
+            status_t2 == 1 ~ !!datediff("trimester_2_start", outcome) + 1,
+            status_t2 == 0 ~ !!datediff("trimester_2_start", "trimester_2_end") + 1,
+            is.na(status_t2) ~ NA
+          ),
+          pregnancies_t2 = if_else(is.na(status_t2), 0, 1),
+          # time-status trimester 3
+          status_t3 = case_when(
+            is.na(trimester_3_start) | date_time_at_risk_start > trimester_3_end ~ NA, # don't contribute
+            .data[[outcome]] < trimester_3_start & !is.na(.data[[outcome]]) ~ NA, # don't contribute: outcome before trimester start
+            is.na(.data[[outcome]]) ~ 0, # no outcome
+            .data[[outcome]] < date_time_at_risk_start ~ NA, # don't contribute
+            .data[[outcome]] >= trimester_3_start & .data[[outcome]] <= trimester_3_end ~ 1 # outcome during time at risk
+          ),
+          time_t3 = case_when(
+            status_t3 == 1 ~ !!datediff("trimester_3_start", outcome) + 1,
+            status_t3 == 0 ~ !!datediff("trimester_3_start", "trimester_3_end") + 1,
+            is.na(status_t3) ~ NA
+          ),
+          pregnancies_t3 = if_else(is.na(status_t3), 0, 1)
+        ) |> 
+        select(!all_of(c(outcome, "prior_outcome_washout", "date_time_at_risk_start", glue::glue("prior_{outcome}")))) |>
+        rename_with(
+          .fn = \(x){paste0(outcome, "_", x)}, 
+          .cols = c("time", "status", "pregnancies", "time_t1", "status_t1", "pregnancies_t1", "time_t2", "status_t2", "pregnancies_t2", "time_t3", "status_t3", "pregnancies_t3")
+        ) |>
+        compute(name = name, temporary = FALSE)
+    }
+  } else {
+    for (outcome in outcomes) {
+      cohort <- cohort %>% 
+        mutate(
+          # overall
+          status = if_else(is.na(.data[[outcome]]), 0, 1),
+          time = if_else(is.na(.data[[outcome]]), !!datediff("cohort_start_date", "cohort_end_date"), !!datediff("cohort_start_date", outcome)),
+          pregnancies = if_else(is.na(status), 0, 1),
+          # trimester 1
+          status_t1 = case_when(
+            is.na(.data[[outcome]]) ~ 0,
+            .data[[outcome]] > trimester_1_end ~ 0, # outcome after trimester 1
+            .data[[outcome]] <= trimester_1_end ~ 1
+          ),
+          time_t1 = if_else(status_t1 == 0, !!datediff("trimester_1_start", "trimester_1_end"), !!datediff("cohort_start_date", outcome)),
+          pregnancies_t1 = if_else(is.na(status_t1), 0, 1),
+          # trimester 2
+          status_t2 = case_when(
+            is.na(trimester_2_start) ~ NA, # don't get to trimester 2
+            .data[[outcome]] < trimester_2_start & !is.na(.data[[outcome]]) ~ NA, # don't contribute: outcome before
+            is.na(.data[[outcome]]) ~ 0,
+            .data[[outcome]] > trimester_2_end ~ 0, # outcome after trimester 2
+            .data[[outcome]] <= trimester_2_end | .data[[outcome]] >= trimester_2_start  ~ 1
+          ),
+          time_t2 = case_when(
+            status_t2 == 1 ~ !!datediff("trimester_2_start", outcome) + 1,
+            status_t2 == 0 ~ !!datediff("trimester_2_start", "trimester_2_end") + 1,
+            is.na(status_t2) ~ NA
+          ),
+          pregnancies_t2 = if_else(is.na(status_t2), 0, 1),
+          # trimester 3
+          status_t3 = case_when(
+            is.na(trimester_3_start) ~ NA, # don't get to trimester 3
+            .data[[outcome]] < trimester_3_start & !is.na(.data[[outcome]]) ~ NA, # don't contribute: outcome before
+            is.na(.data[[outcome]]) ~ 0,
+            .data[[outcome]] >= trimester_3_start  ~ 1
+          ),
+          time_t3 = case_when(
+            status_t3 == 1 ~ !!datediff("trimester_3_start", outcome) + 1,
+            status_t3 == 0 ~ !!datediff("trimester_3_start", "trimester_3_end") + 1,
+            is.na(status_t3) ~ NA
+          ),
+          pregnancies_t3 = if_else(is.na(status_t3), 0, 1)
+        ) |>
+        select(!all_of(c(outcome))) |>
+        rename_with(
+          .fn = \(x){paste0(outcome, "_", x)}, 
+          .cols = c("time", "status", "pregnancies", "time_t1", "status_t1", "pregnancies_t1", "time_t2", "status_t2", "pregnancies_t2", "time_t3", "status_t3", "pregnancies_t3")
+        ) |>
+        compute(name = name, temporary = FALSE)
+    }
+  }
+  return(cohort)
+}
+
+addBRDenominatorStrata <- function(cohort) {
+  name <- omopgenerics::tableName(cohort)
+  cdm <- omopgenerics::cdmReference(cohort)
+  cohort <- cohort |>
+    addAge(
+      ageName = "maternal_age", 
+      ageGroup = list("12 to 17" = c(12, 17), "18 to 34" = c(18, 34), "35 to 50" = c(35, 50))
+    ) |>
+    mutate(
+      pregnancy_start_period = case_when(
+        year(pregnancy_start_date) %in% 2018:2019 ~ "Pre COVID-19",
+        year(pregnancy_start_date) %in% 2020:2021 ~ "COVID-19 main outbreak",
+        .default = "Post COVID-19 main outbreak"
+      )
+    ) |>
+    compute(name = "pregnancy_denominator", temporary = FALSE)
+  
+  strata <- list("maternal_age", "pregnancy_start_period")
+  if (cdmName(cdm) %in% c("CPRD AURUM", "CPRD GOLD", "SIDIAP")) {
+    cohort <- cohort |>
+      addSocioeconomicStatus() |>
+      addEthnicity() |>
+      compute(name = "pregnancy_denominator", temporary = FALSE)
+    strata <- c(strata, list("socioeconomic_status", "ethnicity"))
+  }
+  return(cohort)
+}
+
+estimateIncidenceRate <- function(cohort, strata, outcomes) {
+  variables <- c(
+    paste0(outcomes, "_status"), paste0(outcomes, "_time"), paste0(outcomes, "_pregnancies"), 
+    paste0(outcomes, "_status_t1"), paste0(outcomes, "_time_t1"), paste0(outcomes, "_pregnancies_t1"),
+    paste0(outcomes, "_status_t2"), paste0(outcomes, "_time_t2"), paste0(outcomes, "_pregnancies_t2"),
+    paste0(outcomes, "_status_t3"), paste0(outcomes, "_time_t3"), paste0(outcomes, "_pregnancies_t3")
+  )
+  variables <- variables[variables %in% colnames(cohort)]
+  summarise_ir <- cohort |>
+    summariseResult(
+      strata = strata,
+      includeOverallStrata = TRUE,
+      variables = variables,
+      estimates = "sum",
+      counts = FALSE,
+      weights = NULL
+    ) |>
+    reformatResult() |>
+    addIncidenceRate() 
+  if ("pregnancy_start_period" %in% unlist(strata)) {
+    summarise_ir <- summarise_ir |> addByPeriodEvents(cohort)
+  }
+  return(summarise_ir)
+}
+
+reformatResult <- function(x) {
+  x |>
+    splitStrata() |>
+    mutate(
+      group_name = "outcome_cohort_name",
+      group_level = gsub("_status|_time|_pregnancies|_t1|_t2|_t3", "", .data$variable_name),
+      gestational_trimester = case_when(
+        grepl("_t1", .data$variable_name) ~ "Trimester 1",
+        grepl("_t2", .data$variable_name) ~ "Trimester 2",
+        grepl("_t3", .data$variable_name) ~ "Trimester 3",
+        .default = "overall"
+      ),
+      estimate_name = case_when(
+        grepl("pregnancies", .data$variable_name) ~ "denominator_count",
+        grepl("time", .data$variable_name) ~ "person_days_count",
+        grepl("status", .data$variable_name) ~ "outcome_count",
+      ),
+      estimate_type = "integer"
+    ) |>
+    mutate(
+      variable_name = "Incidence Rates"
+    ) |>
+    uniteStrata(cols = c(strataColumns(x), "gestational_trimester")) |>
+    newSummarisedResult(settings = NULL) 
+}
+
+addIncidenceRate <- function(x) {
+  bind_rows(
+    x,
+    x |>
+      select(!variable_name) |>
+      mutate(estimate_value = as.numeric(estimate_value)) |>
+      pivot_wider(values_from = "estimate_value", names_from = "estimate_name") |>
+      mutate(
+        person_years = round(.data$person_days_count / 365.25, 3),
+        incidence_100000_pys = round(((.data$outcome_count / .data$person_years) * 100000), 3),
+        incidence_100000_pys_95CI_lower = round(((stats::qchisq(p = 0.025, df = 2 * .data$outcome_count) / 2) / .data$person_years) * 100000, 3),
+        incidence_100000_pys_95CI_upper = round(((stats::qchisq(p = 0.975, df = 2 * (.data$outcome_count + 1)) / 2) / .data$person_years) * 100000, 3)
+      ) |>
+      select(!c("denominator_count", "outcome_count", "person_days_count")) |>
+      pivot_longer(
+        cols = c("person_years", "incidence_100000_pys", "incidence_100000_pys_95CI_lower", "incidence_100000_pys_95CI_upper"),
+        names_to = "estimate_name", values_to = "estimate_value"
+      ) |>
+      mutate(
+        variable_name ="Incidence Rates",
+        estimate_type = "numeric",
+        estimate_value = as.character(estimate_value)
+      )
+  )
+}
+
+addByPeriodEvents <- function(x, cohort) {
+  outcomes <- x$group_level |> unique()
+  overallCounts <- x |> 
+    filter(estimate_name == "outcome_count") |> 
+    filterStrata(pregnancy_start_period %in% c("Pre COVID-19", "COVID-19 main outbreak")) |>
+    splitStrata() |>
+    mutate(
+      estimate_value = as.numeric(estimate_value),
+      gestational_trimester = omopgenerics::toSnakeCase(gestational_trimester)
+    ) |> 
+    pivot_wider(names_from = "gestational_trimester", values_from = "estimate_value") |>
+    select(group_level, pregnancy_start_period, overall, trimester_1, trimester_2, trimester_3)
+  result <- NULL
+  for (outcome in outcomes) {
+    result <- bind_rows(
+      result,
+      cohort |>
+        filter(.data[[paste0(outcome, "_status")]] == 1, pregnancy_start_period %in% c("Pre COVID-19", "COVID-19 main outbreak")) |>
+        mutate(
+          socioeconomic_status = as.character(socioeconomic_status),
+          days_to_end_period = case_when(
+            pregnancy_start_period == "Pre COVID-19" ~ as.Date("2019-12-31"),
+            pregnancy_start_period == "COVID-19 main outbreak" ~ as.Date("2021-12-31"),
+            .default = as.Date(NA)
+          )
+        ) %>% 
+        mutate(
+          days_to_end_period = !!datediff("pregnancy_start_date", "days_to_end_period")
+        ) |>
+        select(c("pregnancy_start_period", "days_to_end_period", paste0(outcome, c("_time", "_status", "_time_t1", "_status_t1", "_time_t2", "_status_t2", "_time_t3", "_status_t3")))) |>
+        mutate(
+          outcome_in_period_count = if_else(days_to_end_period < .data[[paste0(outcome, "_time")]], 0, 1),
+          outcome_in_period_t1_count = if_else(outcome_in_period_count == 1 & .data[[paste0(outcome, "_status_t1")]] == 1, 1, 0),
+          outcome_in_period_t2_count = if_else(outcome_in_period_count == 1 & .data[[paste0(outcome, "_status_t2")]]  == 1, 1, 0),
+          outcome_in_period_t3_count = if_else(outcome_in_period_count == 1 & .data[[paste0(outcome, "_status_t3")]]  == 1, 1, 0)
+        ) |>
+        group_by(pregnancy_start_period) |>
+        summarise(
+          outcome_in_period_count = sum(outcome_in_period_count, na.rm = TRUE),
+          outcome_in_period_t1_count = sum(outcome_in_period_t1_count, na.rm = TRUE),
+          outcome_in_period_t2_count = sum(outcome_in_period_t2_count, na.rm = TRUE),
+          outcome_in_period_t3_count = sum(outcome_in_period_t3_count, na.rm = TRUE)
+        ) |>
+        collect() |>
+        inner_join(overallCounts |> filter(group_level == outcome), by = "pregnancy_start_period") |>
+        mutate(
+          outcome_in_period_percentage = if_else(outcome_in_period_count != 0, outcome_in_period_count/overall * 100, 0),
+          outcome_in_period_t1_percentage = if_else(outcome_in_period_t1_count != 0, outcome_in_period_t1_count/trimester_1 * 100, 0),
+          outcome_in_period_t2_percentage = if_else(outcome_in_period_t2_count != 0, outcome_in_period_t2_count/trimester_2 * 100, 0),
+          outcome_in_period_t3_percentage = if_else(outcome_in_period_t3_count != 0, outcome_in_period_t3_count/trimester_3 * 100, 0)
+        ) |>
+        select(!c("overall", "trimester_1", "trimester_2", "trimester_3"))
+    )
+  }
+  if (nrow(result) == 0) return(x)
+  result <- result |>
+    pivot_longer(
+      cols = c(
+        paste0("outcome_in_period", c("_count", "_percentage")), paste0("outcome_in_period_t1", c("_count", "_percentage")),
+        paste0("outcome_in_period_t2", c("_count", "_percentage")), paste0("outcome_in_period_t3", c("_count", "_percentage"))
+      ),
+      names_to = "estimate_name",
+      values_to = "estimate_value"
+    ) |>
+    mutate(
+      result_id = 1L,
+      cdm_name = unique(x$cdm_name),
+      group_name = "outcome_cohort_name",
+      variable_name = "Incidence Rates",
+      variable_level = NA_character_, 
+      gestational_trimester = case_when(
+        grepl("t1", .data$estimate_name) ~ "Trimester 1",
+        grepl("t2", .data$estimate_name) ~ "Trimester 2",
+        grepl("t3", .data$estimate_name) ~ "Trimester 3",
+        .default = "overall"
+      ),
+      estimate_name = gsub("_t1|_t2|_t3", "", .data$estimate_name),
+      estimate_type = if_else(grepl("count", estimate_name), "integer", "percentage"),
+      estimate_value = as.character(estimate_value),
+      additional_name = "overall",
+      additional_level = "overall"
+    ) |>
+    uniteStrata(cols = c("pregnancy_start_period", "gestational_trimester")) |>
+    distinct()
+  
+  return(bind_rows(x, result))
+} 
+
+getMatchedCohort <- function(cohort, outcomes, name) {
+  tmp <- tmpPrefix()
+  tabName <- paste0(tmp, "matching")
+  cdm <- omopgenerics::emptyCohortTable(cdm = cdm, name = tabName)
+  strata <- c("maternal_age_group", "pregnancy_start_period")
+  if (cdmName(cdm) %in% c("CPRD AURUM", "CPRD GOLD", "SIDIAP")) {
+    strata <- c(strata, "socioeconomic_status", "ethnicity")
+  }
+  
+  for (outcome in outcomes) {
+    nameMatch <- paste0(tmp, "match")
+    nameSample <- paste0(tmp, "sample")
+    nameOriginal <- paste0(tmp, "original")
+    outcome_cohort <- cohort |>
+      filter(.data[[paste0(outcome, "_status")]] == 1) |>
+      mutate(
+        cohort_definition_id = 1L,
+        cohort_start_date = as.Date(clock::add_days(.data$cohort_start_date, .data[[paste0(outcome, "_time")]])),
+        cohort_end_date = cohort_start_date
+      ) |>
+      select(all_of(c(
+        "cohort_definition_id", "subject_id", "cohort_start_date", "cohort_end_date", "pregnancy_start_date", "pregnancy_end_date", "maternal_age", strata
+      ))) |>
+      compute(name = nameOriginal, temporary = FALSE) |>
+      newCohortTable(
+        cohortSetRef = tibble(cohort_definition_id = 1L, cohort_name = outcome),
+        cohortAttritionRef = NULL,
+        cohortCodelistRef = NULL
+      )
+    if (outcome_cohort |> tally() |> pull() > 5) {
+      outcome_match <- cohort |>
+        filter(.data[[paste0(outcome, "_status")]] == 0) |>
+        select(all_of(c(
+          "subject_id", "pregnancy_start_date", "pregnancy_end_date", "maternal_age", strata
+        ))) |>
+        mutate(
+          pregnancy_start_band = if_else(
+            day(pregnancy_start_date) <= 15, 
+            paste0("01", month(pregnancy_start_date), year(pregnancy_start_date)),
+            paste0("02", month(pregnancy_start_date), year(pregnancy_start_date))
+          ),
+          age_group_sample = cut(maternal_age, !!seq(12, 56, 2), include.lowest = TRUE, right = FALSE)
+        ) |>
+        compute(name = nameMatch, temporary = FALSE)
+      outcome_sampled <- outcome_cohort |>
+        mutate(
+          pregnancy_start_band = if_else(
+            day(pregnancy_start_date) <= 15, 
+            paste0("01", month(pregnancy_start_date), year(pregnancy_start_date)),
+            paste0("02", month(pregnancy_start_date), year(pregnancy_start_date))
+          ),
+          age_group_sample = cut(maternal_age, !!seq(12, 56, 2), include.lowest = TRUE, right = FALSE)
+        ) |>
+        inner_join(
+          outcome_match |>
+            rename(
+              "matched_subject_id" = "subject_id",
+              "matched_pregnancy_start_date" = "pregnancy_start_date", 
+              "matched_pregnancy_end_date" = "pregnancy_end_date",
+              "matched_maternal_age" = "maternal_age"
+            ) |>
+            rename_with(.fn = \(x){glue("matched_{x}")}, .cols = strata), 
+          by = c("age_group_sample", "pregnancy_start_band")
+        ) |>
+        filter(matched_pregnancy_start_date < cohort_start_date & matched_pregnancy_end_date > cohort_start_date) |>
+        slice_sample(n = 1, by = "matched_subject_id") |>
+        slice_sample(n = 1, by = c("subject_id", "cohort_start_date")) |>
+        compute(name = nameSample, temporary = FALSE)
+      outcome_match <- outcome_sampled  |>
+        select(!c(
+          "subject_id",
+          "pregnancy_start_date",
+          "pregnancy_end_date",
+          "maternal_age",
+          strata
+        )) |>
+        rename_with(.fn = \(x){gsub("matched_", "", x)}) |>
+        select(c(
+          "cohort_definition_id", "subject_id", 
+          "cohort_start_date", "cohort_end_date", 
+          "pregnancy_start_date",
+          "pregnancy_end_date",
+          "maternal_age",
+          strata
+        )) |>
+        compute(name = nameMatch, temporary = FALSE) |>
+        newCohortTable(
+          cohortSetRef = tibble(cohort_definition_id = 1L, cohort_name = paste0(outcome, "_matched")),
+          cohortAttritionRef = NULL,
+          cohortCodelistRef = NULL
+        )
+      outcome_sampled <- outcome_sampled |>
+        select(c(
+          "cohort_definition_id", "subject_id", 
+          "cohort_start_date", "cohort_end_date", 
+          "pregnancy_start_date",
+          "pregnancy_end_date",
+          "maternal_age",
+          strata
+        )) |>
+        compute(name = nameSample, temporary = FALSE) |>
+        newCohortTable(
+          cohortSetRef = tibble(cohort_definition_id = 1L, cohort_name = paste0(outcome, "_sampled")),
+          cohortAttritionRef = NULL,
+          cohortCodelistRef = NULL
+        )
+      cdm <- bind(outcome_cohort, outcome_match, outcome_sampled, cdm[[tabName]], name = tabName) 
+    }
+  }
+  cdm[[name]] <- cdm[[tabName]] |> 
+    compute(name = name, temporary = FALSE) |>
+    newCohortTable()
+  dropSourceTable(cdm = cdm, starts_with(tmp))
+  return(cdm[[name]])
 }
