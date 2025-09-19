@@ -245,7 +245,7 @@ getWashOut <- function(washout, source) {
       by = "subject_id"
     ) |> 
     filter(
-      cohort_start_date >= as.Date(clock::add_days("pregnancy_start_date", -.data$days)),
+      cohort_start_date >= as.Date(clock::add_days(.data$pregnancy_start_date, -.data$days)),
       cohort_start_date <= .data$pregnancy_end_date
     ) |>
     select(!c("pregnancy_start_date", "pregnancy_end_date", "days")) |>
