@@ -157,13 +157,13 @@ sampling_source <- sampling_source %>%
     #  previous dose days window: 16 days objecive 2, 90 days objective 3
     comparator_previous_dose_band = case_when(
       .data$cohort_definition_id == 1 ~ NA_character_,
-      .data$cohort_definition_id == 2 ~ cut(comparator_previous_dose, !!seq(0, 90000, 16), include.lowest = TRUE),
-      .data$cohort_definition_id == 3 ~ cut(comparator_previous_dose, !!seq(0, 90000, 90), include.lowest = TRUE)
+      .data$cohort_definition_id == 2 ~ cut(comparator_previous_dose, !!seq(0, 1500, 16), include.lowest = TRUE),
+      .data$cohort_definition_id == 3 ~ cut(comparator_previous_dose, !!seq(0, 1500, 90), include.lowest = TRUE)
     ),
     exposed_previous_dose_band = case_when(
       .data$cohort_definition_id == 1 ~ NA_character_,
-      .data$cohort_definition_id == 2 ~ cut(exposed_previous_dose, !!seq(0, 90000, 16), include.lowest = TRUE),
-      .data$cohort_definition_id == 3 ~ cut(exposed_previous_dose, !!seq(0, 90000, 90), include.lowest = TRUE)
+      .data$cohort_definition_id == 2 ~ cut(exposed_previous_dose, !!seq(0, 1500, 16), include.lowest = TRUE),
+      .data$cohort_definition_id == 3 ~ cut(exposed_previous_dose, !!seq(0, 1500, 90), include.lowest = TRUE)
     )
   ) |>
   compute(name = "sampling_source", temporary = FALSE) |>
