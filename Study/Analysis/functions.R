@@ -1185,7 +1185,7 @@ estimateSurvivalRisk <- function(cohort, outcomes, outcomeGroup, end, strata, gr
       omopgenerics::uniteAdditional(cols = c("outcome_name", "follow_up_end"))
     kk <- kk + 1
   }
-
+  
   if (!cdmName(cdm) %in% c("NLHR@UiO")) {
     future::plan(future::sequential)
   } 
@@ -1822,6 +1822,28 @@ estimateIncidenceRate <- function(cohort, strata, outcomes) {
   if ("pregnancy_start_period" %in% unlist(strata)) {
     summarise_ir <- summarise_ir |> addByPeriodEvents(cohort)
   }
+  
+  if (all(outcomes %in% c(
+    "preterm_labour", "miscarriage", "stillbirth", "maternal_death", 
+    "dysfunctional_labour", "eclampsia", "ectopic_pregnancy", 
+    "antepartum_haemorrhage", "gestational_diabetes", "hellp", "preeclampsia", 
+    "postpartum_endometritis", "postpartum_haemorrhage"
+  ))) {
+    summarise_ir <- summarise_ir |>
+      mutate(
+        additional_name = "outcome_group",
+        additional_level = "Maternal Adverse Events"
+      ) |>
+      omopgenerics::newSummarisedResult()
+  } else {
+    summarise_ir <- summarise_ir |>
+      mutate(
+        additional_name = "outcome_group",
+        additional_level = "Adverse Events of Special Interest"
+      ) |>
+      omopgenerics::newSummarisedResult()
+  }
+  
   return(summarise_ir)
 }
 
