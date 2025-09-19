@@ -69,6 +69,10 @@ minimum_counts <- 5
 # output folder
 results <- paste0("Results_", cdmName(cdm))
 
+# NCO/PCO run
+getNCO <- FALSE
+getPCO <- TRUE
+
 # Choose code to run
 runInstantiateCohorts <- TRUE
 runRiskSetSampling <- TRUE

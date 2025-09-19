@@ -361,7 +361,7 @@ cdm$study_population <- cdm$study_population |>
     cohortSetRef = settings(cdm$source_population) |> 
       mutate(cohort_name = gsub("source_", "", cohort_name)),
     .softValidation = TRUE
-    ) |>
+  ) |>
   addCohortName()
 
 # Characterise ---- 
@@ -418,27 +418,37 @@ cdm$study_population_nco <- cdm$study_population |>
     name = "study_population_nco"
   )
 
-nco_unweighted <- estimateSurvivalRisk(
-  cohort = cdm$study_population_nco, outcomes = settings(cdm$nco)$cohort_name, 
-  end = "cohort_end_date", strata = strata, group = "cohort_name", 
-  weights = NULL, outcomeGroup = "Negative Control Outcomes"
-)
-nco_unweighted_sensitivity <-   estimateSurvivalRisk(
-  cohort = cdm$study_population_nco, outcomes = settings(cdm$nco)$cohort_name, 
-  end = "cohort_end_date_sensitivity", strata = strata, group = "cohort_name", 
-  weights = NULL, outcomeGroup = "Negative Control Outcomes"
-)
+if (getNCO) {
+  nco_unweighted <- estimateSurvivalRisk(
+    cohort = cdm$study_population_nco, outcomes = settings(cdm$nco)$cohort_name, 
+    end = "cohort_end_date", strata = strata, group = "cohort_name", 
+    weights = NULL, outcomeGroup = "Negative Control Outcomes"
+  )
+  nco_unweighted_sensitivity <-   estimateSurvivalRisk(
+    cohort = cdm$study_population_nco, outcomes = settings(cdm$nco)$cohort_name, 
+    end = "cohort_end_date_sensitivity", strata = strata, group = "cohort_name", 
+    weights = NULL, outcomeGroup = "Negative Control Outcomes"
+  )
+} else {
+  nco_unweighted <- NULL
+  nco_unweighted_sensitivity <- NULL
+}
 
-pco_unweighted <- estimateSurvivalRisk(
-  cohort = cdm$study_population_nco, outcomes = "covid", 
-  end = "cohort_end_date", strata = strata, group = "cohort_name", 
-  weights = NULL, outcomeGroup = "Positive Control Outcomes"
-)
-pco_unweighted_sensitivity <- estimateSurvivalRisk(
-  cohort = cdm$study_population_nco, outcomes = "covid", 
-  end = "cohort_end_date_sensitivity", strata = strata, group = "cohort_name", 
-  weights = NULL, outcomeGroup = "Positive Control Outcomes"
-)
+if (getPCO) {
+  pco_unweighted <- estimateSurvivalRisk(
+    cohort = cdm$study_population_nco, outcomes = "covid", 
+    end = "cohort_end_date", strata = strata, group = "cohort_name", 
+    weights = NULL, outcomeGroup = "Positive Control Outcomes"
+  )
+  pco_unweighted_sensitivity <- estimateSurvivalRisk(
+    cohort = cdm$study_population_nco, outcomes = "covid", 
+    end = "cohort_end_date_sensitivity", strata = strata, group = "cohort_name", 
+    weights = NULL, outcomeGroup = "Positive Control Outcomes"
+  )
+} else {
+  pco_unweighted <- NULL
+  pco_unweighted_sensitivity <- NULL
+}
 
 nco_pco_unweighted <- bind(nco_unweighted, nco_unweighted_sensitivity, pco_unweighted, pco_unweighted_sensitivity) |>
   suppressRiskEstimates()

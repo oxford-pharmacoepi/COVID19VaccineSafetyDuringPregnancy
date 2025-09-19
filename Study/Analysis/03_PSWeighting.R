@@ -12,13 +12,13 @@ cdm$study_population <- cdm$study_population |>
   dplyr::select(!dplyr::starts_with("weight"))
 for (nm in cohortNames) {
   info(logger, paste0("  - Cohort: ", nm))
-
+  
   ## LASSO 
   lassoData <- cdm$features |>
     filter(cohort_name == nm) |> 
     inner_join(
       cdm$study_population |>
-        mutate(unique_id = paste0(subject_id, "_", exposed_match_id, "_", pregnancy_id)) |>
+        mutate(unique_id = paste0(as.character(subject_id), "_", as.character(exposed_match_id), "_", as.character(pregnancy_id))) |>
         filter(cohort_name == nm) |>
         select(any_of(c(
           "subject_id", "unique_id", "exposure", "age", "gestational_day", "cohort_start_date",
@@ -48,12 +48,12 @@ for (nm in cohortNames) {
   
   ## Propensity Score 
   psData <- lassoData |>
-      select(any_of(c(
-        "subject_id", "unique_id", "exposure", "age", "gestational_day", "cohort_start_date",
-        "previous_observation", "previous_pregnancies", "previous_healthcare_visits", 
-        "alcohol_misuse_dependence", "obesity", "anxiety", "depression", selectedLassoFeatures[[nm]]
-      )))|>
-      mutate(exposure = factor(exposure, levels = c("comparator", "exposed")))
+    select(any_of(c(
+      "subject_id", "unique_id", "exposure", "age", "gestational_day", "cohort_start_date",
+      "previous_observation", "previous_pregnancies", "previous_healthcare_visits", 
+      "alcohol_misuse_dependence", "obesity", "anxiety", "depression", selectedLassoFeatures[[nm]]
+    )))|>
+    mutate(exposure = factor(exposure, levels = c("comparator", "exposed")))
   
   glmResult <- glm(exposure ~ ., data = psData |> select(-c("unique_id", "subject_id")), family = binomial(link = "logit"))
   
@@ -206,27 +206,37 @@ cdm$study_population_nco <- cdm$study_population_nco |>
   ) |>
   compute(name = "study_population_nco", temporary = FALSE)
 
-nco_weighted <- estimateSurvivalRisk(
-  cohort = cdm$study_population_nco, outcomes = settings(cdm$nco)$cohort_name, 
-  end = "cohort_end_date", strata = strata, group = "cohort_name", 
-  weights = selectedLassoFeatures, outcomeGroup = "Negative Control Outcomes"
-)
-nco_weighted_sensitivity <-   estimateSurvivalRisk(
-  cohort = cdm$study_population_nco, outcomes = settings(cdm$nco)$cohort_name, 
-  end = "cohort_end_date_sensitivity", strata = strata, group = "cohort_name", 
-  weights = selectedLassoFeatures, outcomeGroup = "Negative Control Outcomes"
-)
+if (getNCO) {
+  nco_weighted <- estimateSurvivalRisk(
+    cohort = cdm$study_population_nco, outcomes = settings(cdm$nco)$cohort_name, 
+    end = "cohort_end_date", strata = strata, group = "cohort_name", 
+    weights = selectedLassoFeatures, outcomeGroup = "Negative Control Outcomes"
+  )
+  nco_weighted_sensitivity <-   estimateSurvivalRisk(
+    cohort = cdm$study_population_nco, outcomes = settings(cdm$nco)$cohort_name, 
+    end = "cohort_end_date_sensitivity", strata = strata, group = "cohort_name", 
+    weights = selectedLassoFeatures, outcomeGroup = "Negative Control Outcomes"
+  )
+} else {
+  nco_unweighted <- NULL
+  nco_unweighted_sensitivity <- NULL
+}
 
-pco_weighted <- estimateSurvivalRisk(
-  cohort = cdm$study_population_nco, outcomes = "covid", 
-  end = "cohort_end_date", strata = strata, group = "cohort_name", 
-  weights = selectedLassoFeatures, outcomeGroup = "Positive Control Outcomes"
-)
-pco_weighted_sensitivity <- estimateSurvivalRisk(
-  cohort = cdm$study_population_nco, outcomes = "covid", 
-  end = "cohort_end_date_sensitivity", strata = strata, group = "cohort_name", 
-  weights = selectedLassoFeatures, outcomeGroup = "Positive Control Outcomes"
-)
+if (getPCO) {
+  pco_weighted <- estimateSurvivalRisk(
+    cohort = cdm$study_population_nco, outcomes = "covid", 
+    end = "cohort_end_date", strata = strata, group = "cohort_name", 
+    weights = selectedLassoFeatures, outcomeGroup = "Positive Control Outcomes"
+  )
+  pco_weighted_sensitivity <- estimateSurvivalRisk(
+    cohort = cdm$study_population_nco, outcomes = "covid", 
+    end = "cohort_end_date_sensitivity", strata = strata, group = "cohort_name", 
+    weights = selectedLassoFeatures, outcomeGroup = "Positive Control Outcomes"
+  )
+} else {
+  nco_unweighted <- NULL
+  nco_unweighted_sensitivity <- NULL
+}
 
 nco_pco_weighted <- bind(nco_weighted, nco_weighted_sensitivity, pco_weighted, pco_weighted_sensitivity) |>
   suppressRiskEstimates()

@@ -1,0 +1,89 @@
+cdm_name,cohort_name_comparator,percentage
+CPRD GOLD,anaphylaxis_pregnant,0.00918944031203255
+CPRD GOLD,antepartum_haemorrhage,9.98381637456159
+CPRD GOLD,bells_palsy_pregnant,0.0661129178004564
+CPRD GOLD,deep_vein_thrombosis_pregnant,0.127886377675786
+CPRD GOLD,disseminated_intravascular_coagulation_pregnant,0.00255262230889793
+CPRD GOLD,dysfunctional_labour,0.0462024637910525
+CPRD GOLD,eclampsia,0.0368853923635751
+CPRD GOLD,ectopic_pregnancy,1.01377394997881
+CPRD GOLD,encephalitis_pregnant,0.00165920450078366
+CPRD GOLD,gestational_diabetes,2.0831950662916
+CPRD GOLD,guillain_barre_syndrome_pregnant,0.00191446673167345
+CPRD GOLD,haemorrhagic_stroke_pregnant,0.00497761350235097
+CPRD GOLD,hellp,0.0186341428549549
+CPRD GOLD,immune_thrombocytopenia_pregnant,0.0195275606630692
+CPRD GOLD,ischaemic_stroke_pregnant,0.00191446673167345
+CPRD GOLD,maternal_death,0.00906180919658765
+CPRD GOLD,miscarriage,35.3531808226591
+CPRD GOLD,myocardial_infarction_pregnant,0.00204209784711834
+CPRD GOLD,myocarditis_or_pericarditis_pregnant,0.003701302347902
+CPRD GOLD,narcolepsy_pregnant,8.93417808114276e-4
+CPRD GOLD,obesity_pregnant,7.7639283836285
+CPRD GOLD,postpartum_endometritis,0.625520096795438
+CPRD GOLD,postpartum_haemorrhage,5.28507685945772
+CPRD GOLD,preeclampsia,0.489082434384844
+CPRD GOLD,pregnant_alcohol_misuse,0.0689208023402441
+CPRD GOLD,preterm_labour,8.60348586102503
+CPRD GOLD,pulmonary_embolism_pregnant,0.061645828759885
+CPRD GOLD,transverse_myelitis_pregnant,0.00102104892355917
+CPRD GOLD,tts_pregnant,NA
+NLHR@UiO,anaphylaxis_pregnant,0.0248906334218533
+NLHR@UiO,antepartum_haemorrhage,22.674113562172
+NLHR@UiO,bells_palsy_pregnant,0.10332298909647
+NLHR@UiO,deep_vein_thrombosis_pregnant,0.127676414602744
+NLHR@UiO,disseminated_intravascular_coagulation_pregnant,0.00268603957789783
+NLHR@UiO,dysfunctional_labour,6.92998211097641
+NLHR@UiO,eclampsia,0.0684044745837982
+NLHR@UiO,ectopic_pregnancy,1.63705158807613
+NLHR@UiO,encephalitis_pregnant,0.00340231679867059
+NLHR@UiO,gestational_diabetes,7.49763180843882
+NLHR@UiO,guillain_barre_syndrome_pregnant,0.00125348513635232
+NLHR@UiO,haemorrhagic_stroke_pregnant,0.00376045540905697
+NLHR@UiO,hellp,0.240131938264066
+NLHR@UiO,immune_thrombocytopenia_pregnant,0.0354557224282514
+NLHR@UiO,ischaemic_stroke_pregnant,0.0118185741427505
+NLHR@UiO,maternal_death,0.0032232474934774
+NLHR@UiO,miscarriage,25.1223491027732
+NLHR@UiO,myocardial_infarction_pregnant,0.00447673262982972
+NLHR@UiO,myocarditis_or_pericarditis_pregnant,0.0168325146881598
+NLHR@UiO,narcolepsy_pregnant,0.00304417818828421
+NLHR@UiO,obesity_pregnant,4.74605286484028
+NLHR@UiO,postpartum_endometritis,0.0852369892719579
+NLHR@UiO,postpartum_haemorrhage,4.3406399578829
+NLHR@UiO,preeclampsia,7.23762317729831
+NLHR@UiO,pregnant_alcohol_misuse,0.146120553037642
+NLHR@UiO,preterm_labour,8.1686044949977
+NLHR@UiO,pulmonary_embolism_pregnant,0.261620254887249
+NLHR@UiO,stillbirth,0.539714885852271
+NLHR@UiO,transverse_myelitis_pregnant,0.00411859401944335
+NLHR@UiO,tts_pregnant,0
+SCIFI-PEARLv2,anaphylaxis_pregnant,0.00877750150813435
+SCIFI-PEARLv2,antepartum_haemorrhage,11.2042412887287
+SCIFI-PEARLv2,bells_palsy_pregnant,0.123523384859927
+SCIFI-PEARLv2,deep_vein_thrombosis_pregnant,0.176826757654779
+SCIFI-PEARLv2,disseminated_intravascular_coagulation_pregnant,0.00622404652394981
+SCIFI-PEARLv2,dysfunctional_labour,16.4471227350056
+SCIFI-PEARLv2,eclampsia,0.0912860156845972
+SCIFI-PEARLv2,ectopic_pregnancy,0.149377116574795
+SCIFI-PEARLv2,encephalitis_pregnant,0.00797954682557668
+SCIFI-PEARLv2,gestational_diabetes,5.73330439417685
+SCIFI-PEARLv2,guillain_barre_syndrome_pregnant,0.00351100060325374
+SCIFI-PEARLv2,haemorrhagic_stroke_pregnant,0.0148419570955726
+SCIFI-PEARLv2,hellp,0.200924989068021
+SCIFI-PEARLv2,immune_thrombocytopenia_pregnant,0.0887325607004127
+SCIFI-PEARLv2,ischaemic_stroke_pregnant,0.0169166392702226
+SCIFI-PEARLv2,maternal_death,0.00574527371441521
+SCIFI-PEARLv2,myocardial_infarction_pregnant,0.00255345498418454
+SCIFI-PEARLv2,myocarditis_or_pericarditis_pregnant,0.016757048333711
+SCIFI-PEARLv2,narcolepsy_pregnant,0.00271304592069607
+SCIFI-PEARLv2,obesity_pregnant,12.1111965809238
+SCIFI-PEARLv2,postpartum_endometritis,0.141876342558753
+SCIFI-PEARLv2,postpartum_haemorrhage,4.50285827367292
+SCIFI-PEARLv2,preeclampsia,4.85076651526806
+SCIFI-PEARLv2,pregnant_alcohol_misuse,0.0756461039064669
+SCIFI-PEARLv2,preterm_labour,7.22611801430573
+SCIFI-PEARLv2,pulmonary_embolism_pregnant,0.0896901063194819
+SCIFI-PEARLv2,stillbirth,0.421798845199983
+SCIFI-PEARLv2,transverse_myelitis_pregnant,0.00957545619069202
+SCIFI-PEARLv2,tts_pregnant,NA
