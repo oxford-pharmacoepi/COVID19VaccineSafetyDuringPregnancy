@@ -78,8 +78,8 @@ runInstantiateCohorts <- TRUE
 runRiskSetSampling <- TRUE
 runPSWeighting <- TRUE
 runOutcomeModel <- TRUE
-runBackgroundRates <- FALSE
-runBRCharacteristics <- FALSE
+runBackgroundRates <- TRUE
+runBRCharacteristics <- TRUE
 
 source(here("RunStudy.R"))
 
