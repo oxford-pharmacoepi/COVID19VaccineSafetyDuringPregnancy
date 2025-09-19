@@ -28,7 +28,7 @@ cdm$exposed_source <- cdm$source_population |>
       select(all_of(c(
         "subject_id", "vaccine_date" = "cohort_start_date", "vaccine_brand", "vaccine_dose" = "cohort_definition_id"
       ))) |>
-      mutate(vaccine_dose = paste0("Vaccine dose: ", vaccine_dose)),
+      mutate(vaccine_dose = paste0("Vaccine dose: ", as.character(vaccine_dose))),
     by = c("subject_id", "vaccine_date")
   ) |>
   compute(name = "exposed_source", temporary = FALSE) |>
