@@ -164,7 +164,7 @@ cif_aesi_inf <- estimateSingleEventSurvival(
 )
 ### MAE pregnancy
 maePregnancy <- c(
-  "miscarriage", "stillbirth", "maternal_death", "antepartum_haemorrhage", 
+  "miscarriage", "stillbirth", "antepartum_haemorrhage", 
   "dysfunctional_labour", "eclampsia", "ectopic_pregnancy", 
   "gestational_diabetes", "hellp", "preeclampsia", "preterm_labour"
 )
