@@ -389,3 +389,42 @@ renderInteractivePlot <- function(plt, interactive) {
     shiny::renderPlot(plt)
   }
 }
+reactiveSelectors <- function(data, prefix, columns, restrictions, input,
+                              multiple = TRUE, default = list()) {
+  if (length(restrictions) != length(columns)) {
+    if (length(restrictions) == 1) {
+      restrictions <- rep(restrictions, length(columns))
+    } else {
+      cli::cli_abort("Revise columns and restrictions arguments.")
+    }
+  }
+  
+  names(columns) <- restrictions
+  
+  def <- function(col) {
+    if (col %in% names(default)) {
+      x <- default[[col]]
+    } else {
+      x <- choic(col, dict = columns, input = input)
+      if (!multiple) {
+        x <- first(x)
+      }
+    }
+    return(x)
+  }
+  choic <- function(col, dict, input) {
+    filterCol <- names(dict)[dict == col]
+    return(sort(unique(data[[col]][data[[filterCol]] %in% input[[paste0(prefix, "_", filterCol)]]])))
+  }
+  renderUI({
+    purrr::map(columns, ~ pickerInput(
+      inputId = paste0(prefix, "_", .),
+      label = stringr::str_to_sentence(gsub("_", " ", .)),
+      choices = choic(., dict = columns, input = input),
+      selected = def(.),
+      options = list(`actions-box` = multiple, size = 10, `selected-text-format` = "count > 3"),
+      multiple = multiple,
+      inline = TRUE
+    ))
+  })
+}
