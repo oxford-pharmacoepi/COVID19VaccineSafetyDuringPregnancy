@@ -1491,6 +1491,7 @@ addSocioeconomicStatus <- function(cohort, database) {
 }
 
 getBRCharacteristics <- function(cohort, strata) {
+  
   # Variables to add: socioeconomic status, ethnicity, season and period pregnancy start
   # Pregnancy: previous pregnancy
   # Comorbidities: alchohol, obesity, diabetes, hypertension, asthma, depression/anxiety, epilepsy
@@ -1511,7 +1512,7 @@ getBRCharacteristics <- function(cohort, strata) {
     summariseCharacteristics(
       counts = TRUE,
       demographics = TRUE,
-      strata = strata,
+      strata = c(strata, list("trimester")),
       cohortIntersectFlag = list(
         # covariatesInf (-Inf, 0)
         "History of comorbidities" = list(

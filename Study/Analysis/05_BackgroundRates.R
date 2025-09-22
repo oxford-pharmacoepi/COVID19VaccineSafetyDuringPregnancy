@@ -19,8 +19,9 @@ cdm$pregnancy_denominator <- cdm$mother_table |>
   requireDemographics(
     ageRange = c(12, 55), sex = "Female", minPriorObservation = 365
   ) |>
-  # Start in 2018 or after
-  requireInDateRange(dateRange = as.Date(c("2018-01-01", NA))) %>% 
+  # Start in 2018 and end 9 months before end of data
+  requireInDateRange(dateRange = c(as.Date("2018-01-01"), dataCutDate - lubridate::month(9))) %>% 
+
   # Add postpartum dates
   mutate(
     postpartum_6_weeks = !!dateadd("pregnancy_end_date", 6*7),
