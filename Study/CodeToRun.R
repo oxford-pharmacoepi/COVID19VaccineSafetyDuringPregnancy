@@ -24,6 +24,7 @@ library(furrr)
 library(CohortSurvival)
 library(odbc)
 library(RPostgres)
+library(epitools)
 
 # Database name
 database_name <- ""
@@ -72,6 +73,9 @@ results <- paste0("Results_", cdmName(cdm))
 # NCO/PCO run
 getNCO <- FALSE
 getPCO <- TRUE
+
+# Confidence Interval Method
+ci = "midp" # "boootstrap"
 
 # Choose code to run
 runInstantiateCohorts <- TRUE

@@ -13,7 +13,7 @@ getPregnantCohort <- function(db, cdm, mother_table_schema, mother_table_name) {
       temporary = FALSE,
       overwrite = TRUE
     )
-
+  
   cdm$mother_table <- cdm$mother_table_original |>
     mutate(
       cohort_definition_id = 1L,
@@ -86,7 +86,7 @@ getPregnantCohort <- function(db, cdm, mother_table_schema, mother_table_name) {
     ) |>
     compute(name = "mother_table", temporary = FALSE) |>
     recordCohortAttrition(reason = "No overlapping pregnancy records")
-
+  
   return(cdm$mother_table)
 }
 
@@ -115,7 +115,7 @@ getSourcePopulation <- function(cdm, objective, enrollment) {
       dateRange = c(enrollment[1], NA),
       name = name
     )
-
+  
   # Eligible for exposure
   if (objective == 1) {
     ## 1st Objective
@@ -130,7 +130,7 @@ getSourcePopulation <- function(cdm, objective, enrollment) {
       compute(name = name, temporary = FALSE) |>
       recordCohortAttrition(reason = "Unvaccinated before pregnancy start")
   }
-
+  
   if (objective == 2) {
     ## 2nd Objective
     cdm[[name]] <- cdm[[name]] |>
@@ -156,7 +156,7 @@ getSourcePopulation <- function(cdm, objective, enrollment) {
       compute(name = name, temporary = FALSE) |>
       recordCohortAttrition(reason = "Eligible for 2nd during pregnancy")
   }
-
+  
   if (objective == 3) {
     ## 2nd Objective
     cdm[[name]] <- cdm[[name]] |>
@@ -214,7 +214,7 @@ getSourcePopulation <- function(cdm, objective, enrollment) {
         name = name
       )
   }
-
+  
   return(cdm[[name]])
 }
 
@@ -257,7 +257,7 @@ samplingSummary <- function(sampling_source, reason, results, cohortId = 1:3, va
   x <- sampling_source |>
     dplyr::filter(.data$cohort_definition_id %in% .env$cohortId) |>
     dplyr::collect()
-
+  
   if ("ratio" %in% variable) {
     ratio <- x |>
       group_by(cohort_name, exposed_id) |>
@@ -270,7 +270,7 @@ samplingSummary <- function(sampling_source, reason, results, cohortId = 1:3, va
   } else {
     ratio <- NULL
   }
-
+  
   if ("comparator" %in% variable) {
     comparator <- x |>
       summariseResult(group = list("cohort_name")) |>
@@ -286,7 +286,7 @@ samplingSummary <- function(sampling_source, reason, results, cohortId = 1:3, va
   } else {
     comparator <- NULL
   }
-
+  
   if ("exposed" %in% variable) {
     exposed <- x |>
       mutate(
@@ -305,7 +305,7 @@ samplingSummary <- function(sampling_source, reason, results, cohortId = 1:3, va
   } else {
     exposed <- NULL
   }
-
+  
   omopgenerics::bind(results, ratio, comparator, exposed)
 }
 
@@ -314,17 +314,17 @@ exitAtFirstDateStudy <- function(cohort, dateColumns, endColumn, keepDates, reas
   newDate <- endColumn
   keptDate <- "cohort_start_date"
   reason <- reason
-
+  
   tmpPrefix <- omopgenerics::tmpPrefix()
   tmpName <- omopgenerics::uniqueTableName(prefix = tmpPrefix)
-
+  
   newCohort <- cohort |>
     dplyr::mutate(
       "cohort_start_date_0123456789" = .data$cohort_start_date,
       "cohort_end_date_0123456789" = .data$cohort_end_date
     ) |>
     dplyr::compute(name = tmpName, temporary = FALSE)
-
+  
   newCohort <- newCohort |>
     tidyr::pivot_longer(
       cols = dplyr::all_of(dateColumns),
@@ -352,10 +352,10 @@ exitAtFirstDateStudy <- function(cohort, dateColumns, endColumn, keepDates, reas
     dplyr::select(!c("new_date_0123456789", "cohort_start_date_0123456789", "cohort_end_date_0123456789")) |>
     dplyr::distinct() |>
     dplyr::compute(name = tmpName, temporary = FALSE)
-
+  
   newCohort <- newCohort |>
     dplyr::relocate(dplyr::all_of(omopgenerics::cohortColumns("cohort")))
-
+  
   if (keepDates) {
     newCohort <- newCohort |>
       dplyr::inner_join(
@@ -364,11 +364,11 @@ exitAtFirstDateStudy <- function(cohort, dateColumns, endColumn, keepDates, reas
       ) |>
       dplyr::compute(name = tmpName, temporary = FALSE)
   }
-
+  
   newCohort <- newCohort |>
     dplyr::compute(name = name, temporary = FALSE) |>
     omopgenerics::newCohortTable(.softValidation = TRUE)
-
+  
   omopgenerics::dropSourceTable(cdm, tmpName)
   return(newCohort)
 }
@@ -467,12 +467,12 @@ getBaselineCharacteristics <- function(cdm, strata, weights) {
                 copy = TRUE
               ) |>
               compute()
-
+            
             if (nrow(data.k) != pull(tally(baselineData))) cli::cli_abort("Error in getBaselineCharacteristics")
-
+            
             strataBaseline <- "exposure"
             if (strata.k != "overall") strataBaseline <- (c("exposure", strata.k))
-
+            
             baseline.k <- baselineData |>
               summariseCharacteristics(
                 cohortId = group,
@@ -517,7 +517,7 @@ getBaselineCharacteristics <- function(cdm, strata, weights) {
       }
     }
   }
-
+  
   weighting <- "FALSE"
   if (!is.null(weights)) weighting <- "TRUE"
   baseline |>
@@ -584,7 +584,7 @@ getFeaturesTable <- function(cdm, strata) {
     filter(window != "none") |>
     distinct(cohort_name, subject_id, cohort_start_date, feature) |>
     compute(name = "features", temporary = FALSE)
-
+  
   countsFeatures <- features |>
     inner_join(
       cohortCount(cdm$study_population) |>
@@ -600,7 +600,7 @@ getFeaturesTable <- function(cdm, strata) {
     filter(freq >= 0.005) |>
     distinct(cohort_name, feature) |>
     compute()
-
+  
   cdm$features <- features |>
     inner_join(countsFeatures, by = c("cohort_name", "feature")) |>
     select(any_of(c(
@@ -626,7 +626,7 @@ getFeaturesTable <- function(cdm, strata) {
       cohortCodelistRef = NULL,
       .softValidation = TRUE
     )
-
+  
   return(cdm)
 }
 
@@ -664,10 +664,10 @@ getLargeScaleCharacteristics <- function(cdm, strata, weights) {
           if (nrow(data.k) > 0) {
             # weights
             data.k <- getWeights(data.k, weights[[group]])
-
+            
             strataBaseline <- "exposure"
             if (strata.k != "overall") strataBaseline <- (c("exposure", strata.k))
-
+            
             # characteristics
             summarisedResult.k <- data.k |>
               mutate(exposure = as.character(exposure)) |>
@@ -691,7 +691,7 @@ getLargeScaleCharacteristics <- function(cdm, strata, weights) {
       }
     }
   }
-
+  
   weighting <- "FALSE"
   if (!is.null(weights)) weighting <- "TRUE"
   lsc <- summarisedResult |>
@@ -767,7 +767,7 @@ summariseBinarySMD <- function(lsc) {
       estimate_name = "smd"
     ) |>
     select(all_of(resultColumns()))
-
+  
   smd |>
     newSummarisedResult(
       settings(lsc) |>
@@ -858,7 +858,7 @@ cohortExit <- function(x, strata, weights) {
     ) |>
     mutate("analysis" = "sensitivity") |>
     addExitReasonPercentages()
-
+  
   weighting <- "FALSE"
   if (!is.null(weights)) weighting <- "TRUE"
   bind(main, sensitvity) |>
@@ -875,7 +875,7 @@ summariseCohortExit <- function(cdm, strata, weights) {
     strataCens <- c(strataCens, list(c(st, "exit_reason")))
   }
   strataCens <- c(strataCens, strata, "exit_reason")
-
+  
   if (length(weights) == 0) {
     summaryExit <- cohortExit(cdm$study_population, strataCens, NULL)
   } else {
@@ -975,7 +975,7 @@ getIRR <- function(x) {
 }
 
 getWeights <- function(x, coefs) {
-
+  
   pred <- c(
     "exposure", "age", "gestational_day", "cohort_start_date",
     "previous_observation", "previous_pregnancies", "previous_healthcare_visits",
@@ -984,12 +984,12 @@ getWeights <- function(x, coefs) {
   psData <- x |>
     mutate(unique_id = paste0(subject_id, "_", exposed_match_id, "_", pregnancy_id)) |>
     mutate(exposure = factor(exposure, levels = c("comparator", "exposed")))
-
+  
   columns <- sapply(lapply(psData, unique), length)
   columns <- names(columns)[columns <= 1]
-
+  
   glmResult <- glm(exposure ~ ., data = psData |> select(any_of(pred)) |> select(!any_of(columns)), family = binomial(link = "logit"))
-
+  
   psData |>
     select(!any_of(c("ps", "weight"))) |>
     bind_cols(
@@ -1001,38 +1001,63 @@ getWeights <- function(x, coefs) {
     mutate(weight = if_else(exposure == "exposed", 1-ps, ps))
 }
 
-processGroupStrata <- function(data, group, weights) {
+processGroupStrata <- function(data, group, weights, ci) {
   if (nrow(data) > 10 & sum(data$status) > 5) {
     set.seed(123)
-
-    coefBootstrap <- NULL
-    for (ii in 1:500) {
-      data.ii <- data |> dplyr::sample_n(size = nrow(data), replace = TRUE)
-      if (length(weights) != 0) {
-        data.ii <- getWeights(data.ii, weights[[group]])
+    
+    if (ci == "bootstrap") {
+      coefBootstrap <- NULL
+      for (ii in 1:500) {
+        data.ii <- data |> dplyr::sample_n(size = nrow(data), replace = TRUE)
+        if (length(weights) != 0) {
+          data.ii <- getWeights(data.ii, weights[[group]])
+        }
+        coefBootstrap <- c(coefBootstrap, getIRR(data.ii))
       }
-      coefBootstrap <- c(coefBootstrap, getIRR(data.ii))
+      
+      # calculate main estimate
+      if (length(weights) != 0) {
+        data <- getWeights(data, weights[[group]])
+      }
+      res <- getIRR(data)
+      
+      # risk estimate tibble
+      resultsRisk <- tibble(
+        lower_ci = quantile(coefBootstrap, 0.025, na.rm = TRUE),
+        upper_ci = quantile(coefBootstrap, 0.975, na.rm = TRUE),
+        coef = res
+      )
+    } else if (ci == "midp") {
+      
+      # calculate main estimate
+      if (length(weights) != 0) {
+        data <- getWeights(data, weights[[group]])
+      }
+      
+      x <- data |>
+        group_by(exposure) |>
+        summarise(person_days = sum(time*.data$weight), cases = sum(status*.data$weight))
+      cases <- setNames(x$cases, x$exposure)
+      person_days <- setNames(x$person_days, x$exposure)
+      coef <- rateratio(x = cases, y = person_days)
+      
+      # risk estimate tibble
+      resultsRisk <- tibble(
+        lower_ci = coef$measure[4],
+        upper_ci = coef$measure[6],
+        coef = coef$measure[2]
+      )
     }
-
-    # calculate main estimate
-    if (length(weights) != 0) {
-      data <- getWeights(data, weights[[group]])
-    }
-    res <- getIRR(data)
-
+    
     # risk estimate tibble
-    resultsRisk <- tibble(
-      lower_ci = quantile(coefBootstrap, 0.025, na.rm = TRUE),
-      upper_ci = quantile(coefBootstrap, 0.975, na.rm = TRUE),
-      coef = res
-    ) |>
+    resultsRisk <- resultsRisk |>
       regressionToSummarised(cols = c("coef", "lower_ci", "upper_ci")) |>
       mutate(
         estimate_type = "numeric",
         variable_name = "Risk estimate",
         variable_level = NA_character_
       )
-
+    
     # follow-up stats tibble
     resultsStats <- data |>
       group_by(exposure) |>
@@ -1059,7 +1084,7 @@ processGroupStrata <- function(data, group, weights) {
         ),
         estimate_name = if_else(grepl("_count", estimate_name), "count", estimate_name)
       )
-
+    
     # combine and return
     bind_rows(resultsRisk, resultsStats)
   } else {
@@ -1073,17 +1098,18 @@ processGroupStrata <- function(data, group, weights) {
   }
 }
 
-getRiskEstimate <- function(data, group, strata, weights = NULL) {
 
+getRiskEstimate <- function(data, group, strata, weights = NULL, ci = "midp") {
+  
   if (sum(data |> pull(status)) >= 5) {
-
+    
     # prep data
     strata <- unlist(strata)
     strata <- c(strata[strata != "exposure"], "overall")
     if (is.null(weights)) {
       data <- data |> mutate(weight = 1)
     }
-
+    
     # nest the data by group and strata
     nestedData <- data |>
       mutate(overall = "overall") |>
@@ -1100,7 +1126,7 @@ getRiskEstimate <- function(data, group, strata, weights = NULL) {
       ) |>
       collect() |>
       nest()
-
+    
     # get risk estimiate within each nest
     if (cdmName(cdm) %in% c("NLHR@UiO")) {
       results <- nestedData |>
@@ -1108,7 +1134,7 @@ getRiskEstimate <- function(data, group, strata, weights = NULL) {
           results = purrr::map(
             .x = data,
             .y = group_level,
-            .f = ~ processGroupStrata(data = .x, group = .y, weights = weights)
+            .f = ~ processGroupStrata(data = .x, group = .y, weights = weights, ci = ci)
           )) |>
         select(-data) |>
         tidyr::unnest(results)
@@ -1118,12 +1144,12 @@ getRiskEstimate <- function(data, group, strata, weights = NULL) {
           results = future_map(
             .x = data,
             .y = group_level,
-            .f = ~ processGroupStrata(data = .x, group = .y, weights = weights)
+            .f = ~ processGroupStrata(data = .x, group = .y, weights = weights, ci = ci)
           )) |>
         select(-data) |>
         tidyr::unnest(results)
     }
-
+    
   } else {
     results <- tibble(
       variable_level = character(),
@@ -1133,7 +1159,7 @@ getRiskEstimate <- function(data, group, strata, weights = NULL) {
       variable_name = character()
     )
   }
-
+  
   return(results)
 }
 
@@ -1149,7 +1175,7 @@ regressionToSummarised <- function(
     mutate(estimate_value = as.character(estimate_value), estimate_type = estimate)
 }
 
-estimateSurvivalRisk <- function(cohort, outcomes, outcomeGroup, end, strata, group, weights = NULL) {
+estimateSurvivalRisk <- function(cohort, outcomes, outcomeGroup, end, strata, group, weights = NULL, ci = "midp") {
   cdm <- omopgenerics::cdmReference(cohort)
   studyAnalysis <- switch (end,
                            "cohort_end_date" = "main",
@@ -1171,25 +1197,25 @@ estimateSurvivalRisk <- function(cohort, outcomes, outcomeGroup, end, strata, gr
   if (!is.null(weights)) weighting <- "TRUE"
   results <- list()
   kk <- 1
-
+  
   # check if parallelization is possible
   if (!cdmName(cdm) %in% c("NLHR@UiO")) {
     cores <- parallel::detectCores(logical = FALSE)
     future::plan(future::multisession, workers = cores)
   }
-
+  
   for (outcome in outcomes) {
     survival_data <- getSurvivalData(cohort, outcome, end = end, strata = strata, group = group, weights = weights)
     results[[kk]] <- getRiskEstimate(survival_data, group = group, strata = strata, weights = weights) |>
-      mutate(outcome_name = outcome, follow_up_end = end) |>
+      mutate(outcome_name = outcome, follow_up_end = end, ci = ci) |>
       omopgenerics::uniteAdditional(cols = c("outcome_name", "follow_up_end"))
     kk <- kk + 1
   }
-
+  
   if (!cdmName(cdm) %in% c("NLHR@UiO")) {
     future::plan(future::sequential)
   }
-
+  
   results |>
     bind_rows() |>
     mutate(result_id = 1L, cdm_name = cdmName(cdm)) |>
@@ -1225,7 +1251,7 @@ suppressRiskEstimates <- function(result) {
       )
     ) |>
     select(!c("sup_group", "sup_row", "sup_estimate"))
-
+  
   result <- result |>
     newSummarisedResult(
       settings = set |> mutate(min_cell_count = "5")
@@ -1281,7 +1307,7 @@ summariseTimeDistribution <- function(cdm, strata, weights = NULL) {
     weighting <- "TRUE"
     tab <- cdm$study_population
   }
-
+  
   timeDistribution <- NULL
   strata <- unlist(strata) |> unique()
   strataNew <- c(strata[strata != "exposure"], "overall")
@@ -1322,7 +1348,7 @@ summariseTimeDistribution <- function(cdm, strata, weights = NULL) {
       }
     }
   }
-
+  
   # summarised result
   timeDistribution <- timeDistribution |>
     dplyr::mutate(
@@ -1342,7 +1368,7 @@ summariseTimeDistribution <- function(cdm, strata, weights = NULL) {
         weighting = weighting
       )
     )
-
+  
   return(timeDistribution)
 }
 
@@ -1789,7 +1815,7 @@ addBRDenominatorStrata <- function(cohort) {
       )
     ) |>
     compute(name = "pregnancy_denominator", temporary = FALSE)
-
+  
   strata <- list("maternal_age", "pregnancy_start_period")
   if (cdmName(cdm) %in% c("CPRD AURUM", "CPRD GOLD", "SIDIAP")) {
     cohort <- cohort |>
@@ -1823,7 +1849,7 @@ estimateIncidenceRate <- function(cohort, strata, outcomes) {
   if ("pregnancy_start_period" %in% unlist(strata)) {
     summarise_ir <- summarise_ir |> addByPeriodEvents(cohort)
   }
-
+  
   if (all(outcomes %in% c(
     "preterm_labour", "miscarriage", "stillbirth", "maternal_death",
     "dysfunctional_labour", "eclampsia", "ectopic_pregnancy",
@@ -1844,7 +1870,7 @@ estimateIncidenceRate <- function(cohort, strata, outcomes) {
       ) |>
       omopgenerics::newSummarisedResult()
   }
-
+  
   return(summarise_ir)
 }
 
@@ -1984,7 +2010,7 @@ addByPeriodEvents <- function(x, cohort) {
     ) |>
     uniteStrata(cols = c("pregnancy_start_period", "gestational_trimester")) |>
     distinct()
-
+  
   return(bind_rows(x, result))
 }
 
@@ -1996,7 +2022,7 @@ getMatchedCohort <- function(cohort, outcomes, name) {
   if (cdmName(cdm) %in% c("CPRD AURUM", "CPRD GOLD", "SIDIAP")) {
     strata <- c(strata, "socioeconomic_status", "ethnicity")
   }
-
+  
   for (outcome in outcomes) {
     nameMatch <- paste0(tmp, "match")
     nameSample <- paste0(tmp, "sample")
