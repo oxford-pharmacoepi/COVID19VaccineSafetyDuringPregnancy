@@ -157,9 +157,126 @@ for (endDate in c("postpartum_12_weeks", "postpartum_12_weeks_sensitivity")) {
   jj <- 1 + jj
 }
 
+
 # Export results ----
 info(logger, "Export outcome risk results")
 aesiResults <- omopgenerics::bind(aesiResults) 
 maeResults <- omopgenerics::bind(maeResults) 
 omopgenerics::bind(aesiResults, maeResults) |>
   exportSummarisedResult(fileName = paste0("outcome_risk_estimates_", cdmName(cdm), ".csv"), path = output_folder)
+
+## NCO (not weighted)
+info(logger, "- Negative Control Outcomes")
+cdm$study_population_nco <- cdm$study_population |>
+  select(any_of(c(
+    "cohort_definition_id", "cohort_name", "subject_id", "cohort_start_date", "cohort_end_date",
+    "cohort_end_date_sensitivity", "exposure", "exposed_match_id", "pregnancy_id",
+    unlist(strata)
+  ))) |>
+  compute(name = "study_population_nco", temporary = FALSE) |>
+  newCohortTable(.softValidation = TRUE) |>
+  addCohortIntersectDate(
+    targetCohortTable = "nco",
+    indexDate = "cohort_start_date",
+    targetDate = "cohort_start_date",
+    order = "first",
+    window = c(1, Inf),
+    nameStyle = "{cohort_name}",
+    name = "study_population_nco"
+  ) |>
+  addCohortIntersectDate(
+    targetCohortTable = "covid",
+    indexDate = "cohort_start_date",
+    targetDate = "cohort_start_date",
+    order = "first",
+    window = c(1, Inf),
+    nameStyle = "{cohort_name}",
+    name = "study_population_nco"
+  )
+
+if (getNCO) {
+  nco_unweighted <- estimateSurvivalRisk(
+    cohort = cdm$study_population_nco, outcomes = settings(cdm$nco)$cohort_name, 
+    end = "cohort_end_date", strata = strata, group = "cohort_name", 
+    weights = NULL, outcomeGroup = "Negative Control Outcomes"
+  )
+  nco_unweighted_sensitivity <-   estimateSurvivalRisk(
+    cohort = cdm$study_population_nco, outcomes = settings(cdm$nco)$cohort_name, 
+    end = "cohort_end_date_sensitivity", strata = strata, group = "cohort_name", 
+    weights = NULL, outcomeGroup = "Negative Control Outcomes"
+  )
+} else {
+  nco_unweighted <- NULL
+  nco_unweighted_sensitivity <- NULL
+}
+
+if (getPCO) {
+  pco_unweighted <- estimateSurvivalRisk(
+    cohort = cdm$study_population_nco, outcomes = "covid", 
+    end = "cohort_end_date", strata = strata, group = "cohort_name", 
+    weights = NULL, outcomeGroup = "Positive Control Outcomes"
+  )
+  pco_unweighted_sensitivity <- estimateSurvivalRisk(
+    cohort = cdm$study_population_nco, outcomes = "covid", 
+    end = "cohort_end_date_sensitivity", strata = strata, group = "cohort_name", 
+    weights = NULL, outcomeGroup = "Positive Control Outcomes"
+  )
+} else {
+  pco_unweighted <- NULL
+  pco_unweighted_sensitivity <- NULL
+}
+
+nco_pco_unweighted <- bind(nco_unweighted, nco_unweighted_sensitivity, pco_unweighted, pco_unweighted_sensitivity) |>
+  suppressRiskEstimates()
+
+nco_pco_unweighted |> 
+  exportSummarisedResult(fileName = paste0("unweighted_nco_", cdmName(cdm), ".csv"), path = output_folder)
+
+
+## NCO weighted
+info(logger, "- Negative Control Outcomes (weighted)")
+cdm$study_population_nco <- cdm$study_population_nco |>
+  mutate(unique_id = paste0(subject_id, "_", exposed_match_id, "_", pregnancy_id)) |>
+  inner_join(
+    cdm$study_population |> select("unique_id", "weight"), by = "unique_id"
+  ) |>
+  compute(name = "study_population_nco", temporary = FALSE)
+
+if (getNCO) {
+  nco_weighted <- estimateSurvivalRisk(
+    cohort = cdm$study_population_nco, outcomes = settings(cdm$nco)$cohort_name, 
+    end = "cohort_end_date", strata = strata, group = "cohort_name", 
+    weights = selectedLassoFeatures, outcomeGroup = "Negative Control Outcomes"
+  )
+  nco_weighted_sensitivity <-   estimateSurvivalRisk(
+    cohort = cdm$study_population_nco, outcomes = settings(cdm$nco)$cohort_name, 
+    end = "cohort_end_date_sensitivity", strata = strata, group = "cohort_name", 
+    weights = selectedLassoFeatures, outcomeGroup = "Negative Control Outcomes"
+  )
+} else {
+  nco_unweighted <- NULL
+  nco_unweighted_sensitivity <- NULL
+}
+
+if (getPCO) {
+  pco_weighted <- estimateSurvivalRisk(
+    cohort = cdm$study_population_nco, outcomes = "covid", 
+    end = "cohort_end_date", strata = strata, group = "cohort_name", 
+    weights = selectedLassoFeatures, outcomeGroup = "Positive Control Outcomes"
+  )
+  pco_weighted_sensitivity <- estimateSurvivalRisk(
+    cohort = cdm$study_population_nco, outcomes = "covid", 
+    end = "cohort_end_date_sensitivity", strata = strata, group = "cohort_name", 
+    weights = selectedLassoFeatures, outcomeGroup = "Positive Control Outcomes"
+  )
+} else {
+  nco_unweighted <- NULL
+  nco_unweighted_sensitivity <- NULL
+}
+
+nco_pco_weighted <- bind(nco_weighted, nco_weighted_sensitivity, pco_weighted, pco_weighted_sensitivity) |>
+  suppressRiskEstimates()
+
+nco_pco_weighted |> 
+  exportSummarisedResult(fileName = paste0("weighted_nco_", cdmName(cdm), ".csv"), path = output_folder)
+
