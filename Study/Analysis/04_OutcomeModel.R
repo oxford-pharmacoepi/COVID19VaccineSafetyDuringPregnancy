@@ -8,7 +8,7 @@ toKeep <- c(
    "exposure", "age", "gestational_day", "cohort_start_date",
     "previous_observation", "previous_pregnancies", "previous_healthcare_visits",
     "alcohol_misuse_dependence", "obesity", "anxiety", "depression", unlist(selectedLassoFeatures)
-)
+) |> unique()
 cdm$aesi_outcome <- cdm$study_population |>
   dplyr::select(dplyr::all_of(toKeep)) %>% 
   mutate(start_42 = as.Date(!!CDMConnector::dateadd("cohort_start_date", 42))) |>
