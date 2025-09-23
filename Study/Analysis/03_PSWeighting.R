@@ -79,7 +79,7 @@ for (nm in cohortNames) {
   cohName <- paste0("weighted_", nm)
   set <- settings(cdm$study_population) |> filter(cohort_name == nm) |> mutate(cohort_name = cohort_name)
   cdm[[cohName]] <- cdm$study_population |>
-    mutate(unique_id = paste0(subject_id, "_", exposed_match_id, "_", pregnancy_id)) |>
+    mutate(unique_id = paste0(as.character(subject_id), "_", as.character(exposed_match_id), "_", as.character(pregnancy_id))) |>
     inner_join(ps[[nm]], copy = TRUE) |>
     compute(name = cohName, temporary = FALSE) |>
     newCohortTable(
