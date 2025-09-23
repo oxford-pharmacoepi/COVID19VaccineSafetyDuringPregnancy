@@ -4,7 +4,10 @@ strata <- selectStrata(cdm, strata = c("vaccine_brand", "gestational_trimester",
 toKeep <- c(
   "cohort_definition_id", "cohort_name", "subject_id", "cohort_start_date", 
   "cohort_end_date", "cohort_end_date_sensitivity", "pregnancy_end_date",
-  "exposed_match_id", "pregnancy_id", unique(unlist(strata)), "weight"
+  "exposed_match_id", "pregnancy_id", unique(unlist(strata)), "weight",
+   "exposure", "age", "gestational_day", "cohort_start_date",
+    "previous_observation", "previous_pregnancies", "previous_healthcare_visits",
+    "alcohol_misuse_dependence", "obesity", "anxiety", "depression", unlist(selectedLassoFeatures)
 )
 cdm$aesi_outcome <- cdm$study_population |>
   dplyr::select(dplyr::all_of(toKeep)) %>% 
