@@ -959,6 +959,13 @@ getSurvivalData <- function(data, outcome, group, strata, start = "cohort_start_
       status = if_else(is.na(status), 0, status),
       time = if_else(status == 1, !!datediff("start_date", outcome), !!datediff("start_date", "end_date"))
     ) |>
+    select(any_of(unique(c(
+      "cohort_name", "subject_id", "exposed_match_id", "pregnancy_id", "exposure",
+      unlist(group), unlist(strata), unlist(weights), "time", "status",
+      "age", "gestational_day", "cohort_start_date",
+      "previous_observation", "previous_pregnancies", "previous_healthcare_visits",
+      "alcohol_misuse_dependence", "obesity", "anxiety", "depression"
+    )))) |>
     compute()
 }
 
@@ -979,7 +986,7 @@ getWeights <- function(x, coefs) {
   )
   psData <- x |>
     mutate(unique_id = paste0(subject_id, "_", exposed_match_id, "_", pregnancy_id)) |>
-    mutate(exposure = factor(exposure, levels = c("comparator", "exposed")))
+    mutate(exposure = factor(exposure, levels = c("comparator", "exposed"))) 
   
   columns <- sapply(lapply(psData, unique), length)
   columns <- names(columns)[columns <= 1]
@@ -998,6 +1005,8 @@ getWeights <- function(x, coefs) {
 }
 
 processGroupStrata <- function(data, group, weights, ci) {
+  data <- data |> ungroup()
+  
   if (nrow(data) > 10 & sum(data$status) > 5) {
     set.seed(123)
     
@@ -1035,13 +1044,18 @@ processGroupStrata <- function(data, group, weights, ci) {
         summarise(person_days = sum(time*.data$weight), cases = sum(status*.data$weight))
       cases <- setNames(x$cases, x$exposure)
       person_days <- setNames(x$person_days, x$exposure)
-      coef <- rateratio(x = cases, y = person_days)
+      
+      if (any(cases == 0)) cases <- cases + 0.5
+
+      IRR  <- (cases["exposed"]/person_days[1]) / (cases["comparator"]/person_days[2])
+      se   <- sqrt(1/cases["exposed"] + 1/cases["comparator"])
+      confidence_interval   <- exp(log(IRR) + c(-1, 1) * 1.96 * se)
       
       # risk estimate tibble
       resultsRisk <- tibble(
-        lower_ci = coef$measure[4],
-        upper_ci = coef$measure[6],
-        coef = coef$measure[2]
+        lower_ci = confidence_interval[1],
+        upper_ci = confidence_interval[2],
+        coef = IRR
       )
     }
     
@@ -1114,6 +1128,7 @@ getRiskEstimate <- function(data, group, strata, weights = NULL, ci = "midp") {
         names_to = "strata_name",
         values_to = "strata_level"
       ) |>
+      rename_with(\(x){gsub("\`", "", x)}) |>
       group_by(
         group_name = "cohort_name",
         group_level = .data[[group]],
@@ -1203,8 +1218,8 @@ estimateSurvivalRisk <- function(cohort, outcomes, outcomeGroup, end, strata, gr
   for (outcome in outcomes) {
     survival_data <- getSurvivalData(cohort, outcome, end = end, strata = strata, group = group, weights = weights)
     results[[kk]] <- getRiskEstimate(survival_data, group = group, strata = strata, weights = weights, ci = ci) |>
-      mutate(outcome_name = outcome, follow_up_end = end, ci = ci) |>
-      omopgenerics::uniteAdditional(cols = c("outcome_name", "follow_up_end", "ci))
+      mutate(outcome_name = outcome, follow_up_end = end, confidence_interval = ci) |>
+      omopgenerics::uniteAdditional(cols = c("outcome_name", "follow_up_end", "confidence_interval"))
     kk <- kk + 1
   }
   
