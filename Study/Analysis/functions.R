@@ -1206,9 +1206,9 @@ estimateSurvivalRisk <- function(cohort, outcomes, outcomeGroup, end, strata, gr
   
   for (outcome in outcomes) {
     survival_data <- getSurvivalData(cohort, outcome, end = end, strata = strata, group = group, weights = weights)
-    results[[kk]] <- getRiskEstimate(survival_data, group = group, strata = strata, weights = weights) |>
+    results[[kk]] <- getRiskEstimate(survival_data, group = group, strata = strata, weights = weights, ci = ci) |>
       mutate(outcome_name = outcome, follow_up_end = end, ci = ci) |>
-      omopgenerics::uniteAdditional(cols = c("outcome_name", "follow_up_end"))
+      omopgenerics::uniteAdditional(cols = c("outcome_name", "follow_up_end", "ci))
     kk <- kk + 1
   }
   
