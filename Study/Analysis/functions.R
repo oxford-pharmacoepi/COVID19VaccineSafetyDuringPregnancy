@@ -959,10 +959,6 @@ getSurvivalData <- function(data, outcome, group, strata, start = "cohort_start_
       status = if_else(is.na(status), 0, status),
       time = if_else(status == 1, !!datediff("start_date", outcome), !!datediff("start_date", "end_date"))
     ) |>
-    select(any_of(unique(c(
-      "cohort_name", "subject_id", "exposed_match_id", "pregnancy_id", "exposure",
-      unlist(group), unlist(strata), "weight", "time", "status"
-    )))) |>
     compute()
 }
 
