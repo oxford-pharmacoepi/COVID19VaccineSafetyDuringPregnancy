@@ -1046,7 +1046,7 @@ processGroupStrata <- function(data, group, weights, ci) {
       person_days <- setNames(x$person_days, x$exposure)
       
       if (any(cases == 0)) cases <- cases + 0.5
-
+      
       IRR  <- (cases["exposed"]/person_days[1]) / (cases["comparator"]/person_days[2])
       se   <- sqrt(1/cases["exposed"] + 1/cases["comparator"])
       confidence_interval   <- exp(log(IRR) + c(-1, 1) * 1.96 * se)
@@ -1139,27 +1139,15 @@ getRiskEstimate <- function(data, group, strata, weights = NULL, ci = "midp") {
       nest()
     
     # get risk estimiate within each nest
-    if (cdmName(cdm) %in% c("NLHR@UiO")) {
-      results <- nestedData |>
-        mutate(
-          results = purrr::map(
-            .x = data,
-            .y = group_level,
-            .f = ~ processGroupStrata(data = .x, group = .y, weights = weights, ci = ci)
-          )) |>
-        select(-data) |>
-        tidyr::unnest(results)
-    } else {
-      results <- nestedData |>
-        mutate(
-          results = future_map(
-            .x = data,
-            .y = group_level,
-            .f = ~ processGroupStrata(data = .x, group = .y, weights = weights, ci = ci)
-          )) |>
-        select(-data) |>
-        tidyr::unnest(results)
-    }
+    results <- nestedData |>
+      mutate(
+        results = purrr::map(
+          .x = data,
+          .y = group_level,
+          .f = ~ processGroupStrata(data = .x, group = .y, weights = weights, ci = ci)
+        )) |>
+      select(-data) |>
+      tidyr::unnest(results)
     
   } else {
     results <- tibble(
@@ -1209,22 +1197,13 @@ estimateSurvivalRisk <- function(cohort, outcomes, outcomeGroup, end, strata, gr
   results <- list()
   kk <- 1
   
-  # check if parallelization is possible
-  if (!cdmName(cdm) %in% c("NLHR@UiO")) {
-    cores <- parallel::detectCores(logical = FALSE)
-    future::plan(future::multisession, workers = cores)
-  }
-  
   for (outcome in outcomes) {
+    print(outcome)
     survival_data <- getSurvivalData(cohort, outcome, end = end, strata = strata, group = group, weights = weights)
     results[[kk]] <- getRiskEstimate(survival_data, group = group, strata = strata, weights = weights, ci = ci) |>
       mutate(outcome_name = outcome, follow_up_end = end, confidence_interval = ci) |>
       omopgenerics::uniteAdditional(cols = c("outcome_name", "follow_up_end", "confidence_interval"))
     kk <- kk + 1
-  }
-  
-  if (!cdmName(cdm) %in% c("NLHR@UiO")) {
-    future::plan(future::sequential)
   }
   
   results |>
