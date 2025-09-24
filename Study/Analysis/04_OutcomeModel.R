@@ -168,7 +168,7 @@ maeResults <- omopgenerics::bind(maeResults)
 omopgenerics::bind(aesiResults, maeResults) |>
   exportSummarisedResult(fileName = paste0("outcome_risk_estimates_", cdmName(cdm), ".csv"), path = output_folder)
 
-## NCO (not weighted)
+## NCO (not weighted) ----
 info(logger, "- Negative Control Outcomes")
 cdm$study_population_nco <- cdm$study_population |>
   select(any_of(c(
@@ -236,7 +236,7 @@ nco_pco_unweighted |>
   exportSummarisedResult(fileName = paste0("unweighted_nco_", cdmName(cdm), ".csv"), path = output_folder)
 
 
-## NCO weighted
+## NCO weighted ----
 info(logger, "- Negative Control Outcomes (weighted)")
 cdm$study_population_nco <- cdm$study_population_nco |>
   mutate(unique_id = paste0(subject_id, "_", exposed_match_id, "_", pregnancy_id)) |>
