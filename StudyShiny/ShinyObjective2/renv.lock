@@ -800,7 +800,8 @@
       "NeedsCompilation": "no",
       "Author": "Hadley Wickham [aut, cre]",
       "Maintainer": "Hadley Wickham <hadley@rstudio.com>",
-      "Repository": "CRAN"
+      "Repository": "RSPM",
+      "Encoding": "UTF-8"
     },
     "backports": {
       "Package": "backports",
@@ -1267,7 +1268,7 @@
       "NeedsCompilation": "yes",
       "Author": "Jeroen Ooms [aut, cre] (ORCID: <https://orcid.org/0000-0002-4035-0289>), John MacFarlane [cph] (Author of cmark)",
       "Maintainer": "Jeroen Ooms <jeroenooms@gmail.com>",
-      "Repository": "CRAN",
+      "Repository": "https://packagemanager.posit.co/cran/latest",
       "ExperimentalWindowsRuntime": "ucrt"
     },
     "cpp11": {
@@ -1822,6 +1823,69 @@
       "Maintainer": "Hadley Wickham <hadley@posit.co>",
       "Repository": "CRAN"
     },
+    "ggfortify": {
+      "Package": "ggfortify",
+      "Version": "0.4.19",
+      "Source": "Repository",
+      "Type": "Package",
+      "Title": "Data Visualization Tools for Statistical Analysis Results",
+      "Date": "2025-07-26",
+      "Authors@R": "c( person(\"Masaaki\", \"Horikoshi\", role = c(\"aut\"), email = \"sinhrks@gmail.com\"), person(\"Yuan\", \"Tang\", role = c(\"aut\", \"cre\"), email = \"terrytangyuan@gmail.com\", comment = c(ORCID = \"0000-0001-5243-233X\")), person(\"Austin\", \"Dickey\", role = c(\"ctb\")), person(\"Matthias\", \"Grenié\", role = c(\"ctb\")), person(\"Ryan\", \"Thompson\", role = c(\"ctb\")), person(\"Luciano\", \"Selzer\", role = c(\"ctb\")), person(\"Dario\", \"Strbenac\", role = c(\"ctb\")), person(\"Kirill\", \"Voronin\", role = c(\"ctb\")), person(\"Damir\", \"Pulatov\", role = c(\"ctb\")) )",
+      "Maintainer": "Yuan Tang <terrytangyuan@gmail.com>",
+      "URL": "https://github.com/sinhrks/ggfortify",
+      "BugReports": "https://github.com/sinhrks/ggfortify/issues",
+      "Encoding": "UTF-8",
+      "Description": "Unified plotting tools for statistics commonly used, such as GLM, time series, PCA families, clustering and survival analysis. The package offers a single plotting interface for these analysis results and plots in a unified style using 'ggplot2'.",
+      "License": "MIT + file LICENSE",
+      "Depends": [
+        "methods",
+        "ggplot2 (>= 2.0.0)"
+      ],
+      "Imports": [
+        "dplyr (>= 0.3)",
+        "tidyr",
+        "gridExtra",
+        "grid",
+        "scales",
+        "stringr",
+        "tibble"
+      ],
+      "Suggests": [
+        "testthat",
+        "cluster",
+        "changepoint",
+        "fGarch",
+        "forecast",
+        "ggrepel",
+        "glmnet",
+        "grDevices",
+        "KFAS",
+        "knitr",
+        "lintr",
+        "mapdata",
+        "markdown",
+        "MASS",
+        "MSwM",
+        "nlme",
+        "raster",
+        "ROCR",
+        "sp",
+        "stats",
+        "strucchange",
+        "survival",
+        "timeSeries",
+        "tseries",
+        "utils",
+        "vars",
+        "xts",
+        "zoo",
+        "lfda"
+      ],
+      "RoxygenNote": "7.3.2",
+      "NeedsCompilation": "no",
+      "Author": "Masaaki Horikoshi [aut], Yuan Tang [aut, cre] (ORCID: <https://orcid.org/0000-0001-5243-233X>), Austin Dickey [ctb], Matthias Grenié [ctb], Ryan Thompson [ctb], Luciano Selzer [ctb], Dario Strbenac [ctb], Kirill Voronin [ctb], Damir Pulatov [ctb]",
+      "Repository": "CRAN"
+    },
     "ggplot2": {
       "Package": "ggplot2",
       "Version": "3.5.2",
@@ -1932,6 +1996,37 @@
       "Maintainer": "Jennifer Bryan <jenny@posit.co>",
       "Repository": "CRAN",
       "ExperimentalWindowsRuntime": "ucrt"
+    },
+    "gridExtra": {
+      "Package": "gridExtra",
+      "Version": "2.3",
+      "Source": "Repository",
+      "Authors@R": "c(person(\"Baptiste\", \"Auguie\", email = \"baptiste.auguie@gmail.com\", role = c(\"aut\", \"cre\")), person(\"Anton\", \"Antonov\", email = \"tonytonov@gmail.com\", role = c(\"ctb\")))",
+      "License": "GPL (>= 2)",
+      "Title": "Miscellaneous Functions for \"Grid\" Graphics",
+      "Type": "Package",
+      "Description": "Provides a number of user-level functions to work with \"grid\" graphics, notably to arrange multiple grid-based plots on a page, and draw tables.",
+      "VignetteBuilder": "knitr",
+      "Imports": [
+        "gtable",
+        "grid",
+        "grDevices",
+        "graphics",
+        "utils"
+      ],
+      "Suggests": [
+        "ggplot2",
+        "egg",
+        "lattice",
+        "knitr",
+        "testthat"
+      ],
+      "RoxygenNote": "6.0.1",
+      "NeedsCompilation": "no",
+      "Author": "Baptiste Auguie [aut, cre], Anton Antonov [ctb]",
+      "Maintainer": "Baptiste Auguie <baptiste.auguie@gmail.com>",
+      "Repository": "RSPM",
+      "Encoding": "UTF-8"
     },
     "gt": {
       "Package": "gt",
@@ -3054,7 +3149,7 @@
       "NeedsCompilation": "no",
       "Author": "Martí Català [aut, cre] (ORCID: <https://orcid.org/0000-0003-3308-9905>), Edward Burn [aut] (ORCID: <https://orcid.org/0000-0002-9286-1128>), Mike Du [ctb] (ORCID: <https://orcid.org/0000-0002-9517-8834>), Yuchen Guo [ctb] (ORCID: <https://orcid.org/0000-0002-0847-4855>), Adam Black [ctb] (ORCID: <https://orcid.org/0000-0001-5576-8701>), Marta Alcalde-Herraiz [ctb] (ORCID: <https://orcid.org/0009-0002-4405-1814>)",
       "Maintainer": "Martí Català <marti.catalasabate@ndorms.ox.ac.uk>",
-      "Repository": "CRAN"
+      "Repository": "https://packagemanager.posit.co/cran/latest"
     },
     "openssl": {
       "Package": "openssl",
@@ -3181,7 +3276,7 @@
       "NeedsCompilation": "no",
       "Author": "Kirill Müller [aut, cre] (ORCID: <https://orcid.org/0000-0002-1416-3412>), Hadley Wickham [aut], RStudio [cph]",
       "Maintainer": "Kirill Müller <kirill@cynkra.com>",
-      "Repository": "CRAN"
+      "Repository": "https://packagemanager.posit.co/cran/latest"
     },
     "pkgconfig": {
       "Package": "pkgconfig",
@@ -3435,7 +3530,7 @@
       "NeedsCompilation": "yes",
       "Author": "Hadley Wickham [aut, cre] (ORCID: <https://orcid.org/0000-0003-4757-117X>), Lionel Henry [aut], Posit Software, PBC [cph, fnd] (ROR: <https://ror.org/03wc8by49>)",
       "Maintainer": "Hadley Wickham <hadley@posit.co>",
-      "Repository": "CRAN",
+      "Repository": "https://packagemanager.posit.co/cran/latest",
       "ExperimentalWindowsRuntime": "ucrt"
     },
     "rappdirs": {
@@ -4833,8 +4928,8 @@
     },
     "visOmopResults": {
       "Package": "visOmopResults",
-      "Version": "1.1.1.900",
-      "Source": "GitHub",
+      "Version": "1.2.0",
+      "Source": "Repository",
       "Title": "Graphs and Tables for OMOP Results",
       "Authors@R": "c( person( \"Martí\", \"Català\", , \"marti.catalasabate@ndorms.ox.ac.uk\",  role = c(\"aut\"), comment = c(ORCID = \"0000-0003-3308-9905\") ), person( \"Núria\", \"Mercadé-Besora\", , \"nuria.mercadebesora@ndorms.ox.ac.uk\",  role = c(\"aut\", \"cre\"), comment = c(ORCID = \"0009-0006-7948-3747\") ), person( \"Yuchen\", \"Guo\", , \"yuchen.guo@ndorms.ox.ac.uk\",  role = c(\"ctb\"), comment = c(ORCID = \"0000-0002-0847-4855\") ), person( \"Elin\", \"Rowlands\", , \"elin.rowlands@ndorms.ox.ac.uk\",  role = c(\"ctb\"), comment = c(ORCID = \"0009-0007-6629-4661\") ), person( \"Marta\", \"Alcalde-Herraiz\", , \"marta.alcaldeherraiz@ndorms.ox.ac.uk\",  role = c(\"ctb\"), comment = c(ORCID = \"0009-0002-4405-1814\") ), person( \"Edward\", \"Burn\", , \"edward.burn@ndorms.ox.ac.uk\",  role = c(\"ctb\"), comment = c(ORCID = \"0000-0002-9286-1128\") ) )",
       "Maintainer": "Núria Mercadé-Besora <nuria.mercadebesora@ndorms.ox.ac.uk>",
@@ -4878,16 +4973,10 @@
       "Config/testthat/edition": "3",
       "Config/testthat/parallel": "true",
       "Encoding": "UTF-8",
-      "Roxygen": "list(markdown = TRUE)",
       "RoxygenNote": "7.3.2",
-      "RemoteType": "github",
-      "RemoteHost": "api.github.com",
-      "RemoteRepo": "visOmopResults",
-      "RemoteUsername": "darwin-eu-dev",
-      "RemoteRef": "darwin-flextable",
-      "RemoteSha": "628eaf60072760c7648e21b5485db2ac2955d75f",
       "NeedsCompilation": "no",
-      "Author": "Martí Català [aut] (<https://orcid.org/0000-0003-3308-9905>), Núria Mercadé-Besora [aut, cre] (<https://orcid.org/0009-0006-7948-3747>), Yuchen Guo [ctb] (<https://orcid.org/0000-0002-0847-4855>), Elin Rowlands [ctb] (<https://orcid.org/0009-0007-6629-4661>), Marta Alcalde-Herraiz [ctb] (<https://orcid.org/0009-0002-4405-1814>), Edward Burn [ctb] (<https://orcid.org/0000-0002-9286-1128>)"
+      "Author": "Martí Català [aut] (ORCID: <https://orcid.org/0000-0003-3308-9905>), Núria Mercadé-Besora [aut, cre] (ORCID: <https://orcid.org/0009-0006-7948-3747>), Yuchen Guo [ctb] (ORCID: <https://orcid.org/0000-0002-0847-4855>), Elin Rowlands [ctb] (ORCID: <https://orcid.org/0009-0007-6629-4661>), Marta Alcalde-Herraiz [ctb] (ORCID: <https://orcid.org/0009-0002-4405-1814>), Edward Burn [ctb] (ORCID: <https://orcid.org/0000-0002-9286-1128>)",
+      "Repository": "CRAN"
     },
     "vroom": {
       "Package": "vroom",
