@@ -38,7 +38,7 @@ attr(result, "settings") <- omopgenerics::settings(result) |>
 
 data <- prepareResult(result, resultList)
 values <- getValues(result, resultList)
-
+data$propensity_scores <- data$propensity_scores |> omopgenerics::tidy()
 # edit choices and values of interest
 choices <- values
 selected <- getSelected(values)

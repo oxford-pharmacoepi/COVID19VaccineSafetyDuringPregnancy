@@ -650,6 +650,14 @@ ui <- bslib::page_navbar(
             multiple = TRUE,
             options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
           ),
+          # shinyWidgets::pickerInput(
+          #   inputId = "survival_estimate_name",
+          #   label = "Estimate name",
+          #   choices = choices$survival_estimate_name,
+          #   selected = selected$survival_estimate_name,
+          #   multiple = TRUE,
+          #   options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
+          # ),
           width = 300,
           position = "left"
         ),
@@ -868,6 +876,7 @@ ui <- bslib::page_navbar(
   bslib::nav_menu(
     title = "Characterisation",
     icon = shiny::icon("list"),
+    ## Characterisation ----
     bslib::nav_panel(
       title = "Cohort Characteristics",
       icon = shiny::icon("users-gear"),
@@ -901,6 +910,14 @@ ui <- bslib::page_navbar(
             inputId = "summarise_characteristics_maternal_age_group",
             label = "Maternal age",
             choices = choices$summarise_characteristics_maternal_age_group,
+            selected = "overall",
+            multiple = TRUE,
+            options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
+          ),
+          shinyWidgets::pickerInput(
+            inputId = "summarise_characteristics_trimester",
+            label = "Trimester",
+            choices = choices$summarise_characteristics_trimester,
             selected = "overall",
             multiple = TRUE,
             options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
@@ -1080,7 +1097,7 @@ ui <- bslib::page_navbar(
         )
       )
     ),
-    # Large Scale Characteristics ----
+    ## Large Scale Characteristics ----
     bslib::nav_panel(
       title = "Large Scale Characteristics",
       icon = shiny::icon("arrow-up-right-dots"),
@@ -1118,6 +1135,14 @@ ui <- bslib::page_navbar(
             multiple = TRUE,
             options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
           ),
+          # shinyWidgets::pickerInput(
+          #   inputId = "summarise_large_scale_characteristics_trimester",
+          #   label = "Trimester",
+          #   choices = choices$summarise_large_scale_characteristics_trimester,
+          #   selected = "overall",
+          #   multiple = TRUE,
+          #   options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
+          # ),
           shinyWidgets::pickerInput(
             inputId = "summarise_large_scale_characteristics_pregnancy_start_period",
             label = "Pregnancy start period",
