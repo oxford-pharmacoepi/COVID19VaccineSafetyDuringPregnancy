@@ -87,6 +87,56 @@ getPregnantCohort <- function(db, cdm, mother_table_schema, mother_table_name) {
     compute(name = "mother_table", temporary = FALSE) |>
     recordCohortAttrition(reason = "No overlapping pregnancy records")
   
+  if (cdmName(cdm) %in% "CPRD GOLD") {
+    cdm$mother_table <- cdm$mother_table |>
+      left_join(
+        cdm$observation |>
+          filter(observation_concept_id %in% c(903653, 40766579, 903657)) |>
+          mutate(
+            pre_pregnancy_smoking = case_when(
+              observation_concept_id == 40766579 & value_as_number == 0 ~ "No smoker", 
+              observation_concept_id == 40766579 & value_as_number > 0 ~ "Smoker", 
+              observation_concept_id == 903657 ~ "Smoker", 
+              observation_concept_id == 903653 ~ "No smoker", 
+              .default = "Missing")
+          ) |>
+          select(subject_id = person_id, observation_date, pre_pregnancy_smoking)
+      ) |>
+      filter(observation_date < pregnancy_end_date | is.na(observation_date)) %>% 
+      filter(observation_date > !!dateadd("pregnancy_start_date", -1, interval = "year") | is.na(observation_date)) |>
+      group_by(subject_id, pregnancy_start_date) |>
+      filter(observation_date == max(observation_date) | is.na(observation_date)) |>
+      ungroup() |>
+      mutate(pre_pregnancy_smoking = if_else(is.na(pre_pregnancy_smoking), "Missing", pre_pregnancy_smoking)) |>
+      select(!observation_date) |>
+      compute(name = "mother_table", temporary = FALSE) |>
+      recordCohortAttrition(reason = "Add smoking status")
+    
+  } else if (cdmName(cdm) %in% "SIDIAP") {
+    cdm$mother_table <- cdm$mother_table |>
+      left_join(
+        cdm$observation |>
+          filter(value_as_concept_id %in% c(45879404, 45883458, 45884037)) |>
+          mutate(
+            pre_pregnancy_smoking = case_when(
+              value_as_concept_id == 45879404 ~ "Never smoker",
+              value_as_concept_id == 45883458 ~ "Former smoker",
+              value_as_concept_id == 45884037 ~ "Current some day smoker", 
+              .default = "Missing")
+          ) |>
+          select(subject_id = person_id, observation_date, pre_pregnancy_smoking)
+      ) |>
+      filter(observation_date < pregnancy_end_date | is.na(observation_date)) %>% 
+      filter(observation_date > !!dateadd("pregnancy_start_date", -1, interval = "year") | is.na(observation_date)) |>
+      group_by(subject_id, pregnancy_start_date) |>
+      filter(observation_date == max(observation_date) | is.na(observation_date)) |>
+      ungroup() |>
+      mutate(pre_pregnancy_smoking = if_else(is.na(pre_pregnancy_smoking), "Missing", pre_pregnancy_smoking)) |>
+      select(!observation_date) |>
+      compute(name = "mother_table", temporary = FALSE) |>
+      recordCohortAttrition(reason = "Add smoking status")
+  }
+  
   return(cdm$mother_table)
 }
 
@@ -373,7 +423,8 @@ exitAtFirstDateStudy <- function(cohort, dateColumns, endColumn, keepDates, reas
   return(newCohort)
 }
 
-datesPivotLongerExprs <- function(cols) {
+datesPivotLongerExprs <- function(cols, data) {
+  cols <- cols[cols %in% colnames(data)]
   expr <- character()
   for (col in cols) {
     expr <- c(expr, glue::glue(
@@ -547,7 +598,7 @@ getFeaturesTable <- function(cdm, strata) {
     filter(time_start > 0) |>
     mutate(
       window = case_when(
-        time_start < 30 ~ "m30_0",
+        time_start < 30 ~ "m30_m1",
         time_start < 181 ~ "m180_m31",
         time_start < 366 ~ "m365_m181",
         .default = "none"
@@ -574,7 +625,7 @@ getFeaturesTable <- function(cdm, strata) {
         filter(time_start > 0) |>
         mutate(
           window = case_when(
-            time_start < 30 ~ "m30_0",
+            time_start < 30 ~ "m30_m1",
             time_start < 181 ~ "m180_m31",
             .default = "none"
           ),
@@ -611,7 +662,8 @@ getFeaturesTable <- function(cdm, strata) {
         select(any_of(c(
           "cohort_definition_id", "cohort_name", "subject_id", "exposure",
           "pregnancy_id", "cohort_start_date", "cohort_end_date", "exposed_match_id",
-          "region", unlist(strata)
+          "region", "ethnicity", "socioecnomic_status", "birth_continent", 
+          "pre_pregnancy_smoking", unlist(strata)
         ))),
       by = c("cohort_name", "subject_id", "cohort_start_date")
     ) |>
@@ -632,11 +684,7 @@ getFeaturesTable <- function(cdm, strata) {
 
 getLargeScaleCharacteristics <- function(cdm, strata, weights) {
   features <- colnames(cdm$features)
-  features <- features[grepl("_minf_m366|_m30_0|_m365_31|_m180_m31", features) | features == "region"]
-  if ("region" %in% colnames(cdm$features)) {
-    cdm$features <- cdm$features |>
-      mutate(region = as.character(region))
-  }
+  features <- features[grepl("_minf_m366|_m30_m1|_m365_31|_m180_m31", features) | features %in% c("region", "ethnicity", "socioecnomic_status", "birth_continent", "pre_pregnancy_smoking")]
   if (length(weights) == 0) {
     summarisedResult <- cdm$features |>
       summariseResult(
@@ -695,12 +743,12 @@ getLargeScaleCharacteristics <- function(cdm, strata, weights) {
   weighting <- "FALSE"
   if (!is.null(weights)) weighting <- "TRUE"
   lsc <- summarisedResult |>
-    filter(variable_name != "region") |>
+    filter(!variable_name %in% c("region", "ethnicity", "socioecnomic_status", "birth_continent", "pre_pregnancy_smoking")) |>
     mutate(
       cdm_name = cdmName(cdm),
-      additional_level = gsub("_minf_m366|_m30_0|_m365_31|_m180_m31", "", variable_name),
+      additional_level = gsub("_minf_m366|_m30_m1|_m365_31|_m180_m31", "", variable_name),
       additional_name = "concept_id",
-      variable_level = gsub(".*(m30_0|minf_m366|m365_31|m180_m31)", "\\1", variable_name),
+      variable_level = gsub(".*(m30_m1|minf_m366|m365_31|m180_m31)", "\\1", variable_name),
       variable_level = gsub("m", "-", gsub("_", " to ", variable_level))
     ) |>
     select(!variable_name) |>
@@ -713,7 +761,7 @@ getLargeScaleCharacteristics <- function(cdm, strata, weights) {
     ) |>
     bind_rows(
       summarisedResult |>
-        filter(variable_name == "region") |>
+        filter(variable_name %in% c("region", "ethnicity", "socioecnomic_status", "birth_continent", "pre_pregnancy_smoking")) |>
         mutate(
           cdm_name = cdmName(cdm),
           additional_level = "overall",
@@ -925,14 +973,7 @@ addExitReasonPercentages <- function(x) {
     splitStrata() |>
     filter(exit_reason != "overall") |>
     mutate(estimate_value = as.numeric(estimate_value)) |>
-    inner_join(
-      overall
-      # by = c(
-      #   "result_id", "cdm_name", "group_name", "group_level", "exposure", "vaccine_brand",
-      #   "gestational_trimester", "age_group", "variable_name", "variable_level", "estimate_name",
-      #   "estimate_type", "additional_name", "additional_level", "analysis"
-      # )
-    ) |>
+    inner_join(overall) |>
     mutate(
       estimate_value = as.character(estimate_value/overall*100),
       estimate_name = "percentage",
@@ -961,29 +1002,29 @@ getSurvivalData <- function(data, outcome, group, strata, start = "cohort_start_
     ) |>
     select(any_of(unique(c(
       "cohort_name", "subject_id", "exposed_match_id", "pregnancy_id", "exposure",
-      unlist(group), unlist(strata), unlist(weights), "time", "status",
-      "age", "gestational_day", "cohort_start_date",
-      "previous_observation", "previous_pregnancies", "previous_healthcare_visits",
-      "alcohol_misuse_dependence", "obesity", "anxiety", "depression"
+      unlist(group), unlist(strata), unlist(weights), "time", "status"
     )))) |>
     compute()
 }
 
-getIRR <- function(x) {
-  x <- x |>
-    group_by(exposure) |>
-    summarise(person_days = sum(time*.data$weight), cases = sum(status*.data$weight))
-  res <- (x$cases[x$exposure == "exposed"]/x$person_days[x$exposure == "exposed"])/
+getIRR <- function(x, weighting = FALSE) {
+  if (weighting) {
+    x <- x |>
+      group_by(exposure) |>
+      summarise(person_days = sum(time*.data$weight), cases = sum(status*.data$weight))
+  } else {
+    x <- x |>
+      group_by(exposure) |>
+      summarise(person_days = sum(time), cases = sum(status))
+  }
+  
+  irr <- (x$cases[x$exposure == "exposed"]/x$person_days[x$exposure == "exposed"])/
     (x$cases[x$exposure == "comparator"]/x$person_days[x$exposure == "comparator"])
+  
+  return(irr)
 }
 
 getWeights <- function(x, coefs) {
-  
-  pred <- c(
-    "exposure", "age", "gestational_day", "cohort_start_date",
-    "previous_observation", "previous_pregnancies", "previous_healthcare_visits",
-    "alcohol_misuse_dependence", "obesity", "anxiety", "depression", coefs
-  )
   psData <- x |>
     mutate(unique_id = paste0(subject_id, "_", exposed_match_id, "_", pregnancy_id)) |>
     mutate(exposure = factor(exposure, levels = c("comparator", "exposed"))) 
@@ -991,17 +1032,47 @@ getWeights <- function(x, coefs) {
   columns <- sapply(lapply(psData, unique), length)
   columns <- names(columns)[columns <= 1]
   
-  glmResult <- glm(exposure ~ ., data = psData |> select(any_of(pred)) |> select(!any_of(columns)), family = binomial(link = "logit"))
+  glmResult <- glm(exposure ~ ., data = psData |> select(any_of(coefs)) |> select(!any_of(columns)), family = binomial(link = "logit"))
   
   psData |>
     select(!any_of(c("ps", "weight"))) |>
     bind_cols(
-      predict.glm(glmResult, newdata = psData |> select(any_of(pred)) |> select(!any_of(columns)), type = "response") |>
+      predict.glm(glmResult, newdata = psData |> select(any_of(coefs)) |> select(!any_of(columns)), type = "response") |>
         as_tibble() |>
         rename("ps" = "value")
     ) |>
     filter(!is.na(ps)) |>
     mutate(weight = if_else(exposure == "exposed", 1-ps, ps))
+}
+
+getFollowupStatus <- function(data, weighting) {
+  if (!weighting) data <- data |> dplyr::mutate(weight = 1)
+  data |>
+    group_by(exposure) |>
+    summarise(
+      median = median(time * .data$weight),
+      q25 = quantile(time * .data$weight, 0.25),
+      q75 = quantile(time * .data$weight, 0.75),
+      min = min(time * .data$weight),
+      max = max(time * .data$weight),
+      subject_count = sum(.data$weight),
+      outcome_count = sum(.data$status * .data$weight),
+      .groups = "drop"
+    ) |>
+    mutate(estimate_type = "numeric") |>
+    rename("variable_level" = "exposure") |>
+    regressionToSummarised(
+      cols = c("median", "q25", "q75", "min", "max", "subject_count", "outcome_count")
+    ) |>
+    mutate(
+      variable_name = case_when(
+        estimate_name == "subject_count" ~ "Number persons",
+        estimate_name == "outcome_count" ~ "Number events",
+        .default = "Person-Days"
+      ),
+      estimate_name = if_else(grepl("_count", estimate_name), "count", estimate_name),
+      weighting = .env$weighting
+    )
 }
 
 processGroupStrata <- function(data, group, weights, ci) {
@@ -1012,11 +1083,15 @@ processGroupStrata <- function(data, group, weights, ci) {
     
     if (ci == "bootstrap") {
       coefBootstrap <- NULL
+      coefBootstrapWeighted <- NULL
       for (ii in 1:500) {
         data.ii <- data |> dplyr::sample_n(size = nrow(data), replace = TRUE)
+        
         if (length(weights) != 0) {
           data.ii <- getWeights(data.ii, weights[[group]])
         }
+        
+        coefBootstrapWeighted <- c(coefBootstrapWeighted, getIRR(data.ii, weighting = TRUE))
         coefBootstrap <- c(coefBootstrap, getIRR(data.ii))
       }
       
@@ -1024,13 +1099,15 @@ processGroupStrata <- function(data, group, weights, ci) {
       if (length(weights) != 0) {
         data <- getWeights(data, weights[[group]])
       }
-      res <- getIRR(data)
+      estimateWeighted <- getIRR(data, weighting = TRUE)
+      estimate <- getIRR(data)
       
       # risk estimate tibble
       resultsRisk <- tibble(
-        lower_ci = quantile(coefBootstrap, 0.025, na.rm = TRUE),
-        upper_ci = quantile(coefBootstrap, 0.975, na.rm = TRUE),
-        coef = res
+        lower_ci = c(quantile(coefBootstrap, 0.025, na.rm = TRUE), quantile(coefBootstrapWeighted, 0.025, na.rm = TRUE)),
+        upper_ci = c(quantile(coefBootstrap, 0.975, na.rm = TRUE), quantile(coefBootstrapWeighted, 0.975, na.rm = TRUE)),
+        coef = c(estimate, estimateWeighted),
+        weighting = c(FALSE, TRUE)
       )
     } else if (ci == "midp") {
       
@@ -1039,23 +1116,34 @@ processGroupStrata <- function(data, group, weights, ci) {
         data <- getWeights(data, weights[[group]])
       }
       
-      x <- data |>
+      xw <- data |>
         group_by(exposure) |>
         summarise(person_days = sum(time*.data$weight), cases = sum(status*.data$weight))
+      x <- data |>
+        group_by(exposure) |>
+        summarise(person_days = sum(time), cases = sum(status))
+      
+      cases_w <- setNames(xw$cases, xw$exposure)
+      person_days_w <- setNames(xw$person_days, xw$exposure)
       cases <- setNames(x$cases, x$exposure)
       person_days <- setNames(x$person_days, x$exposure)
       
       if (any(cases == 0)) cases <- cases + 0.5
+      if (any(cases_w == 0)) cases_w <- cases_w + 0.5
       
       IRR  <- (cases["exposed"]/person_days[1]) / (cases["comparator"]/person_days[2])
       se   <- sqrt(1/cases["exposed"] + 1/cases["comparator"])
       confidence_interval   <- exp(log(IRR) + c(-1, 1) * 1.96 * se)
+      IRR_w  <- (cases_w["exposed"]/person_days_w[1]) / (cases_w["comparator"]/person_days_w[2])
+      se_w   <- sqrt(1/cases_w["exposed"] + 1/cases_w["comparator"])
+      confidence_interval_w   <- exp(log(IRR_w) + c(-1, 1) * 1.96 * se_w)
       
       # risk estimate tibble
       resultsRisk <- tibble(
-        lower_ci = confidence_interval[1],
-        upper_ci = confidence_interval[2],
-        coef = IRR
+        lower_ci = c(confidence_interval[1], confidence_interval_w[1]),
+        upper_ci = c(confidence_interval[2], confidence_interval_w[2]),
+        coef = c(IRR, IRR_w),
+        weighting = c(FALSE, TRUE)
       )
     }
     
@@ -1069,41 +1157,19 @@ processGroupStrata <- function(data, group, weights, ci) {
       )
     
     # follow-up stats tibble
-    resultsStats <- data |>
-      group_by(exposure) |>
-      summarise(
-        median = median(time * .data$weight),
-        q25 = quantile(time * .data$weight, 0.25),
-        q75 = quantile(time * .data$weight, 0.75),
-        min = min(time * .data$weight),
-        max = max(time * .data$weight),
-        subject_count = sum(.data$weight),
-        outcome_count = sum(.data$status * .data$weight),
-        .groups = "drop"
-      ) |>
-      mutate(estimate_type = "numeric") |>
-      rename("variable_level" = "exposure") |>
-      regressionToSummarised(
-        cols = c("median", "q25", "q75", "min", "max", "subject_count", "outcome_count")
-      ) |>
-      mutate(
-        variable_name = case_when(
-          estimate_name == "subject_count" ~ "Number persons",
-          estimate_name == "outcome_count" ~ "Number events",
-          .default = "Person-Days"
-        ),
-        estimate_name = if_else(grepl("_count", estimate_name), "count", estimate_name)
-      )
+    resultsStats <- bind_rows(getFollowupStatus(data, FALSE), getFollowupStatus(data, TRUE))
     
     # combine and return
     bind_rows(resultsRisk, resultsStats)
+    
   } else {
     tibble(
       variable_level = character(),
       estimate_type = character(),
       estimate_name = character(),
       estimate_value = character(),
-      variable_name = character()
+      variable_name = character(),
+      weighting = character()
     )
   }
 }
@@ -1116,9 +1182,6 @@ getRiskEstimate <- function(data, group, strata, weights = NULL, ci = "midp") {
     # prep data
     strata <- unlist(strata)
     strata <- c(strata[strata != "exposure"], "overall")
-    if (is.null(weights)) {
-      data <- data |> mutate(weight = 1)
-    }
     
     # nest the data by group and strata
     nestedData <- data |>
@@ -1155,7 +1218,8 @@ getRiskEstimate <- function(data, group, strata, weights = NULL, ci = "midp") {
       estimate_type = character(),
       estimate_name = character(),
       estimate_value = character(),
-      variable_name = character()
+      variable_name = character(),
+      weighting = character()
     )
   }
   
@@ -1206,19 +1270,20 @@ estimateSurvivalRisk <- function(cohort, outcomes, outcomeGroup, end, strata, gr
     kk <- kk + 1
   }
   
-  results |>
+  results <- results |>
     bind_rows() |>
     mutate(result_id = 1L, cdm_name = cdmName(cdm)) |>
+    newSummarisedResult() 
+  results |>
     newSummarisedResult(
-      settings = tibble(
-        result_id = 1L,
-        result_type = "incidence_rate_ratio",
-        package_name = "study_code",
-        package_version = "v0.0.1",
-        weighting = weighting,
-        outcome_group = outcomeGroup,
-        study_analysis = studyAnalysis
-      )
+      settings = settings(results) |>
+        mutate(
+          result_type = "incidence_rate_ratio",
+          package_name = "study_code",
+          package_version = "v0.0.1",
+          outcome_group = outcomeGroup,
+          study_analysis = studyAnalysis
+        )
     )
 }
 
@@ -1364,7 +1429,7 @@ summariseTimeDistribution <- function(cdm, strata, weights = NULL) {
 
 getRegion <- function(x, database_name) {
   if (database_name == "CPRD GOLD") {
-    x |>
+    x <- x |>
       left_join(
         cdm$person |> select("subject_id" = "person_id", "care_site_id"),
         by = "subject_id"
@@ -1377,7 +1442,7 @@ getRegion <- function(x, database_name) {
       ) |>
       select(!"care_site_id")
   } else if (database_name == "NLHR@UiO") {
-    x |>
+    x <- x |>
       left_join(
         cdm$person |> select("subject_id" = "person_id", "location_id"),
         by = "subject_id"
@@ -1388,7 +1453,7 @@ getRegion <- function(x, database_name) {
       ) |>
       select(!"location_id")
   } else {
-    x |>
+    x <- x |>
       left_join(
         cdm$person |> select("subject_id" = "person_id", "location_id"),
         by = "subject_id"
@@ -1399,6 +1464,8 @@ getRegion <- function(x, database_name) {
       ) |>
       select(!"location_id")
   }
+  x |>
+    mutate(region = as.character(region))
 }
 
 applyPopulationWashout <- function(x, censorDate = "pregnancy_start_date") {
@@ -1490,7 +1557,7 @@ addEthnicity <- function(cohort) {
     dplyr::compute(name = name, temporary = FALSE)
 }
 
-addSocioeconomicStatus <- function(cohort, database) {
+addSocioeconomicStatus <- function(cohort) {
   name <- omopgenerics::tableName(cohort)
   database <- omopgenerics::cdmName(omopgenerics::cdmReference(cohort))
   if (database == "CPRD GOLD") {
@@ -1498,7 +1565,17 @@ addSocioeconomicStatus <- function(cohort, database) {
       dplyr::left_join(
         cdm$measurement |>
           dplyr::filter(measurement_concept_id == 715996) |>
-          dplyr::select("subject_id" = "person_id", "socioeconomic_status" = "value_as_number") |> dplyr::mutate(socioeconomic_status = as.character(socioeconomic_status)),
+          dplyr::select("subject_id" = "person_id", "socioeconomic_status" = "value_as_number") |> 
+          dplyr::mutate(
+            socioeconomic_status = case_when(
+              socioeconomic_status %in% 1:2 ~ "Q1",
+              socioeconomic_status %in% 3:4 ~ "Q2",
+              socioeconomic_status %in% 5:6 ~ "Q3",
+              socioeconomic_status %in% 7:8 ~ "Q4",
+              socioeconomic_status %in% 9:10 ~ "Q5",
+              .default = "Missing"
+            )
+          ),
         by = "subject_id"
       ) |>
       dplyr::compute(name = name, temporary = FALSE)
