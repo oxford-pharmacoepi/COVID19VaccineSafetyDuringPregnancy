@@ -217,7 +217,7 @@ ui <- bslib::page_navbar(
             inputId = "summarise_cohort_attrition_cdm_name",
             label = "CDM name",
             choices = choices$summarise_cohort_attrition_cdm_name,
-            selected = selected$summarise_cohort_attrition_cdm_name,
+            selected = selected$summarise_cohort_attrition_cdm_name[1],
             multiple = TRUE,
             options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
           ),
@@ -225,7 +225,7 @@ ui <- bslib::page_navbar(
             inputId = "summarise_cohort_attrition_cohort_name",
             label = "Cohort name",
             choices = choices$summarise_cohort_attrition_cohort_name,
-            selected = selected$summarise_cohort_attrition_cohort_name,
+            selected = selected$summarise_cohort_attrition_cohort_name[1],
             multiple = TRUE,
             options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
           ),
@@ -1159,7 +1159,7 @@ ui <- bslib::page_navbar(
           width = "200px"
         ),
         shiny::div(shiny::textOutput(outputId = "update_message_summarise_large_scale_characteristics"), class = "ov_update_button"),
-        bslib::navset_card_tab(
+        # bslib::navset_card_tab(
           bslib::card(
             full_screen = TRUE,
             bslib::card_header(
@@ -1184,8 +1184,7 @@ ui <- bslib::page_navbar(
               reactable::reactableOutput("summarise_large_scale_characteristics_table_lsc") |>
                 shinycssloaders::withSpinner()
             )
-          )
-          
+          # )
         )
       )
     ),
@@ -1673,7 +1672,7 @@ ui <- bslib::page_navbar(
                   ),
                   sortable::add_rank_list(
                     text = "Hide",
-                    labels = c("vaccine_brand", "gestational_trimester", "age_group", "outcome_group", "follow_up_end", "weighting", "variable_name", "variable_level"),
+                    labels = c("vaccine_brand", "gestational_trimester", "age_group", "outcome_group", "follow_up_end", "weighting", "variable_name", "variable_level", "study_analysis", "confidence_interval"),
                     input_id = "incidence_rate_ratio_table_hide_irr"
                   )
                 ),

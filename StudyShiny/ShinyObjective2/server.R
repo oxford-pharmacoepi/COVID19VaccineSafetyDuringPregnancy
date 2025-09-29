@@ -292,14 +292,7 @@ server <- function(input, output, session) {
         .data$age_group %in% input$summarise_characteristics_age_group
       ) |>
       filterSettings(.data$weighting %in% input$summarise_characteristics_weighting) |>
-      # dplyr::filter(.data$variable_name != "Previous covid-19 tests", .data$variable_level != "0.0") |>
       dplyr::mutate(
-        # variable_level = dplyr::if_else(
-        #   .data$variable_name %in% c("Alcohol misuse dependence", "Obesity"), .data$variable_name, .data$variable_level
-        # ),
-        # variable_name = dplyr::if_else(
-        #   .data$variable_name %in% c("Alcohol misuse dependence", "Obesity"), "Health covariates in the past 5 years", .data$variable_name
-        # ),
         variable_name = dplyr::case_when(
           .data$variable_name %in% c("Previous covid-19 infections") ~ "Previous COVID-19 infections",
           .data$variable_name %in% c("Previous covid vaccines") ~ "Previous COVID-19 vaccines",
@@ -313,8 +306,25 @@ server <- function(input, output, session) {
           .data$variable_level %in% c("Hiv") ~ toupper(.data$variable_level),
           .data$variable_level %in% c("Nsaids") ~ "NSAIDs",
           .default = .data$variable_level
+        ),
+        strata_level = factor(
+          strata_level,
+          levels = c(
+            "overall", "exposed", "comparator", paste0("exposed &&& T", 1:3), 
+            paste0("comparator &&& T", 1:3), paste0("exposed &&& ", c("12 to 17", "18 to 34", "35 to 55")), 
+            paste0("comparator &&& ", c("12 to 17", "18 to 34", "35 to 55")),
+            "exposed &&& moderna", "exposed &&& pfizer", "comparator &&& moderna",
+            "comparator &&& pfizer"
+          ),
+          labels = c(
+            "overall", "Exposed", "Comparator", paste0("Exposed &&& Trimester ", 1:3), 
+            paste0("Comparator &&& Trimester ", 1:3), paste0("Exposed &&& ", c("12 to 17", "18 to 34", "35 to 55")), 
+            paste0("Comparator &&& ", c("12 to 17", "18 to 34", "35 to 55")),
+            "Exposed &&& Moderna", "Exposed &&& Pfizer", "Comparator &&& Moderna",
+            "Comparator &&& Pfizer"
+          )
         )
-      )
+      ) 
     
     if (input$summarise_characteristics_cohort_name == "population_objective_1") {
       x <- x |>
@@ -370,7 +380,9 @@ server <- function(input, output, session) {
           )
         )
     }
-    x |> dplyr::arrange(.data$variable_name)
+    x |>
+      dplyr::filter(!is.na(.data$variable_name), !is.na(.data$strata_level)) |>
+      dplyr::arrange(.data$cdm_name, .data$group_level, .data$strata_level, .data$variable_name)
   })
   getSummariseCharacteristicsTable <- shiny::reactive({
     getSummariseCharacteristicsData() |>
@@ -656,6 +668,13 @@ server <- function(input, output, session) {
       omopgenerics::filterSettings(
         .data$outcome_group %in% input$incidence_rate_ratio_outcome_group,
         .data$weighting %in% input$incidence_rate_ratio_weighting
+      ) |>
+      dplyr::mutate(
+        strata_level = visOmopResults::customiseText(
+          .data$strata_level, 
+          custom = c("Trimester 1" = "T1", "Trimester 2" = "T2", "Trimester 3" = "T3"), 
+          keep = "overall"
+        ) 
       )
   })
   getIncidenceRateRatioTidy <- shiny::reactive({
@@ -689,7 +708,7 @@ server <- function(input, output, session) {
           "Median [Q25 - Q75]" = "<median> [<q25> - <q75>]",
           "Range" = "<min> - <max>"
         ),
-        settingsColumn = "weighting",
+        settingsColumn = c("weighting", "outcome_group"),
         header = input$incidence_rate_ratio_table_header_summary,
         groupColumn = input$incidence_rate_ratio_table_group_column_summary,
         hide = input$incidence_rate_ratio_table_hide_summary,
@@ -697,6 +716,12 @@ server <- function(input, output, session) {
           'cdm_name', 'cohort_name', 'vaccine_brand', 'gestational_trimester', 
           'age_group', 'follow_up_end', 'outcome_group', 'outcome_name', 'variable_name', 'variable_level', 
           'follow_up_end', 'weighting', 'estimate_name', 'estimate_value'),
+        factor = list(
+          "outcome_group" = c("Adverse Events of Special Interest", "Maternal Adverse Events", "Negative Control Outcomes", "Positive Control Outcomes"),
+          "age_group" = c("overall", "12 to 17", "18 to 34", "35 to 55"),
+          "gestational_trimester" = c("overall", "Trimester 1", "Trimester 2", "Trimester 3"),
+          "vaccine_brand" = c("overall", "Pfizer", "Moderna")
+        ),
         .options = list(includeHeaderName = FALSE)
       )
   })
@@ -714,7 +739,7 @@ server <- function(input, output, session) {
       dplyr::filter(.data$variable_name == "Risk estimate") |>
       visOmopResults::visOmopTable(
         estimateName = c("IRR [95% CI]" = "<coef> [<lower_ci> - <upper_ci>]"),
-        settingsColumn = "weighting",
+        settingsColumn = c("weighting", "outcome_group"),
         header = input$incidence_rate_ratio_table_header_irr,
         groupColumn = input$incidence_rate_ratio_table_group_column_irr,
         hide = input$incidence_rate_ratio_table_hide_irr,
@@ -722,6 +747,12 @@ server <- function(input, output, session) {
           'cdm_name', 'cohort_name', 'vaccine_brand', 'gestational_trimester', 
           'age_group', 'follow_up_end', 'outcome_name', 'variable_name', 'variable_level', 
           'follow_up_end', 'weighting', 'estimate_name', 'estimate_value'),
+        factor = list(
+          "outcome_group" = c("Adverse Events of Special Interest", "Maternal Adverse Events", "Negative Control Outcomes", "Positive Control Outcomes"),
+          "age_group" = c("overall", "12 to 17", "18 to 34", "35 to 55"),
+          "gestational_trimester" = c("overall", "Trimester 1", "Trimester 2", "Trimester 3"),
+          "vaccine_brand" = c("overall", "Pfizer", "Moderna")
+        ),
         .options = list(includeHeaderName = FALSE)
       )
   })
@@ -736,6 +767,15 @@ server <- function(input, output, session) {
   )
   getIRRPlot <- shiny::reactive({
     getIncidenceRateRatioData() |>
+      omopgenerics::tidy() |>
+      dplyr::mutate(
+        age_group = factor(
+          age_group, levels = c("overall", "12 to 17", "18 to 34", "35 to 55")
+        ),
+        gestational_trimester = factor(
+          gestational_trimester, levels = c("overall", paste0("Trimester ", 1:3))
+        )
+      ) |>
       visOmopResults::scatterPlot(
         x = input$incidence_rate_ratio_plot_y,
         y = "coef",
@@ -752,7 +792,8 @@ server <- function(input, output, session) {
       ggplot2::coord_flip() +
       visOmopResults::themeVisOmop(fontsizeRef = 11) +
       ggplot2::ylab("IRR") +
-      scale_y_continuous(breaks = c(0.1, 0.25, 0.5, 1, 2), transform = "log10")
+      scale_y_continuous(limits = c(0.01, 6), oob=scales::rescale_none)
+      # scale_y_continuous(breaks = c(0.1, 0.25, 0.5, 1, 2), transform = "log10")
   })
   output$incidence_rate_ratio_plot <- shiny::renderUI({
     x <- getIRRPlot()
@@ -917,7 +958,28 @@ server <- function(input, output, session) {
       )|>
       omopgenerics::filterSettings(
         .data$weighting %in% input$summarise_cohort_count_weighting_pop
-      )
+      ) |>
+      dplyr::mutate(
+        strata_level = factor(
+          strata_level,
+          levels = c(
+            "overall", "exposed", "comparator", paste0("exposed &&& T", 1:3), 
+            paste0("comparator &&& T", 1:3), paste0("exposed &&& ", c("12 to 17", "18 to 34", "35 to 55")), 
+            paste0("comparator &&& ", c("12 to 17", "18 to 34", "35 to 55")),
+            "exposed &&& moderna", "exposed &&& pfizer", "comparator &&& moderna",
+            "comparator &&& pfizer"
+          ),
+          labels = c(
+            "overall", "Exposed", "Comparator", paste0("Exposed &&& Trimester ", 1:3), 
+            paste0("Comparator &&& Trimester ", 1:3), paste0("Exposed &&& ", c("12 to 17", "18 to 34", "35 to 55")), 
+            paste0("Comparator &&& ", c("12 to 17", "18 to 34", "35 to 55")),
+            "Exposed &&& Moderna", "Exposed &&& Pfizer", "Comparator &&& Moderna",
+            "Comparator &&& Pfizer"
+          )
+        )
+      ) |>
+      dplyr::filter(!is.na(.data$strata_level)) |>
+      dplyr::arrange(.data$cdm_name, .data$group_level, .data$strata_level)
   })
   getSummariseCohortCountTablePop <- shiny::reactive({
     getSummariseCohortCountDataPop() |>
@@ -987,8 +1049,9 @@ server <- function(input, output, session) {
   ## summarise_sampling ----
   getSummariseSamplingData <- shiny::eventReactive(input$update_summarise_sampling, {
     data[["summarise_sampling"]] |>
-      dplyr::filter(.data$cdm_name %in% input$summarise_sampling_cdm_name) |>
-      omopgenerics::filterGroup(.data$cohort_name %in% paste0("source_", input$summarise_sampling_cohort_name))
+      dplyr::filter(.data$cdm_name %in% input$summarise_sampling_cdm_name) |> 
+      omopgenerics::filterGroup(.data$cohort_name %in% paste0("source_", input$summarise_sampling_cohort_name)) |>
+      dplyr::filter(variable_name != "Number exposed")
   })
   getSummariseSamplingTable <- shiny::reactive({
     getSummariseSamplingData() |>
@@ -1110,7 +1173,29 @@ server <- function(input, output, session) {
         .data$exit_reason %in% input$cohort_exit_exit_reason,
         .data$analysis %in% input$cohort_exit_analysis
       ) |>
-      omopgenerics::filterSettings(.data$weighting %in% input$cohort_exit_weighting) 
+      omopgenerics::filterSettings(.data$weighting %in% input$cohort_exit_weighting) |>
+      dplyr::mutate(
+        strata_level = factor(
+          strata_level,
+          levels = c(
+            "overall", "exposed", "comparator", paste0("T", 1:3), "pfizer", "moderna", 
+            "12 to 17", "18 to 34", "35 to 55", paste0("exposed &&& T", 1:3), 
+            paste0("comparator &&& T", 1:3), paste0("exposed &&& ", c("12 to 17", "18 to 34", "35 to 55")), 
+            paste0("comparator &&& ", c("12 to 17", "18 to 34", "35 to 55")),
+            "exposed &&& moderna", "exposed &&& pfizer", "comparator &&& moderna",
+            "comparator &&& pfizer"
+          ),
+          labels = c(
+            "overall", "Exposed", "Comparator", paste0("Trimester ", 1:3), "Pfizer", "Moderna", 
+            "12 to 17", "18 to 34", "35 to 55", paste0("Exposed &&& Trimester ", 1:3), 
+            paste0("Comparator &&& Trimester ", 1:3), paste0("Exposed &&& ", c("12 to 17", "18 to 34", "35 to 55")), 
+            paste0("Comparator &&& ", c("12 to 17", "18 to 34", "35 to 55")),
+            "Exposed &&& Moderna", "Exposed &&& Pfizer", "Comparator &&& Moderna",
+            "Comparator &&& Pfizer"
+          )
+        )
+      ) |>
+      arrange(strata_level, )
   })
   getCohortExitTable <- shiny::reactive({
     getCohortExitData() |>
@@ -1129,7 +1214,12 @@ server <- function(input, output, session) {
           'age_group', 'exit_reason', 'variable_name', 'variable_level', 'analysis', 'weighting',
           'estimate_name'
         ),
-        factor = list("exit_reason" = c("overall", "date_of_death", "next_covid_vaccine", "observation_end", "covid_infection" ))
+        factor = list(
+          "age_group" = c("overall", "12 to 17", "18 to 34", "35 to 55"),
+          "gestational_trimester" = c("overall", "Trimester 1", "Trimester 2", "Trimester 3"),
+          "vaccine_brand" = c("overall", "Pfizer", "Moderna"),
+          "exit_reason" = c("overall", "date_of_death", "next_covid_vaccine", "observation_end", "covid_infection")
+        )
       )
   })
   output$cohort_exit_table <- gt::render_gt({

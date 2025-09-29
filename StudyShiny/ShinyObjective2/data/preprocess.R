@@ -11,8 +11,7 @@ resultList <- list(
   summarise_sampling = list(result_type = "summarise_sampling"),
   summarise_standardised_mean_differences = list(result_type = "summarise_standardised_mean_differences"),
   cohort_exit = list(result_type = "cohort_exit"),
-  gestational_time_distributions = list(result_type = "gestational_time_distributions"),
-  negative_control_outcomes = list(result_type = "negative_control_outcomes")
+  gestational_time_distributions = list(result_type = "gestational_time_distributions")
 )
 
 source(file.path(getwd(), "functions.R"))

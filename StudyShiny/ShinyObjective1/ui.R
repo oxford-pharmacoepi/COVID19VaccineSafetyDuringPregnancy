@@ -14,7 +14,7 @@ ui <- bslib::page_navbar(
   ),
   theme = bslib::bs_theme(bootswatch = "flatly"),
   bslib::nav_panel(
-    title = "Background",
+    title = "Abstract",
     icon = shiny::icon("book-atlas"),
     backgroundCard("background.md")
   ),
@@ -84,12 +84,6 @@ ui <- bslib::page_navbar(
           ),
           position = "left"
         ),
-        shiny::actionButton(
-          inputId = "update_summarise_cohort_count",
-          label = "Update content",
-          width = "200px"
-        ),
-        shiny::div(shiny::textOutput(outputId = "update_message_summarise_cohort_count"), class = "ov_update_button"),
         bslib::navset_card_tab(
           bslib::nav_panel(
             title = "Table Counts",
@@ -219,7 +213,7 @@ ui <- bslib::page_navbar(
             inputId = "summarise_cohort_attrition_cdm_name",
             label = "CDM name",
             choices = choices$summarise_cohort_attrition_cdm_name,
-            selected = selected$summarise_cohort_attrition_cdm_name,
+            selected = selected$summarise_cohort_attrition_cdm_name[1],
             multiple = TRUE,
             options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
           ),
@@ -227,7 +221,7 @@ ui <- bslib::page_navbar(
             inputId = "summarise_cohort_attrition_cohort_name",
             label = "Cohort name",
             choices = choices$summarise_cohort_attrition_cohort_name,
-            selected = selected$summarise_cohort_attrition_cohort_name,
+            selected = selected$summarise_cohort_attrition_cohort_name[1],
             multiple = TRUE,
             options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
           ),
@@ -241,12 +235,6 @@ ui <- bslib::page_navbar(
           ),
           position = "left"
         ),
-        shiny::actionButton(
-          inputId = "update_summarise_cohort_attrition",
-          label = "Update content",
-          width = "200px"
-        ),
-        shiny::div(shiny::textOutput(outputId = "update_message_summarise_cohort_attrition"), class = "ov_update_button"),
         bslib::navset_card_tab(
           bslib::nav_panel(
             title = "Table Attrition",
@@ -356,7 +344,7 @@ ui <- bslib::page_navbar(
           ),
           shinyWidgets::pickerInput(
             inputId = "incidence_outcome_group",
-            label = "Outcome cohort name",
+            label = "Outcome cohort group",
             choices = c("Adverse Events of Special Interest", "Maternal Adverse Events"),
             selected = c("Adverse Events of Special Interest", "Maternal Adverse Events"),
             multiple = TRUE,
@@ -420,12 +408,6 @@ ui <- bslib::page_navbar(
           ),
           position = "left"
         ),
-        shiny::actionButton(
-          inputId = "update_incidence",
-          label = "Update content",
-          width = "200px"
-        ),
-        shiny::div(shiny::textOutput(outputId = "update_message_incidence"), class = "ov_update_button"),
         bslib::navset_card_tab(
           bslib::nav_panel(
             title = "Tidy",
@@ -500,7 +482,7 @@ ui <- bslib::page_navbar(
                     ),
                     sortable::add_rank_list(
                       text = "Hide",
-                      labels = c('gestational_trimester', 'maternal_age_group', 'pregnancy_start_period', 'socioeconomic_status', 'ethnicity', 'variable_name', 'variable_level'),
+                      labels = c('outcome_group', 'gestational_trimester', 'maternal_age_group', 'pregnancy_start_period', 'socioeconomic_status', 'ethnicity', 'variable_name', 'variable_level'),
                       input_id = "incidence_table_hide"
                     )
                   ),
@@ -514,6 +496,7 @@ ui <- bslib::page_navbar(
           bslib::nav_panel(
             title = "Plot Incidence",
             bslib::card(
+              height = "90vh",
               full_screen = TRUE,
               bslib::card_header(
                 bslib::popover(
@@ -546,6 +529,8 @@ ui <- bslib::page_navbar(
                 class = "text-end"
               ),
               bslib::layout_sidebar(
+                height = "90vh",
+                full_screen = TRUE,
                 sidebar = bslib::sidebar(
                   shinyWidgets::materialSwitch(
                     inputId = "incidence_plot_interactive",
@@ -556,7 +541,7 @@ ui <- bslib::page_navbar(
                     inputId = "incidence_plot_x",
                     label = "X axis",
                     choices = c("cdm_name", "outcome_cohort_name", "gestational_trimester", 'maternal_age_group', 'pregnancy_start_period', 'socioeconomic_status', 'ethnicity'),
-                    selected = "incidence_start_date",
+                    selected = "outcome_cohort_name",
                     multiple = FALSE,
                     options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
                   ),
@@ -572,23 +557,23 @@ ui <- bslib::page_navbar(
                     inputId = "incidence_plot_colour",
                     label = "Colour",
                     choices = c("cdm_name", "outcome_group", "outcome_cohort_name", "gestational_trimester", 'maternal_age_group', 'pregnancy_start_period', 'socioeconomic_status', 'ethnicity'),
-                    selected = "outcome_cohort_name",
+                    selected = "outcome_group",
                     multiple = TRUE,
                     options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
                   ),
                   shinyWidgets::materialSwitch(
                     inputId = "incidence_plot_ribbon",
                     label = "Ribbon",
-                    value = TRUE
+                    value = FALSE
                   ),
                   shinyWidgets::materialSwitch(
                     inputId = "incidence_plot_line",
                     label = "Line",
-                    value = TRUE
+                    value = FALSE
                   ),
                   position = "right"
                 ),
-                shiny::uiOutput("incidence_plot") |>
+                shiny::uiOutput("incidence_plot", height = "100%") |>
                   shinycssloaders::withSpinner()
               )
             )
@@ -698,6 +683,14 @@ ui <- bslib::page_navbar(
               ),
               bslib::layout_sidebar(
                 sidebar = bslib::sidebar(
+                  shinyWidgets::pickerInput(
+                    inputId = "survival_table_estimates",
+                    label = "Estimates",
+                    choices = c("Number pregnancies", "Number outcomes"),
+                    selected = c("Number pregnancies", "Number outcomes"),
+                    multiple = TRUE,
+                    options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
+                  ),
                   sortable::bucket_list(
                     header = "Table formatting",
                     sortable::add_rank_list(
@@ -717,17 +710,9 @@ ui <- bslib::page_navbar(
                     ),
                     sortable::add_rank_list(
                       text = "hide",
-                      labels = c("maternal_age_group", "pregnancy_start_period", "socioeconomic_status", "ethnicity", "target_cohort"),
+                      labels = c("maternal_age_group", "pregnancy_start_period", "socioeconomic_status", "ethnicity", "target_cohort", "time"),
                       input_id = "survival_table_hide"
                     )
-                  ),
-                  shinyWidgets::pickerInput(
-                    inputId = "survival_time_scale",
-                    label = "Time scale",
-                    choices = c("days", "months", "years"),
-                    selected = "days",
-                    multiple = FALSE,
-                    options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
                   ),
                   position = "right"
                 ),
@@ -842,7 +827,7 @@ ui <- bslib::page_navbar(
                     label = "Colour",
                     selected = c("outcome"),
                     multiple = TRUE,
-                    choices = c("cdm_name", "target_cohort", "outcome", "maternal_age_group", "pregnancy_start_period", "socioeconomic_status", "ethnicity", "variable"),
+                    choices = c("cdm_name", "target_cohort", "outcome", "maternal_age_group", "pregnancy_start_period", "socioeconomic_status", "ethnicity"),
                     options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
                   ),
                   shinyWidgets::pickerInput(
@@ -850,7 +835,7 @@ ui <- bslib::page_navbar(
                     label = "Facet",
                     selected = c("cdm_name", "target_cohort"),
                     multiple = TRUE,
-                    choices = c("cdm_name", "target_cohort", "outcome", "maternal_age_group", "pregnancy_start_period", "socioeconomic_status", "ethnicity", "variable"),
+                    choices = c("cdm_name", "target_cohort", "outcome", "maternal_age_group", "pregnancy_start_period", "socioeconomic_status", "ethnicity"),
                     options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
                   ),
                   shinyWidgets::pickerInput(
@@ -964,12 +949,6 @@ ui <- bslib::page_navbar(
           ),
           position = "left"
         ),
-        shiny::actionButton(
-          inputId = "update_summarise_characteristics",
-          label = "Update content",
-          width = "200px"
-        ),
-        shiny::div(shiny::textOutput(outputId = "update_message_summarise_characteristics"), class = "ov_update_button"),
         bslib::navset_card_tab(
           bslib::nav_panel(
             title = "Table Characteristics",
@@ -1193,12 +1172,6 @@ ui <- bslib::page_navbar(
           ),
           position = "left"
         ),
-        shiny::actionButton(
-          inputId = "update_summarise_large_scale_characteristics",
-          label = "Update content",
-          width = "200px"
-        ),
-        shiny::div(shiny::textOutput(outputId = "update_message_summarise_large_scale_characteristics"), class = "ov_update_button"),
         bslib::navset_card_tab(
           bslib::nav_panel(
             title = "Table",
@@ -1217,7 +1190,7 @@ ui <- bslib::page_navbar(
                     inputId = "summarise_large_scale_characteristics_table_lsc_hide",
                     label = "Hide",
                     choices = c("cdm_name", "type", "variable_name", "variable_level", 'gestational_trimester', 'maternal_age_group', 'pregnancy_start_period', 'socioeconomic_status', 'ethnicity'),
-                    selected = "type",
+                    selected = c('gestational_trimester', 'maternal_age_group', 'pregnancy_start_period', 'socioeconomic_status', 'ethnicity', "type"),
                     multiple = TRUE,
                     options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
                   ),
@@ -1260,8 +1233,8 @@ ui <- bslib::page_navbar(
                   shinyWidgets::pickerInput(
                     inputId = "summarise_large_scale_characteristics_table_lsc_compared_hide",
                     label = "Hide",
-                    choices = c("cdm_name", "type", "variable_name", "variable_level", "smd", "asmd"),
-                    selected = "type",
+                    choices = c("cdm_name", "type", "variable_name", "variable_level", "smd", "asmd", 'gestational_trimester', 'maternal_age_group', 'pregnancy_start_period', 'socioeconomic_status', 'ethnicity'),
+                    selected = c('gestational_trimester', 'maternal_age_group', 'pregnancy_start_period', 'socioeconomic_status', 'ethnicity', "type"),
                     multiple = TRUE,
                     options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
                   ),
