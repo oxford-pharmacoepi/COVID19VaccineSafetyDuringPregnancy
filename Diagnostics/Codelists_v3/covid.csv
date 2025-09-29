@@ -1,0 +1,176 @@
+codelist_name,concept_id,concept_name,standard_concept
+covid_diagnosis,3661405,Acute bronchitis caused by SARS-CoV-2,S
+covid_diagnosis,3655976,Acute hypoxemic respiratory failure due to COVID-19,S
+covid_diagnosis,3661748,Acute kidney injury due to COVID-19,S
+covid_diagnosis,3661406,Acute respiratory distress syndrome due to COVID-19,S
+covid_diagnosis,3662381,Asymptomatic SARS-CoV-2,S
+covid_diagnosis,756031,Bronchitis caused by COVID-19,S
+covid_diagnosis,3656667,Cardiomyopathy due to COVID-19,S
+covid_diagnosis,3656668,Conjunctivitis due to COVID-19,S
+covid_diagnosis,37311061,COVID-19,S
+covid_diagnosis,3656669,Dyspnea caused by SARS-CoV-2,S
+covid_diagnosis,37310284,Encephalopathy due to COVID-19,S
+covid_diagnosis,3661885,Fever caused by SARS-CoV-2,S
+covid_diagnosis,37310283,Gastroenteritis caused by SARS-CoV-2 (severe acute respiratory syndrome coronavirus 2),S
+covid_diagnosis,3663281,Infection of lower respiratory tract caused by SARS-CoV-2,S
+covid_diagnosis,37310286,Infection of upper respiratory tract caused by SARS-CoV-2,S
+covid_diagnosis,3661631,Lymphocytopenia due to COVID-19,S
+covid_diagnosis,37310287,Myocarditis due to COVID-19,S
+covid_diagnosis,37310254,Otitis media due to COVID-19,S
+covid_diagnosis,704995,Patient meets COVID-19 clinical diagnostic criteria,S
+covid_diagnosis,700297,Patient meets COVID-19 laboratory confirmation criterion (detection of specific RNA in a clinical specimen using a molecular amplification detection test),S
+covid_diagnosis,704996,Patient meets COVID-19 laboratory diagnostic criteria,S
+covid_diagnosis,700296,"Patient meets COVID-19 presumptive laboratory evidence criteria (detection of specific antigen in a clinical specimen, OR detection of specific antibody in serum, plasma, or whole blood indicative of a new or recent infection)",S
+covid_diagnosis,3661408,Pneumonia caused by SARS-CoV-2,S
+covid_diagnosis,756039,Respiratory infection caused by COVID-19,S
+covid_diagnosis,3655977,Rhabdomyolysis due to COVID-19,S
+covid_diagnosis,3655975,Sepsis due to disease caused by COVID-19,S
+covid_diagnosis,3661632,Thrombocytopenia due to COVID-19,S
+covid_test,40218804,"2019-ncov coronavirus, sars-cov-2/2019-ncov (covid-19), any technique, multiple types or subtypes (includes all targets), non-cdc",S
+covid_test,704058,"2019-ncov coronavirus, sars-cov-2/2019-ncov (covid-19), any technique, multiple types or subtypes (includes all targets), non-cdc, making use of high throughput technologies as described by cms-2020-01-r (Deprecated)",S
+covid_test,36659749,Bovine coronavirus RNA [Cycle Threshold #] in Specimen by NAA with probe detection,S
+covid_test,40218805,Cdc 2019 novel coronavirus (2019-ncov) real-time rt-pcr diagnostic panel,S
+covid_test,44789510,Coronavirus nucleic acid detection,S
+covid_test,44811805,Coronavirus nucleic acid detection assay,S
+covid_test,45770687,Coronavirus RNA (ribonucleic acid) detection assay,S
+covid_test,44807536,Coronavirus RNA (ribonucleic acid) measurement by NAAT (nucleic acid amplification test),S
+covid_test,37168088,Detection of ribonucleic acid of SARS-CoV-2 using microchip real time polymerase chain reaction,S
+covid_test,3667069,Detection of ribonucleic acid of SARS-CoV-2 using polymerase chain reaction,S
+covid_test,36660491,Human coronavirus 229E RNA [Presence] in Lower respiratory specimen by NAA with non-probe detection,S
+covid_test,36659667,Human coronavirus HKU1 RNA [Presence] in Lower respiratory specimen by NAA with non-probe detection,S
+covid_test,36660329,Human coronavirus NL63 RNA [Presence] in Lower respiratory specimen by NAA with non-probe detection,S
+covid_test,36660364,Human coronavirus OC43 RNA [Presence] in Lower respiratory specimen by NAA with non-probe detection,S
+covid_test,742224,"Infectious agent antigen detection by immunoassay technique (eg, enzyme immunoassay [EIA], enzyme-linked immunosorbent assay [ELISA], fluorescence immunoassay [FIA], immunochemiluminometric assay [IMCA]), qualitative or semiquantitative; severe acute resp",S
+covid_test,700360,"Infectious agent detection by nucleic acid (DNA or RNA); severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (coronavirus disease [COVID-19]), amplified probe technique",N
+covid_test,801235,"Infectious agent detection by nucleic acid (dna or rna); severe acute respiratory syndrome coronavirus 2 (sars-cov-2) (coronavirus disease [covid-19]), amplified probe technique, cdc or non-cdc, making use of high throughput technologies, ... (Deprecated)",S
+covid_test,704059,"Infectious agent detection by nucleic acid (dna or rna); severe acute respiratory syndrome coronavirus 2 (sars-cov-2) (coronavirus disease [covid-19]), amplified probe technique, making use of high throughput technologies as described by ... (Deprecated)",S
+covid_test,759690,"Infectious agent detection by nucleic acid (DNA or RNA); severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (coronavirus disease [COVID-19]) and influenza virus types A and B, multiplex amplified probe technique",S
+covid_test,759691,"Infectious agent detection by nucleic acid (DNA or RNA); severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) (coronavirus disease [COVID-19]), influenza virus types A and B, and respiratory syncytial virus, multiplex amplified probe technique",S
+covid_test,759520,"Infectious disease (bacterial or viral respiratory tract infection) pathogen-specific DNA and RNA, 21 targets, including severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2), amplified probe technique, including multiplex reverse transcription for",S
+covid_test,742219,"Infectious disease (bacterial or viral respiratory tract infection), pathogen-specific nucleic acid (DNA or RNA), 22 targets including severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2), qualitative RT-PCR, nasopharyngeal swab, each pathogen rep",S
+covid_test,742218,"Infectious disease (bacterial or viral respiratory tract infection), pathogen-specific nucleic acid (DNA or RNA), 22 targets including severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2), qualitative RT-PCR, nasopharyngeal swab, each pathogen rep",S
+covid_test,36661384,Influenza virus A and B and SARS-CoV-2 (COVID-19) and SARS-related CoV RNA panel - Respiratory system specimen by NAA with probe detection,S
+covid_test,36661375,Influenza virus A and B and SARS-CoV-2 (COVID-19) identified in Respiratory system specimen by NAA with probe detection,S
+covid_test,36661376,Influenza virus A and B and SARS-CoV-2 (COVID-19) RNA panel - Respiratory system specimen by NAA with probe detection,S
+covid_test,1761840,Influenza virus A and B and SARS-CoV-2 (COVID-19) RNA panel - Specimen by NAA with probe detection,S
+covid_test,705104,Measurement of Coronavirus (Coronavirinae subfamily species),S
+covid_test,705105,Measurement of Coronavirus (Coronavirinae subfamily species) antigen,S
+covid_test,37310257,Measurement of SARS-CoV-2 antigen,S
+covid_test,756055,Measurement of Severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2),S
+covid_test,586310,Measurement of Severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) Genetic material using Molecular method,S
+covid_test,704991,Measurement of Severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) in Blood,S
+covid_test,756029,Measurement of Severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) in Respiratory specimen,S
+covid_test,586307,Measurement of Severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) in Saliva,S
+covid_test,705107,Measurement of Severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) in Sample from nose,S
+covid_test,704976,Measurement of Severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) in Sample from oropharynx,S
+covid_test,586309,Measurement of Severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) in Specified specimen,S
+covid_test,756065,Measurement of Severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) in Unspecified specimen,S
+covid_test,702834,Measurement of Severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) specific cell-mediated immune response in Blood,S
+covid_test,704992,Measurement of Severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) using Culture method,S
+covid_test,705001,Measurement of Severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) using Nucleic acid amplification technique,S
+covid_test,705000,Measurement of Severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) using Nucleic acid amplification technique in Blood,S
+covid_test,756085,Measurement of Severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) using Nucleic acid amplification technique in Respiratory specimen,S
+covid_test,586308,Measurement of Severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) using Nucleic acid amplification technique in Saliva,S
+covid_test,705106,Measurement of Severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) using Nucleic acid amplification technique in Sample from nose,S
+covid_test,704975,Measurement of Severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) using Nucleic acid amplification technique in Sample from oropharynx,S
+covid_test,756084,Measurement of Severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) using Nucleic acid amplification technique in Unspecified specimen,S
+covid_test,704993,Measurement of Severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) using Sequencing,S
+covid_test,706164,Middle East respiratory syndrome coronavirus (MERS-CoV) RNA [Presence] in Respiratory system specimen by NAA with probe detection,S
+covid_test,46236919,SARS2 gene full mutation analysis in Blood or Tissue by Sequencing,S
+covid_test,46236920,SARS2 gene mutation analysis limited to known familial mutations in Blood or Tissue by Molecular genetics method,S
+covid_test,723477,SARS-CoV-2 (COVID-19) Ag [Presence] in Respiratory system specimen by Rapid immunoassay,S
+covid_test,36033653,SARS-CoV-2 (COVID-19) clade [Type] in Specimen by Molecular genetics method,S
+covid_test,36033659,SARS-CoV-2 (COVID-19) E gene [Cycle Threshold #] in Respiratory system specimen by NAA with probe detection,S
+covid_test,36033658,SARS-CoV-2 (COVID-19) E gene [Presence] in Respiratory system specimen by NAA with probe detection,S
+covid_test,36033652,SARS-CoV-2 (COVID-19) lineage [Identifier] in Specimen by Molecular genetics method,S
+covid_test,1989163,SARS-CoV-2 (COVID-19) lineage [Type] in Specimen by Sequencing,S
+covid_test,36033645,SARS-CoV-2 (COVID-19) M gene [Presence] in Upper respiratory specimen by NAA with probe detection,S
+covid_test,729890,SARS-CoV-2 (COVID-19) Mpro gene mutation detected [Identifier] in Specimen by Molecular genetics method Nominal,S
+covid_test,36033648,SARS-CoV-2 (COVID-19) N gene [Cycle Threshold #] in Oropharyngeal wash by NAA with probe detection,S
+covid_test,706167,SARS-CoV-2 (COVID-19) N gene [Cycle Threshold #] in Specimen by NAA with probe detection,S
+covid_test,706157,SARS-CoV-2 (COVID-19) N gene [Cycle Threshold #] in Specimen by Nucleic acid amplification using CDC primer-probe set N1,S
+covid_test,706155,SARS-CoV-2 (COVID-19) N gene [Cycle Threshold #] in Specimen by Nucleic acid amplification using CDC primer-probe set N2,S
+covid_test,36661371,SARS-CoV-2 (COVID-19) N gene [Log #/volume] (viral load) in Respiratory system specimen by NAA with probe detection,S
+covid_test,715272,SARS-CoV-2 (COVID-19) N gene [Presence] in Nasopharynx by NAA with probe detection,S
+covid_test,36033644,SARS-CoV-2 (COVID-19) N gene [Presence] in Nose by NAA with non-probe detection,S
+covid_test,757678,SARS-CoV-2 (COVID-19) N gene [Presence] in Nose by NAA with probe detection,S
+covid_test,706161,SARS-CoV-2 (COVID-19) N gene [Presence] in Respiratory system specimen by NAA with probe detection,S
+covid_test,586524,SARS-CoV-2 (COVID-19) N gene [Presence] in Respiratory system specimen by Nucleic acid amplification using CDC primer-probe set N1,S
+covid_test,586525,SARS-CoV-2 (COVID-19) N gene [Presence] in Respiratory system specimen by Nucleic acid amplification using CDC primer-probe set N2,S
+covid_test,36661378,SARS-CoV-2 (COVID-19) N gene [Presence] in Saliva (oral fluid) by NAA with probe detection,S
+covid_test,36032258,SARS-CoV-2 (COVID-19) N gene [Presence] in Saliva (oral fluid) by Nucleic acid amplification using CDC primer-probe set N1,S
+covid_test,36033646,SARS-CoV-2 (COVID-19) N gene [Presence] in Saliva (oral fluid) by Nucleic acid amplification using CDC primer-probe set N2,S
+covid_test,586520,SARS-CoV-2 (COVID-19) N gene [Presence] in Serum or Plasma by NAA with probe detection,S
+covid_test,706175,SARS-CoV-2 (COVID-19) N gene [Presence] in Specimen by NAA with probe detection,S
+covid_test,706156,SARS-CoV-2 (COVID-19) N gene [Presence] in Specimen by Nucleic acid amplification using CDC primer-probe set N1,S
+covid_test,706154,SARS-CoV-2 (COVID-19) N gene [Presence] in Specimen by Nucleic acid amplification using CDC primer-probe set N2,S
+covid_test,36661370,SARS-CoV-2 (COVID-19) N gene [#/volume] (viral load) in Respiratory system specimen by NAA with probe detection,S
+covid_test,36033642,SARS-CoV-2 (COVID-19) Nsp2 gene [Presence] in Upper respiratory specimen by NAA with probe detection,S
+covid_test,36033649,SARS-CoV-2 (COVID-19) ORF1ab region [Cycle Threshold #] in Oropharyngeal wash by NAA with probe detection,S
+covid_test,723469,SARS-CoV-2 (COVID-19) ORF1ab region [Cycle Threshold #] in Respiratory system specimen by NAA with probe detection,S
+covid_test,706168,SARS-CoV-2 (COVID-19) ORF1ab region [Cycle Threshold #] in Specimen by NAA with probe detection,S
+covid_test,723478,SARS-CoV-2 (COVID-19) ORF1ab region [Presence] in Respiratory system specimen by NAA with probe detection,S
+covid_test,36031506,SARS-CoV-2 (COVID-19) ORF1ab region [Presence] in Saliva (oral fluid) by NAA with probe detection,S
+covid_test,723464,SARS-CoV-2 (COVID-19) ORF1ab region [Presence] in Specimen by NAA with probe detection,S
+covid_test,36033640,SARS-CoV-2 (COVID-19) ORF1ab region [Units/volume] (viral load) in Upper respiratory specimen by NAA with probe detection,S
+covid_test,1617427,SARS-CoV-2 (COVID-19) ORF1a region [Presence] in Respiratory system specimen by NAA with probe detection,S
+covid_test,1616454,SARS-CoV-2 (COVID-19) ORF1a region [Presence] in Saliva (oral fluid) by NAA with probe detection,S
+covid_test,1617191,SARS-CoV-2 (COVID-19) ORF1b region [Presence] in Respiratory system specimen by NAA with probe detection,S
+covid_test,1616841,SARS-CoV-2 (COVID-19) ORF1b region [Presence] in Saliva (oral fluid) by NAA with probe detection,S
+covid_test,586516,SARS-CoV-2 (COVID-19) [Presence] in Specimen by Organism specific culture,S
+covid_test,723471,SARS-CoV-2 (COVID-19) RdRp gene [Cycle Threshold #] in Respiratory system specimen by NAA with probe detection,S
+covid_test,723470,SARS-CoV-2 (COVID-19) RdRp gene [Cycle Threshold #] in Specimen by NAA with probe detection,S
+covid_test,1988376,SARS-CoV-2 (COVID-19) RdRp gene mutation detected [Identifier] in Specimen by Molecular genetics method,S
+covid_test,36031652,SARS-CoV-2 (COVID-19) RdRp gene [Presence] in Lower respiratory specimen by NAA with probe detection,S
+covid_test,706160,SARS-CoV-2 (COVID-19) RdRp gene [Presence] in Respiratory system specimen by NAA with probe detection,S
+covid_test,36032174,SARS-CoV-2 (COVID-19) RdRp gene [Presence] in Saliva (oral fluid) by NAA with probe detection,S
+covid_test,706173,SARS-CoV-2 (COVID-19) RdRp gene [Presence] in Specimen by NAA with probe detection,S
+covid_test,36031453,SARS-CoV-2 (COVID-19) RdRp gene [Presence] in Upper respiratory specimen by NAA with probe detection,S
+covid_test,586528,SARS-CoV-2 (COVID-19) RNA [Cycle Threshold #] in Respiratory system specimen by NAA with probe detection,S
+covid_test,586529,SARS-CoV-2 (COVID-19) RNA [Cycle Threshold #] in Specimen by NAA with probe detection,S
+covid_test,715262,SARS-CoV-2 (COVID-19) RNA [Log #/volume] (viral load) in Specimen by NAA with probe detection,S
+covid_test,706158,SARS-CoV-2 (COVID-19) RNA panel - Respiratory system specimen by NAA with probe detection,S
+covid_test,706169,SARS-CoV-2 (COVID-19) RNA panel - Specimen by NAA with probe detection,S
+covid_test,723476,SARS-CoV-2 (COVID-19) RNA [Presence] in Nasopharynx by NAA with non-probe detection,S
+covid_test,586526,SARS-CoV-2 (COVID-19) RNA [Presence] in Nasopharynx by NAA with probe detection,S
+covid_test,757677,SARS-CoV-2 (COVID-19) RNA [Presence] in Nose by NAA with probe detection,S
+covid_test,36033656,SARS-CoV-2 (COVID-19) RNA [Presence] in Oropharyngeal wash by NAA with probe detection,S
+covid_test,36031238,SARS-CoV-2 (COVID-19) RNA [Presence] in Respiratory system specimen by NAA with non-probe detection,S
+covid_test,706163,SARS-CoV-2 (COVID-19) RNA [Presence] in Respiratory system specimen by NAA with probe detection,S
+covid_test,36661377,SARS-CoV-2 (COVID-19) RNA [Presence] in Respiratory system specimen by Sequencing,S
+covid_test,715260,SARS-CoV-2 (COVID-19) RNA [Presence] in Saliva (oral fluid) by NAA with probe detection,S
+covid_test,715261,SARS-CoV-2 (COVID-19) RNA [Presence] in Saliva (oral fluid) by Sequencing,S
+covid_test,723463,SARS-CoV-2 (COVID-19) RNA [Presence] in Serum or Plasma by NAA with probe detection,S
+covid_test,706170,SARS-CoV-2 (COVID-19) RNA [Presence] in Specimen by NAA with probe detection,S
+covid_test,36033655,SARS-CoV-2 (COVID-19) RNA [Presence] in Specimen from Donor by NAA with probe detection,S
+covid_test,3965194,SARS-CoV-2 (COVID-19) RNA [Presence] in Throat by NAA with non-probe detection,S
+covid_test,36033662,SARS-CoV-2 (COVID-19) S gene codon N501= [Presence] in Specimen by Molecular genetics method,S
+covid_test,36033663,SARS-CoV-2 (COVID-19) S gene codon N501Y [Presence] in Specimen by Molecular genetics method,S
+covid_test,36033650,SARS-CoV-2 (COVID-19) S gene [Cycle Threshold #] in Oropharyngeal wash by NAA with probe detection,S
+covid_test,723467,SARS-CoV-2 (COVID-19) S gene [Cycle Threshold #] in Respiratory system specimen by NAA with probe detection,S
+covid_test,723468,SARS-CoV-2 (COVID-19) S gene [Cycle Threshold #] in Specimen by NAA with probe detection,S
+covid_test,36033664,SARS-CoV-2 (COVID-19) S gene mutation detected [Identifier] in Specimen by Molecular genetics method,S
+covid_test,36033665,SARS-CoV-2 (COVID-19) S gene mutation [Presence] in Specimen by Molecular genetics method,S
+covid_test,723465,SARS-CoV-2 (COVID-19) S gene [Presence] in Respiratory system specimen by NAA with probe detection,S
+covid_test,36031213,SARS-CoV-2 (COVID-19) S gene [Presence] in Respiratory system specimen by Sequencing,S
+covid_test,36033660,SARS-CoV-2 (COVID-19) S gene [Presence] in Saliva (oral fluid) by NAA with probe detection,S
+covid_test,586519,SARS-CoV-2 (COVID-19) S gene [Presence] in Serum or Plasma by NAA with probe detection,S
+covid_test,723466,SARS-CoV-2 (COVID-19) S gene [Presence] in Specimen by NAA with probe detection,S
+covid_test,36031944,SARS-CoV-2 (COVID-19) specific TCRB gene rearrangements [Presence] in Blood by Sequencing,S
+covid_test,36033661,SARS-CoV-2 (COVID-19) variant interpretation in Specimen Narrative,S
+covid_test,1989033,SARS-CoV-2 (COVID-19) variant [Type] in Specimen by NAA with probe detection,S
+covid_test,36033667,SARS-CoV-2 (COVID-19) variant [Type] in Specimen by Sequencing,S
+covid_test,586517,SARS-CoV-2 (COVID-19) whole genome [Nucleotide sequence] in Isolate or Specimen by Sequencing,S
+covid_test,757685,SARS-CoV+SARS-CoV-2 (COVID-19) Ag [Presence] in Respiratory system specimen by Rapid immunoassay,S
+covid_test,706166,SARS-related coronavirus E gene [Cycle Threshold #] in Specimen by NAA with probe detection,S
+covid_test,36032295,SARS-related coronavirus E gene [Presence] in Lower respiratory specimen by NAA with probe detection,S
+covid_test,586523,SARS-related coronavirus E gene [Presence] in Respiratory system specimen by NAA with probe detection,S
+covid_test,36031814,SARS-related coronavirus E gene [Presence] in Saliva (oral fluid) by NAA with probe detection,S
+covid_test,586518,SARS-related coronavirus E gene [Presence] in Serum or Plasma by NAA with probe detection,S
+covid_test,706174,SARS-related coronavirus E gene [Presence] in Specimen by NAA with probe detection,S
+covid_test,36032286,SARS-related coronavirus E gene [Presence] in Upper respiratory specimen by NAA with probe detection,S
+covid_test,706159,SARS-related coronavirus+MERS coronavirus RNA [Presence] in Respiratory system specimen by NAA with probe detection,S
+covid_test,706172,SARS-related coronavirus N gene [Cycle Threshold #] in Specimen by Nucleic acid amplification using CDC primer-probe set N3,S
+covid_test,706171,SARS-related coronavirus N gene [Presence] in Specimen by Nucleic acid amplification using CDC primer-probe set N3,S
+covid_test,706165,SARS-related coronavirus RNA [Presence] in Respiratory system specimen by NAA with probe detection,S
+covid_test,723472,SARS-related coronavirus RNA [Presence] in Specimen by NAA with probe detection,S
