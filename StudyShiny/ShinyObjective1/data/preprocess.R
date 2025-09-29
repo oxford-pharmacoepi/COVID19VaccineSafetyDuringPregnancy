@@ -12,20 +12,20 @@ resultList <- list(
 source(file.path(getwd(), "functions.R"))
 
 result <- omopgenerics::importSummarisedResult(file.path(getwd(), "data"))
-incidenceID <- settings(result) |> dplyr::filter(result_type == "") |> dplyr::pull("result_id")
+incidenceID <- omopgenerics::settings(result) |> dplyr::filter(result_type == "") |> dplyr::pull("result_id")
 result <- result |>
   dplyr::mutate(
     additional_name = dplyr::if_else(
-      .data$result_id == incidenceID, "outcome_group", .data$additional_name
+      .data$result_id %in% incidenceID, "outcome_group", .data$additional_name
     ),
     additional_level = dplyr::case_when(
-      .data$result_id == incidenceID & .data$group_level %in% c(
+      .data$result_id %in% incidenceID & .data$group_level %in% c(
         "preterm_labour", "miscarriage", "stillbirth", "maternal_death", 
         "dysfunctional_labour", "eclampsia", "ectopic_pregnancy", 
         "antepartum_haemorrhage", "gestational_diabetes", "hellp", "preeclampsia", 
         "postpartum_endometritis", "postpartum_haemorrhage"
       ) ~ "Maternal Adverse Events",
-      .data$result_id == incidenceID & !.data$group_level %in% c(
+      .data$result_id %in% incidenceID & !.data$group_level %in% c(
         "preterm_labour", "miscarriage", "stillbirth", "maternal_death", 
         "dysfunctional_labour", "eclampsia", "ectopic_pregnancy", 
         "antepartum_haemorrhage", "gestational_diabetes", "hellp", "preeclampsia", 

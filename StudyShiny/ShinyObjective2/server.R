@@ -656,14 +656,6 @@ server <- function(input, output, session) {
       omopgenerics::filterSettings(
         .data$outcome_group %in% input$incidence_rate_ratio_outcome_group,
         .data$weighting %in% input$incidence_rate_ratio_weighting
-      ) |>
-      # TO ELIMINATE WITH UPDATE
-      dplyr::mutate(
-        estimate_value = dplyr::if_else(
-          .data$variable_name == "Risk estimate",
-          as.character(log(as.numeric(.data$estimate_value))),
-          .data$estimate_value
-        )
       )
   })
   getIncidenceRateRatioTidy <- shiny::reactive({
@@ -759,7 +751,8 @@ server <- function(input, output, session) {
       ggplot2::geom_hline(yintercept = 1, color = "grey", linetype = "dashed", linewidth = 1) + 
       ggplot2::coord_flip() +
       visOmopResults::themeVisOmop(fontsizeRef = 11) +
-      ggplot2::ylab("IRR") 
+      ggplot2::ylab("IRR") +
+      scale_y_continuous(breaks = c(0.1, 0.25, 0.5, 1, 2), transform = "log10")
   })
   output$incidence_rate_ratio_plot <- shiny::renderUI({
     x <- getIRRPlot()
@@ -845,9 +838,8 @@ server <- function(input, output, session) {
     data[["propensity_scores"]] |>
       dplyr::filter(
         .data$cdm_name %in% input$propensity_scores_cdm_name,
-        .data$group_level %in% input$propensity_scores_cohort_name
-      ) |>
-      visOmopResults::tidy()
+        .data$cohort_name %in% input$propensity_scores_cohort_name
+      ) 
   })
   getPropensityScorePlot <- shiny::reactive({
     getPropensityScoresData() |>

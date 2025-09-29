@@ -698,7 +698,7 @@ ui <- bslib::page_navbar(
                   shinyWidgets::pickerInput(
                     inputId = "propensity_score_plot_facet",
                     label = "Facet",
-                    choices = c("cdm_name", "cohort_name", "vaccine_brand", "gestational_trimester", "age_group"),
+                    choices = c("cdm_name", "cohort_name"),
                     selected = c("cdm_name", "cohort_name"),
                     multiple = TRUE,
                     options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")

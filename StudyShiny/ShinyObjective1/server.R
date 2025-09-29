@@ -292,7 +292,8 @@ server <- function(input, output, session) {
         .data$maternal_age_group %in% input$summarise_characteristics_maternal_age_group,
         .data$pregnancy_start_period %in% input$summarise_characteristics_pregnancy_start_period,
         .data$ethnicity %in% input$summarise_characteristics_ethnicity,
-        .data$socioeconomic_status %in% input$summarise_characteristics_socioeconomic_status
+        .data$socioeconomic_status %in% input$summarise_characteristics_socioeconomic_status,
+        .data$trimester %in% input$summarise_characteristics_trimester
       )
   })
   getSummariseCharacteristicsTable <- shiny::reactive({
@@ -432,6 +433,7 @@ server <- function(input, output, session) {
         .data$pregnancy_start_period %in% input$summarise_large_scale_characteristics_pregnancy_start_period,
         .data$ethnicity %in% input$summarise_large_scale_characteristics_ethnicity,
         .data$socioeconomic_status %in% input$summarise_large_scale_characteristics_socioeconomic_status
+        # .data$trimester %in% input$summarise_large_scale_characteristics_trimester
       )
   })
   getSummariseLargeScaleCharacteristicsTableLsc <- shiny::reactive({
@@ -674,19 +676,19 @@ server <- function(input, output, session) {
   )
   getIncidencePlot <- shiny::reactive({
     getIncidenceData() |>
-     visOmopResults::scatterPlot(
-       x = input$incidence_plot_x,
-       y = "incidence_100000_pys",
-       line = input$incidence_plot_line,
-       point = TRUE,
-       ribbon = input$incidence_plot_ribbon,
-       ymin = "incidence_100000_pys_95CI_lower",
-       ymax = "incidence_100000_pys_95CI_upper",
-       facet = input$incidence_plot_facet,
-       colour = input$incidence_plot_colour,
-       style = "default",
-       label = c('cdm_name', 'outcome_cohort_name', 'gestational_trimester', 'maternal_age_group', 'pregnancy_start_period', 'socioeconomic_status', 'ethnicity', 'variable_name', 'variable_level', 'outcome_count', 'person_days_count', 'denominator_count', 'person_years', 'incidence_100000_pys', 'incidence_100000_pys_95CI_lower', 'incidence_100000_pys_95CI_upper')
-     )
+      visOmopResults::scatterPlot(
+        x = input$incidence_plot_x,
+        y = "incidence_100000_pys",
+        line = input$incidence_plot_line,
+        point = TRUE,
+        ribbon = input$incidence_plot_ribbon,
+        ymin = "incidence_100000_pys_95CI_lower",
+        ymax = "incidence_100000_pys_95CI_upper",
+        facet = input$incidence_plot_facet,
+        colour = input$incidence_plot_colour,
+        style = "default",
+        label = c('cdm_name', 'outcome_cohort_name', 'gestational_trimester', 'maternal_age_group', 'pregnancy_start_period', 'socioeconomic_status', 'ethnicity', 'variable_name', 'variable_level', 'outcome_count', 'person_days_count', 'denominator_count', 'person_years', 'incidence_100000_pys', 'incidence_100000_pys_95CI_lower', 'incidence_100000_pys_95CI_upper')
+      )
   })
   output$incidence_plot <- shiny::renderUI({
     x <- getIncidencePlot()
@@ -823,10 +825,16 @@ server <- function(input, output, session) {
       omopgenerics::filterSettings(grepl("probability", .data$result_type) | grepl("summary", .data$result_type)) |>
       filter(
         estimate_name %in% c(
-          "n_events_count", "number_records_count", "median_survival", "median_survival_95CI_lower", 
-          "median_survival_95CI_higher", "restricted_mean_survival", "restricted_mean_survival_95CI_lower", 
-          "restricted_mean_survival_95CI_upper")
+          "n_events_count", "number_records_count"
+        )
       ) 
+      # filter(
+      #   estimate_name %in% c(
+      #     "n_events_count", "number_records_count", "median_survival", "median_survival_95CI_lower", 
+      #     "median_survival_95CI_higher", "restricted_mean_survival", "restricted_mean_survival_95CI_lower", 
+      #     "restricted_mean_survival_95CI_upper"
+      #   )
+      # ) 
     
     table <- dplyr::bind_rows(
       table, 
@@ -856,6 +864,7 @@ server <- function(input, output, session) {
       ) %>%
       dplyr::arrange(.data$estimate_name) %>%
       dplyr::mutate("estimate_name" = as.character(.data$estimate_name)) |>
+      dplyr::filter(!is.na(variable_name)) |>
       visOmopResults::visOmopTable(
         estimateName = c(
           "Number pregnancies" = "<number_records_count>",
