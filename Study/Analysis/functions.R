@@ -65,12 +65,10 @@ getPregnantCohort <- function(db, cdm, mother_table_schema, mother_table_name) {
       nameStyle = "overlap"
     ) |>
     filter(overlap == 1) |>
-    select(
-      !c(
-        "gestational_length_in_day", "prev_pregnancy_gravidity", "pregnancy_single",
-        "overlap", "pregnancy_mode_delivery"
-      )
-    ) |>
+    select(!c(
+      "gestational_length_in_day", "prev_pregnancy_gravidity", "pregnancy_single",
+      "overlap", "pregnancy_mode_delivery"
+    )) |>
     mutate(
       pregnancy_outcome_study = case_when(
         pregnancy_outcome == 4092289  & gestational_length <= 37*7~ "preterm_labour",
@@ -88,51 +86,82 @@ getPregnantCohort <- function(db, cdm, mother_table_schema, mother_table_name) {
     recordCohortAttrition(reason = "No overlapping pregnancy records")
   
   if (cdmName(cdm) %in% "CPRD GOLD") {
-    cdm$mother_table <- cdm$mother_table |>
-      left_join(
-        cdm$observation |>
-          filter(observation_concept_id %in% c(903653, 40766579, 903657)) |>
-          mutate(
-            pre_pregnancy_smoking = case_when(
-              observation_concept_id == 40766579 & value_as_number == 0 ~ "No smoker", 
-              observation_concept_id == 40766579 & value_as_number > 0 ~ "Smoker", 
-              observation_concept_id == 903657 ~ "Smoker", 
-              observation_concept_id == 903653 ~ "No smoker", 
-              .default = "Missing")
-          ) |>
-          select(subject_id = person_id, observation_date, pre_pregnancy_smoking)
+    smoking_observation <- cdm$observation |>
+      filter(observation_concept_id %in% c(903653, 40766579, 903657)) |>
+      mutate(
+        pre_pregnancy_smoking = case_when(
+          observation_concept_id == 40766579 & value_as_number == 0 ~ "No smoker", 
+          observation_concept_id == 40766579 & value_as_number > 0 ~ "Smoker", 
+          observation_concept_id == 903657 ~ "Smoker", 
+          observation_concept_id == 903653 ~ "No smoker", 
+          .default = "Missing")
       ) |>
-      filter(observation_date < pregnancy_end_date | is.na(observation_date)) %>% 
-      filter(observation_date > !!dateadd("pregnancy_start_date", -1, interval = "year") | is.na(observation_date)) |>
-      group_by(subject_id, pregnancy_start_date) |>
-      filter(observation_date == max(observation_date) | is.na(observation_date)) |>
+      select(subject_id = person_id, observation_date, pre_pregnancy_smoking) |>
+      inner_join(cdm$mother_table)  |>
+      filter(observation_date < pregnancy_end_date) %>% 
+      filter(observation_date > !!dateadd("pregnancy_start_date", -5, interval = "year")) |>
+      compute() |>
+      group_by(subject_id, pregnancy_id, pregnancy_start_date) |>
+      filter(observation_date == max(observation_date)) |>
       ungroup() |>
+      select(subject_id, observation_date, pre_pregnancy_smoking) |>
+      compute()
+    cdm$mother_table <- cdm$mother_table |>
+      left_join(smoking_observation, by = "subject_id") |>
+      compute(name = "mother_table", temporary = FALSE) |>
       mutate(pre_pregnancy_smoking = if_else(is.na(pre_pregnancy_smoking), "Missing", pre_pregnancy_smoking)) |>
       select(!observation_date) |>
+      distinct() |>
+      # check different records in same day
+      group_by(across(-pre_pregnancy_smoking)) |>
+      summarise(
+        pre_pregnancy_smoking = case_when(
+          any(pre_pregnancy_smoking == "Smoker") ~ "Smoker", 
+          any(pre_pregnancy_smoking == "No smoker") ~ "No smoker", 
+          .default = "Missing"
+        ),
+        .groups = "drop" 
+      ) |>
       compute(name = "mother_table", temporary = FALSE) |>
       recordCohortAttrition(reason = "Add smoking status")
     
   } else if (cdmName(cdm) %in% "SIDIAP") {
-    cdm$mother_table <- cdm$mother_table |>
-      left_join(
-        cdm$observation |>
-          filter(value_as_concept_id %in% c(45879404, 45883458, 45884037)) |>
-          mutate(
-            pre_pregnancy_smoking = case_when(
-              value_as_concept_id == 45879404 ~ "Never smoker",
-              value_as_concept_id == 45883458 ~ "Former smoker",
-              value_as_concept_id == 45884037 ~ "Current some day smoker", 
-              .default = "Missing")
-          ) |>
-          select(subject_id = person_id, observation_date, pre_pregnancy_smoking)
+    smoking_observation <- cdm$observation |>
+      filter(value_as_concept_id %in% c(45879404, 45883458, 45884037)) |>
+      mutate(
+        pre_pregnancy_smoking = case_when(
+          value_as_concept_id == 45879404 ~ "Never smoker",
+          value_as_concept_id == 45883458 ~ "Former smoker",
+          value_as_concept_id == 45884037 ~ "Current some day smoker", 
+          .default = "Missing")
       ) |>
-      filter(observation_date < pregnancy_end_date | is.na(observation_date)) %>% 
-      filter(observation_date > !!dateadd("pregnancy_start_date", -1, interval = "year") | is.na(observation_date)) |>
-      group_by(subject_id, pregnancy_start_date) |>
-      filter(observation_date == max(observation_date) | is.na(observation_date)) |>
+      select(subject_id = person_id, observation_date, pre_pregnancy_smoking) |>
+      inner_join(cdm$mother_table)  |>
+      filter(observation_date < pregnancy_end_date) %>% 
+      filter(observation_date > !!dateadd("pregnancy_start_date", -5, interval = "year")) |>
+      compute() |>
+      group_by(subject_id, pregnancy_id, pregnancy_start_date) |>
+      filter(observation_date == max(observation_date)) |>
       ungroup() |>
+      select(subject_id, observation_date, pre_pregnancy_smoking) |>
+      compute()
+    cdm$mother_table <- cdm$mother_table |>
+      left_join(smoking_observation, by = "subject_id") |>
+      compute(name = "mother_table", temporary = FALSE) |>
       mutate(pre_pregnancy_smoking = if_else(is.na(pre_pregnancy_smoking), "Missing", pre_pregnancy_smoking)) |>
       select(!observation_date) |>
+      distinct() |>
+      # check different records in same day
+      group_by(across(-pre_pregnancy_smoking)) |>
+      summarise(
+        pre_pregnancy_smoking = case_when(
+          any(pre_pregnancy_smoking == "Current some day smoker") ~ "Current some day smoker", 
+          any(pre_pregnancy_smoking == "Former smoker") ~ "Former smoker", 
+          any(pre_pregnancy_smoking == "Never smoker") ~ "Never smoker", 
+          .default = "Missing"
+        ),
+        .groups = "drop" 
+      ) |>
       compute(name = "mother_table", temporary = FALSE) |>
       recordCohortAttrition(reason = "Add smoking status")
   }
@@ -141,7 +170,7 @@ getPregnantCohort <- function(db, cdm, mother_table_schema, mother_table_name) {
 }
 
 
-getSourcePopulation <- function(cdm, objective, enrollment) {
+getSourcePopulation <- function(cdm, objective, enrollment, codelist) {
   name <- paste0("source_", objective)
   cohortName <- paste0("source_population_objective_", objective)
   cdm[[name]] <- cdm$mother_table |>
@@ -172,7 +201,7 @@ getSourcePopulation <- function(cdm, objective, enrollment) {
     cdm[[name]] <- cdm[[name]] |>
       left_join(
         cdm$covid_vaccines_dose |>
-          filter(cohort_definition_id == 1) |>
+          filter(cohort_definition_id == !!getId(cdm$covid_vaccines_dose, "any_covid_vaccine")) |>
           select("subject_id", "vaccine_date" = "cohort_start_date"),
         by = "subject_id"
       ) %>%
@@ -339,9 +368,10 @@ samplingSummary <- function(sampling_source, reason, results, cohortId = 1:3, va
   
   if ("exposed" %in% variable) {
     exposed <- x |>
-      mutate(
-        subject_id = exposed_id, cohort_start_date = exposure_date, cohort_end_date = exposure_date
+      select(
+        cohort_name, subject_id = exposed_id, cohort_start_date = exposure_date, cohort_end_date = exposure_date
       )  |>
+      distinct() |>
       summariseResult(group = list("cohort_name")) |>
       mutate(
         variable_name = dplyr::case_when(
@@ -507,7 +537,7 @@ getBaselineCharacteristics <- function(cdm, strata, weights) {
             collect()
           if (nrow(data.k) > 0) {
             # weights
-            data.k <- getWeights(data.k, weights[[group]])
+            data.k <- getWeights(data.k, weights[[group]][[strataLevel.k]])
             # characteristics
             baselineData <- data |>
               select(!any_of(c("weight", "ps"))) |>
@@ -591,7 +621,7 @@ getFeaturesTable <- function(cdm, strata) {
         distinct(cohort_name, subject_id, pregnancy_id, cohort_start_date),
       by = "subject_id"
     ) |>
-    filter(concept_id != 0 & start_date <= cohort_start_date) %>%
+    filter(concept_id != 0 & start_date < cohort_start_date) %>%
     mutate(
       time_start = !!datediff("start_date", "cohort_start_date")
     ) |>
@@ -618,7 +648,7 @@ getFeaturesTable <- function(cdm, strata) {
             distinct(cohort_name, subject_id, pregnancy_id, cohort_start_date),
           by = "subject_id"
         ) |>
-        filter(concept_id != 0 & start_date <= cohort_start_date) %>%
+        filter(concept_id != 0 & start_date < cohort_start_date) %>%
         mutate(
           time_start = !!datediff("start_date", "cohort_start_date")
         ) |>
@@ -664,8 +694,7 @@ getFeaturesTable <- function(cdm, strata) {
           "pregnancy_id", "cohort_start_date", "cohort_end_date", "exposed_match_id",
           "region", "ethnicity", "socioecnomic_status", "birth_continent", 
           "pre_pregnancy_smoking", unlist(strata)
-        ))),
-      by = c("cohort_name", "subject_id", "cohort_start_date")
+        )))
     ) |>
     mutate(value = 1, unique_id = paste0(as.character(subject_id), "_", as.character(exposed_match_id), "_", as.character(pregnancy_id))) |>
     pivot_wider(names_from = "feature", values_from = "value", values_fill = 0) |>
@@ -711,7 +740,7 @@ getLargeScaleCharacteristics <- function(cdm, strata, weights) {
             collect()
           if (nrow(data.k) > 0) {
             # weights
-            data.k <- getWeights(data.k, weights[[group]])
+            data.k <- getWeights(data.k, weights[[group]][[strataLevel.k]])
             
             strataBaseline <- "exposure"
             if (strata.k != "overall") strataBaseline <- (c("exposure", strata.k))
@@ -941,7 +970,7 @@ summariseCohortExit <- function(cdm, strata, weights) {
             collect()
           if (nrow(data.k) > 0) {
             # weights
-            data.k <- getWeights(data.k, weights[[group]])
+            data.k <- getWeights(data.k, weights[[group]][[strataLevel.k]])
             # characteristics
             summaryExit.k <- cohortExit(data.k, list("exit_reason", "exposure", c("exposure", "exit_reason")), "weight")
             if (strata.k != "overall") {
@@ -1391,7 +1420,7 @@ summariseTimeDistribution <- function(cdm, strata, weights = NULL) {
         if (nrow(data.k) > 0) {
           # weights
           if (length(weights) != 0) {
-            data.k <- getWeights(data.k, weights[[group]])
+            data.k <- getWeights(data.k, weights[[group]][[strataLevel.k]])
           }
           # time distribution
           timeDistribution <- dplyr::bind_rows(
@@ -1427,7 +1456,9 @@ summariseTimeDistribution <- function(cdm, strata, weights = NULL) {
   return(timeDistribution)
 }
 
-getRegion <- function(x, database_name) {
+getRegion <- function(x) {
+  database_name <- omopgenerics::cdmName(omopgenerics::cdmReference(x))
+  name <- omopgenerics::tableName(x)
   if (database_name == "CPRD GOLD") {
     x <- x |>
       left_join(
@@ -1465,7 +1496,8 @@ getRegion <- function(x, database_name) {
       select(!"location_id")
   }
   x |>
-    mutate(region = as.character(region))
+    mutate(region = as.character(region)) |>
+    compute(name = name, temporary = FALSE)
 }
 
 applyPopulationWashout <- function(x, censorDate = "pregnancy_start_date") {
@@ -2195,4 +2227,59 @@ getMatchedCohort <- function(cohort, outcomes, name) {
     newCohortTable()
   dropSourceTable(cdm = cdm, starts_with(tmp))
   return(cdm[[name]])
+}
+
+getCovariateList <- function(cdm) {
+  covariatesPS <- c(
+    "exposure", "age", "gestational_day", "cohort_start_date",
+    "previous_observation", "previous_pregnancies", "previous_healthcare_visits",
+    "alcohol_misuse_dependence", "obesity", "anxiety", "depression", 
+    "pre_pregnancy_smoking"
+  )
+  covariatesSMD <- readr::read_csv(here::here("Codelists", "largeScaleSMD.csv")) |>
+    filter(grepl(cdmName(cdm), cdm_name)) |>
+    filter(add_ps_dani)
+  
+  if (grepl("CPRD GOLD", cdmName(cdm))) {
+    covariatesPS <- c(covariatesPS, "ethnicity", "socioecnomic_status")
+  }
+  if (grepl("NLHR@UiO", cdmName(cdm))) {
+    covariatesPS <- c(covariatesPS, "birth_continent")
+  }
+  if (grepl("SCIFI-PEARL", cdmName(cdm))) {
+    covariatesPS <- c(covariatesPS, "birth_continent", "socioecnomic_status")
+  }
+  if (grepl("SIDIAP", cdmName(cdm))) {
+    covariatesPS <- c(covariatesPS, "birth_continent", "socioecnomic_status")
+  }
+  
+  strataLevel <- c("overall","T1","T2","T3","pfizer","moderna","12 to 17","18 to 34","35 to 55")
+  innerList <- setNames(lapply(strataLevel, \(s) covariatesPS), strataLevel)
+  covariatesPS <- setNames(
+    rep(list(innerList), 9), 
+    c(paste0("population_objective_", 1:3), 
+      paste0("population_miscarriage_objective_", 1:3), 
+      paste0("population_preterm_labour_objective_", 1:3)
+    )
+  )
+  
+  for (nm in unique(covariatesSMD$cohort_name)) {
+    for(stLevel in unique(covariatesSMD$strata_level)) {
+      covariatesAdd <- covariatesSMD |>
+        filter(cohort_name == nm, strata_level == stLevel) |>
+        pull(identifier)
+      covariatesPS[[nm]][[stLevel]] <- c(covariatesPS[[nm]][[stLevel]], covariatesAdd)
+    }
+  }
+  
+  return(covariatesPS)
+}
+
+asDensity <- function(data) {
+  xx <- density(data |> filter(exposure == "exposed") |> pull(ps))
+  yy <- density(data |> filter(exposure == "comparator") |> pull(ps))
+  
+  tibble(x = xx$x, y = xx$y, exposure = "exposed") |>
+    bind_rows(tibble(x = yy$x,  y = yy$y, exposure = "comparator")) |>
+    pivot_longer(cols = c("x", "y"), names_to = "estimate_name", values_to = "estimate_value")
 }

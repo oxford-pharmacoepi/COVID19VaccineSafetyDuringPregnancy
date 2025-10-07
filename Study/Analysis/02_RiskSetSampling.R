@@ -111,33 +111,43 @@ sampling_summary <- omopgenerics::bind(
 ## Matching and washout ----
 info(logger, "- Matching and washout")
 sampling_source <- cdm$exposed_source |>
-  select(
+  select(any_of(c(
     "cohort_name", "exposed_id" = "subject_id", "exposure_date", 
     "age_group_sample", "pregnancy_start_band", "vaccine_brand", "vaccine_dose",
-    "exposed_pregnancy_id" = "pregnancy_id",
-    "exposed_pregnancy_start_date" = "pregnancy_start_date", 
-    "exposed_pregnancy_end_date" = "pregnancy_end_date",
-    "exposed_observation_start" = "observation_period_start_date",
-    "exposed_observation_end" = "observation_period_end_date",
-    "exposed_previous_dose" = "previous_dose",
-    "exposed_pregnancy_outcome_study" = "pregnancy_outcome_study",
-    "exposed_age_group" = "age_group",
-    "exposed_number_previous_doses" = "number_previous_doses"
+    "pregnancy_id",
+    "pregnancy_start_date", 
+    "pregnancy_end_date",
+    "observation_period_start_date",
+    "observation_period_end_date",
+    "previous_dose",
+    "pregnancy_outcome_study",
+    "age_group",
+    "number_previous_doses",
+    "pre_pregnancy_smoking"
+  ))) |>
+  rename_with(
+    .fn = \(x){glue("exposed_{x}")}, 
+    .cols = c("pregnancy_id", "pregnancy_start_date", "pregnancy_end_date", "observation_period_start_date", "observation_period_end_date", "previous_dose", "pregnancy_outcome_study", "age_group", "number_previous_doses", "pre_pregnancy_smoking")
   ) |>
   left_join(
     cdm$comparator_source |>
-      select(
+      select(any_of(c(
         "cohort_definition_id", "cohort_name", "subject_id", "cohort_start_date", 
         "cohort_end_date", "pregnancy_start_band", "age_group_sample",
-        "comparator_pregnancy_id" = "pregnancy_id",
-        "comparator_pregnancy_start_date" = "pregnancy_start_date", 
-        "comparator_pregnancy_end_date" = "pregnancy_end_date",
-        "comparator_observation_start" = "observation_period_start_date",
-        "comparator_observation_end" = "observation_period_end_date",
-        "comparator_previous_dose" = "previous_dose",
-        "comparator_pregnancy_outcome_study" = "pregnancy_outcome_study",
-        "comparator_age_group" = "age_group",
-        "comparator_number_previous_doses" = "number_previous_doses"
+        "pregnancy_id",
+        "pregnancy_start_date", 
+        "pregnancy_end_date",
+        "observation_period_start_date",
+        "observation_period_end_date",
+        "previous_dose",
+        "pregnancy_outcome_study",
+        "age_group",
+        "number_previous_doses",
+        "pre_pregnancy_smoking"
+      ))) |>
+      rename_with(
+        .fn = \(x){glue("comparator_{x}")}, 
+        .cols = c("pregnancy_id", "pregnancy_start_date", "pregnancy_end_date", "observation_period_start_date", "observation_period_end_date", "previous_dose", "pregnancy_outcome_study", "age_group", "number_previous_doses", "pre_pregnancy_smoking")
       ),
     by = c("cohort_name", "age_group_sample", "pregnancy_start_band"),
     relationship = "many-to-many"
@@ -213,16 +223,20 @@ cdm$study_population <- sampling_source |>
     exposure = if_else(exposure == "subject_id", "comparator", "exposed"),
     cohort_end_date = exposure_date,
     !!!datesPivotLongerExprs(
-      c("pregnancy_start_date", "pregnancy_end_date", "pregnancy_id", "pregnancy_outcome_study",
-        "observation_start", "observation_end", "previous_dose", "age_group", "number_previous_doses")
+      c("pregnancy_id", "pregnancy_start_date", "pregnancy_end_date", "observation_period_start_date",
+        "observation_period_end_date", "previous_dose", "pregnancy_outcome_study", "age_group", 
+        "number_previous_doses", "pre_pregnancy_smoking"),
+      data = cdm$source_population
     )
   ) |>
-  select(all_of(c(
+  select(any_of(c(
     "cohort_definition_id", "subject_id", "cohort_start_date" = "exposure_date", 
     "cohort_end_date", "exposure", "exposed_match_id", "pregnancy_id", 
     "vaccine_brand", "vaccine_dose", "pregnancy_start_date", 
-    "pregnancy_end_date", "age_group", "observation_start",
-    "observation_end", "previous_dose", "cohort_name", "pregnancy_outcome_study"
+    "pregnancy_end_date", "age_group", "pre_pregnancy_smoking", 
+    "previous_dose", "cohort_name", "pregnancy_outcome_study", 
+    "observation_start" = "observation_period_start_date",
+    "observation_end" = "observation_period_end_date"
   ))) |>
   distinct() |>
   compute(name = "study_population", temporary = FALSE) |>
@@ -299,7 +313,7 @@ cdm$study_population <- cdm$study_population |>
 # Strata and covariates ----
 info(logger, "- Study population cohort - set strata and covariates")
 cdm$study_population <- cdm$study_population |>
-  addAge(indexDate = "pregnancy_start_date") %>% 
+  addAge(indexDate = "pregnancy_start_date") %>%
   mutate(
     gestational_day = !!datediff("pregnancy_start_date", "cohort_start_date"),
     gestational_trimester = case_when(
@@ -308,8 +322,13 @@ cdm$study_population <- cdm$study_population |>
       .default = "T2"
     )
   ) |>
+  compute(name = "study_population", temporary = FALSE) |>
+  # Ethnicity/Birth continent
+  addEthnicity() |>
+  # Socioecnomic status
+  addSocioeconomicStatus() |>
   # Geographic location
-  getRegion(database_name = database_name) %>% 
+  getRegion() %>% 
   # previous observation and vaccines
   mutate(
     previous_observation = !!datediff("observation_start", "cohort_start_date"),
@@ -357,12 +376,32 @@ cdm$study_population <- cdm$study_population |>
     previous_covid_vaccines = as.character(previous_covid_vaccines),
     previous_pregnant_covid_vaccines = as.character(previous_pregnant_covid_vaccines)
   ) |>
+  compute(name = "study_population", temporary = FALSE) |>
   newCohortTable(
     cohortSetRef = settings(cdm$source_population) |> 
       mutate(cohort_name = gsub("source_", "", cohort_name)),
     .softValidation = TRUE
   ) |>
-  addCohortName()
+  addCohortName() 
+
+# Add cohort for miscarriage and preterm birth ----
+cdm$miscarriage <- cdm$study_population %>% 
+  mutate(max_index_date = !!dateadd("pregnancy_start_date", 19*7 + 6)) |>
+  filter(cohort_start_date < max_index_date) |>
+  select(!max_index_date) |>
+  compute(name = "miscarriage", temporary = FALSE) |>
+  recordCohortAttrition(reason = "Study population for miscarriage") |>
+  renameCohort(cohortId = 1:3, newCohortName = paste0("population_miscarriage_objective_", 1:3))
+
+cdm$preterm_labour <- cdm$study_population %>% 
+  mutate(max_index_date = !!dateadd("pregnancy_start_date", 37*7)) |>
+  filter(cohort_start_date < max_index_date) |>
+  select(!max_index_date) |>
+  compute(name = "preterm_labour", temporary = FALSE) |>
+  recordCohortAttrition(reason = "Study population for preterm labour") |>
+  renameCohort(cohortId = 1:3, newCohortName = paste0("population_preterm_labour_objective_", 1:3))
+
+cdm <- bind(cdm$study_population, cdm$miscarriage, cdm$preterm_labour, name = "study_population")
 
 # Characterise ---- 
 strata <- selectStrata(cdm, strata = c("vaccine_brand", "gestational_trimester", "age_group"))

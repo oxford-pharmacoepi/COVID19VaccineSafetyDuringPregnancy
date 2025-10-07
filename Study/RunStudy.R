@@ -26,6 +26,9 @@ enrollment2 <- as.Date(c("2021-05-01", "2022-03-31"))
 enrollment3 <- c(as.Date("2021-10-01"), dataCutDate - lubridate::years(1))
 set.seed(123)
 
+# Hand-picked PS variables + confounders with SMD > 0.1
+covariatesPS <- getCovariateList(cdm)
+
 # Database snapshot:
 summariseOmopSnapshot(cdm) |>
   exportSummarisedResult(path = output_folder, fileName = paste0("cdm_snapshot_", cdmName(cdm), ".csv"))
@@ -115,7 +118,7 @@ if (runBackgroundRates) {
         "mother_table", "aesi_90", "aesi_30", "aesi_inf", "mae", "comedications",
         "covariates_inf", "covariates_5", "other_vaccines",
         "covid", "covid_test"
-        ),
+      ),
       .softValidation = TRUE
     )
   }
@@ -135,7 +138,7 @@ if (runBRCharacteristics) {
         "mother_table", "aesi", "mae", "overall_period", "comedications",
         "covariates_inf", "covariates_5", "other_vaccines",
         "covid", "covid_test"
-        ),
+      ),
       .softValidation = TRUE
     )
   }

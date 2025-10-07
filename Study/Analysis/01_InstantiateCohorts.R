@@ -5,6 +5,7 @@ cdm$mother_table <- getPregnantCohort(db, cdm, mother_table_schema, mother_table
 # read codes
 info(logger, "- Base cohort")
 csvs <- list.files(here("Codelists"))
+csvs <- csvs[csvs != "largeScaleSMD.csv"]
 codes <- NULL
 for (csv in csvs) {
   if (csv == "nco.csv") {
