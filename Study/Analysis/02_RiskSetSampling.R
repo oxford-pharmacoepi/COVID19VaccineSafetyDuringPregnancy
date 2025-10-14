@@ -403,6 +403,10 @@ cdm$preterm_labour <- cdm$study_population %>%
 
 cdm <- bind(cdm$study_population, cdm$miscarriage, cdm$preterm_labour, name = "study_population")
 
+cdm$study_population <- cdm$study_population |>
+  addCohortName() |>
+  compute(name = "study_population", temporary = FALSE)
+
 # Characterise ---- 
 strata <- selectStrata(cdm, strata = c("vaccine_brand", "gestational_trimester", "age_group"))
 ## table one
@@ -410,7 +414,7 @@ info(logger, "- Baseline characteristics")
 baseline_characteristics <- getBaselineCharacteristics(cdm, strata, weights = NULL)
 ## large scale
 info(logger, "- Large Scale characteristics")
-cdm <- getFeaturesTable(cdm, strata)
+cdm <- getFeaturesTable(cdm, strata, covariatesPS)
 large_scale_characteristics <- getLargeScaleCharacteristics(cdm, strata, weights = NULL)
 ## censoring 
 info(logger, "- Censoring summary")

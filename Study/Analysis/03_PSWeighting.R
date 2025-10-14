@@ -8,19 +8,13 @@ cdm$study_population <- cdm$study_population |>
   addCohortName() |>
   dplyr::select(!dplyr::starts_with("ps")) |>
   dplyr::select(!dplyr::starts_with("weight")) %>% 
-  dplyr::mutate(
-    overall = "overall",
-    miscarriage = if_else(cohort_start_date < !!dateadd("pregnancy_start_date", 19*7 + 6), "miscarriage", NA_character_),
-    preterm_labour = if_else(cohort_start_date < !!dateadd("pregnancy_start_date", 37*7), "preterm_labour", NA_character_),
-  )
+  dplyr::mutate(overall = "overall")
 for (nm in cohortNames) {
   info(logger, paste0("  - Cohort: ", nm))
-  for (stName in c("overall", "vaccine_brand", "gestational_trimester", "age_group", "miscarriage", "preterm_labour")) {
+  for (stName in c("overall", "vaccine_brand", "gestational_trimester", "age_group")) {
     strataLevels <- cdm$study_population |>
       pull(.data[[stName]]) |>
       unique()
-    if (stName == "miscarriage") strataLevels <- "miscarriage"
-    if (stName == "preterm_labour") strataLevels <- "preterm_labour"
     for (stLevel in strataLevels) {
       info(logger, paste0("    - Strata: ", stLevel))
       ## LASSO 
@@ -41,7 +35,7 @@ for (nm in cohortNames) {
             "cohort_definition_id", "age_group", "weight", "region"
           ))) |>
         collect()
-      if (nrow(lassoData) > 5) {
+      if (nrow(lassoData) > 10) {
         # drop any columsn with 1 level
         columns <- sapply(lapply(lassoData, unique), length)
         columns <- colnames(columns)[columns > 1]
@@ -94,6 +88,8 @@ for (nm in cohortNames) {
             coefficient = glmResult$coefficients
           )
         )
+      } else {
+        allCovariatesPS[[nm]][[stLevel]] <- covariatesPS[[nm]][[stLevel]]
       }
     }
   }
@@ -108,9 +104,14 @@ cdm$study_population <- cdm$study_population |>
   left_join(
     cdm$features |> 
       select(any_of(c(
-        "cohort_name", "subject_id", "cohort_start_date", "exposure", 
-        "pregnancy_id", "exposed_matched_id", unique(unlist(allCovariatesPS))
-      )))) |>
+        "cohort_definition_id", "subject_id", "cohort_start_date", "exposure", 
+        "pregnancy_id", "exposed_matched_id", "pregnancy_start_date",
+        "pregnancy_end_date", "observation_start", "exit_reason",
+        unique(unlist(allCovariatesPS))
+      ))) |> 
+      distinct()
+  ) |> 
+  distinct() |>
   compute(name = "study_population", temporary = FALSE) |>
   newCohortTable(.softValidation = TRUE)
 sumCohort <- summaryCohort(cdm$study_population)
@@ -181,11 +182,6 @@ baseline_characteristics <- getBaselineCharacteristics(cdm, strata, weights = al
 
 ## large scale
 info(logger, "- Large Scale characteristics (weighted)")
-cdm$features <- cdm$features |>
-  inner_join(
-    cdm$study_population |> select("unique_id", "weight"), by = "unique_id"
-  ) |>
-  compute(name = "features", temporary = FALSE)
 large_scale_characteristics <- getLargeScaleCharacteristics(cdm, strata, weights = allCovariatesPS)
 
 ## censoring 

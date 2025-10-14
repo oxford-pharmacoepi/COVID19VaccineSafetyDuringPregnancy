@@ -29,6 +29,35 @@ set.seed(123)
 # Hand-picked PS variables + confounders with SMD > 0.1
 covariatesPS <- getCovariateList(cdm)
 
+if (sensitvitySCIFIPEARL) {
+  locations <- readr::read_csv(here::here("Data", "locations_sweden.csv"))
+  cdm$person <- cdm$person |>
+    inner_join(locations |> select("location_id"), by = "location_id", copy = TRUE) |>
+    compute()
+  subjects <- cdm$person |> distinct(person_id) |> compute()
+  cdm$observation_period <- cdm$observation_period |>
+    inner_join(subjects, by = "person_id") |>
+    compute()
+  cdm$observation <- cdm$observation |>
+    inner_join(subjects, by = "person_id") |>
+    compute()
+  cdm$condition_occurrence <- cdm$condition_occurrence |>
+    inner_join(subjects, by = "person_id") |>
+    compute()
+  cdm$drug_exposure <- cdm$drug_exposure |>
+    inner_join(subjects, by = "person_id") |>
+    compute()
+  cdm$measurement <- cdm$measurement |>
+    inner_join(subjects, by = "person_id") |>
+    compute()
+  cdm$visit_occurrence <- cdm$visit_occurrence |>
+    inner_join(subjects, by = "person_id") |>
+    compute()
+  cdm$procedure_occurrence <- cdm$procedure_occurrence |>
+    inner_join(subjects, by = "person_id") |>
+    compute()
+}
+
 # Database snapshot:
 summariseOmopSnapshot(cdm) |>
   exportSummarisedResult(path = output_folder, fileName = paste0("cdm_snapshot_", cdmName(cdm), ".csv"))
@@ -47,15 +76,15 @@ if (runRiskSetSampling) {
       writePrefix = tolower(table_stem),
       cdmName = database_name,
       cohortTables = c(
-        "mother_table", "base", "covid_vaccines", "covid_vaccines_dose", "source_population", 
+        "mother_table", "base", "covid_vaccines", "covid_vaccines_dose", 
         "covid", "covariates_inf", "covariates_5", "other_vaccines",
         "covid_test", "aesi_90", "aesi_30", "aesi_inf", "nco", "covid_washout",
         "aesi_90_washout", "aesi_30_washout", "covid_vaccines_booster", "mae",
-        "mae_washout", "comedications"
+        "mae_washout", "comedications", "non_mrna_covid_vaccines",
+        "non_mrna_covid_vaccines", "source_population"
       ),
       .softValidation = TRUE
     )
-    
   }
   info(logger, "STEP 2 RISK SET SAMPLING ----")
   source(here("Analysis", "02_RiskSetSampling.R"))
@@ -70,11 +99,11 @@ if (runPSWeighting) {
       writePrefix = tolower(table_stem),
       cdmName = database_name,
       cohortTables = c(
-        "mother_table", "base", "covid_vaccines", "covid_vaccines_dose", "source_population", 
+        "mother_table", "base", "covid_vaccines", "covid_vaccines_dose", 
         "covid", "covariates_inf", "covariates_5", "other_vaccines",
         "covid_test", "aesi_90", "aesi_30", "aesi_inf", "nco", "covid_washout", 
-        "aesi_90_washout", "aesi_30_washout", "study_population", "study_population_nco",
-        "features", "mae", "comedications"
+        "aesi_90_washout", "aesi_30_washout", "study_population", 
+        "features", "mae", "comedications", "source_population"
       ),
       .softValidation = TRUE
     )
@@ -92,11 +121,11 @@ if (runOutcomeModel) {
       writePrefix = tolower(table_stem),
       cdmName = database_name,
       cohortTables = c(
-        "mother_table", "base", "covid_vaccines", "covid_vaccines_dose", "source_population", 
+        "mother_table", "base", "covid_vaccines", "covid_vaccines_dose", 
         "covid", "covariates_inf", "covariates_5", "other_vaccines",
         "covid_test", "aesi_90", "aesi_30", "aesi_inf", "nco", "covid_washout", 
-        "aesi_90_washout", "aesi_30_washout", "study_population", "study_population_nco",
-        "mae", "features", "comedications"
+        "aesi_90_washout", "aesi_30_washout", "study_population", 
+        "mae", "features", "comedications", "source_population"
       ),
       .softValidation = TRUE
     )
@@ -116,8 +145,8 @@ if (runBackgroundRates) {
       cdmName = database_name,
       cohortTables = c(
         "mother_table", "aesi_90", "aesi_30", "aesi_inf", "mae", "comedications",
-        "covariates_inf", "covariates_5", "other_vaccines",
-        "covid", "covid_test"
+        "covariates_inf", "covariates_5", "other_vaccines", 
+        "covid", "covid_test", "base", "thrombocytopenia", "aesi"
       ),
       .softValidation = TRUE
     )
