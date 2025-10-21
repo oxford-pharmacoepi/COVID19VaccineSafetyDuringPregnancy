@@ -21,7 +21,7 @@ cdm$pregnancy_denominator <- cdm$mother_table |>
   ) |>
   # Start in 2018 and end 9 months before end of data
   requireInDateRange(dateRange = c(as.Date("2018-01-01"), dataCutDate - lubridate::month(9))) %>% 
-
+  
   # Add postpartum dates
   mutate(
     postpartum_6_weeks = !!dateadd("pregnancy_end_date", 6*7),
@@ -113,7 +113,6 @@ cdm$preterm_labour_denominator <- getPretermDenominator(cdm$pregnancy_denominato
 cdm$postpartum_6_weeks_denominator <- getPostpartum6Denominator(cdm$pregnancy_denominator)
 cdm$postpartum_12_weeks_denominator <- getPostpartum12Denominator(cdm$pregnancy_denominator)
 cdm$maternal_death_denominator <- getMaternalDeathDenominator(cdm$pregnancy_denominator)
-
 
 ## AESI sensitivity wash-out ----
 cdm$thrombocytopenia_180 <- cdm$thrombocytopenia |>
@@ -494,7 +493,7 @@ info(logger, "- Get estimates")
 ir_aesi_30 <- estimateIncidenceRate(cdm$ir_aesi_30, strata, settings(cdm$aesi_30)$cohort_name)
 ir_aesi_inf <- estimateIncidenceRate(cdm$ir_aesi_inf, strata, settings(cdm$aesi_inf)$cohort_name)
 ir_aesi_90 <- estimateIncidenceRate(cdm$ir_aesi_90, strata, settings(cdm$aesi_90)$cohort_name)
-ir_aesi_180 <- estimateIncidenceRate(cdm$ir_aesi_90, strata, settings(cdm$aesi_180)$cohort_name)
+ir_aesi_180 <- estimateIncidenceRate(cdm$ir_aesi_180, strata, settings(cdm$aesi_180)$cohort_name)
 ir_mae <- estimateIncidenceRate(cdm$ir_mae, strata, c("antepartum_haemorrhage", "dysfunctional_labour", "eclampsia", "ectopic_pregnancy", "gestational_diabetes", "hellp", "preeclampsia"))
 ir_maternal_death <- estimateIncidenceRate(cdm$ir_maternal_death, strata, "maternal_death")
 ir_postpartum_endometritis <- estimateIncidenceRate(cdm$ir_postpartum_endometritis, strata, "postpartum_endometritis")

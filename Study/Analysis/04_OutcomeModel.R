@@ -166,7 +166,7 @@ for (endDate in c("postpartum_6_weeks", "postpartum_6_weeks_sensitivity")) {
 }
 
 ## Group 4: up to 12 weeks after pregnancy
-info(logger, "Get IRR for 12 weeks after pregnancy")
+info(logger, "  * Get IRR for 12 weeks after pregnancy")
 cdm$mea_postpartum_12 <- cdm$mae_outcome %>% 
   mutate(postpartum_12_weeks = !!dateadd("pregnancy_end_date", 12*7)) |>
   mutate(
@@ -190,7 +190,7 @@ maeResults <- omopgenerics::bind(maeResults)
 omopgenerics::bind(aesiResults, maeResults) |>
   exportSummarisedResult(fileName = paste0("outcome_risk_estimates_", cdmName(cdm), ".csv"), path = output_folder)
 
-## NCO (not weighted) ----
+# NCO (not weighted) ----
 info(logger, "- Negative Control Outcomes")
 cdm$study_population_nco <- cdm$study_population |>
   select(any_of(c(

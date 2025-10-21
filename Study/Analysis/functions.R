@@ -1826,14 +1826,11 @@ addSocioeconomicStatus <- function(cohort) {
       dplyr::compute(name = name, temporary = FALSE)
     
   } else if (grepl("SIDIAP", database)) {
-    # TODO
     cohort <- cohort |>
       left_join(
         cdm$observation |>
-          filter(observation_concept_id == xx) |>
-          mutate(
-          ) |>
-          select("subject_id" = "person_id", "socioeconomic_status"),
+          filter(observation_source_value == "medea") |>
+          select("subject_id" = "person_id", "socioeconomic_status" = "value_as_string"),
         by = "subject_id"
       ) |>
       mutate(socioeconomic_status = if_else(is.na(socioeconomic_status), "Missing", socioeconomic_status)) |>
@@ -1843,37 +1840,49 @@ addSocioeconomicStatus <- function(cohort) {
     values2020 <- cdm$observation |>
       filter(observation_concept_id == 4076114, year(observation_date) == 2020) |>
       pull(value_as_number)
-    quintiles <- c(quantile(values2020, 0.2), quantile(values2020, 0.4), quantile(values2020, 0.6), quantile(values2020, 0.8))
+    quintiles <- quantile(values2020, probs = c(0.2, 0.4, 0.6, 0.8), na.rm = TRUE)
+    q1 <- as.numeric(quintiles[[1]])
+    q2 <- as.numeric(quintiles[[2]])
+    q3 <- as.numeric(quintiles[[3]])
+    q4 <- as.numeric(quintiles[[4]])
     
+    # people who have both 2020 and 2021
+    tableSES <- cdm$observation |>
+      filter(
+        observation_concept_id == 4076114,
+        lubridate::year(observation_date) %in% c(2020, 2021)
+      ) |>
+      group_by(person_id) |>
+      mutate(has2020 = max(if_else(lubridate::year(observation_date) == 2020, 1L, 0L))) |>
+      filter(
+        (has2020 == 1 & year(observation_date) == 2020) |
+          (has2020 == 0 & year(observation_date) == 2021) # if has 2020, drop 2021, otherwise keep 2021
+      ) |>
+      mutate(
+        socioeconomic_status = case_when(
+          is.na(value_as_number) ~ "Missing",
+          value_as_number <= q1  ~ "Q1",
+          value_as_number <= q2  ~ "Q2",
+          value_as_number <= q3  ~ "Q3",
+          value_as_number <= q4  ~ "Q4",
+          value_as_number >  q4  ~ "Q5",
+          .default               = "Missing"
+        )
+      ) |>
+      select(subject_id = person_id, socioeconomic_status) |>
+      distinc() |>
+      compute()
+    
+    # add column
     cohort <- cohort |>
       left_join(
-        cdm$observation |>
-          filter(observation_concept_id == 4076114, year(observation_date) %in% 2020:2021) |>
-          group_by(subject_id) |>
-          mutate(
-            # identify people with records both in 2020 and 2021
-            drop = if_else(any(year(observation_date) == 2020) & any(year(observation_date) == 2021), TRUE, FALSE)
-          ) |>
-          ungroup() |>
-          # drop record 2021 for those who have both
-          filter(drop & year(observation_date) == 2021) |>
-          mutate(
-            socioeconomic_status = case_when(
-              value_as_number <= quintiles[1] ~ "Q1",
-              value_as_number <= quintiles[2] ~ "Q2",
-              value_as_number <= quintiles[3] ~ "Q3",
-              value_as_number <= quintiles[4] ~ "Q4",
-              value_as_number > quintiles[4] ~ "Q5",
-              .default = "Missing" 
-            )
-          ) |>
-          select("subject_id" = "person_id", "socioeconomic_status"),
+        tableSES,
         by = "subject_id"
       ) |>
       mutate(socioeconomic_status = if_else(is.na(socioeconomic_status), "Missing", socioeconomic_status)) |>
-      dplyr::compute(name = name, temporary = FALSE)
-    
+      compute(name = name, temporary = FALSE)
   }
+  
   return(cohort)
 }
 
@@ -1986,8 +1995,8 @@ getPostpartum6Denominator <- function(cohort) {
   cohort |>
     filter(pregnancy_outcome_study == "livebirth") |>
     mutate(
-      cohort_start_date = postpartum_6_weeks_start,
-      cohort_end_date = postpartum_6_weeks_end
+      cohort_start_date = postpartum_6_start,
+      cohort_end_date = postpartum_6_end
     ) |>
     compute(name = "postpartum_6_weeks_denominator", temporary = FALSE) |>
     recordCohortAttrition("Postpartum 6 weeks denominator") |>
@@ -2002,8 +2011,8 @@ getPostpartum12Denominator <- function(cohort) {
   cohort |>
     filter(pregnancy_outcome_study == "livebirth") |>
     mutate(
-      cohort_start_date = postpartum_12_weeks_start,
-      cohort_end_date = postpartum_12_weeks_end
+      cohort_start_date = postpartum_12_start,
+      cohort_end_date = postpartum_12_end
     ) |>
     compute(name = "postpartum_12_weeks_denominator", temporary = FALSE) |>
     recordCohortAttrition("Postpartum 12 weeks denominator") |>
