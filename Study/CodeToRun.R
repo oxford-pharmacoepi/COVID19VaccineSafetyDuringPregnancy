@@ -24,10 +24,9 @@ library(furrr)
 library(CohortSurvival)
 library(odbc)
 library(RPostgres)
-library(epitools)
 
 # Database name
-database_name <- ""
+database_name <- "..."
 
 # Connection details
 server_dbi <- Sys.getenv("...")
@@ -64,6 +63,7 @@ cdm <- cdmFromCon(
 mother_table_schema <- "..."
 mother_table_name <- "..."
 
+
 # minimum counts to report
 minimum_counts <- 5
 
@@ -71,16 +71,18 @@ minimum_counts <- 5
 results <- paste0("Results_", cdmName(cdm))
 
 # NCO/PCO run
-getNCO <- FALSE
-getPCO <- TRUE
+getNCO <- TRUE
 
 # Confidence Interval Method
-ci = "midp" # "boootstrap"
+ci = "boootstrap" 
+
+# Only subjects with primary care data in SCIFI-PEARL
+sensitvitySCIFIPEARL <- FALSE
 
 # Choose code to run
-runInstantiateCohorts <- TRUE
-runRiskSetSampling <- TRUE
-runPSWeighting <- TRUE
+runInstantiateCohorts <- FALSE
+runRiskSetSampling <- FALSE
+runPSWeighting <- FALSE
 runOutcomeModel <- TRUE
 runBackgroundRates <- TRUE
 runBRCharacteristics <- TRUE
