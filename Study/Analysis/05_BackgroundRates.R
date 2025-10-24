@@ -1,6 +1,6 @@
 # Cumulative incidence ----
 info(logger, "Cumulative incidence")
-## Prepare denominator ----
+# Prepare denominator ----
 info(logger, "- Prepare denominator")
 ### Pregnancy and postpartum denominator for CIF
 cdm$pregnancy_denominator <- cdm$mother_table |>
@@ -21,7 +21,7 @@ cdm$pregnancy_denominator <- cdm$mother_table |>
   ) |>
   # Start in 2018 and end 9 months before end of data
   requireInDateRange(dateRange = c(as.Date("2018-01-01"), dataCutDate - lubridate::month(9))) %>% 
-
+  
   # Add postpartum dates
   mutate(
     postpartum_6_weeks = !!dateadd("pregnancy_end_date", 6*7),
@@ -60,9 +60,13 @@ cdm$pregnancy_denominator <- cdm$mother_table |>
     trimester_1_start = cohort_start_date,
     trimester_2_start =  as.Date(!!dateadd("pregnancy_start_date", 91)),
     trimester_3_start = as.Date(!!dateadd("pregnancy_start_date", 181)),
+    postpartum_6_start = pregnancy_end_date,
+    postpartum_12_start = pregnancy_end_date,
     trimester_1_end = as.Date(!!dateadd("pregnancy_start_date", 90)),
     trimester_2_end =  as.Date(!!dateadd("pregnancy_start_date", 180)),
-    trimester_3_end = cohort_end_date
+    trimester_3_end = cohort_end_date,
+    postpartum_6_end = postpartum_6_weeks,
+    postpartum_12_end = postpartum_12_weeks
   ) |>
   mutate(
     trimester_2_start = if_else(trimester_2_start < pregnancy_end_date, trimester_2_start, NA),
@@ -110,8 +114,57 @@ cdm$postpartum_6_weeks_denominator <- getPostpartum6Denominator(cdm$pregnancy_de
 cdm$postpartum_12_weeks_denominator <- getPostpartum12Denominator(cdm$pregnancy_denominator)
 cdm$maternal_death_denominator <- getMaternalDeathDenominator(cdm$pregnancy_denominator)
 
+## AESI sensitivity wash-out ----
+cdm$thrombocytopenia_180 <- cdm$thrombocytopenia |>
+  padCohortEnd(days = 180, name = "thrombocytopenia_180")
+
+cdm$tts <- cdm$base |>
+  subsetCohorts(cohortId = "thrombosis", name = "tts") |>
+  padCohortEnd(days = 180) |>
+  requireCohortIntersect(
+    targetCohortTable = "thrombocytopenia_180",
+    targetEndDate = NULL,
+    window = c(-10, 10)
+  )
+cdm$tts  <- cdm$tts |>
+  newCohortTable(
+    cohortSetRef = settings(cdm$tts) |> mutate(cohort_name = "tts")
+  )
+
+cdm$aesi_180 <- cdm$base |>
+  subsetCohorts(
+    cohortId = c(
+      "myocardial_infarction", "ischaemic_stroke", "pulmonary_embolism",
+      "bells_palsy", "guillain_barre_syndrome", "transverse_myelitis",
+      "haemorrhagic_stroke", "encephalitis", "immune_thrombocytopenia",
+      "disseminated_intravascular_coagulation", "deep_vein_thrombosis",
+      "myocarditis_or_pericarditis"
+    ),
+    name = "aesi_180"
+  ) |>
+  padCohortEnd(days = 180)
+
+cdm$cnsi_180 <- cdm$base |>
+  subsetCohorts(
+    cohortId = c(
+      "bells_palsy", "encephalitis", "guillain_barre_syndrome", "transverse_myelitis"
+    ),
+    name = "cnsi_180"
+  ) |> unionCohorts(cohortName = "central_nervous_system_immune") |>
+  padCohortEnd(days = 180)
+
+cdm <- bind(cdm$aesi_180, cdm$cnsi_180, cdm$tts, name = "aesi_180")
+
+cdm$aesi_180 <- cdm$aesi_180 |>
+  newCohortTable(
+    cohortSetRef = settings(cdm$aesi_180) |> mutate(cohort_name = paste0(cohort_name, "_sensitvitiy"))
+  )
+
+cdm <- bind(cdm$aesi, cdm$aesi_180, name = "aesi")
+
+
 ## Summarise denominators ----
-info(logger, "- Summarise denominator cohorts")
+info(logger, "- Summarise cohorts")
 cdm <- bind(
   cdm$pregnancy_denominator, 
   cdm$miscarriage_denominator, 
@@ -125,9 +178,7 @@ cdm <- bind(
 bind(
   summaryCohort(cdm$denominator), 
   summaryCohort(cdm$mother_table), 
-  summaryCohort(cdm$aesi_90), 
-  summaryCohort(cdm$aesi_30), 
-  summaryCohort(cdm$aesi_inf), 
+  summaryCohort(cdm$aesi), 
   summaryCohort(cdm$mae), 
   summaryCohort(cdm$comedications), 
   summaryCohort(cdm$covariates_inf),
@@ -136,7 +187,13 @@ bind(
 ) |>
   exportSummarisedResult(path = output_folder, fileName = paste0("cohort_summary_br_", cdmName(cdm), ".csv"))
 
-## Estimate cumulative incidence ----
+bind(
+  cohortCodeUseFromCohort(cdm$aesi),
+  cohortCodeUseFromCohort(cdm$mae)
+) |>
+  exportSummarisedResult(path = output_folder, fileName = paste0("cohort_code_use_br_", cdmName(cdm), ".csv"))
+
+# Estimate cumulative incidence ----
 info(logger, "- Estimate cumulative incidence")
 ### AESI
 cif_aesi_30 <- estimateSingleEventSurvival(
@@ -155,6 +212,14 @@ cif_aesi_90 <- estimateSingleEventSurvival(
   censorOnCohortExit = TRUE,
   strata = strata
 )
+cif_aesi_180 <- estimateSingleEventSurvival(
+  cdm = cdm,
+  targetCohortTable = "pregnancy_denominator",
+  outcomeCohortTable = "aesi_180",
+  outcomeWashout = 180,
+  censorOnCohortExit = TRUE,
+  strata = strata
+)
 cif_aesi_inf <- estimateSingleEventSurvival(
   cdm = cdm,
   targetCohortTable = "pregnancy_denominator",
@@ -165,7 +230,7 @@ cif_aesi_inf <- estimateSingleEventSurvival(
 )
 ### MAE pregnancy
 maePregnancy <- c(
-  "miscarriage", "stillbirth", "antepartum_haemorrhage", 
+  "miscarriage", "miscarriage_codelist", "stillbirth", "antepartum_haemorrhage", 
   "dysfunctional_labour", "eclampsia", "ectopic_pregnancy", 
   "gestational_diabetes", "hellp", "preeclampsia", "preterm_labour"
 )
@@ -209,8 +274,8 @@ cif_mae_maternal_death <- estimateSingleEventSurvival(
 
 ## Export CIF ----
 exportSummarisedResult(
-  cif_aesi_30, cif_aesi_90, cif_aesi_inf, cif_mae_pregnancy, cif_mae_postpartum_6,
-  cif_mae_postpartum_12,
+  cif_aesi_30, cif_aesi_90, cif_aesi_180, cif_aesi_inf, cif_mae_pregnancy, 
+  cif_mae_postpartum_6, cif_mae_postpartum_12,
   path = output_folder,
   fileName = paste0("cumulative_incidence_", cdmName(cdm), ".csv")
 )
@@ -288,6 +353,29 @@ cdm$ir_aesi_90 <- cdm$pregnancy_denominator |>
   ) |>
   getTimeToEvent(washOut = 90, outcomes = settings(cdm$aesi_90)$cohort_name)
 
+### AESI 180
+cdm$ir_aesi_180 <- cdm$pregnancy_denominator |>
+  addCohortIntersectDate(
+    targetCohortTable = "aesi_180",
+    indexDate = "cohort_start_date",
+    censorDate = "cohort_end_date",
+    targetDate = "cohort_start_date",
+    order = "first",
+    window = c(0, Inf),
+    nameStyle = "{cohort_name}",
+    name = "ir_aesi_180"
+  ) |>
+  addCohortIntersectDate(
+    targetCohortTable = "aesi_180",
+    indexDate = "cohort_start_date",
+    targetDate = "cohort_start_date",
+    order = "last",
+    window = c(-180, 0),
+    nameStyle = "prior_{cohort_name}",
+    name = "ir_aesi_180"
+  ) |>
+  getTimeToEvent(washOut = 180, outcomes = settings(cdm$aesi_180)$cohort_name)
+
 ### MAE 
 cdm$ir_mae <- cdm$pregnancy_denominator |>
   addCohortIntersectDate(
@@ -352,11 +440,11 @@ cdm$ir_postpartum_haemorrhage <- cdm$postpartum_12_weeks_denominator |>
   getTimeToEvent(washOut = 0,  outcomes = c("postpartum_haemorrhage"))
 
 ### Miscarriage
-if ("miscarriage" %in% settings(cdm$mae)$cohort_name) {
+if (grepl("miscarriage", settings(cdm$mae)$cohort_name)) {
   cdm$ir_miscarriage <- cdm$miscarriage_denominator |>
     addCohortIntersectDate(
       targetCohortTable = "mae",
-      targetCohortId = c("miscarriage"),
+      targetCohortId = c("miscarriage", "miscarriage_codelist"),
       indexDate = "cohort_start_date",
       censorDate = "cohort_end_date",
       targetDate = "cohort_start_date",
@@ -365,7 +453,7 @@ if ("miscarriage" %in% settings(cdm$mae)$cohort_name) {
       nameStyle = "{cohort_name}",
       name = "ir_miscarriage"
     ) |>
-    getTimeToEvent(washOut = 0,  outcomes = c("miscarriage"))
+    getTimeToEvent(washOut = 0,  outcomes = c("miscarriage", "miscarriage_codelist"))
 }
 
 ### Stillbirth
@@ -405,13 +493,14 @@ info(logger, "- Get estimates")
 ir_aesi_30 <- estimateIncidenceRate(cdm$ir_aesi_30, strata, settings(cdm$aesi_30)$cohort_name)
 ir_aesi_inf <- estimateIncidenceRate(cdm$ir_aesi_inf, strata, settings(cdm$aesi_inf)$cohort_name)
 ir_aesi_90 <- estimateIncidenceRate(cdm$ir_aesi_90, strata, settings(cdm$aesi_90)$cohort_name)
+ir_aesi_180 <- estimateIncidenceRate(cdm$ir_aesi_180, strata, settings(cdm$aesi_180)$cohort_name)
 ir_mae <- estimateIncidenceRate(cdm$ir_mae, strata, c("antepartum_haemorrhage", "dysfunctional_labour", "eclampsia", "ectopic_pregnancy", "gestational_diabetes", "hellp", "preeclampsia"))
 ir_maternal_death <- estimateIncidenceRate(cdm$ir_maternal_death, strata, "maternal_death")
 ir_postpartum_endometritis <- estimateIncidenceRate(cdm$ir_postpartum_endometritis, strata, "postpartum_endometritis")
 ir_postpartum_haemorrhage <- estimateIncidenceRate(cdm$ir_postpartum_haemorrhage, strata, "postpartum_haemorrhage")
 ir_preterm_labour <- estimateIncidenceRate(cdm$ir_preterm_labour, strata, "preterm_labour")
-if ("miscarriage" %in% settings(cdm$mae)$cohort_name) {
-  ir_miscarriage <- estimateIncidenceRate(cdm$ir_miscarriage, strata, "miscarriage")
+if (grepl("miscarriage", settings(cdm$mae)$cohort_name)) {
+  ir_miscarriage <- estimateIncidenceRate(cdm$ir_miscarriage, strata, c("miscarriage", "miscarriage_codelist"))
 } else {
   ir_miscarriage <- NULL
 }
@@ -423,7 +512,7 @@ if ("stillbirth" %in% settings(cdm$mae)$cohort_name) {
 
 ## Export IR ----
 exportSummarisedResult(
-  ir_aesi_30, ir_aesi_90, ir_aesi_inf, ir_mae, ir_maternal_death,
+  ir_aesi_30, ir_aesi_90, ir_aesi_180, ir_aesi_inf, ir_mae, ir_maternal_death,
   ir_postpartum_endometritis, ir_postpartum_haemorrhage, ir_preterm_labour,
   ir_miscarriage, ir_stillbirth, 
   path = output_folder,

@@ -5,6 +5,7 @@ cdm$mother_table <- getPregnantCohort(db, cdm, mother_table_schema, mother_table
 # read codes
 info(logger, "- Base cohort")
 csvs <- list.files(here("Codelists"))
+csvs <- csvs[csvs != "largeScaleSMD.csv"]
 codes <- NULL
 for (csv in csvs) {
   if (csv == "nco.csv") {
@@ -65,6 +66,16 @@ cdm$covid_vaccines_dose <- cdm$covid_vaccines |>
   ungroup() |>
   distinct() |>
   compute(name = "covid_vaccines_dose", temporary = FALSE)
+
+cdm$non_mrna_covid_vaccines <- cdm$covid_vaccines_dose |>
+  filter(vaccine_brand %in% c("other", "unkown")) |>
+  mutate(cohort_definition_id = 1L) |>
+  compute(name = "non_mrna_covid_vaccines", temporary = FALSE) |>
+  newCohortTable(
+    cohortSetRef = tibble(cohort_definition_id = 1L, cohort_name = "non_mrna_covid_vaccines"), 
+    cohortAttritionRef = NULL, 
+    cohortCodelistRef = NULL
+  ) 
 
 cdm$covid_vaccines_booster <- unionCohorts(
   cdm$covid_vaccines_dose,
@@ -193,14 +204,16 @@ cdm$platelet_measurement <- measurementCohort(
 cdm$thrombocytopenia <- cdm$base |> subsetCohorts("thrombocytopenia", "thrombocytopenia")
 cdm <- bind(cdm$platelet_measurement, cdm$thrombocytopenia, name = "thrombocytopenia")
 cdm$thrombocytopenia <- cdm$thrombocytopenia|>
-  unionCohorts(cohortName = "thrombocytopenia") |>
-  padCohortEnd(days = 90)
+  unionCohorts(cohortName = "thrombocytopenia") 
+
+cdm$thrombocytopenia_90 <- cdm$thrombocytopenia |>
+  padCohortEnd(days = 90, name = "thrombocytopenia_90")
 
 cdm$tts <- cdm$base |>
   subsetCohorts(cohortId = "thrombosis", name = "tts") |>
   padCohortEnd(days = 90) |>
   requireCohortIntersect(
-    targetCohortTable = "thrombocytopenia",
+    targetCohortTable = "thrombocytopenia_90",
     targetEndDate = NULL,
     window = c(-10, 10)
   )
@@ -233,7 +246,7 @@ cdm$cnsi_90 <- cdm$base |>
   ) |> unionCohorts(cohortName = "central_nervous_system_immune") |>
   padCohortEnd(days = 90)
 
-cdm <- bind(cdm$aesi_90, cdm$cnsi_90, name = "aesi_90")
+cdm <- bind(cdm$aesi_90, cdm$cnsi_90, cdm$tts, name = "aesi_90")
 
 ## AESI recurrent
 info(logger, "  - Recurrent")
@@ -246,6 +259,8 @@ info(logger, "  - Chronic")
 cdm$aesi_inf <- cdm$base |>
   subsetCohorts(cohortId = "narcolepsy", name = "aesi_inf") |>
   exitAtObservationEnd()
+
+cdm <- bind(cdm$aesi_30, cdm$aesi_90, cdm$aesi_inf, name = "aesi")
 
 # MAE ----
 info(logger, "- MAE from OMOP tables")
@@ -307,11 +322,17 @@ cdm$mae_postpartum_12weeks <- cdm$base |>
     name = "mae_postpartum_12weeks"
   ) |>
   startsInPregnancy(start = "pregnancy_end_date", end = "end_12", reason = "In the firsts 12 weeks postpartum")
+cdm$mae_miscarriage <- cdm$base |>
+  subsetCohorts(
+    cohortId = "miscarriage_codelist",
+    name = "mae_miscarriage"
+  ) |>
+  startsInPregnancy(start = "pregnancy_end_date", end = "pregnancy_end_date", reason = "In pregnancy end date")
 
 # Bind all
 cdm <- bind(
   cdm$mae_pregnancy, cdm$mae_postpartum_6weeks, cdm$mae_postpartum_12weeks,
-  cdm$maternal_death, cdm$mae_omop, name = "mae"
+  cdm$maternal_death, cdm$mae_omop, cdm$mae_miscarriage, name = "mae"
 )
 
 # NCO ----
@@ -341,9 +362,10 @@ cdm$mae_washout <- cdm$mae_pregnancy |>
 # Export cohort counts ----
 bind(
   summaryCohort(cdm$nco), summaryCohort(cdm$covariates_5),
-  summaryCohort(cdm$covariates_inf), summaryCohort(cdm$covid), summaryCohort(cdm$covid_vaccines),
-  summaryCohort(cdm$covid_vaccines_dose), summaryCohort(cdm$aesi_30), summaryCohort(cdm$aesi_90),
-  summaryCohort(cdm$aesi_inf), summaryCohort(cdm$other_vaccines), summaryCohort(cdm$source_population),
-  summaryCohort(cdm$mother_table), summaryCohort(cdm$mae)
+  summaryCohort(cdm$covariates_inf), summaryCohort(cdm$covid), 
+  summaryCohort(cdm$covid_vaccines), summaryCohort(cdm$other_vaccines), 
+  summaryCohort(cdm$covid_vaccines_dose), summaryCohort(cdm$aesi), 
+  summaryCohort(cdm$source_population), summaryCohort(cdm$mae),
+  summaryCohort(cdm$mother_table)
 ) |>
   exportSummarisedResult(path = output_folder, fileName = paste0("cohort_summary_base_", cdmName(cdm), ".csv"))

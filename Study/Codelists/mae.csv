@@ -13,7 +13,7 @@ antepartum_haemorrhage,438203,Antepartum hemorrhage with coagulation defect - no
 antepartum_haemorrhage,4129031,Antepartum hemorrhage with hyperfibrinolysis,NA
 antepartum_haemorrhage,4034091,Antepartum hemorrhage with hypofibrinogenemia,NA
 antepartum_haemorrhage,4143074,"Antepartum hemorrhage, abruptio placentae and placenta previa",NA
-antepartum_haemorrhage,3404588,Concealed accidental hemorrhage,NA
+antepartum_haemorrhage,3404588,ConcealedÂ accidentalÂ hemorrhage,NA
 antepartum_haemorrhage,193535,Fetal-maternal hemorrhage - delivered,NA
 antepartum_haemorrhage,196757,Fetal-maternal hemorrhage with antenatal problem,NA
 antepartum_haemorrhage,3657563,First trimester bleeding,NA
@@ -22,9 +22,10 @@ antepartum_haemorrhage,4025198,Hemorrhagic complication of pregnancy,NA
 antepartum_haemorrhage,4129827,Indeterminate antepartum hemorrhage,NA
 antepartum_haemorrhage,193264,Placenta previa with hemorrhage - delivered,NA
 antepartum_haemorrhage,200149,Placenta previa with hemorrhage - not delivered,NA
-antepartum_haemorrhage,4327745,Second trimester bleeding,NA
-antepartum_haemorrhage,4142581,Third trimester bleeding,NA
+antepartum_haemorrhage,4327745,SecondÂ trimesterÂ bleeding,NA
+antepartum_haemorrhage,4142581,ThirdÂ trimesterÂ bleeding,NA
 antepartum_haemorrhage,37109810,Vaginal bleeding complicating early pregnancy,NA
+antepartum_haemorrhage,196751,Placenta previa with hemorrhage,NA
 dysfunctional_labour,42536563,Obstructed labor due to shoulder dystocia,NA
 dysfunctional_labour,72377,Shoulder girdle dystocia,NA
 dysfunctional_labour,75608,Shoulder dystocia with antenatal problem,NA
@@ -115,21 +116,21 @@ dysfunctional_labour,44784536,Deep transverse arrest with persistent occipitopos
 dysfunctional_labour,72700,Locked twins with antenatal problem,NA
 dysfunctional_labour,442422,Locked twins - delivered,NA
 dysfunctional_labour,444386,Interlocked twins,NA
-eclampsia,4116344,Eclampsia in puerperium,NA
+dysfunctional_labour,437342,Abnormality of forces of labor,NA
+eclampsia,4116344,EclampsiaÂ inÂ puerperium,NA
 eclampsia,443700,Eclampsia,NA
-eclampsia,133816,Eclampsia - delivered,NA
-eclampsia,4062550,Pre-eclampsia or eclampsia with pre-existing hypertension with postnatal complication,NA
-eclampsia,134414,Pre-eclampsia or eclampsia with pre-existing hypertension - delivered with postnatal complication,NA
-eclampsia,42537548,Nephropathy following eclampsia,NA
-eclampsia,141084,Pre-eclampsia or eclampsia with pre-existing hypertension,NA
-eclampsia,4058536,Eclampsia with postnatal complication,NA
-eclampsia,4289142,Eclampsia added to pre-existing hypertension,NA
-eclampsia,138811,Eclampsia - delivered with postnatal complication,NA
-eclampsia,137613,Eclampsia in pregnancy,NA
-eclampsia,4034096,Eclampsia in labor,NA
-eclampsia,45757119,Eclampsia with pre-existing hypertension in childbirth,NA
-eclampsia,135601,Pre-eclampsia or eclampsia with pre-existing hypertension - delivered,NA
-eclampsia,136743,Pre-eclampsia or eclampsia with pre-existing hypertension - not delivered,NA
+eclampsia,133816,EclampsiaÂ -Â delivered,NA
+eclampsia,4062550,Pre-eclampsiaÂ orÂ eclampsiaÂ withÂ pre-existingÂ hypertensionÂ withÂ postnatalÂ complication,NA
+eclampsia,134414,Pre-eclampsiaÂ orÂ eclampsiaÂ withÂ pre-existingÂ hypertensionÂ -Â deliveredÂ withÂ postnatalÂ complication,NA
+eclampsia,42537548,NephropathyÂ followingÂ eclampsia,NA
+eclampsia,4058536,EclampsiaÂ withÂ postnatalÂ complication,NA
+eclampsia,4289142,EclampsiaÂ addedÂ toÂ pre-existingÂ hypertension,NA
+eclampsia,138811,EclampsiaÂ -Â deliveredÂ withÂ postnatalÂ complication,NA
+eclampsia,137613,EclampsiaÂ inÂ pregnancy,NA
+eclampsia,4034096,EclampsiaÂ inÂ labor,NA
+eclampsia,45757119,EclampsiaÂ withÂ pre-existingÂ hypertensionÂ inÂ childbirth,NA
+eclampsia,135601,Pre-eclampsiaÂ orÂ eclampsiaÂ withÂ pre-existingÂ hypertensionÂ -Â delivered,NA
+eclampsia,136743,Pre-eclampsiaÂ orÂ eclampsiaÂ withÂ pre-existingÂ hypertensionÂ -Â notÂ delivered,NA
 ectopic_pregnancy,37203955,Intramural ectopic pregnancy of myometrium,NA
 ectopic_pregnancy,37209653,Ectopic pregnancy of left ovary,NA
 ectopic_pregnancy,37209654,Ectopic pregnancy of right ovary,NA
@@ -251,39 +252,39 @@ postpartum_endometritis,4031820,Acute endomyometritis,NA
 postpartum_endometritis,4339120,Endomyometritis,NA
 postpartum_endometritis,4061204,Subacute endomyometritis,NA
 postpartum_endometritis,42536672,Pyometra co-occurrent and due to acute inflammatory disease of uterus,NA
-postpartum_endometritis,193699,Chronic gonococcal endometritis,NA
-postpartum_endometritis,4061203,Subacute endometritis,NA
-postpartum_endometritis,4065749,Puerperal endometritis - delivered with postnatal complication,NA
-postpartum_endometritis,200040,Acute gonococcal endometritis,NA
-postpartum_endometritis,4327175,Decidual endometritis,NA
-postpartum_endometritis,4061204,Subacute endomyometritis,NA
-postpartum_endometritis,4066014,Endometritis following molar AND/OR ectopic pregnancy,NA
-postpartum_endometritis,4328870,Puerperal endometritis,NA
-postpartum_endometritis,4031820,Acute endomyometritis,NA
-postpartum_endometritis,4061463,Puerperal endometritis with postnatal complication,NA
-postpartum_endometritis,4128047,Gonococcal endometritis,NA
+postpartum_endometritis,193699,ChronicÂ gonococcalÂ endometritis,NA
+postpartum_endometritis,4061203,SubacuteÂ endometritis,NA
+postpartum_endometritis,4065749,PuerperalÂ endometritisÂ -Â deliveredÂ withÂ postnatalÂ complication,NA
+postpartum_endometritis,200040,AcuteÂ gonococcalÂ endometritis,NA
+postpartum_endometritis,4327175,DecidualÂ endometritis,NA
+postpartum_endometritis,4061204,SubacuteÂ endomyometritis,NA
+postpartum_endometritis,4066014,EndometritisÂ followingÂ molarÂ AND/ORÂ ectopicÂ pregnancy,NA
+postpartum_endometritis,4328870,PuerperalÂ endometritis,NA
+postpartum_endometritis,4031820,AcuteÂ endomyometritis,NA
+postpartum_endometritis,4061463,PuerperalÂ endometritisÂ withÂ postnatalÂ complication,NA
+postpartum_endometritis,4128047,GonococcalÂ endometritis,NA
 postpartum_endometritis,4302765,Endometritis,NA
-postpartum_endometritis,45765708,Acute on chronic endometritis,NA
+postpartum_endometritis,45765708,AcuteÂ onÂ chronicÂ endometritis,NA
 postpartum_endometritis,4339120,Endomyometritis,NA
-postpartum_endometritis,4122172,"Endometritis, excluding cervix",NA
-postpartum_endometritis,4194612,Acute endometritis,NA
-postpartum_haemorrhage,37394499,Minor postpartum haemorrhage,NA
-postpartum_haemorrhage,37394500,Major postpartum haemorrhage,NA
-postpartum_haemorrhage,37108740,Postpartum hemorrhage due to total placenta previa,NA
-postpartum_haemorrhage,37110289,Postpartum hemorrhage co-occurrent and due to uterine rupture following obstructed labor,NA
-postpartum_haemorrhage,194109,Delayed AND/OR secondary postpartum hemorrhage,NA
-postpartum_haemorrhage,196488,Atonic postpartum hemorrhage,NA
-postpartum_haemorrhage,443929,Postpartum hemorrhage,NA
-postpartum_haemorrhage,4006327,Postpartum afibrinogenemia with hemorrhage,NA
-postpartum_haemorrhage,4065618,Secondary postpartum hemorrhage - delivered with postnatal problem,NA
-postpartum_haemorrhage,4169890,Postpartum coagulation defect with hemorrhage,NA
-postpartum_haemorrhage,4266066,Postpartum fibrinolysis with hemorrhage,NA
-postpartum_haemorrhage,4194998,"Retained products of conception, following delivery with hemorrhage",NA
-postpartum_haemorrhage,46274097,Compression suturing of uterus for atonic postpartum hemorrhage,NA
-postpartum_haemorrhage,4127264,Surgical control of postpartum hemorrhage,NA
-postpartum_haemorrhage,4169003,Pack to control postpartum hemorrhage,NA
-postpartum_haemorrhage,606891,Postpartum hemorrhage with retained placenta,NA
-postpartum_haemorrhage,4298174,Bleeding reduction: postpartum uterus,NA
+postpartum_endometritis,4122172,"Endometritis,Â excludingÂ cervix",NA
+postpartum_endometritis,4194612,AcuteÂ endometritis,NA
+postpartum_haemorrhage,37394499,MinorÂ postpartumÂ haemorrhage,NA
+postpartum_haemorrhage,37394500,MajorÂ postpartumÂ haemorrhage,NA
+postpartum_haemorrhage,37108740,PostpartumÂ hemorrhageÂ dueÂ toÂ totalÂ placentaÂ previa,NA
+postpartum_haemorrhage,37110289,PostpartumÂ hemorrhageÂ co-occurrentÂ andÂ dueÂ toÂ uterineÂ ruptureÂ followingÂ obstructedÂ labor,NA
+postpartum_haemorrhage,194109,DelayedÂ AND/ORÂ secondaryÂ postpartumÂ hemorrhage,NA
+postpartum_haemorrhage,196488,AtonicÂ postpartumÂ hemorrhage,NA
+postpartum_haemorrhage,443929,PostpartumÂ hemorrhage,NA
+postpartum_haemorrhage,4006327,PostpartumÂ afibrinogenemiaÂ withÂ hemorrhage,NA
+postpartum_haemorrhage,4065618,SecondaryÂ postpartumÂ hemorrhageÂ -Â deliveredÂ withÂ postnatalÂ problem,NA
+postpartum_haemorrhage,4169890,PostpartumÂ coagulationÂ defectÂ withÂ hemorrhage,NA
+postpartum_haemorrhage,4266066,PostpartumÂ fibrinolysisÂ withÂ hemorrhage,NA
+postpartum_haemorrhage,4194998,"RetainedÂ productsÂ ofÂ conception,Â followingÂ deliveryÂ withÂ hemorrhage",NA
+postpartum_haemorrhage,46274097,CompressionÂ suturingÂ ofÂ uterusÂ forÂ atonicÂ postpartumÂ hemorrhage,NA
+postpartum_haemorrhage,4127264,SurgicalÂ controlÂ ofÂ postpartumÂ hemorrhage,NA
+postpartum_haemorrhage,4169003,PackÂ toÂ controlÂ postpartumÂ hemorrhage,NA
+postpartum_haemorrhage,606891,PostpartumÂ hemorrhageÂ withÂ retainedÂ placenta,NA
+postpartum_haemorrhage,4298174,BleedingÂ reduction:Â postpartumÂ uterus,NA
 preeclampsia,4057976,Severe pre-eclampsia with postnatal complication,NA
 preeclampsia,438490,Severe pre-eclampsia - delivered,NA
 preeclampsia,132685,Severe pre-eclampsia - not delivered,NA
@@ -335,3 +336,110 @@ postpartum_haemorrhage,4129157,Passing large clots vaginally,NA
 postpartum_haemorrhage,44806343,Minimal vaginal blood loss,NA
 postpartum_haemorrhage,4195179,Abnormal uterine bleeding unrelated to menstrual cycle,NA
 postpartum_haemorrhage,4169954,Genitourinary tract hemorrhage,NA
+miscarriage_codelist,193820,Miscarriage complicated by renal failure,S
+miscarriage_codelist,46269812,Cardiac arrest due to miscarriage,S
+miscarriage_codelist,435318,Complete miscarriage with genital tract or pelvic infection,S
+miscarriage_codelist,42535215,Incomplete spontaneous abortion due to hemorrhage,S
+miscarriage_codelist,4189350,Miscarriage with salpingo-oophoritis,S
+miscarriage_codelist,4278107,Miscarriage with fat embolism,S
+miscarriage_codelist,42537769,Disorder of vein following miscarriage,S
+miscarriage_codelist,4001856,Miscarriage with renal tubular necrosis,S
+miscarriage_codelist,4047775,Miscarriage with cerebral anoxia,S
+miscarriage_codelist,4168445,Miscarriage with postoperative shock,S
+miscarriage_codelist,4209126,Miscarriage with blood-clot embolism,S
+miscarriage_codelist,4195406,Miscarriage with salpingitis,S
+miscarriage_codelist,46274066,Cardiac arrest due to incomplete miscarriage,S
+miscarriage_codelist,432682,Complete miscarriage with delayed or excessive hemorrhage,S
+miscarriage_codelist,4146774,Complete inevitable miscarriage without complication,S
+miscarriage_codelist,4178154,Multiple pregnancy with one fetal loss,S
+miscarriage_codelist,4170457,Miscarriage with heavy bleeding,S
+miscarriage_codelist,441348,Miscarriage complicated by metabolic disorder,S
+miscarriage_codelist,40318618,Complete miscarriage,S
+miscarriage_codelist,44783770,Miscarriage care,S
+miscarriage_codelist,4217670,Miscarriage with oliguria,S
+miscarriage_codelist,4006806,Miscarriage with uremia,S
+miscarriage_codelist,4146772,Inevitable miscarriage complete,S
+miscarriage_codelist,42872817,Notification of miscarriage,S
+miscarriage_codelist,4200070,Miscarriage with perforation of periurethral tissue,S
+miscarriage_codelist,46269813,Urinary tract infection due to incomplete miscarriage,S
+miscarriage_codelist,437933,Incomplete miscarriage with damage to pelvic organs or tissues,S
+miscarriage_codelist,439085,Complete inevitable miscarriage complicated by delayed or excessive hemorrhage,S
+miscarriage_codelist,192678,Miscarriage complicated by damage to pelvic organs and/or tissues,S
+miscarriage_codelist,4274315,Miscarriage with electrolyte imbalance,S
+miscarriage_codelist,436742,Complete miscarriage with renal failure,S
+miscarriage_codelist,432689,Incomplete miscarriage with metabolic disorder,S
+miscarriage_codelist,4114280,"Readmission for retained products of conception, spontaneous abortion",S
+miscarriage_codelist,4224597,Miscarriage with acute necrosis of liver,S
+miscarriage_codelist,4216342,Miscarriage with perforation of bowel,S
+miscarriage_codelist,4310654,Miscarriage with perforation of bladder,S
+miscarriage_codelist,4313166,Miscarriage with pelvic peritonitis,S
+miscarriage_codelist,4238207,Listeria miscarriage,S
+miscarriage_codelist,4302162,Miscarriage with laceration of uterus,S
+miscarriage_codelist,437045,Incomplete miscarriage with embolism,S
+miscarriage_codelist,438805,Complete miscarriage with shock,S
+miscarriage_codelist,4170121,Retained products after miscarriage,S
+miscarriage_codelist,4041728,Miscarriage with laceration of bowel,S
+miscarriage_codelist,4285746,Miscarriage with sepsis,S
+miscarriage_codelist,441910,Complete miscarriage with damage to pelvic organs or tissues,S
+miscarriage_codelist,438211,Incomplete inevitable miscarriage complicated by delayed or excessive hemorrhage,S
+miscarriage_codelist,4179796,Miscarriage with defibrination syndrome,S
+miscarriage_codelist,4180568,Miscarriage with intravascular hemolysis,S
+miscarriage_codelist,609181,Miscarriage of left tubal ectopic pregnancy,S
+miscarriage_codelist,3004718,[#] Abortions.spontaneous,S
+miscarriage_codelist,43530979,Miscarriage of tubal ectopic pregnancy,S
+miscarriage_codelist,4003276,Miscarriage with amniotic fluid embolism,S
+miscarriage_codelist,437618,Incomplete inevitable miscarriage complicated by genital tract and pelvic infection,S
+miscarriage_codelist,4175137,Miscarriage with cardiac arrest and/or cardiac failure,S
+miscarriage_codelist,4211863,Miscarriage with acute renal failure,S
+miscarriage_codelist,4067106,Miscarriage,S
+miscarriage_codelist,435000,Complete miscarriage with metabolic disorder,S
+miscarriage_codelist,4064536,Miscarriage with afibrinogenemia,S
+miscarriage_codelist,441921,Complete inevitable miscarriage complicated by genital tract and pelvic infection,S
+miscarriage_codelist,436748,Incomplete inevitable miscarriage complicated by embolism,S
+miscarriage_codelist,4244261,Miscarriage with septic embolism,S
+miscarriage_codelist,4244408,Inevitable miscarriage,S
+miscarriage_codelist,45757730,Quadruplet pregnancy with loss of one or more fetuses,S
+miscarriage_codelist,4149423,Miscarriage with endometritis,S
+miscarriage_codelist,434413,Incomplete miscarriage with complication,S
+miscarriage_codelist,4261327,Miscarriage with laceration of periurethral tissue,S
+miscarriage_codelist,4167685,Miscarriage in third trimester,S
+miscarriage_codelist,4031837,Miscarriage with perforation of broad ligament,S
+miscarriage_codelist,4033096,Miscarriage with urinary tract infection,S
+miscarriage_codelist,40318617,Incomplete miscarriage,S
+miscarriage_codelist,4051244,Miscarriage due to Leptospira,S
+miscarriage_codelist,4247270,Miscarriage with air embolism,S
+miscarriage_codelist,4321536,Fetal demise from miscarriage,S
+miscarriage_codelist,4253804,Miscarriage with perforation of cervix,S
+miscarriage_codelist,45757198,Sepsis due to incomplete miscarriage,S
+miscarriage_codelist,4194113,Miscarriage with laceration of bladder,S
+miscarriage_codelist,439688,Incomplete miscarriage with renal failure,S
+miscarriage_codelist,441631,Incomplete miscarriage with shock,S
+miscarriage_codelist,194704,Miscarriage complicated by embolism,S
+miscarriage_codelist,4311698,Miscarriage with laceration of vagina,S
+miscarriage_codelist,4049891,Miscarriage with perforation of uterus,S
+miscarriage_codelist,4085627,Miscarriage with septic shock,S
+miscarriage_codelist,440460,Incomplete miscarriage with delayed or excessive hemorrhage,S
+miscarriage_codelist,4146773,Inevitable miscarriage incomplete,S
+miscarriage_codelist,4219469,Miscarriage with pulmonary embolism,S
+miscarriage_codelist,4224646,Miscarriage in second trimester,S
+miscarriage_codelist,4339107,Miscarriage with perforation of vagina,S
+miscarriage_codelist,4130670,Miscarriage with laceration of cervix,S
+miscarriage_codelist,4078393,Miscarriage in first trimester,S
+miscarriage_codelist,195317,Incomplete miscarriage with genital tract or pelvic infection,S
+miscarriage_codelist,441632,Complete miscarriage with embolism,S
+miscarriage_codelist,441629,Complete inevitable miscarriage complicated by embolism,S
+miscarriage_codelist,4323612,Miscarriage due to Brucella abortus,S
+miscarriage_codelist,4309780,Miscarriage with laceration of broad ligament,S
+miscarriage_codelist,76482,Missed miscarriage,S
+miscarriage_codelist,609182,Miscarriage of right tubal ectopic pregnancy,S
+miscarriage_codelist,46269746,Female genital tract infection due to complete miscarriage,S
+miscarriage_codelist,196746,Miscarriage complicated by shock,S
+miscarriage_codelist,434094,Miscarriage with complication,S
+miscarriage_codelist,4146775,Incomplete inevitable miscarriage without complication,S
+miscarriage_codelist,4221853,Miscarriage with parametritis,S
+miscarriage_codelist,42537759,Delayed hemorrhage due to and following miscarriage,S
+miscarriage_codelist,45757769,Continuing triplet pregnancy after spontaneous abortion of one or more fetuses,S
+miscarriage_codelist,437920,Miscarriage complicated by genital-pelvic infection,S
+miscarriage_codelist,436176,Miscarriage without complication,S
+miscarriage_codelist,441647,Continuing pregnancy after intrauterine death of twin fetus,S
+miscarriage_codelist,43020670,Continuing pregnancy after intrauterine death of one twin with intrauterine retention of dead twin,S

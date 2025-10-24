@@ -145,9 +145,9 @@ ischaemic_stroke,4045737,Pure motor lacunar infarction,S
 ischaemic_stroke,4146185,Right sided cerebral infarction,S
 ischaemic_stroke,36717605,Silent cerebral infarct,S
 ischaemic_stroke,4111716,Occlusion and stenosis of anterior cerebral artery,S
-ischaemic_stroke_v5,4111717,Occlusion and stenosis of posterior cerebral artery,S
-ischaemic_stroke_v6,4112023,Occlusion and stenosis of middle cerebral artery,S
-ischaemic_stroke_v7,443239,Precerebral arterial occlusion,S
+ischaemic_stroke,4111717,Occlusion and stenosis of posterior cerebral artery,S
+ischaemic_stroke,4112023,Occlusion and stenosis of middle cerebral artery,S
+ischaemic_stroke,443239,Precerebral arterial occlusion,S
 ischaemic_stroke,4142739,Thalamic infarction,S
 ischaemic_stroke,4046358,Total anterior cerebral circulation infarction,S
 ischaemic_stroke,4045738,Pure sensory lacunar infarction,S
@@ -175,7 +175,7 @@ bells_palsy,760893,Bells palsy of right side of face,S
 bells_palsy,42710044,Peripheral facial palsy,S
 bells_palsy,4091559,Facial palsy,S
 guillain_barre_syndrome,374925,Acute infective polyneuritis,S
-guillain_barre_syndrome,4164770,Guillain-BarrÃ© syndrome,S
+guillain_barre_syndrome,4164770,Guillain-BarrÃƒÂ© syndrome,S
 guillain_barre_syndrome,37396786,Acute inflammatory demyelinating polyradiculoneuropathy,S
 guillain_barre_syndrome,4070552,Fisher's syndrome,S
 guillain_barre_syndrome,4141686,Bickerstaff's brainstem encephalitis,S
@@ -320,7 +320,6 @@ immune_thrombocytopenia,4028065,Primary ITP (immune thrombocytopenia),S
 immune_thrombocytopenia,4133983,Secondary autoimmune thrombocytopenia,S
 immune_thrombocytopenia,4102469,Acute idiopathic thrombocytopenic purpura,NA
 immune_thrombocytopenia,4137430,Idiopathic thrombocytopenic purpura,NA
-immune_thrombocytopenia,441264,Primary thrombocytopenia,S
 disseminated_intravascular_coagulation,4028488,Purpura fulminans,S
 disseminated_intravascular_coagulation,436093,Disseminated intravascular coagulation,S
 disseminated_intravascular_coagulation,37117819,Acquired purpura fulminans,S
@@ -443,26 +442,26 @@ deep_vein_thrombosis,4111861,Phlebitis of popliteal vein,S
 deep_vein_thrombosis,440738,Phlebitis of the femoral vein,S
 deep_vein_thrombosis,435887,Antepartum deep vein thrombosis,S
 deep_vein_thrombosis,438820,Deep venous thrombosis in puerperium,S
-anaphylaxis,37207726,Anaphylaxis due to allergen immunotherapy,NA
-anaphylaxis,42539054,Shock co-occurrent and due to anaphylaxis caused by serum,S
+anaphylaxis,37207726,AnaphylaxisÂ dueÂ toÂ allergenÂ immunotherapy,NA
+anaphylaxis,42539054,ShockÂ co-occurrentÂ andÂ dueÂ toÂ anaphylaxisÂ causedÂ byÂ serum,S
 anaphylaxis,441202,Anaphylaxis,S
-anaphylaxis,4083867,Human protein-induced anaphylaxis,NA
-anaphylaxis,4084639,Idiopathic anaphylaxis,S
-anaphylaxis,42536383,Anaphylactic shock,S
-anaphylaxis,442038,Anaphylactic shock due to serum,S
-anaphylaxis,4193788,Anaphylactic transfusion reaction,S
+anaphylaxis,4083867,HumanÂ protein-inducedÂ anaphylaxis,NA
+anaphylaxis,4084639,IdiopathicÂ anaphylaxis,S
+anaphylaxis,42536383,AnaphylacticÂ shock,S
+anaphylaxis,442038,AnaphylacticÂ shockÂ dueÂ toÂ serum,S
+anaphylaxis,4193788,AnaphylacticÂ transfusionÂ reaction,S
 anaphylaxis,4302371,"Anaphylactic shock, due to adverse effect of correct medicinal substance properly administered",NA
-anaphylaxis,762509,Anaphylaxis due to human papillomavirus vaccine,S
-anaphylaxis,762511,Anaphylaxis due to diphtheria and tetanus vaccine,S
-anaphylaxis,762512,"Anaphylaxis due to tetanus, diphtheria and acellular pertussis vaccine",S
-anaphylaxis,762513,Anaphylaxis due to meningococcal vaccine,S
-anaphylaxis,762514,Anaphylaxis due to Hepatitis B vaccine,S
-anaphylaxis,762515,Anaphylaxis due to rotavirus vaccine,S
-anaphylaxis,762909,Anaphylaxis due to Hemophilus influenzae type b vaccine,NA
-anaphylaxis,4084168,Drug-induced anaphylaxis,S
-anaphylaxis,4084169,Penicillin-induced anaphylaxis,S
-anaphylaxis,4086737,Insulin-induced anaphylaxis,S
-anaphylaxis,4302371,"Anaphylactic shock, due to adverse effect of correct medicinal substance properly administered",NA
+anaphylaxis,762509,AnaphylaxisÂ dueÂ toÂ humanÂ papillomavirusÂ vaccine,S
+anaphylaxis,762511,AnaphylaxisÂ dueÂ toÂ diphtheriaÂ andÂ tetanusÂ vaccine,S
+anaphylaxis,762512,"AnaphylaxisÂ dueÂ toÂ tetanus,Â diphtheriaÂ andÂ acellularÂ pertussisÂ vaccine",S
+anaphylaxis,762513,AnaphylaxisÂ dueÂ toÂ meningococcalÂ vaccine,S
+anaphylaxis,762514,AnaphylaxisÂ dueÂ toÂ HepatitisÂ BÂ vaccine,S
+anaphylaxis,762515,AnaphylaxisÂ dueÂ toÂ rotavirusÂ vaccine,S
+anaphylaxis,762909,AnaphylaxisÂ dueÂ toÂ HemophilusÂ influenzaeÂ typeÂ bÂ vaccine,NA
+anaphylaxis,4084168,Drug-inducedÂ anaphylaxis,S
+anaphylaxis,4084169,Penicillin-inducedÂ anaphylaxis,S
+anaphylaxis,4086737,Insulin-inducedÂ anaphylaxis,S
+anaphylaxis,4302371,"AnaphylacticÂ shock,Â dueÂ toÂ adverseÂ effectÂ ofÂ correctÂ medicinalÂ substanceÂ properlyÂ administered",NA
 myocarditis_or_pericarditis,312653,Acute myocarditis,S
 myocarditis_or_pericarditis,4147350,Acute myoendocarditis,S
 myocarditis_or_pericarditis,4006483,Acute myopericarditis,S
@@ -699,7 +698,6 @@ thrombosis,45771327,Mitral valve regurgitation due to acute myocardial infarctio
 thrombosis,4323202,Mixed myocardial ischemia and infarction,S
 thrombosis,37116473,Multifocal cerebral infarction due to and following procedure on cardiovascular system,S
 thrombosis,4329847,Myocardial infarction,S
-thrombosis,37309626,Myocardial infarction due to demand ischemia,S
 thrombosis,4170094,Myocardial infarction in recovery phase,S
 thrombosis,314667,Nonpyogenic thrombosis of intracranial venous sinus,S
 thrombosis,4111713,Non-pyogenic venous sinus thrombosis,S
@@ -829,6 +827,11 @@ thrombosis,77310,Deep vein phlebitis and thrombophlebitis of the leg,NA
 thrombosis,4189004,Deep vein thrombosis of leg related to intravenous drug use,NA
 thrombosis,4154704,Myocardial infarction with complication,NA
 thrombosis,4062269,Cerebral venous thrombosis in pregnancy,S
+thrombosis,320741,Thrombophlebitis,S
+thrombosis,312337,Arterial embolus and thrombosis,S
+thrombosis,4207615,Thrombosis of vein of trunk,S
+thrombosis,46273489,Thrombosis of vein of upper limb,S
+thrombosis,4179911,Axillary vein thrombosis,S
 thrombocytopenia,432870,Thrombocytopenic disorder,S
 thrombocytopenia,46272950,"Thrombocytopathy, asplenia and miosis",S
 thrombocytopenia,44782445,Thrombocytopenia due to alcohol,S
@@ -859,7 +862,6 @@ thrombocytopenia,4272928,Thrombocytopenia due to hypersplenism,S
 thrombocytopenia,4247776,Posttransfusion purpura,S
 thrombocytopenia,4239484,Acquired pancytopenia,S
 thrombocytopenia,4235220,Hereditary thrombocytopenic disorder,S
-thrombocytopenia,4234973,Chronic acquired pure red cell aplasia,S
 thrombocytopenia,4233407,Megakaryocytic aplasia,S
 thrombocytopenia,4230266,Autoimmune thrombotic thrombocytopenic purpura,S
 thrombocytopenia,4226905,Thrombocytopenia associated with AIDS,S
@@ -904,7 +906,6 @@ thrombocytopenia,4101582,Aplastic anemia due to chronic disease,S
 thrombocytopenia,4100998,Aplastic anemia due to toxic cause,S
 thrombocytopenia,4098148,Thrombocytopenia due to drugs,S
 thrombocytopenia,4098145,Idiopathic aplastic anemia,S
-thrombocytopenia,4098028,Transient acquired pure red cell aplasia,S
 thrombocytopenia,4098027,Aplastic anemia due to radiation,S
 thrombocytopenia,4082738,Autoimmune pancytopenia,S
 thrombocytopenia,4077348,Pancytopenia-dysmelia,S
@@ -918,7 +919,6 @@ thrombocytopenia,433749,Heparin-induced thrombocytopenia,S
 thrombocytopenia,432881,Pancytopenia,S
 thrombocytopenia,318397,Chronic idiopathic thrombocytopenic purpura,S
 thrombocytopenia,140681,Constitutional aplastic anemia,S
-thrombocytopenia,138723,Acquired red cell aplasia,S
 thrombocytopenia,137829,Aplastic anemia,S
 platelet_measurement,37393863,Platelet count,S
 platelet_measurement,4267147,Platelet count,S

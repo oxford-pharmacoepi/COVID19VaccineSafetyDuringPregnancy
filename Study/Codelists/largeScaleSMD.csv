@@ -1,0 +1,151 @@
+cdm_name,cohort_name,strata_name,strata_level,concept_name,window,identifier,smd,asmd,add_ps_nuria,add_ps_dani
+SCIFI-PEARLv2,population_objective_2,overall,overall,"SARS-CoV-2 (COVID-19) vaccine, mRNA spike protein Injectable Suspension [Spikevax]",-30 to 0,779678_m30_m1,0.137060317272827,0.137060317272827,TRUE,TRUE
+SCIFI-PEARLv2,population_objective_2,overall,overall,"SARS-CoV-2 (COVID-19) vaccine, mRNA spike protein Injectable Suspension [Spikevax]",-180 to -31,779678_m180_m31,-0.118700034378512,0.118700034378512,TRUE,TRUE
+NLHR@UiO,population_objective_2,overall,overall,COVID-19,-180 to -31,37311061_m180_m31,0.117564918875149,0.117564918875149,TRUE,TRUE
+NLHR@UiO,population_objective_2,overall,overall,Coronavirus infection,-180 to -31,439676_m180_m31,0.117245821685684,0.117245821685684,TRUE,TRUE
+CPRD GOLD,population_objective_2,overall,overall,prochlorperazine 5 MG Oral Tablet,-30 to 0,752205_m30_m1,0.112291451771477,0.112291451771477,TRUE,TRUE
+SCIFI-PEARLv2,population_objective_2,overall,overall,"SARS-CoV-2 (COVID-19) vaccine, mRNA spike protein Injectable Suspension [Comirnaty]",-30 to 0,1759205_m30_m1,0.102951041169548,0.102951041169548,TRUE,TRUE
+SCIFI-PEARLv2,population_objective_3,overall,overall,"SARS-CoV-2 (COVID-19) vaccine, mRNA spike protein Injectable Suspension [Spikevax]",-180 to -31,779678_m180_m31,0.103673310494953,0.103673310494953,TRUE,TRUE
+NLHR@UiO,population_objective_3,overall,overall,"influenza virus vaccine, split virus (incl. purified surface antigen)-retired CODE",-30 to 0,40213156_m30_m1,-0.118483687604401,0.118483687604401,TRUE,TRUE
+SCIFI-PEARLv2,population_objective_3,overall,overall,"SARS-CoV-2 (COVID-19) vaccine, mRNA spike protein Injectable Suspension [Comirnaty]",-180 to -31,1759205_m180_m31,0.12993201473998,0.12993201473998,TRUE,TRUE
+CPRD GOLD,population_objective_3,overall,overall,"diphtheria toxoid vaccine, inactivated",-180 to -31,529303_m180_m31,-0.161567628978759,0.161567628978759,TRUE,TRUE
+CPRD GOLD,population_objective_3,overall,overall,"tetanus toxoid vaccine, inactivated",-180 to -31,529411_m180_m31,-0.161811517170671,0.161811517170671,TRUE,TRUE
+CPRD GOLD,population_objective_3,overall,overall,pertussis vaccine,-180 to -31,19033193_m180_m31,-0.191365159348455,0.191365159348455,TRUE,TRUE
+CPRD GOLD,population_objective_1,vaccine_brand,moderna,Cervical smear - human papillomavirus negative,-180 to -31,44810558_m180_m31,-0.17414910666649,0.17414910666649,NA,FALSE
+CPRD GOLD,population_objective_1,vaccine_brand,moderna,Nitrofurantoin 100 MG Extended Release Oral Capsule,-180 to -31,42483274_m180_m31,0.168580802019413,0.168580802019413,TRUE,TRUE
+CPRD GOLD,population_objective_1,vaccine_brand,moderna,ferrous fumarate 210 MG Oral Tablet,-180 to -31,19101774_m180_m31,0.143408613703463,0.143408613703463,NA,TRUE
+CPRD GOLD,population_objective_1,vaccine_brand,moderna,Albuterol 0.095 MG/ACTUAT Metered Dose Inhaler,-180 to -31,589320_m180_m31,-0.141850428286195,0.141850428286195,TRUE,TRUE
+CPRD GOLD,population_objective_1,vaccine_brand,moderna,pertussis vaccine,-180 to -31,19033193_m180_m31,0.141383101506974,0.141383101506974,TRUE,TRUE
+CPRD GOLD,population_objective_1,vaccine_brand,moderna,levothyroxine sodium 0.025 MG Oral Tablet,-180 to -31,40175174_m180_m31,-0.130085876501857,0.130085876501857,NA,TRUE
+CPRD GOLD,population_objective_1,vaccine_brand,moderna,"diphtheria toxoid vaccine, inactivated",-180 to -31,529303_m180_m31,0.127094672830815,0.127094672830815,TRUE,TRUE
+CPRD GOLD,population_objective_1,vaccine_brand,moderna,"tetanus toxoid vaccine, inactivated",-180 to -31,529411_m180_m31,0.127094672830815,0.127094672830815,TRUE,TRUE
+NLHR@UiO,population_objective_1,vaccine_brand,moderna,Symptomatic disorders in pregnancy,-180 to -31,4034097_m180_m31,0.103077668643808,0.103077668643808,TRUE,TRUE
+CPRD GOLD,population_objective_2,vaccine_brand,moderna,"SARS-CoV-2 (COVID-19) vaccine, mRNA-1273 0.2 MG/ML Injectable Suspension",-180 to -31,37003518_m180_m31,-4.25503679786659,4.25503679786659,TRUE,TRUE
+CPRD GOLD,population_objective_2,vaccine_brand,moderna,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.1 MG/ML Injectable Suspension",-180 to -31,37003436_m180_m31,4.21067983148584,4.21067983148584,TRUE,TRUE
+SCIFI-PEARLv2,population_objective_2,vaccine_brand,moderna,"SARS-CoV-2 (COVID-19) vaccine, mRNA spike protein Injectable Suspension [Comirnaty]",-30 to 0,1759205_m30_m1,1.07538701447764,1.07538701447764,TRUE,TRUE
+SCIFI-PEARLv2,population_objective_2,vaccine_brand,moderna,"SARS-CoV-2 (COVID-19) vaccine, mRNA spike protein Injectable Suspension [Spikevax]",-180 to -31,779678_m180_m31,-0.987907851761497,0.987907851761497,TRUE,TRUE
+NLHR@UiO,population_objective_2,vaccine_brand,moderna,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.1 MG/ML Injectable Suspension [Comirnaty]",-180 to -31,1759206_m180_m31,0.338604131477952,0.338604131477952,TRUE,TRUE
+NLHR@UiO,population_objective_2,vaccine_brand,moderna,"SARS-CoV-2 (COVID-19) vaccine, mRNA-1273 0.2 MG/ML Injectable Suspension [Spikevax]",-180 to -31,779679_m180_m31,-0.33248582644199,0.33248582644199,TRUE,TRUE
+CPRD GOLD,population_objective_2,vaccine_brand,moderna,prochlorperazine 3 MG Buccal Tablet,-180 to -31,752128_m180_m31,-0.289971517927339,0.289971517927339,TRUE,TRUE
+SCIFI-PEARLv2,population_objective_2,vaccine_brand,moderna,"SARS-CoV-2 (COVID-19) vaccine, mRNA spike protein Injectable Suspension [Spikevax]",-30 to 0,779678_m30_m1,0.191194411403194,0.191194411403194,TRUE,TRUE
+CPRD GOLD,population_objective_2,vaccine_brand,moderna,amoxicillin 500 MG Oral Capsule,-180 to -31,19073187_m180_m31,-0.187457156897243,0.187457156897243,NA,TRUE
+CPRD GOLD,population_objective_2,vaccine_brand,moderna,Blood pressure finding,-30 to 0,4214962_m30_m1,-0.152282019676373,0.152282019676373,NA,TRUE
+NLHR@UiO,population_objective_2,vaccine_brand,moderna,Coronavirus infection,-180 to -31,439676_m180_m31,0.113497707701772,0.113497707701772,TRUE,TRUE
+NLHR@UiO,population_objective_2,vaccine_brand,moderna,COVID-19,-180 to -31,37311061_m180_m31,0.105260558380263,0.105260558380263,TRUE,TRUE
+CPRD GOLD,population_objective_2,vaccine_brand,moderna,folic acid 5 MG Oral Tablet,-180 to -31,1387453_m180_m31,0.100780179586799,0.100780179586799,NA,TRUE
+SCIFI-PEARLv2,population_objective_3,vaccine_brand,moderna,"SARS-CoV-2 (COVID-19) vaccine, mRNA spike protein Injectable Suspension [Comirnaty]",-180 to -31,1759205_m180_m31,0.278125303942577,0.278125303942577,TRUE,TRUE
+CPRD GOLD,population_objective_3,vaccine_brand,moderna,pertussis vaccine,-180 to -31,19033193_m180_m31,-0.152225302104639,0.152225302104639,TRUE,TRUE
+CPRD GOLD,population_objective_3,vaccine_brand,moderna,"influenza virus vaccine, unspecified formulation",-180 to -31,40213158_m180_m31,-0.126336850500573,0.126336850500573,TRUE,TRUE
+CPRD GOLD,population_objective_3,vaccine_brand,moderna,ferrous sulfate 200 MG Oral Tablet,-30 to 0,19027839_m30_m1,-0.107178078702901,0.107178078702901,NA,TRUE
+CPRD GOLD,population_objective_3,vaccine_brand,pfizer,"SARS-CoV-2 (COVID-19) vaccine, mRNA-1273 0.2 MG/ML Injectable Suspension",-180 to -31,37003518_m180_m31,0.234259706870895,0.234259706870895,TRUE,TRUE
+CPRD GOLD,population_objective_3,vaccine_brand,pfizer,pertussis vaccine,-180 to -31,19033193_m180_m31,-0.219239725298031,0.219239725298031,TRUE,TRUE
+CPRD GOLD,population_objective_3,vaccine_brand,pfizer,"diphtheria toxoid vaccine, inactivated",-180 to -31,529303_m180_m31,-0.20743210096264,0.20743210096264,TRUE,TRUE
+CPRD GOLD,population_objective_3,vaccine_brand,pfizer,"tetanus toxoid vaccine, inactivated",-180 to -31,529411_m180_m31,-0.207094710504371,0.207094710504371,TRUE,TRUE
+SCIFI-PEARLv2,population_objective_3,vaccine_brand,pfizer,"SARS-CoV-2 (COVID-19) vaccine, mRNA spike protein Injectable Suspension [Spikevax]",-180 to -31,779678_m180_m31,0.125236869502905,0.125236869502905,TRUE,TRUE
+NLHR@UiO,population_objective_3,vaccine_brand,pfizer,"influenza virus vaccine, split virus (incl. purified surface antigen)-retired CODE",-30 to 0,40213156_m30_m1,-0.123853783874659,0.123853783874659,TRUE,TRUE
+SCIFI-PEARLv2,population_objective_3,vaccine_brand,pfizer,"SARS-CoV-2 (COVID-19) vaccine, mRNA spike protein Injectable Suspension [Comirnaty]",-180 to -31,1759205_m180_m31,0.10424735621817,0.10424735621817,TRUE,TRUE
+CPRD GOLD,population_objective_2,vaccine_brand,pfizer,"SARS-CoV-2 (COVID-19) vaccine, mRNA-1273 0.2 MG/ML Injectable Suspension",-180 to -31,37003518_m180_m31,0.45740147044175,0.45740147044175,TRUE,TRUE
+CPRD GOLD,population_objective_2,vaccine_brand,pfizer,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.1 MG/ML Injectable Suspension",-180 to -31,37003436_m180_m31,-0.345429209148938,0.345429209148938,TRUE,TRUE
+NLHR@UiO,population_objective_2,vaccine_brand,pfizer,"SARS-CoV-2 (COVID-19) vaccine, mRNA-1273 0.2 MG/ML Injectable Suspension [Spikevax]",-180 to -31,779679_m180_m31,0.282477117703383,0.282477117703383,TRUE,TRUE
+NLHR@UiO,population_objective_2,vaccine_brand,pfizer,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.1 MG/ML Injectable Suspension [Comirnaty]",-180 to -31,1759206_m180_m31,-0.188108215632901,0.188108215632901,TRUE,TRUE
+SCIFI-PEARLv2,population_objective_2,vaccine_brand,pfizer,"SARS-CoV-2 (COVID-19) vaccine, mRNA spike protein Injectable Suspension [Spikevax]",-180 to -31,779678_m180_m31,0.178605679255996,0.178605679255996,TRUE,TRUE
+SCIFI-PEARLv2,population_objective_2,vaccine_brand,pfizer,"SARS-CoV-2 (COVID-19) vaccine, mRNA spike protein Injectable Suspension [Spikevax]",-30 to 0,779678_m30_m1,0.176668255923758,0.176668255923758,TRUE,TRUE
+SCIFI-PEARLv2,population_objective_2,vaccine_brand,pfizer,"SARS-CoV-2 (COVID-19) vaccine, mRNA spike protein Injectable Suspension [Comirnaty]",-30 to 0,1759205_m30_m1,-0.156400603693226,0.156400603693226,TRUE,TRUE
+NLHR@UiO,population_objective_2,vaccine_brand,pfizer,COVID-19,-180 to -31,37311061_m180_m31,0.124678189550297,0.124678189550297,TRUE,TRUE
+NLHR@UiO,population_objective_2,vaccine_brand,pfizer,Coronavirus infection,-180 to -31,439676_m180_m31,0.118912407152986,0.118912407152986,TRUE,TRUE
+CPRD GOLD,population_objective_2,vaccine_brand,pfizer,cyclizine 50 MG Oral Tablet,-180 to -31,909388_m180_m31,-0.101023502142143,0.101023502142143,NA,TRUE
+NLHR@UiO,population_objective_1,gestational_trimester,T1,Vomiting of pregnancy,-30 to 0,440785_m30_m1,0.141166778903655,0.141166778903655,TRUE,TRUE
+NLHR@UiO,population_objective_1,gestational_trimester,T1,Chorionic Gonadotropin 0.25 MG Injection,-180 to -31,21070542_m180_m31,0.133061923958438,0.133061923958438,TRUE,TRUE
+SCIFI-PEARLv2,population_objective_1,gestational_trimester,T1,promethazine hydrochloride 10 MG,-30 to 0,40180036_m30_m1,0.115102900855143,0.115102900855143,NA,TRUE
+NLHR@UiO,population_objective_1,gestational_trimester,T1,ganirelix Injection,-180 to -31,43291289_m180_m31,0.114793340930837,0.114793340930837,TRUE,TRUE
+NLHR@UiO,population_objective_1,gestational_trimester,T1,follitropin alfa Injection,-180 to -31,35605092_m180_m31,0.11247472520831,0.11247472520831,TRUE,TRUE
+CPRD GOLD,population_objective_1,gestational_trimester,T1,Beclomethasone 0.1 MG/ACTUAT / formoterol 0.006 MG/ACTUAT Inhalant Powder [Fostair] by Chiesi,-180 to -31,36404118_m180_m31,-0.109728658867037,0.109728658867037,TRUE,TRUE
+NLHR@UiO,population_objective_1,gestational_trimester,T1,Female infertility,-180 to -31,201909_m180_m31,0.109521435956286,0.109521435956286,TRUE,TRUE
+NLHR@UiO,population_objective_1,gestational_trimester,T1,progesterone 100 MG Oral Tablet,-180 to -31,35864872_m180_m31,0.109162788255852,0.109162788255852,TRUE,TRUE
+NLHR@UiO,population_objective_1,gestational_trimester,T1,"influenza virus vaccine, split virus (incl. purified surface antigen)-retired CODE",-180 to -31,40213156_m180_m31,-0.103009918924944,0.103009918924944,TRUE,TRUE
+SCIFI-PEARLv2,population_objective_3,gestational_trimester,T1,"SARS-CoV-2 (COVID-19) vaccine, mRNA spike protein Injectable Suspension [Comirnaty]",-180 to -31,1759205_m180_m31,0.277637652925722,0.277637652925722,TRUE,TRUE
+SCIFI-PEARLv2,population_objective_3,gestational_trimester,T1,"SARS-CoV-2 (COVID-19) vaccine, mRNA spike protein Injectable Suspension [Spikevax]",-180 to -31,779678_m180_m31,0.209625493801679,0.209625493801679,TRUE,TRUE
+CPRD GOLD,population_objective_3,gestational_trimester,T1,"SARS-CoV-2 (COVID-19) vaccine, mRNA-1273 0.2 MG/ML Injectable Suspension",-180 to -31,37003518_m180_m31,0.167198466507789,0.167198466507789,TRUE,TRUE
+NLHR@UiO,population_objective_2,gestational_trimester,T1,Coronavirus infection,-180 to -31,439676_m180_m31,0.160664562066273,0.160664562066273,NA,TRUE
+NLHR@UiO,population_objective_3,gestational_trimester,T1,Vomiting of pregnancy,-30 to 0,440785_m30_m1,0.151179116820515,0.151179116820515,TRUE,TRUE
+NLHR@UiO,population_objective_2,gestational_trimester,T1,COVID-19,-180 to -31,37311061_m180_m31,0.146875155636449,0.146875155636449,TRUE,TRUE
+NLHR@UiO,population_objective_2,gestational_trimester,T1,Vomiting of pregnancy,-30 to 0,440785_m30_m1,0.118699804601938,0.118699804601938,TRUE,TRUE
+CPRD GOLD,population_objective_2,gestational_trimester,T1,Blood pressure finding,-30 to 0,4214962_m30_m1,-0.100131421128978,0.100131421128978,NA,TRUE
+SCIFI-PEARLv2,population_objective_2,gestational_trimester,T2,"SARS-CoV-2 (COVID-19) vaccine, mRNA spike protein Injectable Suspension [Spikevax]",-180 to -31,779678_m180_m31,-0.195954960576563,0.195954960576563,TRUE,TRUE
+CPRD GOLD,population_objective_2,gestational_trimester,T2,lansoprazole 15 MG Delayed Release Oral Capsule,-180 to -31,929953_m180_m31,0.192234769609261,0.192234769609261,NA,FALSE
+SCIFI-PEARLv2,population_objective_2,gestational_trimester,T2,"SARS-CoV-2 (COVID-19) vaccine, mRNA spike protein Injectable Suspension [Spikevax]",-30 to 0,779678_m31_m1,0.169542957394977,0.169542957394977,TRUE,TRUE
+SCIFI-PEARLv2,population_objective_3,gestational_trimester,T2,"SARS-CoV-2 (COVID-19) vaccine, mRNA spike protein Injectable Suspension [Comirnaty]",-180 to -31,1759205_m180_m31,0.155486037691103,0.155486037691103,TRUE,TRUE
+SCIFI-PEARLv2,population_objective_2,gestational_trimester,T2,"SARS-CoV-2 (COVID-19) vaccine, mRNA spike protein Injectable Suspension [Comirnaty]",-30 to 0,1759205_m30_m1,0.140630656165215,0.140630656165215,TRUE,TRUE
+CPRD GOLD,population_objective_2,gestational_trimester,T2,aspirin 75 MG Disintegrating Oral Tablet,-180 to -31,19004044_m180_m31,0.136865560411565,0.136865560411565,NA,TRUE
+NLHR@UiO,population_objective_3,gestational_trimester,T2,"influenza virus vaccine, split virus (incl. purified surface antigen)-retired CODE",-30 to 0,40213156_m30_m1,-0.136002075786092,0.136002075786092,TRUE,TRUE
+CPRD GOLD,population_objective_2,gestational_trimester,T2,Hyperemesis gravidarum,-180 to -31,4030872_m180_m31,-0.133005564827496,0.133005564827496,TRUE,TRUE
+CPRD GOLD,population_objective_2,gestational_trimester,T2,prochlorperazine 5 MG Oral Tablet,-180 to -31,752205_m180_m31,0.117368678964709,0.117368678964709,TRUE,TRUE
+SCIFI-PEARLv2,population_objective_3,gestational_trimester,T2,"SARS-CoV-2 (COVID-19) vaccine, mRNA spike protein Injectable Suspension [Spikevax]",-180 to -31,779678_m180_m31,0.117034639256967,0.117034639256967,TRUE,TRUE
+CPRD GOLD,population_objective_2,gestational_trimester,T2,fluoxetine 20 MG Oral Capsule,-180 to -31,19077463_m180_m31,0.109705894960747,0.109705894960747,NA,TRUE
+CPRD GOLD,population_objective_1,gestational_trimester,T2,acetaminophen 500 MG / codeine phosphate 30 MG Oral Tablet,-180 to -31,40221938_m180_m31,0.10893917667134,0.10893917667134,NA,TRUE
+CPRD GOLD,population_objective_1,gestational_trimester,T2,mirtazapine 15 MG Oral Tablet,-180 to -31,725178_m180_m31,0.108667974216402,0.108667974216402,NA,TRUE
+CPRD GOLD,population_objective_1,gestational_trimester,T2,levothyroxine sodium 0.05 MG Oral Tablet,-180 to -31,40175210_m180_m31,-0.102639355318994,0.102639355318994,NA,TRUE
+CPRD GOLD,population_objective_1,gestational_trimester,T2,levothyroxine sodium 0.025 MG Oral Tablet,-180 to -31,40175174_m180_m31,-0.101947194946233,0.101947194946233,NA,TRUE
+NLHR@UiO,population_objective_3,gestational_trimester,T2,Coronavirus infection,-180 to -31,439676_m180_m31,0.10128566342681,0.10128566342681,TRUE,TRUE
+CPRD GOLD,population_objective_1,gestational_trimester,T3,pertussis vaccine,-180 to -31,19033193_m180_m31,-0.185633513121717,0.185633513121717,TRUE,TRUE
+CPRD GOLD,population_objective_2,gestational_trimester,T3,acetaminophen 500 MG / codeine phosphate 8 MG Oral Tablet,-180 to -31,40223207_m180_m31,0.15188902321704,0.15188902321704,NA,TRUE
+NLHR@UiO,population_objective_3,gestational_trimester,T3,Coronavirus infection,-180 to -31,439676_m180_m31,0.131454346799239,0.131454346799239,TRUE,TRUE
+SCIFI-PEARLv2,population_objective_3,gestational_trimester,T3,"SARS-CoV-2 (COVID-19) vaccine, mRNA spike protein Injectable Suspension [Comirnaty]",-180 to -31,1759205_m180_m31,0.126751926596947,0.126751926596947,TRUE,TRUE
+CPRD GOLD,population_objective_1,gestational_trimester,T3,"diphtheria toxoid vaccine, inactivated",-180 to -31,529303_m180_m31,-0.124598329055099,0.124598329055099,TRUE,TRUE
+CPRD GOLD,population_objective_1,gestational_trimester,T3,"tetanus toxoid vaccine, inactivated",-180 to -31,529411_m180_m31,-0.124598329055099,0.124598329055099,TRUE,TRUE
+CPRD GOLD,population_objective_2,gestational_trimester,T3,omeprazole 10 MG Delayed Release Oral Capsule,-180 to -31,923647_m180_m31,-0.123582161188957,0.123582161188957,NA,FALSE
+NLHR@UiO,population_objective_2,gestational_trimester,T3,Coronavirus infection,-180 to -31,439676_m180_m31,0.121926595630163,0.121926595630163,TRUE,TRUE
+SCIFI-PEARLv2,population_objective_2,gestational_trimester,T3,"SARS-CoV-2 (COVID-19) vaccine, mRNA spike protein Injectable Suspension [Spikevax]",-180 to -31,779678_m180_m31,-0.120630927630521,0.120630927630521,TRUE,TRUE
+CPRD GOLD,population_objective_2,gestational_trimester,T3,"diphtheria toxoid vaccine, inactivated",-180 to -31,529303_m180_m31,-0.116865879929732,0.116865879929732,TRUE,TRUE
+CPRD GOLD,population_objective_2,gestational_trimester,T3,"tetanus toxoid vaccine, inactivated",-180 to -31,529411_m180_m31,-0.116865879929732,0.116865879929732,TRUE,TRUE
+CPRD GOLD,population_objective_1,gestational_trimester,T3,Evaluation finding,-180 to -31,40480457_m180_m31,0.116237400485054,0.116237400485054,NA,FALSE
+CPRD GOLD,population_objective_2,gestational_trimester,T3,pertussis vaccine,-180 to -31,19033193_m180_m31,-0.115313663484479,0.115313663484479,TRUE,TRUE
+NLHR@UiO,population_objective_1,gestational_trimester,T3,"influenza virus vaccine, split virus (incl. purified surface antigen)-retired CODE",-180 to -31,40213156_m180_m31,-0.115047558686372,0.115047558686372,TRUE,TRUE
+CPRD GOLD,population_objective_2,gestational_trimester,T3,amoxicillin 500 MG Oral Capsule,-30 to 0,19073187_m30_m1,0.112592594010931,0.112592594010931,NA,TRUE
+CPRD GOLD,population_objective_2,gestational_trimester,T3,Nitrofurantoin 100 MG Extended Release Oral Capsule,-180 to -31,42483274_m180_m31,-0.111709001317886,0.111709001317886,NA,TRUE
+CPRD GOLD,population_objective_3,gestational_trimester,T3,{(Clotrimazole 0.02 MG/MG Topical Cream) / (Clotrimazole 500 MG Vaginal Ring) } Pack,-180 to -31,40702626_m180_m31,0.111297554632901,0.111297554632901,NA,FALSE
+SCIFI-PEARLv2,population_objective_3,gestational_trimester,T3,"SARS-CoV-2 (COVID-19) vaccine, mRNA spike protein Injectable Suspension [Spikevax]",-180 to -31,779678_m180_m31,0.102778542987044,0.102778542987044,TRUE,TRUE
+SCIFI-PEARLv2,population_objective_2,age_group,12 to 17,Covid-19 infections in the last year,Covid,covid,-0.353603737048413,0.353603737048413,TRUE,TRUE
+CPRD GOLD,population_objective_3,age_group,18 to 34,pertussis vaccine,-180 to -31,19033193_m180_m31,-0.198772092741461,0.198772092741461,TRUE,TRUE
+CPRD GOLD,population_objective_3,age_group,18 to 34,"tetanus toxoid vaccine, inactivated",-180 to -31,529411_m180_m31,-0.167675181375694,0.167675181375694,TRUE,TRUE
+CPRD GOLD,population_objective_3,age_group,18 to 34,"diphtheria toxoid vaccine, inactivated",-180 to -31,529303_m180_m31,-0.167317903948939,0.167317903948939,TRUE,TRUE
+SCIFI-PEARLv2,population_objective_2,age_group,18 to 34,"SARS-CoV-2 (COVID-19) vaccine, mRNA spike protein Injectable Suspension [Spikevax]",-30 to 0,779678_30_m1,0.139363444210636,0.139363444210636,TRUE,TRUE
+SCIFI-PEARLv2,population_objective_3,age_group,18 to 34,"SARS-CoV-2 (COVID-19) vaccine, mRNA spike protein Injectable Suspension [Comirnaty]",-180 to -31,1759205_m180_m31,0.128856593247365,0.128856593247365,TRUE,TRUE
+SCIFI-PEARLv2,population_objective_2,age_group,18 to 34,"SARS-CoV-2 (COVID-19) vaccine, mRNA spike protein Injectable Suspension [Spikevax]",-180 to -31,779678_m180_m31,-0.123244050858628,0.123244050858628,TRUE,TRUE
+NLHR@UiO,population_objective_2,age_group,18 to 34,COVID-19,-180 to -31,37311061_m180_m31,0.119203856204723,0.119203856204723,TRUE,TRUE
+NLHR@UiO,population_objective_2,age_group,18 to 34,Coronavirus infection,-180 to -31,439676_m180_m31,0.117979111889696,0.117979111889696,TRUE,TRUE
+NLHR@UiO,population_objective_3,age_group,18 to 34,"influenza virus vaccine, split virus (incl. purified surface antigen)-retired CODE",-30 to 0,40213156_m30_m1,-0.110694814790161,0.110694814790161,TRUE,TRUE
+SCIFI-PEARLv2,population_objective_2,age_group,18 to 34,"SARS-CoV-2 (COVID-19) vaccine, mRNA spike protein Injectable Suspension [Comirnaty]",-30 to 0,1759205_m30_m1,0.105640368115266,0.105640368115266,TRUE,TRUE
+CPRD GOLD,population_objective_3,age_group,18 to 34,"SARS-CoV-2 (COVID-19) vaccine, mRNA-1273 0.2 MG/ML Injectable Suspension",-180 to -31,37003518_m180_m31,0.10373928472465,0.10373928472465,TRUE,TRUE
+CPRD GOLD,population_objective_2,age_group,35 to 55,Cervical smear - human papillomavirus positive,-180 to -31,44810559_m180_m31,0.193151273388892,0.193151273388892,TRUE,TRUE
+CPRD GOLD,population_objective_2,age_group,35 to 55,Pain of ear,-180 to -31,4103476_m180_m31,0.185677562085004,0.185677562085004,NA,FALSE
+CPRD GOLD,population_objective_3,age_group,35 to 55,pertussis vaccine,-180 to -31,19033193_m180_m31,-0.176216571098888,0.176216571098888,TRUE,TRUE
+CPRD GOLD,population_objective_2,age_group,35 to 55,amoxicillin 500 MG Oral Capsule,-180 to -31,19073187_m180_m31,0.160843519754264,0.160843519754264,NA,TRUE
+NLHR@UiO,population_objective_3,age_group,35 to 55,"influenza virus vaccine, split virus (incl. purified surface antigen)-retired CODE",-30 to 0,40213156_m30_m1,-0.15501143443039,0.15501143443039,TRUE,TRUE
+CPRD GOLD,population_objective_3,age_group,35 to 55,"diphtheria toxoid vaccine, inactivated",-180 to -31,529303_m180_m31,-0.149297907040714,0.149297907040714,TRUE,TRUE
+CPRD GOLD,population_objective_3,age_group,35 to 55,"tetanus toxoid vaccine, inactivated",-180 to -31,529411_m180_m31,-0.149297907040714,0.149297907040714,TRUE,TRUE
+CPRD GOLD,population_objective_2,age_group,35 to 55,"SARS-CoV-2 (COVID-19) vaccine, mRNA-1273 0.2 MG/ML Injectable Suspension",-180 to -31,37003518_m180_m31,0.142418830625685,0.142418830625685,TRUE,TRUE
+CPRD GOLD,population_objective_2,age_group,35 to 55,sertraline 100 MG Oral Tablet,-180 to -31,739207_m180_m31,0.139896152299153,0.139896152299153,NA,TRUE
+CPRD GOLD,population_objective_2,age_group,35 to 55,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.1 MG/ML Injectable Suspension",-180 to -31,37003436_m180_m31,-0.13739787844979,0.13739787844979,TRUE,TRUE
+CPRD GOLD,population_objective_2,age_group,35 to 55,alginic acid 100 MG/ML / potassium bicarbonate 20 MG/ML Oral Suspension [Gaviscon Advance] by Reckitt Benckiser,-180 to -31,40741196_m180_m31,0.132020807671152,0.132020807671152,NA,FALSE
+CPRD GOLD,population_objective_3,age_group,35 to 55,ferrous sulfate 200 MG Oral Tablet,-30 to 0,19027839_m30_m1,-0.130426468867245,0.130426468867245,NA,TRUE
+SCIFI-PEARLv2,population_objective_3,age_group,35 to 55,aspirin 75 MG,-180 to -31,1113307_m180_m31,-0.129558362686553,0.129558362686553,NA,TRUE
+CPRD GOLD,population_objective_1,age_group,35 to 55,fluoxetine 20 MG Oral Capsule,-180 to -31,19077463_m180_m31,0.129109320871518,0.129109320871518,NA,TRUE
+CPRD GOLD,population_objective_1,age_group,35 to 55,amoxicillin 500 MG Oral Capsule,-180 to -31,19073187_m180_m31,0.128859330233385,0.128859330233385,NA,TRUE
+SCIFI-PEARLv2,population_objective_2,age_group,35 to 55,"SARS-CoV-2 (COVID-19) vaccine, mRNA spike protein Injectable Suspension [Spikevax]",-30 to 0,779678_m30_m1,0.125548569531442,0.125548569531442,TRUE,TRUE
+CPRD GOLD,population_objective_3,age_group,35 to 55,aspirin 75 MG Disintegrating Oral Tablet,-30 to 0,19004044_m30_m1,-0.124497682188559,0.124497682188559,NA,TRUE
+SCIFI-PEARLv2,population_objective_3,age_group,35 to 55,"SARS-CoV-2 (COVID-19) vaccine, mRNA spike protein Injectable Suspension [Comirnaty]",-180 to -31,1759205_m180_m31,0.121878617287314,0.121878617287314,TRUE,TRUE
+SCIFI-PEARLv2,population_objective_1,age_group,35 to 55,progesterone 100 MG,-180 to -31,1552387_m180_m31,-0.119091634024231,0.119091634024231,TRUE,TRUE
+CPRD GOLD,population_objective_2,age_group,35 to 55,Blood pressure finding,-180 to -31,4214962_m180_m31,0.117488100323351,0.117488100323351,NA,TRUE
+NLHR@UiO,population_objective_2,age_group,35 to 55,Obesity,-180 to -31,433736_m180_m31,-0.11506310743265,0.11506310743265,TRUE,TRUE
+SCIFI-PEARLv2,population_objective_1,age_group,35 to 55,Chorionic Gonadotropin 0.5 MG/ML Injectable Solution,-180 to -31,44032946_m180_m31,-0.110770929326461,0.110770929326461,TRUE,TRUE
+CPRD GOLD,population_objective_2,age_group,35 to 55,folic acid 5 MG Oral Tablet,-30 to 0,1387453_m30_m1,0.109251417321622,0.109251417321622,NA,TRUE
+SCIFI-PEARLv2,population_objective_2,age_group,35 to 55,aspirin 75 MG,-180 to -31,1113307_m180_m31,-0.107857857240659,0.107857857240659,NA,TRUE
+NLHR@UiO,population_objective_1,age_group,35 to 55,"influenza virus vaccine, split virus (incl. purified surface antigen)-retired CODE",-180 to -31,40213156_m180_m31,-0.106228927603375,0.106228927603375,TRUE,TRUE
+SCIFI-PEARLv2,population_objective_3,age_group,35 to 55,"SARS-CoV-2 (COVID-19) vaccine, mRNA spike protein Injectable Suspension [Spikevax]",-180 to -31,779678_m180_m31,0.105557292068101,0.105557292068101,TRUE,TRUE
+NLHR@UiO,population_objective_1,age_group,35 to 55,Allergic rhinitis,-180 to -31,257007_m180_m31,-0.105437169024229,0.105437169024229,NA,FALSE
+CPRD GOLD,population_objective_2,age_group,35 to 55,"diphtheria toxoid vaccine, inactivated",-180 to -31,529303_m180_m31,-0.104677889744618,0.104677889744618,TRUE,TRUE
+CPRD GOLD,population_objective_2,age_group,35 to 55,"tetanus toxoid vaccine, inactivated",-180 to -31,529411_m180_m31,-0.104677889744618,0.104677889744618,TRUE,TRUE
+NLHR@UiO,population_objective_3,age_group,35 to 55,Coronavirus infection,-180 to -31,439676_m180_m31,0.101901319331303,0.101901319331303,TRUE,TRUE
+NLHR@UiO,population_objective_2,age_group,35 to 55,"influenza virus vaccine, split virus (incl. purified surface antigen)-retired CODE",-180 to -31,40213156_m180_m31,-0.101677424560095,0.101677424560095,TRUE,TRUE
+SCIFI-PEARLv2,population_objective_2,age_group,35 to 55,"SARS-CoV-2 (COVID-19) vaccine, mRNA spike protein Injectable Suspension [Spikevax]",-180 to -31,779678_m180_m31,-0.100551899158581,0.100551899158581,TRUE,TRUE
