@@ -164,11 +164,21 @@ getPregnantCohort <- function(db, cdm, mother_table_schema, mother_table_name) {
       ) |>
       compute(name = "mother_table", temporary = FALSE) |>
       recordCohortAttrition(reason = "Add smoking status")
+    
+  } else {
+    cdm$mother_table <- cdm$mother_table |>
+      mutate(
+        pre_pregnancy_smoking = case_when(
+          pre_pregnancy_smoking == 4188540 ~ "No",
+          pre_pregnancy_smoking == 4188539 ~ "Yes",
+          .default = "Missing"
+        )
+      ) |>
+      compute(name = "mother_table", temporary = FALSE)
   }
   
   return(cdm$mother_table)
 }
-
 
 getSourcePopulation <- function(cdm, objective, enrollment, codelist) {
   name <- paste0("source_", objective)
@@ -1115,6 +1125,7 @@ getIRR <- function(x, ci, outcomes) {
   
   # add 0.01 if 0 cases - avoid denominator 0
   summary_tbl <- summary_tbl |>
+    ungroup() |>
     mutate(
       person_days_fix = if_else(cases == 0, person_days + 0.01, person_days),
       cases_fix = if_else(cases == 0, cases + 0.01, cases)
@@ -1140,6 +1151,9 @@ getIRR <- function(x, ci, outcomes) {
         is.na(cases_fix_exposed) | is.na(cases_fix_comparator) | is.na(person_days_fix_exposed) | is.na(person_days_fix_comparator) ~ NA_real_,
         person_days_fix_exposed == 0 | person_days_fix_comparator == 0 ~ NA_real_,
         .default = (cases_fix_exposed / person_days_fix_exposed) / (cases_fix_comparator / person_days_fix_comparator)
+      ),
+      coef = if_else(
+        cases_comparator < 5 | cases_exposed < 5, NA, coef
       )
     )
   
@@ -1178,12 +1192,16 @@ getWeights <- function(x, coefs) {
   
   ps_vals <- predict(glmResult, newdata = glm_data, type = "response") |> as.numeric()
   
-  psData |>
+  psData <- psData |>
     select(-any_of(c("ps", "weight"))) |>
     bind_cols(tibble(ps = ps_vals)) |>
     filter(!is.na(ps)) |>
     # overlap weights 
     mutate(weight = if_else(exposure == "exposed", 1 - ps, ps))
+  
+  rm(glmResult, ps_vals)
+  
+  return(psData)
 }
 
 processGroupStrata <- function(data, groupLevel, strataLevel, weights, ci, outcomes) {
@@ -1204,22 +1222,29 @@ processGroupStrata <- function(data, groupLevel, strataLevel, weights, ci, outco
   
   set.seed(123)
   
+  # main estimate on original data
+  # if (!is.null(weights) && length(weights) != 0) {
+  data <- getWeights(data, weights[[groupLevel]][[strataLevel]])
+  data <- data |> pivotSurvivalData(outcomes)
+  # }
+  
   if (ci == "bootstrap") {
     # bootstrap across the whole nested data
     coefBootstrap <- tibble()
-    nboot <- 500
+    nboot <- 200
     
     for (ii in seq_len(nboot)) {
       data.ii <- data |> 
         slice_sample(n = nrow(data), replace = TRUE) |>
         mutate(sample_id = row_number())
-      if (!is.null(weights) && length(weights) != 0) {
-        data.ii <- getWeights(data.ii, weights[[groupLevel]][[strataLevel]])
-      }
-      data.ii <- data.ii |> pivotSurvivalData(outcomes)
+      # if (!is.null(weights) && length(weights) != 0) {
+      #   data.ii <- getWeights(data.ii, weights[[groupLevel]][[strataLevel]])
+      # }
+      # data.ii <- data.ii |> pivotSurvivalData(outcomes)
       irr_tbl <- getIRR(data.ii, ci = NULL, outcomes = outcomes) |> mutate(bootstrap = ii)
       coefBootstrap <- bind_rows(coefBootstrap, irr_tbl)
     }
+    rm(data.ii)
     
     # Compute bootstrap percentiles grouped by outcome_name & weighting
     ci_tbl <- coefBootstrap |>
@@ -1230,11 +1255,11 @@ processGroupStrata <- function(data, groupLevel, strataLevel, weights, ci, outco
         .groups = "drop"
       )
     
-    # main estimate on original data
-    if (!is.null(weights) && length(weights) != 0) {
-      data <- getWeights(data, weights[[groupLevel]][[strataLevel]])
-    }
-    data <- data |> pivotSurvivalData(outcomes)
+    # # main estimate on original data
+    # if (!is.null(weights) && length(weights) != 0) {
+    #   data <- getWeights(data, weights[[groupLevel]][[strataLevel]])
+    # }
+    # data <- data |> pivotSurvivalData(outcomes)
     main_est <- getIRR(data, ci = NULL, outcomes = outcomes)
     
     results <- main_est |>
@@ -1242,9 +1267,9 @@ processGroupStrata <- function(data, groupLevel, strataLevel, weights, ci, outco
       left_join(ci_tbl, by = c("outcome_name", "weighting"))
     
   } else if (ci == "midp") {
-    if (!is.null(weights) && length(weights) != 0) {
-      data <- getWeights(data, weights[[groupLevel]][[strataLevel]])
-    }
+    # if (!is.null(weights) && length(weights) != 0) {
+    #   data <- getWeights(data, weights[[groupLevel]][[strataLevel]])
+    # }
     data <- data |> pivotSurvivalData(outcomes)
     results <- getIRR(data, ci = "midp", outcomes = outcomes)
     
@@ -2050,6 +2075,13 @@ getTimeToEvent <- function(cohort, washOut, outcomes) {
       colsRename <- c("time", "status", "pregnancies", "time_t1", "status_t1", "pregnancies_t1", "time_t2", "status_t2", "pregnancies_t2", "time_t3", "status_t3", "pregnancies_t3", "time_t4", "status_t4", "pregnancies_t4")
       colsRename <- colsRename[!colsRename %in% colsExclude]
       
+      postpartumColStart <- "postpartum_6_start"
+      postpartumColEnd <- "postpartum_6_end"
+      if (outcome == "postpartum_haemorrhage") {
+        postpartumColStart <- "postpartum_12_start"
+        postpartumColEnd <- "postpartum_12_end"
+      }
+      
       cohort <- cohort %>%
         mutate(prior_outcome_washout = !!dateadd(glue::glue("prior_{outcome}"), washOut)) %>%
         mutate(
@@ -2118,16 +2150,16 @@ getTimeToEvent <- function(cohort, washOut, outcomes) {
           pregnancies_t3 = if_else(is.na(status_t3), 0, 1),
           # time-status postpatum 6 weeks
           status_t4 = case_when(
-            is.na(postpartum_6_start) | date_time_at_risk_start > postpartum_6_end ~ NA, # don't contribute
-            .data[[outcome]] < postpartum_6_start & !is.na(.data[[outcome]]) ~ NA, # don't contribute: outcome before trimester start
+            is.na(.data[[postpartumColStart]]) | date_time_at_risk_start > .data[[postpartumColEnd]] ~ NA, # don't contribute
+            .data[[outcome]] < .data[[postpartumColStart]] & !is.na(.data[[outcome]]) ~ NA, # don't contribute: outcome before trimester start
             is.na(.data[[outcome]]) ~ 0, # no outcome
             .data[[outcome]] < date_time_at_risk_start ~ NA, # don't contribute
-            .data[[outcome]] >= postpartum_6_start & .data[[outcome]] <= postpartum_6_end ~ 1, # outcome during time at risk
-            .data[[outcome]] > postpartum_6_end ~ 0 # outcome after time at risk
+            .data[[outcome]] >= .data[[postpartumColStart]] & .data[[outcome]] <= .data[[postpartumColEnd]] ~ 1, # outcome during time at risk
+            .data[[outcome]] > .data[[postpartumColEnd]] ~ 0 # outcome after time at risk
           ),
           time_t4 = case_when(
-            status_t4 == 1 ~ !!datediff("postpartum_6_start", outcome) + 1,
-            status_t4 == 0 ~ !!datediff("postpartum_6_start", "postpartum_6_end") + 1,
+            status_t4 == 1 ~ !!datediff(postpartumColStart, outcome) + 1,
+            status_t4 == 0 ~ !!datediff(postpartumColStart, postpartumColEnd) + 1,
             is.na(status_t4) ~ NA
           ),
           pregnancies_t4 = if_else(is.na(status_t4), 0, 1)
@@ -2143,9 +2175,16 @@ getTimeToEvent <- function(cohort, washOut, outcomes) {
     for (outcome in outcomes) {
       colsExclude <- c("time_t4", "status_t4", "pregnancies_t4")
       if (outcome %in% postpartum) colsExclude <- NULL
-      if (outcome %in% onlyPostpartum) colsExclude <- c("time_t1", "status_t1", "pregnancies_t1", "time_t2", "status_t2", "pregnancies_t2", "time_t3", "status_t3", "pregnancies_t3", "time_t4", "status_t4", "pregnancies_t4")
+      if (outcome %in% onlyPostpartum) colsExclude <- c("time_t1", "status_t1", "pregnancies_t1", "time_t2", "status_t2", "pregnancies_t2", "time_t3", "status_t3", "pregnancies_t3")
       colsRename <- c("time", "status", "pregnancies", "time_t1", "status_t1", "pregnancies_t1", "time_t2", "status_t2", "pregnancies_t2", "time_t3", "status_t3", "pregnancies_t3", "time_t4", "status_t4", "pregnancies_t4")
       colsRename <- colsRename[!colsRename %in% colsExclude]
+      
+      postpartumColStart <- "postpartum_6_start"
+      postpartumColEnd <- "postpartum_6_end"
+      if (outcome == "postpartum_haemorrhage") {
+        postpartumColStart <- "postpartum_12_start"
+        postpartumColEnd <- "postpartum_12_end"
+      }
       
       cohort <- cohort %>%
         mutate(
@@ -2191,23 +2230,23 @@ getTimeToEvent <- function(cohort, washOut, outcomes) {
           pregnancies_t3 = if_else(is.na(status_t3), 0, 1),
           # time-status postpatum 6 weeks
           status_t4 = case_when(
-            is.na(postpartum_6_start) ~ NA, # don't get to postpartum 
-            .data[[outcome]] < postpartum_6_start & !is.na(.data[[outcome]]) ~ NA, # don't contribute: outcome before 
+            is.na(.data[[postpartumColStart]]) ~ NA, # don't get to postpartum 
+            .data[[outcome]] < .data[[postpartumColStart]] & !is.na(.data[[outcome]]) ~ NA, # don't contribute: outcome before 
             is.na(.data[[outcome]]) ~ 0, # no outcome
-            .data[[outcome]] >= postpartum_6_start & .data[[outcome]] <= postpartum_6_end ~ 1, # outcome during time at risk
-            .data[[outcome]] > postpartum_6_end ~ 0 # outcome after time at risk
+            .data[[outcome]] >= .data[[postpartumColStart]] & .data[[outcome]] <= .data[[postpartumColEnd]] ~ 1, # outcome during time at risk
+            .data[[outcome]] > .data[[postpartumColEnd]] ~ 0 # outcome after time at risk
           ),
           time_t4 = case_when(
-            status_t4 == 1 ~ !!datediff("postpartum_6_start", outcome) + 1,
-            status_t4 == 0 ~ !!datediff("postpartum_6_start", "postpartum_6_end") + 1,
+            status_t4 == 1 ~ !!datediff(postpartumColStart, outcome) + 1,
+            status_t4 == 0 ~ !!datediff(postpartumColStart, postpartumColEnd) + 1,
             is.na(status_t4) ~ NA
           ),
           pregnancies_t4 = if_else(is.na(status_t4), 0, 1)
         ) |>
         select(!all_of(c(outcome, colsExclude))) %>% 
-        {if(outcome %in% onlyPostpartum) {
+        {if (outcome %in% onlyPostpartum) {
           mutate(., time_t4 = time, status_t4 = status, pregnancies_t4 = pregnancies)
-        } else .} %>% 
+        }} |>
         rename_with(
           .fn = \(x){paste0(outcome, "_", x)},
           .cols = colsRename
@@ -2348,6 +2387,8 @@ addIncidenceRate <- function(x) {
 }
 
 addByPeriodEvents <- function(x, cohort) {
+  onlyPostpartum <- c("postpartum_endometritis", "postpartum_haemorrhage")
+  postpartum <- "maternal_death"
   outcomes <- x$group_level |> unique()
   overallCounts <- x |>
     filter(estimate_name == "outcome_count") |>
@@ -2358,27 +2399,46 @@ addByPeriodEvents <- function(x, cohort) {
       gestational_trimester = omopgenerics::toSnakeCase(gestational_trimester)
     ) |>
     pivot_wider(names_from = "gestational_trimester", values_from = "estimate_value") |>
-    select(group_level, pregnancy_start_period, overall, trimester_1, trimester_2, trimester_3)
+    select(any_of(c("group_level", "pregnancy_start_period", "overall", "trimester_1", "trimester_2", "trimester_3", "postpartum")))
   result <- NULL
   for (outcome in outcomes) {
-    result <- bind_rows(
-      result,
-      cohort |>
-        filter(.data[[paste0(outcome, "_status")]] == 1, pregnancy_start_period %in% c("Pre COVID-19", "COVID-19 main outbreak")) |>
+    periodResult <- cohort |>
+      filter(.data[[paste0(outcome, "_status")]] == 1, pregnancy_start_period %in% c("Pre COVID-19", "COVID-19 main outbreak")) |>
+      mutate(
+        # socioeconomic_status = as.character(socioeconomic_status),
+        days_to_end_period = case_when(
+          pregnancy_start_period == "Pre COVID-19" ~ as.Date("2019-12-31"),
+          pregnancy_start_period == "COVID-19 main outbreak" ~ as.Date("2021-12-31"),
+          .default = as.Date(NA)
+        )
+      ) %>%
+      mutate(
+        days_to_end_period = !!datediff("pregnancy_start_date", "days_to_end_period")
+      ) |>
+      select(any_of(c("pregnancy_start_period", "days_to_end_period", paste0(outcome, c("_time", "_status", "_time_t1", "_status_t1", "_time_t2", "_status_t2", "_time_t3", "_status_t3", "_time_t4", "_status_t4"))))) |>
+      collect()
+    
+    if (outcome %in% onlyPostpartum) {
+      periodResult <- periodResult |>
         mutate(
-          # socioeconomic_status = as.character(socioeconomic_status),
-          days_to_end_period = case_when(
-            pregnancy_start_period == "Pre COVID-19" ~ as.Date("2019-12-31"),
-            pregnancy_start_period == "COVID-19 main outbreak" ~ as.Date("2021-12-31"),
-            .default = as.Date(NA)
-          )
-        ) %>%
-        mutate(
-          days_to_end_period = !!datediff("pregnancy_start_date", "days_to_end_period")
+          outcome_in_period_count = if_else(.data[[paste0(outcome, "_status")]] == 1 & (days_to_end_period >= .data[[paste0(outcome, "_time")]] | pregnancy_start_period != "Post COVID-19 main outbreak"), 1, 0),
+          outcome_in_period_t4_count = if_else(outcome_in_period_count == 1 & .data[[paste0(outcome, "_status_t4")]]  == 1, 1, 0)
         ) |>
-        select(c("pregnancy_start_period", "days_to_end_period", paste0(outcome, c("_time", "_status", "_time_t1", "_status_t1", "_time_t2", "_status_t2", "_time_t3", "_status_t3")))) |>
+        group_by(pregnancy_start_period) |>
+        summarise(
+          outcome_in_period_count = sum(outcome_in_period_count, na.rm = TRUE),
+          outcome_in_period_t4_count = sum(outcome_in_period_t4_count, na.rm = TRUE)
+        ) |>
+        inner_join(overallCounts |> filter(group_level == outcome), by = "pregnancy_start_period") |>
         mutate(
-          outcome_in_period_count = if_else(.data[[outcome]] == 1 & (days_to_end_period >= .data[[paste0(outcome, "_time")]] | pregnancy_start_period != "Post COVID-19 main outbreak"), 1, 0),
+          outcome_in_period_percentage = if_else(outcome_in_period_count != 0, outcome_in_period_count/overall * 100, 0),
+          outcome_in_period_t4_percentage = if_else(outcome_in_period_t4_count != 0, outcome_in_period_t4_count/postpartum * 100, 0)
+        ) |>
+        select(!any_of(c("overall", "trimester_1", "trimester_2", "trimester_3", "postpartum")))
+    } else if (outcome %in% postpartum) {
+      periodResult <- periodResult |>
+        mutate(
+          outcome_in_period_count = if_else(.data[[paste0(outcome, "_status")]] == 1 & (days_to_end_period >= .data[[paste0(outcome, "_time")]] | pregnancy_start_period != "Post COVID-19 main outbreak"), 1, 0),
           outcome_in_period_t1_count = if_else(outcome_in_period_count == 1 & .data[[paste0(outcome, "_status_t1")]] == 1, 1, 0),
           outcome_in_period_t2_count = if_else(outcome_in_period_count == 1 & .data[[paste0(outcome, "_status_t2")]]  == 1, 1, 0),
           outcome_in_period_t3_count = if_else(outcome_in_period_count == 1 & .data[[paste0(outcome, "_status_t3")]]  == 1, 1, 0),
@@ -2392,7 +2452,6 @@ addByPeriodEvents <- function(x, cohort) {
           outcome_in_period_t3_count = sum(outcome_in_period_t3_count, na.rm = TRUE),
           outcome_in_period_t4_count = sum(outcome_in_period_t4_count, na.rm = TRUE)
         ) |>
-        collect() |>
         inner_join(overallCounts |> filter(group_level == outcome), by = "pregnancy_start_period") |>
         mutate(
           outcome_in_period_percentage = if_else(outcome_in_period_count != 0, outcome_in_period_count/overall * 100, 0),
@@ -2401,16 +2460,42 @@ addByPeriodEvents <- function(x, cohort) {
           outcome_in_period_t3_percentage = if_else(outcome_in_period_t3_count != 0, outcome_in_period_t3_count/trimester_3 * 100, 0),
           outcome_in_period_t4_percentage = if_else(outcome_in_period_t4_count != 0, outcome_in_period_t4_count/postpartum * 100, 0)
         ) |>
-        select(!c("overall", "trimester_1", "trimester_2", "trimester_3", "postpartum"))
-    )
+        select(!any_of(c("overall", "trimester_1", "trimester_2", "trimester_3", "postpartum")))
+    } else {
+      periodResult <- periodResult |>
+        mutate(
+          outcome_in_period_count = if_else(.data[[paste0(outcome, "_status")]] == 1 & (days_to_end_period >= .data[[paste0(outcome, "_time")]] | pregnancy_start_period != "Post COVID-19 main outbreak"), 1, 0),
+          outcome_in_period_t1_count = if_else(outcome_in_period_count == 1 & .data[[paste0(outcome, "_status_t1")]] == 1, 1, 0),
+          outcome_in_period_t2_count = if_else(outcome_in_period_count == 1 & .data[[paste0(outcome, "_status_t2")]]  == 1, 1, 0),
+          outcome_in_period_t3_count = if_else(outcome_in_period_count == 1 & .data[[paste0(outcome, "_status_t3")]]  == 1, 1, 0)
+        ) |>
+        group_by(pregnancy_start_period) |>
+        summarise(
+          outcome_in_period_count = sum(outcome_in_period_count, na.rm = TRUE),
+          outcome_in_period_t1_count = sum(outcome_in_period_t1_count, na.rm = TRUE),
+          outcome_in_period_t2_count = sum(outcome_in_period_t2_count, na.rm = TRUE),
+          outcome_in_period_t3_count = sum(outcome_in_period_t3_count, na.rm = TRUE)
+        ) |>
+        inner_join(overallCounts |> filter(group_level == outcome), by = "pregnancy_start_period") |>
+        mutate(
+          outcome_in_period_percentage = if_else(outcome_in_period_count != 0, outcome_in_period_count/overall * 100, 0),
+          outcome_in_period_t1_percentage = if_else(outcome_in_period_t1_count != 0, outcome_in_period_t1_count/trimester_1 * 100, 0),
+          outcome_in_period_t2_percentage = if_else(outcome_in_period_t2_count != 0, outcome_in_period_t2_count/trimester_2 * 100, 0),
+          outcome_in_period_t3_percentage = if_else(outcome_in_period_t3_count != 0, outcome_in_period_t3_count/trimester_3 * 100, 0)
+        ) |>
+        select(!any_of(c("overall", "trimester_1", "trimester_2", "trimester_3", "postpartum", remove)))
+    }
+    
+    # bind results
+    result <- bind_rows(result, periodResult)
   }
   if (nrow(result) == 0) return(x)
   result <- result |>
     pivot_longer(
-      cols = c(
+      cols = any_of(c(
         paste0("outcome_in_period", c("_count", "_percentage")), paste0("outcome_in_period_t1", c("_count", "_percentage")),
         paste0("outcome_in_period_t2", c("_count", "_percentage")), paste0("outcome_in_period_t3", c("_count", "_percentage")),
-        paste0("outcome_in_period_t4", c("_count", "_percentage"))
+        paste0("outcome_in_period_t4", c("_count", "_percentage")))
       ),
       names_to = "estimate_name",
       values_to = "estimate_value"
@@ -2614,7 +2699,18 @@ asDensity <- function(data) {
 cohortCodeUseFromCohort <- function(cohort) {
   cdm <- cdmReference(cohort)
   name <- tableName(cohort)
+  summaryCodeUse <- NULL
   codelist <- attr(cohort, "cohort_codelist") |> collect()
-  codelist <- split(as.integer(codelist$concept_id), codelist$codelist_name)
-  summariseCohortCodeUse(codelist, cdm, name, timing = "entry")
+  for (id in settings(cohort)$cohort_definition_id) {
+    codelist.id <- codelist |>
+      filter(cohort_definition_id == id)
+    if (nrow(codelist.id) > 0) {
+      codelist.id <- split(as.integer(codelist.id$concept_id), codelist.id$codelist_name)
+      summaryCodeUse <- bind(
+        summaryCodeUse,
+        summariseCohortCodeUse(codelist.id, cdm, name, cohortId = id, timing = "entry")
+      ) 
+    }
+  }
+  return(summaryCodeUse)
 }

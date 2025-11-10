@@ -157,11 +157,12 @@ cdm <- bind(cdm$aesi_180, cdm$cnsi_180, cdm$tts, name = "aesi_180")
 
 cdm$aesi_180 <- cdm$aesi_180 |>
   newCohortTable(
-    cohortSetRef = settings(cdm$aesi_180) |> mutate(cohort_name = paste0(cohort_name, "_sensitvitiy"))
+    cohortSetRef = settings(cdm$aesi_180) |> mutate(cohort_name = paste0(cohort_name, "_sens"))
   )
 
-cdm <- bind(cdm$aesi, cdm$aesi_180, name = "aesi")
-
+if (!any(grepl("_sens", settings(cdm$aesi)$cohort_name))) {
+  cdm <- bind(cdm$aesi, cdm$aesi_180, name = "aesi")
+}
 
 ## Summarise denominators ----
 info(logger, "- Summarise cohorts")
@@ -440,7 +441,7 @@ cdm$ir_postpartum_haemorrhage <- cdm$postpartum_12_weeks_denominator |>
   getTimeToEvent(washOut = 0,  outcomes = c("postpartum_haemorrhage"))
 
 ### Miscarriage
-if (grepl("miscarriage", settings(cdm$mae)$cohort_name)) {
+if (any(grepl("miscarriage", settings(cdm$mae)$cohort_name))) {
   cdm$ir_miscarriage <- cdm$miscarriage_denominator |>
     addCohortIntersectDate(
       targetCohortTable = "mae",
@@ -499,7 +500,7 @@ ir_maternal_death <- estimateIncidenceRate(cdm$ir_maternal_death, strata, "mater
 ir_postpartum_endometritis <- estimateIncidenceRate(cdm$ir_postpartum_endometritis, strata, "postpartum_endometritis")
 ir_postpartum_haemorrhage <- estimateIncidenceRate(cdm$ir_postpartum_haemorrhage, strata, "postpartum_haemorrhage")
 ir_preterm_labour <- estimateIncidenceRate(cdm$ir_preterm_labour, strata, "preterm_labour")
-if (grepl("miscarriage", settings(cdm$mae)$cohort_name)) {
+if (any(grepl("miscarriage", settings(cdm$mae)$cohort_name))) {
   ir_miscarriage <- estimateIncidenceRate(cdm$ir_miscarriage, strata, c("miscarriage", "miscarriage_codelist"))
 } else {
   ir_miscarriage <- NULL

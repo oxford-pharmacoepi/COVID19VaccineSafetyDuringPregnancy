@@ -74,15 +74,15 @@ results <- paste0("Results_", cdmName(cdm))
 getNCO <- TRUE
 
 # Confidence Interval Method
-ci = "boootstrap" 
+ci = "bootstrap" 
 
 # Only subjects with primary care data in SCIFI-PEARL
 sensitvitySCIFIPEARL <- FALSE
 
 # Choose code to run
-runInstantiateCohorts <- FALSE
-runRiskSetSampling <- FALSE
-runPSWeighting <- FALSE
+runInstantiateCohorts <- TRUE
+runRiskSetSampling <- TRUE
+runPSWeighting <- TRUE
 runOutcomeModel <- TRUE
 runBackgroundRates <- TRUE
 runBRCharacteristics <- TRUE

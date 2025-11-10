@@ -126,13 +126,13 @@ cdm$mae_outcome <- cdm$study_population |>
   ) |>
   addCohortIntersectDate(
     targetCohortTable = "mae",
-    targetCohortId = c('antepartum_haemorrhage', 'eclampsia', 'hellp', 'preterm_labour', 'dysfunctional_labour', 'postpartum_endometritis', 'maternal_death', 'postpartum_haemorrhage'),
+    targetCohortId = c('antepartum_haemorrhage', 'eclampsia', 'hellp', 'dysfunctional_labour', 'postpartum_endometritis', 'maternal_death', 'postpartum_haemorrhage'),
     window = c(1, Inf),
     nameStyle = "{cohort_name}",
     name = "mae_outcome"
   )
 info(logger, "  * Get IRR for MAE during pregnancy")
-outcomes <- c('antepartum_haemorrhage', 'eclampsia', 'hellp', 'preterm_labour', 'dysfunctional_labour')
+outcomes <- c('antepartum_haemorrhage', 'eclampsia', 'hellp', 'dysfunctional_labour')
 cdm$mea_pregnancy <- cdm$mae_outcome  %>% 
   mutate(
     pregnancy_end =  if_else(pregnancy_end_date < cohort_end_date, pregnancy_end_date, cohort_end_date),
@@ -231,11 +231,10 @@ if (getNCO) {
     weights = allCovariatesPS, outcomeGroup = "Negative Control Outcomes", ci = ci
   )
 } else {
-  nco_ <- NULL
+  nco <- NULL
   nco_sensitivity <- NULL
 }
 
 bind(nco, nco_sensitivity) |>
   suppressRiskEstimates() |> 
   exportSummarisedResult(fileName = paste0("nco_", cdmName(cdm), ".csv"), path = output_folder)
-

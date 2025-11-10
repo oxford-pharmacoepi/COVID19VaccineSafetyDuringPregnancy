@@ -88,6 +88,9 @@ for (nm in cohortNames) {
             coefficient = glmResult$coefficients
           )
         )
+        
+        rm(glmResult)
+        
       } else {
         allCovariatesPS[[nm]][[stLevel]] <- covariatesPS[[nm]][[stLevel]]
       }
