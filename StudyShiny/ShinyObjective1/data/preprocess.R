@@ -3,6 +3,7 @@ resultList <- list(
   summarise_omop_snapshot = list(result_type = "summarise_omop_snapshot"),
   summarise_cohort_count = list(result_type = "summarise_cohort_count"),
   summarise_cohort_attrition = list(result_type = "summarise_cohort_attrition"),
+  cohort_code_use = list(result_type = "cohort_code_use"),
   summarise_characteristics = list(result_type = "summarise_characteristics"),
   summarise_large_scale_characteristics = list(result_type = "summarise_large_scale_characteristics"),
   survival = list(result_type = c("survival_probability", "survival_events", "survival_summary", "survival_attrition")),
@@ -25,6 +26,8 @@ result <- result |>
         "antepartum_haemorrhage", "gestational_diabetes", "hellp", "preeclampsia", 
         "postpartum_endometritis", "postpartum_haemorrhage"
       ) ~ "Maternal Adverse Events",
+      .data$result_id %in% incidenceID & grepl("_sens", .data$group_level) ~ 
+        "AESI Sensitivity (180 wash-out)",
       .data$result_id %in% incidenceID & !.data$group_level %in% c(
         "preterm_labour", "miscarriage", "stillbirth", "maternal_death", 
         "dysfunctional_labour", "eclampsia", "ectopic_pregnancy", 
@@ -37,7 +40,7 @@ result <- result |>
   omopgenerics::newSummarisedResult()
 
 data <- prepareResult(result, resultList)
-attr(data$incidence, "settings") <- attr(data$incidence, "settings")  |> dplyr::mutate(additional = "outcome_group")
+attr(data$incidence, "settings") <- attr(data$incidence, "settings") |> dplyr::mutate(additional = "outcome_group")
 values <- getValues(result, resultList)
 
 # edit choices and values of interest

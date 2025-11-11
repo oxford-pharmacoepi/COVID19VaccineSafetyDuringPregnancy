@@ -322,6 +322,101 @@ ui <- bslib::page_navbar(
           )
         )
       )
+    ),
+    ## Cohort code use -----
+    bslib::nav_panel(
+      title = "Cohort code use",
+      icon = shiny::icon("chart-column"),
+      bslib::layout_sidebar(
+        sidebar = bslib::sidebar(
+          width = 400, 
+          open = "closed",
+          shinyWidgets::pickerInput(
+            inputId = "cohort_code_use_cdm_name",
+            label = "CDM name",
+            choices = choices$cohort_code_use_cdm_name,
+            selected = selected$cohort_code_use_cdm_name,
+            multiple = TRUE,
+            options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
+          ),
+          shinyWidgets::pickerInput(
+            inputId = "cohort_code_use_cohort_name",
+            label = "Cohort name",
+            choices = choices$cohort_code_use_cohort_name,
+            selected = selected$cohort_code_use_cohort_name[1],
+            multiple = TRUE,
+            options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
+          ),
+          bslib::accordion(
+            bslib::accordion_panel(
+              title = "Settings",
+              shinyWidgets::pickerInput(
+                inputId = "cohort_code_use_domain_id",
+                label = "Domain",
+                choices = choices$cohort_code_use_domain_id,
+                selected = selected$cohort_code_use_domain_id,
+                multiple = TRUE,
+                options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
+              ),
+              div(style="display: flex; justify-content: space-between;",
+                  div(style="flex: 1;", prettyCheckbox(inputId = "cohort_code_use_person_count",
+                                                       label = "Person count",
+                                                       value = TRUE,
+                                                       status = "primary",
+                                                       shape = "curve",
+                                                       outline = TRUE)),
+                  div(style="flex: 1;", prettyCheckbox(inputId = "cohort_code_use_record_count",
+                                                       label = "Record count",
+                                                       value = TRUE,
+                                                       status = "primary",
+                                                       shape = "curve",
+                                                       outline = TRUE))
+              )
+            ),
+            bslib::accordion_panel(
+              title = "Table formatting",
+              materialSwitch(inputId = "cohort_code_use_interactive",
+                             value = TRUE,
+                             label = "Interactive",
+                             status = "primary"),
+              sortable::bucket_list(
+                header = NULL,
+                sortable::add_rank_list(
+                  text = "none",
+                  labels = c("cohort_name", "codelist_name", "source_concept_name", "source_concept_id", "domain_id", "variable_name", "variable_level"),
+                  input_id = "cohort_code_use_gt_none"
+                ),
+                sortable::add_rank_list(
+                  text = "header",
+                  labels = c("cdm_name", "estimate_name"),
+                  input_id = "cohort_code_use_gt_header"
+                ),
+                sortable::add_rank_list(
+                  text = "groupColumn",
+                  labels =  character(),
+                  input_id = "cohort_code_use_gt_groupColumn"
+                ),
+                sortable::add_rank_list(
+                  text = "hide",
+                  labels = character(),
+                  input_id = "cohort_code_use_gt_hide"
+                )
+              )
+            )
+          )
+        ),
+        bslib::nav_panel(
+          title = "Table cohort code use",
+          bslib::card(
+            full_screen = TRUE,
+            bslib::card_header(
+              shiny::downloadButton(outputId = "cohort_code_use_download", label = ""),
+              class = "text-end"
+            ),
+            uiOutput("cohort_code_use_tbl") |> withSpinner()
+          )
+        )
+      )
     )
   ),
   # Background rates -----
@@ -345,7 +440,7 @@ ui <- bslib::page_navbar(
           shinyWidgets::pickerInput(
             inputId = "incidence_outcome_group",
             label = "Outcome cohort group",
-            choices = c("Adverse Events of Special Interest", "Maternal Adverse Events"),
+            choices = c("Adverse Events of Special Interest", "Maternal Adverse Events", "AESI Sensitivity (180 wash-out)"),
             selected = c("Adverse Events of Special Interest", "Maternal Adverse Events"),
             multiple = TRUE,
             options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
@@ -402,7 +497,10 @@ ui <- bslib::page_navbar(
             inputId = "incidence_estimate_name",
             label = "Estimate name",
             choices = choices$incidence_estimate_name,
-            selected = selected$incidence_estimate_name,
+            selected = c(
+              "denominator_count", "incidence_100000_pys", "incidence_100000_pys_95CI_lower", "incidence_100000_pys_95CI_upper",
+              "outcome_count", "outcome_in_period_count", "outcome_in_period_percentage", "person_days_count"        
+            ),
             multiple = TRUE,
             options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
           ),
@@ -1114,14 +1212,14 @@ ui <- bslib::page_navbar(
             multiple = TRUE,
             options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
           ),
-          # shinyWidgets::pickerInput(
-          #   inputId = "summarise_large_scale_characteristics_trimester",
-          #   label = "Trimester",
-          #   choices = choices$summarise_large_scale_characteristics_trimester,
-          #   selected = "overall",
-          #   multiple = TRUE,
-          #   options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
-          # ),
+          shinyWidgets::pickerInput(
+            inputId = "summarise_large_scale_characteristics_trimester",
+            label = "Trimester",
+            choices = choices$summarise_large_scale_characteristics_trimester,
+            selected = "overall",
+            multiple = TRUE,
+            options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
+          ),
           shinyWidgets::pickerInput(
             inputId = "summarise_large_scale_characteristics_pregnancy_start_period",
             label = "Pregnancy start period",

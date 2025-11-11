@@ -428,3 +428,33 @@ reactiveSelectors <- function(data, prefix, columns, restrictions, input,
     ))
   })
 }
+
+getColsForTbl <- function(tbl, sortNALast = TRUE, names = c("Standard concept ID")){
+  
+  cols <- list()
+  for(i in seq_along(names(tbl))){
+    working_col <- names(tbl)[i]
+    
+    if(working_col %in% c(names)){
+      
+      cols[[working_col]] <- colDef(name = working_col,
+                                    sortNALast = sortNALast,
+                                    cell = function(value){
+                                      if(!is.na(value) && !grepl("^NA$", value)) {
+                                        url <- sprintf("https://athena.ohdsi.org/search-terms/terms/%s", value)
+                                        htmltools::tags$a(href = url, target = "_blank", as.character(value))
+                                      }else{
+                                        "-"
+                                      }
+                                    }
+      )
+      
+    }else{
+      cols[[working_col]] <- colDef(name = working_col,
+                                    sortNALast = sortNALast,
+                                    format = colFormat(separators = TRUE))
+    }
+  }
+  
+  return(cols)
+}
