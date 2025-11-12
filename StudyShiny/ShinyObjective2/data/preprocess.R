@@ -20,9 +20,7 @@ result <- omopgenerics::importSummarisedResult(file.path(getwd(), "data"))
 attr(result, "settings") <- omopgenerics::settings(result) |>
   dplyr::mutate(
     table_name = dplyr::case_when(
-      table_name == "aesi_30" ~ "AESI recurrent",
-      table_name == "aesi_90" ~ "AESI acute",
-      table_name == "aesi_inf" ~ "AESI chronic",
+      table_name == "aesi" ~ "AESI",
       table_name == "covariates_1" ~ "Covariates at 1 year prior",
       table_name == "covariates_5" ~ "Covariates at 5 years prior",
       table_name == "covariates_inf" ~ "Covariates anytime prior",
@@ -37,7 +35,6 @@ attr(result, "settings") <- omopgenerics::settings(result) |>
 
 data <- prepareResult(result, resultList)
 values <- getValues(result, resultList)
-data$propensity_scores <- data$propensity_scores |> omopgenerics::tidy()
 # edit choices and values of interest
 choices <- values
 selected <- getSelected(values)

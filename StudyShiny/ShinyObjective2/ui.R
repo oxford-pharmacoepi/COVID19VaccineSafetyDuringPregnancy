@@ -463,7 +463,7 @@ ui <- bslib::page_navbar(
             )
           ),
           bslib::nav_panel(
-            title = "Population Table Attrition",
+            title = "Source Population Attrition",
             bslib::card(
               full_screen = TRUE,
               bslib::card_header(
@@ -521,39 +521,39 @@ ui <- bslib::page_navbar(
               )
             )
           ),
-          bslib::nav_panel(
-            title = "Population Attrition Diagram",
-            bslib::card(
-              full_screen = TRUE,
-              bslib::card_header(
-                bslib::popover(
-                  shiny::icon("download"),
-                  shiny::numericInput(
-                    inputId = "summarise_cohort_attrition_diagram_width_pop",
-                    label = "Width (px)",
-                    value = 2000
-                  ),
-                  shiny::downloadButton(outputId = "summarise_cohort_attrition_diagram_download_pop", label = "Download Diagram")
-                ),
-                class = "text-end"
-              ),
-              bslib::layout_sidebar(
-                sidebar = bslib::sidebar(
-                  shinyWidgets::pickerInput(
-                    inputId = "summarise_cohort_attrition_diagram_show_pop",
-                    label = "Show",
-                    choices = c("subjects", "records"),
-                    selected = c("records"),
-                    multiple = TRUE,
-                    options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
-                  ),
-                  position = "right"
-                ),
-                DiagrammeR::grVizOutput("summarise_cohort_attrition_diagram_pop") |>
-                  shinycssloaders::withSpinner()
-              )
-            )
-          ),
+          # bslib::nav_panel(
+          #   title = "Source Population Attrition Diagram",
+          #   bslib::card(
+          #     full_screen = TRUE,
+          #     bslib::card_header(
+          #       bslib::popover(
+          #         shiny::icon("download"),
+          #         shiny::numericInput(
+          #           inputId = "summarise_cohort_attrition_diagram_width_pop",
+          #           label = "Width (px)",
+          #           value = 2000
+          #         ),
+          #         shiny::downloadButton(outputId = "summarise_cohort_attrition_diagram_download_pop", label = "Download Diagram")
+          #       ),
+          #       class = "text-end"
+          #     ),
+          #     bslib::layout_sidebar(
+          #       sidebar = bslib::sidebar(
+          #         shinyWidgets::pickerInput(
+          #           inputId = "summarise_cohort_attrition_diagram_show_pop",
+          #           label = "Show",
+          #           choices = c("subjects", "records"),
+          #           selected = c("records"),
+          #           multiple = TRUE,
+          #           options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
+          #         ),
+          #         position = "right"
+          #       ),
+          #       DiagrammeR::grVizOutput("summarise_cohort_attrition_diagram_pop") |>
+          #         shinycssloaders::withSpinner()
+          #     )
+          #   )
+          # ),
           bslib::nav_panel(
             title = "Sampling Summary Table",
             bslib::card(
@@ -630,6 +630,30 @@ ui <- bslib::page_navbar(
             multiple = TRUE,
             options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
           ),
+          shinyWidgets::pickerInput(
+            inputId = "propensity_scores_vaccine_brand",
+            label = "Vaccine brand",
+            choices = choices$propensity_scores_vaccine_brand,
+            selected = "overall",
+            multiple = TRUE,
+            options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
+          ),
+          shinyWidgets::pickerInput(
+            inputId = "propensity_scores_gestational_trimester",
+            label = "Gestational trimester",
+            choices = choices$propensity_scores_gestational_trimester,
+            selected = "overall",
+            multiple = TRUE,
+            options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
+          ),
+          shinyWidgets::pickerInput(
+            inputId = "propensity_scores_age_group",
+            label = "Age group",
+            choices = choices$propensity_scores_age_group,
+            selected = "overall",
+            multiple = TRUE,
+            options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
+          ),
           position = "left"
         ),
         shiny::actionButton(
@@ -650,6 +674,18 @@ ui <- bslib::page_navbar(
                 ),
                 class = "text-end"
               ),
+              bslib::layout_sidebar(
+                sidebar = bslib::sidebar(
+                  shinyWidgets::pickerInput(
+                    inputId = "propensity_score_hide",
+                    label = "Hide",
+                    choices = c("cdm_name", "cohort_name", "vaccine_brand", "gestational_trimester", "age_group"),
+                    selected = c("vaccine_brand", "gestational_trimester", "age_group"),
+                    multiple = TRUE,
+                    options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
+                  ),
+                  position = "right"
+                ),
               DT::DTOutput("propensity_score_coeficcients_tidy") |>
                 shinycssloaders::withSpinner()
             )
@@ -698,7 +734,7 @@ ui <- bslib::page_navbar(
                   shinyWidgets::pickerInput(
                     inputId = "propensity_score_plot_facet",
                     label = "Facet",
-                    choices = c("cdm_name", "cohort_name"),
+                    choices = c("cdm_name", "cohort_name", "vaccine_brand", "gestational_trimester", "age_group"),
                     selected = c("cdm_name", "cohort_name"),
                     multiple = TRUE,
                     options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")

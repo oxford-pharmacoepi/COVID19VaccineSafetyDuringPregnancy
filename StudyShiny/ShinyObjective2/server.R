@@ -862,10 +862,16 @@ server <- function(input, output, session) {
         .data$cdm_name %in% input$propensity_scores_cdm_name,
         .data$group_level %in% input$propensity_scores_cohort_name
       ) |> 
+      omopgenerics::filterStrata(
+        .data$vaccine_brand %in% input$summarise_characteristics_vaccine_brand,
+        .data$gestational_trimester %in% input$summarise_characteristics_gestational_trimester,
+        .data$age_group %in% input$summarise_characteristics_age_group
+      ) |>
       visOmopResults::tidy()
   })
   output$propensity_score_coeficcients_tidy <- DT::renderDT({
-    getPropensityScoreCoeficcientsTidy()
+    getPropensityScoreCoeficcientsTidy() |>
+      select(!dplyr::any_of(input$propensity_score_hide))
   })
   output$propensity_score_coeficcients_tidy_download <- shiny::downloadHandler(
     filename = "tidy_results.csv",
@@ -879,8 +885,13 @@ server <- function(input, output, session) {
     data[["propensity_scores"]] |>
       dplyr::filter(
         .data$cdm_name %in% input$propensity_scores_cdm_name,
-        .data$cohort_name %in% input$propensity_scores_cohort_name
-      ) 
+        .data$group_level %in% input$propensity_scores_cohort_name
+      ) |> 
+      omopgenerics::filterStrata(
+        .data$vaccine_brand %in% input$summarise_characteristics_vaccine_brand,
+        .data$gestational_trimester %in% input$summarise_characteristics_gestational_trimester,
+        .data$age_group %in% input$summarise_characteristics_age_group
+      )
   })
   getPropensityScorePlot <- shiny::reactive({
     getPropensityScoresData() |>
@@ -1005,11 +1016,7 @@ server <- function(input, output, session) {
       omopgenerics::filterGroup(.data$cohort_name %in% input$summarise_sampling_cohort_name) |>
       omopgenerics::filterSettings(.data$table_name %in% "Study population") |>
       omopgenerics::filterSettings(.data$table_name %in% "Study population") |>
-      dplyr::mutate(additional_level = as.numeric(additional_level)) |>
-      dplyr::filter(additional_level < 15 | additional_level > 23) |>
-      dplyr::filter(!(additional_level == 24 & group_level %in% c("population_objective_2", "population_objective_3"))) |>
-      dplyr::filter(!(additional_level == 14 & group_level %in% c("population_objective_1"))) |>
-      dplyr::mutate(additional_level = as.character(additional_level)) 
+      dplyr::filter(as.numeric(additional_level) < 15)
   })
   getSummariseCohortAttritionTablePop <- shiny::reactive({
     getSummariseCohortAttritionDataPop() |>
