@@ -564,8 +564,8 @@ server <- function(input, output, session) {
   getIncidencePlot <- shiny::reactive({
     x <- getIncidenceData() |>
       omopgenerics::tidy()
-    labels <- c('cdm_name', 'outcome_cohort_name', 'gestational_trimester', 'maternal_age_group', 'pregnancy_start_period', 'socioeconomic_status', 'ethnicity', 'variable_name', 'variable_level', 'outcome_count', 'person_days_count', 'denominator_count', 'person_years', 'incidence_100000_pys', 'incidence_100000_pys_95CI_lower', 'incidence_100000_pys_95CI_upper')
-    labels <- labels[labels %in% colnames(x)]
+    label <- c('cdm_name', 'outcome_cohort_name', 'gestational_trimester', 'maternal_age_group', 'pregnancy_start_period', 'socioeconomic_status', 'ethnicity', 'variable_name', 'variable_level', 'outcome_count', 'person_days_count', 'denominator_count', 'person_years', 'incidence_100000_pys', 'incidence_100000_pys_95CI_lower', 'incidence_100000_pys_95CI_upper')
+    label <- label[label %in% colnames(x)]
     x |>
       dplyr::mutate(
         outcome_group = factor(
@@ -601,7 +601,7 @@ server <- function(input, output, session) {
         facet = input$incidence_plot_facet,
         colour = input$incidence_plot_colour,
         style = "default",
-        label = labels
+        label = label
       ) + 
       ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, vjust = 0.5, hjust=1))
   })
@@ -716,7 +716,7 @@ server <- function(input, output, session) {
         factor = list(
           "maternal_age_group" = c("overall", "12 to 17", "18 to 34", "35 to 55"),
           "pregnancy_start_period" = c("overall", "Pre COVID-19", "COVID-19 main outbreak", "Post COVID-19 main outbreak"),
-          "socioeconomic_status" = c("overall", paste0(1:10)),
+          "socioeconomic_status" = c("overall", paste0("Q", 1:5)),
           "ethnicity" = c("overall", "White", "Black", "Asian", "Missing")
         )
       )
