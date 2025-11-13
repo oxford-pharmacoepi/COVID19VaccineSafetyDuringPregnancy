@@ -357,7 +357,8 @@ cdm$aesi_90_washout <- cdm$aesi_90 |>
 cdm$aesi_30_washout <- cdm$aesi_30 |>
   mutate(days = 30) |>
   getWashOut(cdm$source_population) |>
-  compute(name = "aesi_30_washout", temporary = FALSE)
+  compute(name = "aesi_30_washout", temporary = FALSE) |>
+  newCohortTable()
 cdm$mae_washout <- cdm$mae_pregnancy |>
   unionCohorts(cohortName = "mae_during_pregnancy", name = "mae_washout")
 

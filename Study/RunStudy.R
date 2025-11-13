@@ -172,7 +172,7 @@ if (runBRCharacteristics) {
       .softValidation = TRUE
     )
   }
-  info(logger, "STEP 5 BACKGROUND RATES CHARACTERISTICS ----")
+  info(logger, "STEP 6 BACKGROUND RATES CHARACTERISTICS ----")
   source(here("Analysis", "06_BRCharacterisation.R"))
 }
 
