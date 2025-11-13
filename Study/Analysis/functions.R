@@ -1819,7 +1819,7 @@ addEthnicity <- function(cohort) {
               .default = "Missing"
             )
           ) |>
-          select("subject_id", "pregnancy_id", "birth_continent")
+          select("subject_id", "pregnancy_start_date", "pregnancy_end_date", "birth_continent")
       ) |>
       mutate(birth_continent = if_else(is.na(birth_continent), "Missing", birth_continent)) |>
       dplyr::compute(name = name, temporary = FALSE)
