@@ -21,7 +21,6 @@ cdm$pregnancy_denominator <- cdm$mother_table |>
   ) |>
   # Start in 2018 and end 9 months before end of data
   requireInDateRange(dateRange = c(as.Date("2018-01-01"), dataCutDate - lubridate::month(9))) %>% 
-  
   # Add postpartum dates
   mutate(
     postpartum_6_weeks = !!dateadd("pregnancy_end_date", 6*7),
@@ -60,8 +59,8 @@ cdm$pregnancy_denominator <- cdm$mother_table |>
     trimester_1_start = cohort_start_date,
     trimester_2_start =  as.Date(!!dateadd("pregnancy_start_date", 91)),
     trimester_3_start = as.Date(!!dateadd("pregnancy_start_date", 181)),
-    postpartum_6_start = pregnancy_end_date,
-    postpartum_12_start = pregnancy_end_date,
+    postpartum_6_start = as.Date(!!dateadd("pregnancy_end_date", 1)),
+    postpartum_12_start = as.Date(!!dateadd("pregnancy_end_date", 1)),
     trimester_1_end = as.Date(!!dateadd("pregnancy_start_date", 90)),
     trimester_2_end =  as.Date(!!dateadd("pregnancy_start_date", 180)),
     trimester_3_end = cohort_end_date,
@@ -96,13 +95,23 @@ cdm$pregnancy_denominator <- cdm$pregnancy_denominator |>
   ) |>
   compute(name = "pregnancy_denominator", temporary = FALSE)
 
+cdm$pregnancy_denominator <- cdm$pregnancy_denominator |>
+  addSocioeconomicStatus() |>
+  addEthnicity() |>
+  compute(name = "pregnancy_denominator", temporary = FALSE)
+
 strata <- list("maternal_age_group", "pregnancy_start_period")
-if (cdmName(cdm) %in% c("CPRD AURUM", "CPRD GOLD", "SIDIAP")) {
-  cdm$pregnancy_denominator <- cdm$pregnancy_denominator |>
-    addSocioeconomicStatus() |>
-    addEthnicity() |>
-    compute(name = "pregnancy_denominator", temporary = FALSE)
+if (grepl("SIDIAP", cdmName(cdm))) {
+  strata <- c(strata, list("socioeconomic_status", "nationallity"))
+}
+if (grepl("CPRD", cdmName(cdm))) {
   strata <- c(strata, list("socioeconomic_status", "ethnicity"))
+}
+if (grepl("NLHR@UiO", cdmName(cdm))) {
+  strata <- c(strata, list("birth_continent"))
+}
+if (grepl("SCIFI-PEARL", cdmName(cdm))) {
+  strata <- c(strata, list("socioeconomic_status", "birth_continent"))
 }
 
 ## Denominators ----

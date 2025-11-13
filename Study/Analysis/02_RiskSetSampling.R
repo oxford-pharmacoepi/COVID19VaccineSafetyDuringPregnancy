@@ -207,6 +207,7 @@ sampling_summary <- samplingSummary(sampling_source, "Comparator eligible to con
 
 ## Export sampling summary ----
 sampling_summary |>
+  mutate(cdm_name = cdmName(cdm)) |>
   newSummarisedResult(
     settings = settings(sampling_summary) |> mutate(result_type = "summarise_sampling")
   ) |>

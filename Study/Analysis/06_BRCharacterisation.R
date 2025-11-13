@@ -45,6 +45,19 @@ cdm$characteristics_br <- cdm$characteristics_br %>%
   compute(name = "characteristics_br", temporary = FALSE) |>
   addSeason()
 
+strata <- list("maternal_age_group", "pregnancy_start_period")
+if (grepl("SIDIAP", cdmName(cdm))) {
+  strata <- c(strata, list("socioeconomic_status", "nationallity"))
+}
+if (grepl("CPRD", cdmName(cdm))) {
+  strata <- c(strata, list("socioeconomic_status", "ethnicity"))
+}
+if (grepl("NLHR@UiO", cdmName(cdm))) {
+  strata <- c(strata, list("birth_continent"))
+}
+if (grepl("SCIFI-PEARL", cdmName(cdm))) {
+  strata <- c(strata, list("socioeconomic_status", "birth_continent"))
+}
 strata <- c(list("trimester"), strata)
 
 info(logger, "- 1. Baseline Characterisation")

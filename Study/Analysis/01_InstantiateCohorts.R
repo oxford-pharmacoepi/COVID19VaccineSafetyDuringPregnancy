@@ -308,7 +308,9 @@ cdm$mae_pregnancy <- cdm$base |>
 cdm$mother_table <- cdm$mother_table %>%
   mutate(
     end_6 = !!CDMConnector::dateadd("pregnancy_end_date", 42),
-    end_12 = !!CDMConnector::dateadd("pregnancy_end_date", 84)
+    end_12 = !!CDMConnector::dateadd("pregnancy_end_date", 84),
+    pregnancy_end_date_m7 = !!CDMConnector::dateadd("pregnancy_end_date", -7),
+    pregnancy_end_date_7 = !!CDMConnector::dateadd("pregnancy_end_date", 7)
   )
 cdm$mae_postpartum_6weeks <- cdm$base |>
   subsetCohorts(
@@ -326,10 +328,6 @@ cdm$mae_miscarriage <- cdm$base |>
   subsetCohorts(
     cohortId = "miscarriage_codelist",
     name = "mae_miscarriage"
-  ) %>% 
-  mutate(
-    pregnancy_end_date_m7 = !!CDMConnector::dateadd("pregnancy_end_date", -7),
-    pregnancy_end_date_7 = !!CDMConnector::dateadd("pregnancy_end_date", 7)
   ) |>
   startsInPregnancy(start = "pregnancy_end_date_m7", end = "pregnancy_end_date_7", reason = "In pregnancy end date [7-day window]")
 

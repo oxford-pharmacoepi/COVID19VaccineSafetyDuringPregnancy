@@ -928,7 +928,7 @@ cohortExit <- function(x, strata, weights) {
     summariseResult(
       group = "cohort_name",
       strata = strata,
-      variables = c("follow-up time"),
+      variables = c("follow-up time", "number_records_weighted"),
       weights = weights
     ) |>
     mutate("analysis" = "main") |>
@@ -2023,6 +2023,7 @@ getPostpartum6Denominator <- function(cohort) {
       cohort_start_date = postpartum_6_start,
       cohort_end_date = postpartum_6_end
     ) |>
+    filter(cohort_start_date <= cohort_end_date) |>
     compute(name = "postpartum_6_weeks_denominator", temporary = FALSE) |>
     recordCohortAttrition("Postpartum 6 weeks denominator") |>
     newCohortTable(
@@ -2039,6 +2040,7 @@ getPostpartum12Denominator <- function(cohort) {
       cohort_start_date = postpartum_12_start,
       cohort_end_date = postpartum_12_end
     ) |>
+    filter(cohort_start_date <= cohort_end_date) |>
     compute(name = "postpartum_12_weeks_denominator", temporary = FALSE) |>
     recordCohortAttrition("Postpartum 12 weeks denominator") |>
     newCohortTable(
@@ -2533,6 +2535,8 @@ getMatchedCohort <- function(cohort, outcomes, name) {
   if (cdmName(cdm) %in% c("CPRD AURUM", "CPRD GOLD", "SIDIAP")) {
     strata <- c(strata, "socioeconomic_status", "ethnicity")
   }
+  onlyPostpartum <- c("postpartum_endometritis", "postpartum_haemorrhage")
+  postpartum <- "maternal_death"
   
   for (outcome in outcomes) {
     nameMatch <- paste0(tmp, "match")
@@ -2558,7 +2562,7 @@ getMatchedCohort <- function(cohort, outcomes, name) {
       outcome_match <- cohort |>
         filter(.data[[paste0(outcome, "_status")]] == 0) |>
         select(all_of(c(
-          "subject_id", "pregnancy_start_date", "pregnancy_end_date", "maternal_age", strata
+          "subject_id", "pregnancy_start_date", "pregnancy_end_date", "maternal_age", "cohort_end_date", strata
         ))) |>
         mutate(
           pregnancy_start_band = if_else(
@@ -2584,15 +2588,28 @@ getMatchedCohort <- function(cohort, outcomes, name) {
               "matched_subject_id" = "subject_id",
               "matched_pregnancy_start_date" = "pregnancy_start_date",
               "matched_pregnancy_end_date" = "pregnancy_end_date",
-              "matched_maternal_age" = "maternal_age"
+              "matched_maternal_age" = "maternal_age",
+              "matched_cohort_end_date" = "cohort_end_date"
             ) |>
             rename_with(.fn = \(x){glue("matched_{x}")}, .cols = strata),
           by = c("age_group_sample", "pregnancy_start_band")
         ) |>
-        filter(matched_pregnancy_start_date < cohort_start_date & matched_pregnancy_end_date > cohort_start_date) |>
+        compute(name = nameSample, temporary = FALSE) 
+      if (outcome %in% onlyPostpartum) {
+        outcome_sampled <- outcome_sampled |>
+          filter(matched_pregnancy_end_date < cohort_start_date & matched_cohort_end_date > cohort_start_date)
+      } else if (outcome %in% postpartum) {
+        outcome_sampled <- outcome_sampled |>
+          filter(matched_pregnancy_start_date < cohort_start_date & matched_cohort_end_date > cohort_start_date)
+      } else {
+        outcome_sampled <- outcome_sampled |>
+          filter(matched_pregnancy_start_date < cohort_start_date & matched_pregnancy_end_date > cohort_start_date) 
+      }
+      outcome_sampled <- outcome_sampled |>
         slice_sample(n = 1, by = "matched_subject_id") |>
         slice_sample(n = 1, by = c("subject_id", "cohort_start_date")) |>
-        compute(name = nameSample, temporary = FALSE)
+        select(!"matched_cohort_end_date") |>
+        compute(name = nameSample, temporary = FALSE) 
       outcome_match <- outcome_sampled  |>
         select(!c(
           "subject_id",
@@ -2688,11 +2705,11 @@ getCovariateList <- function(cdm) {
 }
 
 asDensity <- function(data) {
-  xx <- density(data |> filter(exposure == "exposed") |> pull(ps))
-  yy <- density(data |> filter(exposure == "comparator") |> pull(ps))
+  exposed <- density(data |> filter(exposure == "exposed") |> pull(ps))
+  comparator <- density(data |> filter(exposure == "comparator") |> pull(ps))
   
-  tibble(x = xx$x, y = xx$y, exposure = "exposed") |>
-    bind_rows(tibble(x = yy$x,  y = yy$y, exposure = "comparator")) |>
+  tibble(x = exposed$x, y = exposed$y, exposure = "exposed", variable_level = as.character(1:length(exposed$x))) |>
+    bind_rows(tibble(x = comparator$x,  y = comparator$y, exposure = "comparator", variable_level = as.character(1:length(comparator$x)))) |>
     pivot_longer(cols = c("x", "y"), names_to = "estimate_name", values_to = "estimate_value")
 }
 

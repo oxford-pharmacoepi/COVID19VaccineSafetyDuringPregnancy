@@ -167,7 +167,6 @@ ps |>
     result_id = 1L,
     cdm_name = cdmName(cdm),
     variable_name = "propensity_score",
-    variable_level = as.character(row_number()),
     estimate_type = "numeric",
     estimate_value = as.character(estimate_value)
   ) |>
