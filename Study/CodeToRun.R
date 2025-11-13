@@ -26,6 +26,12 @@ library(odbc)
 library(RPostgres)
 
 # Database name
+# Database names must contain the following words so database-specific code works:
+# - Catalonia, Spain: SIDIAP
+# - Sweden: SCIFI-PEARL
+# - Norway: NLHR@UiO
+# - UK: CPRD
+# Additional characters are allowed (e.g. CPRD GOLD, SCIFI-PEARL-v2...)
 database_name <- "..."
 
 # Connection details

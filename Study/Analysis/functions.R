@@ -1744,7 +1744,7 @@ addSeason <- function(cohort) {
 addEthnicity <- function(cohort) {
   name <- omopgenerics::tableName(cohort)
   database <- omopgenerics::cdmName(omopgenerics::cdmReference(cohort))
-  if (database == "CPRD GOLD") {
+  if (grepl("CPRD", database)) {
     cohort <- cohort |>
       inner_join(
         cdm$person |>
@@ -1830,7 +1830,7 @@ addEthnicity <- function(cohort) {
 addSocioeconomicStatus <- function(cohort) {
   name <- omopgenerics::tableName(cohort)
   database <- omopgenerics::cdmName(omopgenerics::cdmReference(cohort))
-  if (database == "CPRD GOLD") {
+  if (grepl("CPRD", database)) {
     cohort <- cohort |>
       dplyr::left_join(
         cdm$measurement |>
