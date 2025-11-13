@@ -917,20 +917,19 @@ server <- function(input, output, session) {
         .data$group_level %in% input$propensity_scores_cohort_name
       ) |> 
       omopgenerics::filterStrata(
-        .data$vaccine_brand %in% input$summarise_characteristics_vaccine_brand,
-        .data$gestational_trimester %in% input$summarise_characteristics_gestational_trimester,
-        .data$age_group %in% input$summarise_characteristics_age_group
+        .data$vaccine_brand %in% input$propensity_scores_vaccine_brand,
+        .data$gestational_trimester %in% input$propensity_scores_gestational_trimester,
+        .data$age_group %in% input$propensity_scores_age_group
       ) |>
       omopgenerics::tidy()
   })
   getPropensityScorePlot <- shiny::reactive({
-    getPropensityScoresData() |>
-      tidyr::unite(
-        col = "facet", input$propensity_score_plot_facet
-      ) |>
-      ggplot2::ggplot(ggplot2::aes(x = propensity_score, colour = exposure, fill = exposure)) +
-      ggplot2::geom_density(alpha = 0.3) +
-      ggplot2::facet_wrap(facets = vars(facet), scales = "free_y")
+    getPropensityScoresData() |>   
+      ggplot2::ggplot(aes(x = x, y = y, fill = exposure, color = exposure)) +
+      ggplot2::geom_line() +
+      ggplot2::geom_hline(yintercept = 0, color = "transparent") +
+      ggplot2::geom_ribbon(aes(ymin = 0, ymax = y), alpha = 0.2) +
+      ggplot2::facet_wrap(facets = input$propensity_score_plot_facet, scales = "free_y")
   })
   output$propensity_score_plot <- shiny::renderUI({
     x <- getPropensityScorePlot()
@@ -1087,8 +1086,7 @@ server <- function(input, output, session) {
   getSummariseSamplingData <- shiny::eventReactive(input$update_summarise_sampling, {
     data[["summarise_sampling"]] |>
       dplyr::filter(.data$cdm_name %in% input$summarise_sampling_cdm_name) |> 
-      omopgenerics::filterGroup(.data$cohort_name %in% paste0("source_", input$summarise_sampling_cohort_name)) |>
-      dplyr::filter(variable_name != "Number exposed")
+      omopgenerics::filterGroup(.data$cohort_name %in% paste0("source_", input$summarise_sampling_cohort_name))
   })
   getSummariseSamplingTable <- shiny::reactive({
     getSummariseSamplingData() |>
