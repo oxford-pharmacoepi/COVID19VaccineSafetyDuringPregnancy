@@ -686,8 +686,9 @@ ui <- bslib::page_navbar(
                   ),
                   position = "right"
                 ),
-              DT::DTOutput("propensity_score_coeficcients_tidy") |>
-                shinycssloaders::withSpinner()
+                DT::DTOutput("propensity_score_coeficcients_tidy") |>
+                  shinycssloaders::withSpinner()
+              )
             )
           ),
           bslib::nav_panel(
@@ -1196,30 +1197,30 @@ ui <- bslib::page_navbar(
         ),
         shiny::div(shiny::textOutput(outputId = "update_message_summarise_large_scale_characteristics"), class = "ov_update_button"),
         # bslib::navset_card_tab(
-          bslib::card(
-            full_screen = TRUE,
-            bslib::card_header(
-              bslib::popover(
-                shiny::icon("download"),
-                shiny::downloadButton(outputId = "summarise_large_scale_characteristics_table_lsc_download", label = "Download table")
-              ),
-              class = "text-end"
+        bslib::card(
+          full_screen = TRUE,
+          bslib::card_header(
+            bslib::popover(
+              shiny::icon("download"),
+              shiny::downloadButton(outputId = "summarise_large_scale_characteristics_table_lsc_download", label = "Download table")
             ),
-            bslib::layout_sidebar(
-              sidebar = bslib::sidebar(
-                shinyWidgets::pickerInput(
-                  inputId = "summarise_large_scale_characteristics_table_lsc_hide",
-                  label = "Hide",
-                  choices = c("cdm_name", "cohort_name", "exposure", "vaccine_brand", "gestational_trimester", "age_group", "variable_level", "weighting"),
-                  selected = c("vaccine_brand", "gestational_trimester", "age_group", "weighting"),
-                  multiple = TRUE,
-                  options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
-                ),
-                position = "right"
+            class = "text-end"
+          ),
+          bslib::layout_sidebar(
+            sidebar = bslib::sidebar(
+              shinyWidgets::pickerInput(
+                inputId = "summarise_large_scale_characteristics_table_lsc_hide",
+                label = "Hide",
+                choices = c("cdm_name", "cohort_name", "exposure", "vaccine_brand", "gestational_trimester", "age_group", "variable_level", "weighting"),
+                selected = c("vaccine_brand", "gestational_trimester", "age_group", "weighting"),
+                multiple = TRUE,
+                options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
               ),
-              reactable::reactableOutput("summarise_large_scale_characteristics_table_lsc") |>
-                shinycssloaders::withSpinner()
-            )
+              position = "right"
+            ),
+            reactable::reactableOutput("summarise_large_scale_characteristics_table_lsc") |>
+              shinycssloaders::withSpinner()
+          )
           # )
         )
       )
@@ -1242,7 +1243,7 @@ ui <- bslib::page_navbar(
             inputId = "gestational_time_distributions_cohort_name",
             label = "Cohort name",
             choices = choices$gestational_time_distributions_cohort_name,
-            selected = selected$gestational_time_distributions_cohort_name,
+            selected = selected$gestational_time_distributions_cohort_name[1],
             multiple = TRUE,
             options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
           ),
@@ -1593,10 +1594,10 @@ ui <- bslib::page_navbar(
           options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
         ),
         shinyWidgets::pickerInput(
-          inputId = "incidence_rate_ratio_follow_up_end",
-          label = "Follow up end",
-          choices = choices$incidence_rate_ratio_follow_up_end,
-          selected = "end_42_days_or_pregnancy",
+          inputId = "incidence_rate_ratio_study_analysis",
+          label = "Analysis",
+          choices = choices$incidence_rate_ratio_study_analysis,
+          selected = "main",
           multiple = TRUE,
           options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
         ),
@@ -1708,7 +1709,7 @@ ui <- bslib::page_navbar(
                   ),
                   sortable::add_rank_list(
                     text = "Hide",
-                    labels = c("vaccine_brand", "gestational_trimester", "age_group", "outcome_group", "follow_up_end", "weighting", "variable_name", "variable_level", "study_analysis", "confidence_interval"),
+                    labels = c("vaccine_brand", "gestational_trimester", "age_group", "outcome_group", "follow_up_end", "weighting", "variable_name", "variable_level", "study_analysis", "confidence_interval", "study_analysis"),
                     input_id = "incidence_rate_ratio_table_hide_irr"
                   )
                 ),
