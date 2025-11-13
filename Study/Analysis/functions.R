@@ -1819,7 +1819,7 @@ addEthnicity <- function(cohort) {
               .default = "Missing"
             )
           ) |>
-          select("subject_id", "birth_continent")
+          select("subject_id", "pregnancy_id", "birth_continent")
       ) |>
       mutate(birth_continent = if_else(is.na(birth_continent), "Missing", birth_continent)) |>
       dplyr::compute(name = name, temporary = FALSE)
@@ -2531,12 +2531,23 @@ getMatchedCohort <- function(cohort, outcomes, name) {
   tmp <- tmpPrefix()
   tabName <- paste0(tmp, "matching")
   cdm <- omopgenerics::emptyCohortTable(cdm = cdm, name = tabName)
-  strata <- c("maternal_age_group", "pregnancy_start_period")
-  if (cdmName(cdm) %in% c("CPRD AURUM", "CPRD GOLD", "SIDIAP")) {
-    strata <- c(strata, "socioeconomic_status", "ethnicity")
-  }
+
   onlyPostpartum <- c("postpartum_endometritis", "postpartum_haemorrhage")
   postpartum <- "maternal_death"
+
+  strata <- list("maternal_age_group", "pregnancy_start_period")
+  if (grepl("SIDIAP", cdmName(cdm))) {
+    strata <- c(strata, list("socioeconomic_status", "nationallity"))
+  }
+  if (grepl("CPRD", cdmName(cdm))) {
+    strata <- c(strata, list("socioeconomic_status", "ethnicity"))
+  }
+  if (grepl("NLHR@UiO", cdmName(cdm))) {
+    strata <- c(strata, list("birth_continent"))
+  }
+  if (grepl("SCIFI-PEARL", cdmName(cdm))) {
+    strata <- c(strata, list("socioeconomic_status", "birth_continent"))
+  }
   
   for (outcome in outcomes) {
     nameMatch <- paste0(tmp, "match")
