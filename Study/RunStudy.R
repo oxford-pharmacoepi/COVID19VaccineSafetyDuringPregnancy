@@ -101,8 +101,7 @@ if (runPSWeighting) {
       cohortTables = c(
         "mother_table", "base", "covid_vaccines", "covid_vaccines_dose", 
         "covid", "covariates_inf", "covariates_5", "other_vaccines",
-        "covid_test", "aesi_90", "aesi_30", "aesi_inf", "nco", "covid_washout", 
-        "aesi_90_washout", "aesi_30_washout", "study_population", 
+        "covid_test", "aesi_90", "aesi_30", "aesi_inf", "nco", "study_population", 
         "features", "mae", "comedications", "source_population"
       ),
       .softValidation = TRUE

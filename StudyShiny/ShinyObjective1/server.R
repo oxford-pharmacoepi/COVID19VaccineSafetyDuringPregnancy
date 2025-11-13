@@ -150,6 +150,123 @@ server <- function(input, output, session) {
       rsvg::rsvg_png(charToRaw(svg), file, width = input$summarise_cohort_attrition_diagram_width)
     }
   )
+  # cohort_code_use -----
+  filterCohortCodeUse <- shiny::reactive({
+    result <- data$cohort_code_use |>
+      visOmopResults::splitGroup(keep = TRUE) |>
+      visOmopResults::splitAdditional(keep = TRUE) |>
+      dplyr::filter(.data$cdm_name %in% input$cohort_code_use_cdm_name,
+                    .data$cohort_name %in% input$cohort_code_use_cohort_name,
+                    .data$domain_id %in% input$cohort_code_use_domain_id) |>
+      dplyr::select(-visOmopResults::groupColumns(data$cohort_code_use)) |>
+      dplyr::select(-visOmopResults::additionalColumns(data$cohort_code_use))
+    
+    if(isFALSE(input$cohort_code_use_person_count)){
+      result <- result  |>
+        filter(estimate_name != "person_count")
+    }
+    if(isFALSE(input$cohort_code_use_record_count)){
+      result <- result  |>
+        filter(estimate_name != "record_count")
+    }
+    return(result)
+  })
+  ## Table cohort_code_use -----
+  createCohortCodeUseGT <- shiny::reactive({
+    tbl <- CodelistGenerator::tableCohortCodeUse(
+      filterCohortCodeUse(),
+      header = input$cohort_code_use_gt_header,
+      groupColumn = input$cohort_code_use_gt_groupColumn,
+      hide = input$cohort_code_use_gt_hide
+    ) %>%
+      tab_header(
+        title = "Summary of cohort code use",
+        subtitle = "Codes from codelist observed on day of cohort entry. Note more than one code could be seen for a person on this day (both of which would have led to inclusion)."
+      ) %>%
+      tab_options(
+        heading.align = "left"
+      )
+    
+    return(tbl)
+  })
+  createCohortCodeUseInteractive <- shiny::reactive({
+    tbl <-  CodelistGenerator::tableCohortCodeUse(
+      filterCohortCodeUse(),
+      header = input$cohort_code_use_gt_header,
+      groupColumn = input$cohort_code_use_gt_groupColumn,
+      hide = input$cohort_code_use_gt_hide,
+      type = "tibble"
+    )
+    names(tbl) <-stringr::str_remove_all(names(tbl),
+                                         "\\[header_name\\]Database name\\n\\[header_level\\]")
+    names(tbl) <- stringr::str_remove_all(names(tbl),
+                                          "Estimate name\n\\[header_level\\]")
+    names(tbl) <- stringr::str_replace_all(names(tbl),
+                                           "\n\\[header_name\\]",
+                                           ": ")
+    return(tbl)
+  })
+  output$cohort_code_use_tbl <- shiny::renderUI({
+    
+    if(isFALSE(input$cohort_code_use_interactive)){
+      tbl <- createCohortCodeUseGT()
+      return(tbl)
+    } else {
+      tbl <- createCohortCodeUseInteractive() |>
+        dplyr::mutate(dplyr::across(c(ends_with("count")),
+                                    ~ gsub(",", "", .))) |>
+        dplyr::mutate(dplyr::across(c(ends_with("count")),
+                                    ~ suppressWarnings(as.numeric(.))))
+      
+      # column ordering by codelist and first column with a count
+      order <- list("Cohort name"  = "asc",
+                    "count" = "desc")
+      names(order)[2] <- names(tbl)[9]
+      
+      # suppressed to NA
+      tbl <- tbl |>
+        purrr::map_df(~ ifelse(grepl("^<", .), NA, .))
+      
+      tbl <- reactable(tbl,
+                       columns = getColsForTbl(tbl,
+                                               sortNALast = FALSE,
+                                               names = c("Standard concept ID", "Source concept ID")),
+                       defaultSorted = order,
+                       filterable = TRUE,
+                       searchable = TRUE,
+                       defaultPageSize = 25,
+                       highlight = TRUE,
+                       striped = TRUE,
+                       compact = TRUE,
+                       showSortable = TRUE) |>
+        reactablefmtr::add_title("Summary of cohort code use",
+                                 font_size = 25,
+                                 font_weight = "normal") |>
+        reactablefmtr::add_subtitle("Codes from codelist observed on day of cohort entry. Note more than one code could be seen for a person on this day (both of which would have led to inclusion).",
+                                    font_size = 15,
+                                    font_weight = "normal")
+      
+      return(tbl)
+    }
+  })
+  
+  output$cohort_code_use_download <- shiny::downloadHandler(
+    filename = function(){
+      if(isFALSE(input$cohort_code_use_interactive)){
+        file <- "summarise_cohort_code_use_gt.docx"
+      }else{
+        file <- "summarise_cohort_code_use_tbl.csv"
+      }
+      return(file)
+    },
+    content = function(file){
+      if(isFALSE(input$cohort_code_use_interactive)){
+        gt::gtsave(data = createCohortCodeUseGT(), filename = file)
+      }else{
+        readr::write_csv(createCohortCodeUseInteractive(), file = file)
+      }
+    }
+  )
   # summarise_characteristics -----
   ## get summarise_characteristics data
   getSummariseCharacteristicsData <- shiny::reactive({
@@ -269,8 +386,8 @@ server <- function(input, output, session) {
         .data$maternal_age_group %in% input$summarise_large_scale_characteristics_maternal_age_group,
         .data$pregnancy_start_period %in% input$summarise_large_scale_characteristics_pregnancy_start_period,
         .data$ethnicity %in% input$summarise_large_scale_characteristics_ethnicity,
-        .data$socioeconomic_status %in% input$summarise_large_scale_characteristics_socioeconomic_status
-        # .data$trimester %in% input$summarise_large_scale_characteristics_trimester
+        .data$socioeconomic_status %in% input$summarise_large_scale_characteristics_socioeconomic_status,
+        .data$trimester %in% input$summarise_large_scale_characteristics_trimester
       )
   })
   getSummariseLargeScaleCharacteristicsTableLsc <- shiny::reactive({
@@ -380,7 +497,7 @@ server <- function(input, output, session) {
       dplyr::mutate(
         outcome_group = factor(
           .data$outcome_group, 
-          levels = c("Adverse Events of Special Interest", "Maternal Adverse Events")
+          levels = c("Adverse Events of Special Interest", "Maternal Adverse Events", "AESI Sensitivity (180 wash-out)")
         ),
         maternal_age_group = factor(
           maternal_age_group, levels = c("overall", "12 to 17", "18 to 34", "35 to 55")
@@ -389,7 +506,7 @@ server <- function(input, output, session) {
           pregnancy_start_period, levels = c("overall", "Pre COVID-19", "COVID-19 main outbreak", "Post COVID-19 main outbreak")
         ),
         socioeconomic_status = factor(
-          socioeconomic_status, levels = c("overall", paste0(1:10))
+          socioeconomic_status, levels = c("overall", paste0("Q", 1:5))
         ),
         ethnicity = factor(
           ethnicity, levels = c("overall", "White", "Black", "Asian", "Missing")
@@ -426,12 +543,12 @@ server <- function(input, output, session) {
         groupColumn = input$incidence_table_group_column,
         hide = input$incidence_table_hide,
         factor = list(
-          "outcome_group" = c("Adverse Events of Special Interest", "Maternal Adverse Events"),
+          "outcome_group" = c("Adverse Events of Special Interest", "Maternal Adverse Events", "AESI Sensitivity (180 wash-out)"),
           "maternal_age_group" = c("overall", "12 to 17", "18 to 34", "35 to 55"),
           "pregnancy_start_period" = c("overall", "Pre COVID-19", "COVID-19 main outbreak", "Post COVID-19 main outbreak"),
-          "socioeconomic_status" = c("overall", paste0(1:10)),
+          "socioeconomic_status" = c("overall", paste0("Q", 1:5)),
           "ethnicity" = c("overall", "White", "Black", "Asian", "Missing"),
-          "gestational_trimester" = c("overall", "Trimester 1", "Trimester 2", "Trimester 3")
+          "gestational_trimester" = c("overall", "Trimester 1", "Trimester 2", "Trimester 3", "Postpartum")
           )
       )
   })
@@ -445,12 +562,15 @@ server <- function(input, output, session) {
     }
   )
   getIncidencePlot <- shiny::reactive({
-    getIncidenceData() |>
-      omopgenerics::tidy() |>
+    x <- getIncidenceData() |>
+      omopgenerics::tidy()
+    label <- c('cdm_name', 'outcome_cohort_name', 'gestational_trimester', 'maternal_age_group', 'pregnancy_start_period', 'socioeconomic_status', 'ethnicity', 'variable_name', 'variable_level', 'outcome_count', 'person_days_count', 'denominator_count', 'person_years', 'incidence_100000_pys', 'incidence_100000_pys_95CI_lower', 'incidence_100000_pys_95CI_upper')
+    label <- label[label %in% colnames(x)]
+    x |>
       dplyr::mutate(
         outcome_group = factor(
           .data$outcome_group, 
-          levels = c("Adverse Events of Special Interest", "Maternal Adverse Events")
+          levels = c("Adverse Events of Special Interest", "Maternal Adverse Events", "AESI Sensitivity (180 wash-out)")
         ),
         maternal_age_group = factor(
           maternal_age_group, levels = c("overall", "12 to 17", "18 to 34", "35 to 55")
@@ -459,13 +579,13 @@ server <- function(input, output, session) {
           pregnancy_start_period, levels = c("overall", "Pre COVID-19", "COVID-19 main outbreak", "Post COVID-19 main outbreak")
         ),
         socioeconomic_status = factor(
-          socioeconomic_status, levels = c("overall", paste0(1:10))
+          socioeconomic_status, levels = c("overall", paste0("Q", 1:5))
         ),
         ethnicity = factor(
           ethnicity, levels = c("overall", "White", "Black", "Asian", "Missing")
         ),
         gestational_trimester = factor(
-          gestational_trimester, levels = c("overall", "Trimester 1", "Trimester 2", "Trimester 3")
+          gestational_trimester, levels = c("overall", "Trimester 1", "Trimester 2", "Trimester 3", "Postpartum")
         )
       ) |>
       dplyr::filter(!is.na(.data$outcome_group)) |>
@@ -481,7 +601,7 @@ server <- function(input, output, session) {
         facet = input$incidence_plot_facet,
         colour = input$incidence_plot_colour,
         style = "default",
-        label = c('cdm_name', 'outcome_cohort_name', 'gestational_trimester', 'maternal_age_group', 'pregnancy_start_period', 'socioeconomic_status', 'ethnicity', 'variable_name', 'variable_level', 'outcome_count', 'person_days_count', 'denominator_count', 'person_years', 'incidence_100000_pys', 'incidence_100000_pys_95CI_lower', 'incidence_100000_pys_95CI_upper')
+        label = label
       ) + 
       ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, vjust = 0.5, hjust=1))
   })
@@ -596,7 +716,7 @@ server <- function(input, output, session) {
         factor = list(
           "maternal_age_group" = c("overall", "12 to 17", "18 to 34", "35 to 55"),
           "pregnancy_start_period" = c("overall", "Pre COVID-19", "COVID-19 main outbreak", "Post COVID-19 main outbreak"),
-          "socioeconomic_status" = c("overall", paste0(1:10)),
+          "socioeconomic_status" = c("overall", paste0("Q", 1:5)),
           "ethnicity" = c("overall", "White", "Black", "Asian", "Missing")
         )
       )

@@ -56,6 +56,7 @@ data$incidence |>
     )
   )
 ## Plot ----
+### Trimester ----
 incidenceTrimester <- data$incidence |>
   dplyr::filter(strata_name %in% c("gestational_trimester")) |>
   omopgenerics::tidy() |>
@@ -78,13 +79,14 @@ incidenceTrimester <- data$incidence |>
     ),
     gestational_trimester = factor(
       gestational_trimester, levels = c("overall", "Trimester 1", "Trimester 2", "Trimester 3")
-    )
+    ),
+    outcome_cohort_name = customiseText(.data$outcome_cohort_name)
   ) 
 
 incidenceTrimester |>
   dplyr::filter(
     outcome_group == "Adverse Events of Special Interest",
-    outcome_cohort_name != "central_nervous_system_immune",
+    outcome_cohort_name != "Central nervous system immune",
   ) |>
   dplyr::arrange() |>
   visOmopResults::scatterPlot(
@@ -101,9 +103,36 @@ incidenceTrimester |>
     label = c('cdm_name', 'outcome_cohort_name', 'gestational_trimester', 'maternal_age_group', 'pregnancy_start_period', 'socioeconomic_status', 'ethnicity', 'variable_name', 'variable_level', 'outcome_count', 'person_days_count', 'denominator_count', 'person_years', 'incidence_100000_pys', 'incidence_100000_pys_95CI_lower', 'incidence_100000_pys_95CI_upper')
   ) + 
   # ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, vjust = 0.5, hjust = 1)) +
-  ggplot2::facet_wrap(vars(outcome_cohort_name), scales = "free_y", nrow = 3)
+  ggplot2::facet_wrap(vars(outcome_cohort_name), scales = "free_y", nrow = 3) +
+  ggplot2::guides(color = guide_legend(title = "Data Sources"), fill = guide_legend(title = "Data Sources")) 
+ggplot2::ggsave(filename = "aesi_trimester.png", device = "png", width = 16, height = 6)
 
-incidenceTrimester <- data$incidence |>
+incidenceTrimester |>
+  dplyr::filter(
+    outcome_group == "Maternal Adverse Events",
+    outcome_cohort_name != "Central nervous system immune",
+  ) |>
+  dplyr::arrange() |>
+  visOmopResults::scatterPlot(
+    x = "gestational_trimester",
+    y = "incidence_100000_pys",
+    line = TRUE,
+    point = TRUE,
+    ribbon = FALSE,
+    ymin = "incidence_100000_pys_95CI_lower",
+    ymax = "incidence_100000_pys_95CI_upper",
+    facet = "outcome_cohort_name",
+    colour = "cdm_name",
+    style = "default",
+    label = c('cdm_name', 'outcome_cohort_name', 'gestational_trimester', 'maternal_age_group', 'pregnancy_start_period', 'socioeconomic_status', 'ethnicity', 'variable_name', 'variable_level', 'outcome_count', 'person_days_count', 'denominator_count', 'person_years', 'incidence_100000_pys', 'incidence_100000_pys_95CI_lower', 'incidence_100000_pys_95CI_upper')
+  ) + 
+  # ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, vjust = 0.5, hjust = 1)) +
+  ggplot2::facet_wrap(vars(outcome_cohort_name), scales = "free_y", nrow = 3) +
+  ggplot2::guides(color = guide_legend(title = "Data Sources"), fill = guide_legend(title = "Data Sources"))
+ggplot2::ggsave(filename = "mae_trimester.png", device = "png", width = 16, height = 6)
+
+### Age ----
+incidenceAge <- data$incidence |>
   dplyr::filter(strata_name %in% c("maternal_age_group")) |>
   omopgenerics::tidy() |>
   dplyr::mutate(
@@ -125,10 +154,11 @@ incidenceTrimester <- data$incidence |>
     ),
     gestational_trimester = factor(
       gestational_trimester, levels = c("overall", "Trimester 1", "Trimester 2", "Trimester 3")
-    )
+    ),
+    outcome_cohort_name = customiseText(.data$outcome_cohort_name)
   ) 
 
-incidenceTrimester |>
+incidenceAge |>
   dplyr::filter(
     outcome_group != "Adverse Events of Special Interest",
     outcome_cohort_name != "central_nervous_system_immune",
@@ -149,9 +179,36 @@ incidenceTrimester |>
     label = c('cdm_name', 'outcome_cohort_name', 'gestational_trimester', 'maternal_age_group', 'pregnancy_start_period', 'socioeconomic_status', 'ethnicity', 'variable_name', 'variable_level', 'outcome_count', 'person_days_count', 'denominator_count', 'person_years', 'incidence_100000_pys', 'incidence_100000_pys_95CI_lower', 'incidence_100000_pys_95CI_upper')
   ) + 
   # ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, vjust = 0.5, hjust = 1)) +
-  ggplot2::facet_wrap(vars(outcome_cohort_name), scales = "free_y", nrow = 3)
+  ggplot2::facet_wrap(vars(outcome_cohort_name), scales = "free_y", nrow = 3) +
+  ggplot2::guides(color = guide_legend(title = "Data Sources"), fill = guide_legend(title = "Data Sources"))
+ggplot2::ggsave(filename = "mae_age.png", device = "png", width = 16, height = 6)
 
-incidenceTrimester <- data$incidence |>
+incidenceAge |>
+  dplyr::filter(
+    outcome_group == "Adverse Events of Special Interest",
+    outcome_cohort_name != "central_nervous_system_immune",
+    !grepl("postpartum", outcome_cohort_name)
+  ) |>
+  dplyr::arrange() |>
+  visOmopResults::scatterPlot(
+    x = "maternal_age_group",
+    y = "incidence_100000_pys",
+    line = TRUE,
+    point = TRUE,
+    ribbon = FALSE,
+    ymin = "incidence_100000_pys_95CI_lower",
+    ymax = "incidence_100000_pys_95CI_upper",
+    facet = "outcome_cohort_name",
+    colour = "cdm_name",
+    style = "default",
+    label = c('cdm_name', 'outcome_cohort_name', 'gestational_trimester', 'maternal_age_group', 'pregnancy_start_period', 'socioeconomic_status', 'ethnicity', 'variable_name', 'variable_level', 'outcome_count', 'person_days_count', 'denominator_count', 'person_years', 'incidence_100000_pys', 'incidence_100000_pys_95CI_lower', 'incidence_100000_pys_95CI_upper')
+  ) + 
+  # ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, vjust = 0.5, hjust = 1)) +
+  ggplot2::facet_wrap(vars(outcome_cohort_name), scales = "free_y", nrow = 3) +
+  ggplot2::guides(color = guide_legend(title = "Data Sources"), fill = guide_legend(title = "Data Sources"))
+ggplot2::ggsave(filename = "aesi_age.png", device = "png", width = 16, height = 6)
+
+incidenceCovid <- data$incidence |>
   dplyr::filter(strata_name %in% c("pregnancy_start_period")) |>
   omopgenerics::tidy() |>
   dplyr::mutate(
@@ -173,10 +230,11 @@ incidenceTrimester <- data$incidence |>
     ),
     gestational_trimester = factor(
       gestational_trimester, levels = c("overall", "Trimester 1", "Trimester 2", "Trimester 3")
-    )
+    ),
+    outcome_cohort_name = customiseText(.data$outcome_cohort_name)
   ) 
 
-incidenceTrimester |>
+incidenceCovid |>
   dplyr::filter(
     outcome_group != "Adverse Events of Special Interest",
     outcome_cohort_name != "central_nervous_system_immune",
@@ -197,7 +255,34 @@ incidenceTrimester |>
     label = c('cdm_name', 'outcome_cohort_name', 'gestational_trimester', 'maternal_age_group', 'pregnancy_start_period', 'socioeconomic_status', 'ethnicity', 'variable_name', 'variable_level', 'outcome_count', 'person_days_count', 'denominator_count', 'person_years', 'incidence_100000_pys', 'incidence_100000_pys_95CI_lower', 'incidence_100000_pys_95CI_upper')
   ) + 
   ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, vjust = 0.5, hjust = 1)) +
-  ggplot2::facet_wrap(vars(outcome_cohort_name), scales = "free_y", nrow = 3)
+  ggplot2::facet_wrap(vars(outcome_cohort_name), scales = "free_y", nrow = 3) +
+  ggplot2::guides(color = guide_legend(title = "Data Sources"), fill = guide_legend(title = "Data Sources"))
+ggplot2::ggsave(filename = "mae_covid.png", device = "png", width = 16, height = 6)
+
+incidenceCovid |>
+  dplyr::filter(
+    outcome_group == "Adverse Events of Special Interest",
+    outcome_cohort_name != "central_nervous_system_immune",
+    !grepl("postpartum", outcome_cohort_name)
+  ) |>
+  dplyr::arrange() |>
+  visOmopResults::scatterPlot(
+    x = "pregnancy_start_period",
+    y = "incidence_100000_pys",
+    line = TRUE,
+    point = TRUE,
+    ribbon = FALSE,
+    ymin = "incidence_100000_pys_95CI_lower",
+    ymax = "incidence_100000_pys_95CI_upper",
+    facet = "outcome_cohort_name",
+    colour = "cdm_name",
+    style = "default",
+    label = c('cdm_name', 'outcome_cohort_name', 'gestational_trimester', 'maternal_age_group', 'pregnancy_start_period', 'socioeconomic_status', 'ethnicity', 'variable_name', 'variable_level', 'outcome_count', 'person_days_count', 'denominator_count', 'person_years', 'incidence_100000_pys', 'incidence_100000_pys_95CI_lower', 'incidence_100000_pys_95CI_upper')
+  ) + 
+  ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, vjust = 0.5, hjust = 1)) +
+  ggplot2::facet_wrap(vars(outcome_cohort_name), scales = "free_y", nrow = 3) +
+  ggplot2::guides(color = guide_legend(title = "Data Sources"), fill = guide_legend(title = "Data Sources"))
+ggplot2::ggsave(filename = "aesi_covid.png", device = "png", width = 16, height = 6)
 
 # CUMULATIVE INCIDENCE ----
 ## Table ----
@@ -254,15 +339,20 @@ survival |>
   )
 
 ## Plot ----
-data$survival |>
+attr(data$survival, "settings") <- attr(data$survival, "settings") |>
+  mutate(outcome = customiseText(outcome))
+cif <- data$survival |> 
   dplyr::filter(
     variable_level %in% c(
       "preterm_labour", "miscarriage", "stillbirth", "maternal_death", 
       "dysfunctional_labour", "eclampsia", "ectopic_pregnancy", 
       "antepartum_haemorrhage", "gestational_diabetes", "hellp", "preeclampsia"
-    ),
+    ) |
+      grepl("postpartum", variable_level)
   ) |>
-  dplyr::filter(strata_name %in% c("gestational_trimester", "overall")) |>
+  dplyr::filter(strata_name %in% c("gestational_trimester", "overall")) 
+cif |>
+  filter(!grepl("postpartum", variable_level)) |>
   CohortSurvival::plotSurvival(
     timeScale = "days",
     ribbon = TRUE,
@@ -272,8 +362,23 @@ data$survival |>
   ) +
   guides(fill = "none") +
   ggplot2::facet_wrap(vars(outcome), scales = "free_y", nrow = 3) +
-  geom_vline(xintercept = 90) +
-  geom_vline(xintercept = 180)
+  geom_vline(data = filter(cif, !grepl("postpartum", variable_level)), aes(xintercept = 90)) +
+  geom_vline(data = filter(cif, !grepl("postpartum", variable_level)), aes(xintercept = 180)) +
+  ggplot2::guides(color = guide_legend(title = "Data Sources"), fill = guide_legend(title = "Data Sources"))
+ggplot2::ggsave(filename = "mae_cif.png", device = "png", width = 16, height = 6)
+cif |>
+  filter(grepl("postpartum", variable_level)) |>
+  CohortSurvival::plotSurvival(
+    timeScale = "days",
+    ribbon = TRUE,
+    facet = "outcome",
+    colour = "cdm_name",
+    cumulativeFailure = TRUE
+  ) +
+  guides(fill = "none") +
+  ggplot2::facet_wrap(vars(outcome), scales = "free_y", nrow = 1) +
+  ggplot2::guides(color = guide_legend(title = "Data Sources"), fill = guide_legend(title = "Data Sources"))
+ggplot2::ggsave(filename = "mae_cif_postpartum.png", device = "png", width = 10, height = 3)
 
 data$survival |>
   dplyr::filter(

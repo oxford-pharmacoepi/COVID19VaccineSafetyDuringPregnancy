@@ -307,26 +307,10 @@ server <- function(input, output, session) {
           .data$variable_level %in% c("Nsaids") ~ "NSAIDs",
           .default = .data$variable_level
         ),
-        strata_level = factor(
-          strata_level,
-          levels = c(
-            "overall", "exposed", "comparator", paste0("exposed &&& T", 1:3), 
-            paste0("comparator &&& T", 1:3), paste0("exposed &&& ", c("12 to 17", "18 to 34", "35 to 55")), 
-            paste0("comparator &&& ", c("12 to 17", "18 to 34", "35 to 55")),
-            "exposed &&& moderna", "exposed &&& pfizer", "comparator &&& moderna",
-            "comparator &&& pfizer"
-          ),
-          labels = c(
-            "overall", "Exposed", "Comparator", paste0("Exposed &&& Trimester ", 1:3), 
-            paste0("Comparator &&& Trimester ", 1:3), paste0("Exposed &&& ", c("12 to 17", "18 to 34", "35 to 55")), 
-            paste0("Comparator &&& ", c("12 to 17", "18 to 34", "35 to 55")),
-            "Exposed &&& Moderna", "Exposed &&& Pfizer", "Comparator &&& Moderna",
-            "Comparator &&& Pfizer"
-          )
-        )
+        estimate_name = dplyr::if_else(estimate_name == "sum", "N", estimate_name)
       ) 
     
-    if (input$summarise_characteristics_cohort_name == "population_objective_1") {
+    if (grepl("objective_1", input$summarise_characteristics_cohort_name)) {
       x <- x |>
         dplyr::filter(
           ! .data$variable_name %in% c("Days previous dose", "Previous COVID-19 vaccines", "Previous pregnant COVID-19 vaccines")
@@ -335,16 +319,23 @@ server <- function(input, output, session) {
           variable_name = factor(
             .data$variable_name,
             levels = c(
-              "Number records", "Number subjects", "Age", "Age group", "Vaccine brand",
+              "Number records", "Number subjects", "Number pregnancies weighted", "Age", "Age group", "Vaccine brand",
               "Gestational trimester", "Previous pregnancies", "Previous observation",
               "Other vaccines within 5 days", "Previous COVID-19 infections", "Previous healthcare visits",
-              "Comorbidities in the last 5 years",
+              "Comorbidities in the last year",
+              "History of comorbidities", "Medications in the past year"
+            ),
+            labels = c(
+              "Number records", "Number subjects", "Number records (weighted)", "Age", "Age group", "Vaccine brand",
+              "Gestational trimester", "Previous pregnancies", "Previous observation",
+              "Other vaccines within 5 days", "Previous COVID-19 infections", "Previous healthcare visits",
+              "Comorbidities in the past year",
               "History of comorbidities", "Medications in the past year"
             )
           )
         )
     }
-    if (input$summarise_characteristics_cohort_name == "population_objective_2") {
+    if (grepl("objective_2", input$summarise_characteristics_cohort_name)) {
       x <- x |>
         dplyr::filter(
           ! .data$variable_name %in% c("Days previous dose"),
@@ -354,33 +345,69 @@ server <- function(input, output, session) {
           variable_name = factor(
             .data$variable_name,
             levels = c(
-              "Number records", "Number subjects", "Age", "Age group", "Vaccine brand",
+              "Number records", "Number subjects", "Number pregnancies weighted", "Age", "Age group", "Vaccine brand",
               "Gestational trimester", "Days previous dose", "Previous COVID-19 vaccines",
               "Previous pregnant COVID-19 vaccines", "Previous pregnancies", "Previous observation",
               "Other vaccines within 5 days", "Previous COVID-19 infections", "Previous healthcare visits",
-              "Comorbidities in the last 5 years",
+              "Comorbidities in the last year",
+              "History of comorbidities", "Medications in the past year"
+            ),
+            labels = c(
+              "Number records", "Number subjects", "Number records (weighted)", "Age", "Age group", "Vaccine brand",
+              "Gestational trimester", "Days previous dose", "Previous COVID-19 vaccines",
+              "Previous pregnant COVID-19 vaccines", "Previous pregnancies", "Previous observation",
+              "Other vaccines within 5 days", "Previous COVID-19 infections", "Previous healthcare visits",
+              "Comorbidities in the past year",
               "History of comorbidities", "Medications in the past year"
             )
           )
         )
     }
-    if (input$summarise_characteristics_cohort_name == "population_objective_3") {
+    if (grepl("objective_3", input$summarise_characteristics_cohort_name)) {
       x <- x |>
         dplyr::mutate(
           variable_name = factor(
             .data$variable_name,
             levels = c(
-              "Number records", "Number subjects", "Age", "Age group", "Vaccine brand",
+              "Number records", "Number subjects", "Number pregnancies weighted", "Age", "Age group", "Vaccine brand",
               "Gestational trimester", "Days previous dose", "Previous COVID-19 vaccines",
               "Previous pregnant COVID-19 vaccines", "Previous pregnancies", "Previous observation",
               "Other vaccines within 5 days", "Previous COVID-19 infections", "Previous healthcare visits",
-              "Comorbidities in the last 5 years",
+              "Comorbidities in the last year",
+              "History of comorbidities", "Medications in the past year"
+            ),
+            labels = c(
+              "Number records", "Number subjects", "Number records (weighted)", "Age", "Age group", "Vaccine brand",
+              "Gestational trimester", "Days previous dose", "Previous COVID-19 vaccines",
+              "Previous pregnant COVID-19 vaccines", "Previous pregnancies", "Previous observation",
+              "Other vaccines within 5 days", "Previous COVID-19 infections", "Previous healthcare visits",
+              "Comorbidities in the past year",
               "History of comorbidities", "Medications in the past year"
             )
-          )
+          ),
+          estimate_name = dplyr::if_else(estimate_name == "sum", "N", .data$estimate_name)
         )
     }
     x |>
+      dplyr::mutate(
+        strata_level = factor(
+          strata_level, 
+          levels = c(
+            "overall", "exposed", "comparator", "comparator &&& moderna", "exposed &&& moderna",    
+            "comparator &&& pfizer", "exposed &&& pfizer", "comparator &&& T1", "exposed &&& T1", 
+            "comparator &&& T2", "exposed &&& T2", "comparator &&& T3", "exposed &&& T3",
+            "comparator &&& 12 to 17", "exposed &&& 12 to 17", "comparator &&& 18 to 34", 
+            "exposed &&& 18 to 34", "comparator &&& 35 to 55", "exposed &&& 35 to 55"
+          ),
+          labels = c(
+            "overall", "Exposed", "Comparator", "Comparator &&& Moderna", "Exposed &&& Moderna",    
+            "Comparator &&& Pfizer", "Exposed &&& Pfizer", "Comparator &&& Trimester 1", "Exposed &&& Trimester 1", 
+            "Comparator &&& Trimester 2", "Exposed &&& Trimester 2", "Comparator &&& Trimester 3", "Exposed &&& Trimester 3",
+            "Comparator &&& 12 to 17", "Exposed &&& 12 to 17", "Comparator &&& 18 to 34", 
+            "Exposed &&& 18 to 34", "Comparator &&& 35 to 55", "Exposed &&& 35 to 55"
+          )
+        )
+      ) |>
       dplyr::filter(!is.na(.data$variable_name), !is.na(.data$strata_level)) |>
       dplyr::arrange(.data$cdm_name, .data$group_level, .data$strata_level, .data$variable_name)
   })
@@ -655,19 +682,21 @@ server <- function(input, output, session) {
       dplyr::filter(
         .data$cdm_name %in% input$incidence_rate_ratio_cdm_name
       ) |>
-      omopgenerics::filterGroup(.data$cohort_name %in% input$incidence_rate_ratio_cohort_name) |>
+      omopgenerics::filterGroup(
+        .data$cohort_name %in% input$incidence_rate_ratio_cohort_name
+      ) |>
       omopgenerics::filterStrata(
         .data$vaccine_brand %in% input$incidence_rate_ratio_vaccine_brand,
         .data$gestational_trimester %in% input$incidence_rate_ratio_gestational_trimester,
         .data$age_group %in% input$incidence_rate_ratio_age_group
       ) |>
       omopgenerics::filterAdditional(
-        .data$outcome_name %in% input$incidence_rate_ratio_outcome_name,
-        .data$follow_up_end %in% input$incidence_rate_ratio_follow_up_end
+        .data$outcome_name %in% input$incidence_rate_ratio_outcome_name
       ) |>
       omopgenerics::filterSettings(
         .data$outcome_group %in% input$incidence_rate_ratio_outcome_group,
-        .data$weighting %in% input$incidence_rate_ratio_weighting
+        .data$weighting %in% input$incidence_rate_ratio_weighting,
+        .data$study_analysis %in% input$incidence_rate_ratio_study_analysis
       ) |>
       dplyr::mutate(
         strata_level = visOmopResults::customiseText(
@@ -708,7 +737,7 @@ server <- function(input, output, session) {
           "Median [Q25 - Q75]" = "<median> [<q25> - <q75>]",
           "Range" = "<min> - <max>"
         ),
-        settingsColumn = c("weighting", "outcome_group"),
+        settingsColumn = c("weighting", "outcome_group", "study_analysis"),
         header = input$incidence_rate_ratio_table_header_summary,
         groupColumn = input$incidence_rate_ratio_table_group_column_summary,
         hide = input$incidence_rate_ratio_table_hide_summary,
@@ -793,7 +822,7 @@ server <- function(input, output, session) {
       visOmopResults::themeVisOmop(fontsizeRef = 11) +
       ggplot2::ylab("IRR") +
       scale_y_continuous(limits = c(0.01, 6), oob=scales::rescale_none)
-      # scale_y_continuous(breaks = c(0.1, 0.25, 0.5, 1, 2), transform = "log10")
+    # scale_y_continuous(breaks = c(0.1, 0.25, 0.5, 1, 2), transform = "log10")
   })
   output$incidence_rate_ratio_plot <- shiny::renderUI({
     x <- getIRRPlot()
@@ -862,10 +891,16 @@ server <- function(input, output, session) {
         .data$cdm_name %in% input$propensity_scores_cdm_name,
         .data$group_level %in% input$propensity_scores_cohort_name
       ) |> 
+      omopgenerics::filterStrata(
+        .data$vaccine_brand %in% input$summarise_characteristics_vaccine_brand,
+        .data$gestational_trimester %in% input$summarise_characteristics_gestational_trimester,
+        .data$age_group %in% input$summarise_characteristics_age_group
+      ) |>
       visOmopResults::tidy()
   })
   output$propensity_score_coeficcients_tidy <- DT::renderDT({
-    getPropensityScoreCoeficcientsTidy()
+    getPropensityScoreCoeficcientsTidy() |>
+      select(!dplyr::any_of(input$propensity_score_hide))
   })
   output$propensity_score_coeficcients_tidy_download <- shiny::downloadHandler(
     filename = "tidy_results.csv",
@@ -879,17 +914,22 @@ server <- function(input, output, session) {
     data[["propensity_scores"]] |>
       dplyr::filter(
         .data$cdm_name %in% input$propensity_scores_cdm_name,
-        .data$cohort_name %in% input$propensity_scores_cohort_name
-      ) 
+        .data$group_level %in% input$propensity_scores_cohort_name
+      ) |> 
+      omopgenerics::filterStrata(
+        .data$vaccine_brand %in% input$propensity_scores_vaccine_brand,
+        .data$gestational_trimester %in% input$propensity_scores_gestational_trimester,
+        .data$age_group %in% input$propensity_scores_age_group
+      ) |>
+      omopgenerics::tidy()
   })
   getPropensityScorePlot <- shiny::reactive({
-    getPropensityScoresData() |>
-      tidyr::unite(
-        col = "facet", input$propensity_score_plot_facet
-      ) |>
-      ggplot2::ggplot(ggplot2::aes(x = propensity_score, colour = exposure, fill = exposure)) +
-      ggplot2::geom_density(alpha = 0.3) +
-      ggplot2::facet_wrap(facets = vars(facet), scales = "free_y")
+    getPropensityScoresData() |>   
+      ggplot2::ggplot(aes(x = x, y = y, fill = exposure, color = exposure)) +
+      ggplot2::geom_line() +
+      ggplot2::geom_hline(yintercept = 0, color = "transparent") +
+      ggplot2::geom_ribbon(aes(ymin = 0, ymax = y), alpha = 0.2) +
+      ggplot2::facet_wrap(facets = input$propensity_score_plot_facet, scales = "free_y")
   })
   output$propensity_score_plot <- shiny::renderUI({
     x <- getPropensityScorePlot()
@@ -1005,11 +1045,7 @@ server <- function(input, output, session) {
       omopgenerics::filterGroup(.data$cohort_name %in% input$summarise_sampling_cohort_name) |>
       omopgenerics::filterSettings(.data$table_name %in% "Study population") |>
       omopgenerics::filterSettings(.data$table_name %in% "Study population") |>
-      dplyr::mutate(additional_level = as.numeric(additional_level)) |>
-      dplyr::filter(additional_level < 15 | additional_level > 23) |>
-      dplyr::filter(!(additional_level == 24 & group_level %in% c("population_objective_2", "population_objective_3"))) |>
-      dplyr::filter(!(additional_level == 14 & group_level %in% c("population_objective_1"))) |>
-      dplyr::mutate(additional_level = as.character(additional_level)) 
+      dplyr::filter(as.numeric(additional_level) < 15)
   })
   getSummariseCohortAttritionTablePop <- shiny::reactive({
     getSummariseCohortAttritionDataPop() |>
@@ -1050,8 +1086,7 @@ server <- function(input, output, session) {
   getSummariseSamplingData <- shiny::eventReactive(input$update_summarise_sampling, {
     data[["summarise_sampling"]] |>
       dplyr::filter(.data$cdm_name %in% input$summarise_sampling_cdm_name) |> 
-      omopgenerics::filterGroup(.data$cohort_name %in% paste0("source_", input$summarise_sampling_cohort_name)) |>
-      dplyr::filter(variable_name != "Number exposed")
+      omopgenerics::filterGroup(.data$cohort_name %in% paste0("source_", input$summarise_sampling_cohort_name))
   })
   getSummariseSamplingTable <- shiny::reactive({
     getSummariseSamplingData() |>
@@ -1209,6 +1244,7 @@ server <- function(input, output, session) {
         header = input$cohort_exit_table_header,
         groupColumn = input$cohort_exit_table_group_column,
         hide = input$cohort_exit_table_hide,
+        settingsColumn = "weighting",
         columnOrder =  c(
           'cdm_name', 'cohort_name', 'exposure', 'vaccine_brand', 'gestational_trimester', 
           'age_group', 'exit_reason', 'variable_name', 'variable_level', 'analysis', 'weighting',
@@ -1218,7 +1254,7 @@ server <- function(input, output, session) {
           "age_group" = c("overall", "12 to 17", "18 to 34", "35 to 55"),
           "gestational_trimester" = c("overall", "Trimester 1", "Trimester 2", "Trimester 3"),
           "vaccine_brand" = c("overall", "Pfizer", "Moderna"),
-          "exit_reason" = c("overall", "date_of_death", "next_covid_vaccine", "observation_end", "covid_infection")
+          "exit_reason" = c("overall", "date_of_death", "next_covid_vaccine", "observation_end", "covid_infection", "next_covid_vaccine; covid_infection")
         )
       )
   })
@@ -1421,9 +1457,21 @@ server <- function(input, output, session) {
           dplyr::mutate(additional = "concept_id")
       )
   })
-  getSMDTable <- shiny::reactive({
-    dropCols <- input$summarise_large_scale_characteristics_table_lsc_hide
-    dropCols[dropCols == "variable_name"] <- "concept_name"
+  getSMDTable <- shiny::eventReactive(input$update_summarise_standardised_mean_differences, {
+    dropCols <- input$summarise_standardised_mean_differences_table_hide
+    dropCols[dropCols %in% "variable_name"] <- "concept_name"
+    if (any(input$summarise_standardised_mean_differences_vaccine_brand != "overall")) {
+      dropCols <- dropCols[dropCols != "vaccine_brand"]
+    }
+    if (any(input$summarise_standardised_mean_differences_gestational_trimester != "overall")) {
+      dropCols <- dropCols[dropCols != "gestational_trimester"]
+    }
+    if (any(input$summarise_standardised_mean_differences_age_group != "overall")) {
+      dropCols <- dropCols[dropCols != "age_group "]
+    }
+    if (length(input$summarise_standardised_mean_differences_weighting)==2) {
+      dropCols <- dropCols[dropCols != "weighting "]
+    }
     getSMDData() |>
       omopgenerics::filterSettings(
         .data$weighting %in% input$summarise_standardised_mean_differences_weighting
@@ -1432,7 +1480,7 @@ server <- function(input, output, session) {
       dplyr::rename("concept_name" = "variable_name") |>
       dplyr::mutate(asmd = abs(smd)) |>
       dplyr::relocate(c("smd", "asmd"), .after = dplyr::last_col()) |>
-      dplyr::select(!dplyr::any_of(c("analysis", "type", "table_name", dropCols))) |>
+      dplyr::select(!dplyr::any_of(c("analysis", "type", "table_name", "exposure", dropCols))) |>
       dplyr::filter(!is.na(smd)) |>
       visOmopResults::formatTable(type = "reactable")
   })
