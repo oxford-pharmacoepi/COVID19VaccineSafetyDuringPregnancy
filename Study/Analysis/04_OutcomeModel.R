@@ -230,11 +230,8 @@ if (getNCO) {
     end = "cohort_end_date_sensitivity", strata = strata, group = "cohort_name", 
     weights = allCovariatesPS, outcomeGroup = "Negative Control Outcomes", ci = ci
   )
-} else {
-  nco <- NULL
-  nco_sensitivity <- NULL
-}
-
-bind(nco, nco_sensitivity) |>
-  suppressRiskEstimates() |> 
-  exportSummarisedResult(fileName = paste0("nco_", cdmName(cdm), ".csv"), path = output_folder)
+  
+  bind(nco, nco_sensitivity) |>
+    suppressRiskEstimates() |> 
+    exportSummarisedResult(fileName = paste0("nco_", cdmName(cdm), ".csv"), path = output_folder)
+} 
