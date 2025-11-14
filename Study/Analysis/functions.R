@@ -2248,7 +2248,7 @@ getTimeToEvent <- function(cohort, washOut, outcomes) {
         select(!all_of(c(outcome, colsExclude))) %>% 
         {if (outcome %in% onlyPostpartum) {
           mutate(., time_t4 = time, status_t4 = status, pregnancies_t4 = pregnancies)
-        }} |>
+        } else .} |>
         rename_with(
           .fn = \(x){paste0(outcome, "_", x)},
           .cols = colsRename
