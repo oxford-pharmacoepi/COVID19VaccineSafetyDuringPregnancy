@@ -1854,7 +1854,7 @@ addSocioeconomicStatus <- function(cohort) {
     cohort <- cohort |>
       left_join(
         cdm$observation |>
-          filter(observation_source_value == "medea") |>
+          filter(observation_source_value == "qmedea11") |>
           select("subject_id" = "person_id", "socioeconomic_status" = "value_as_string"),
         by = "subject_id"
       ) |>
