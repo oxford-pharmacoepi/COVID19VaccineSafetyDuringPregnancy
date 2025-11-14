@@ -2485,7 +2485,7 @@ addByPeriodEvents <- function(x, cohort) {
           outcome_in_period_t2_percentage = if_else(outcome_in_period_t2_count != 0, outcome_in_period_t2_count/trimester_2 * 100, 0),
           outcome_in_period_t3_percentage = if_else(outcome_in_period_t3_count != 0, outcome_in_period_t3_count/trimester_3 * 100, 0)
         ) |>
-        select(!any_of(c("overall", "trimester_1", "trimester_2", "trimester_3", "postpartum", remove)))
+        select(!any_of(c("overall", "trimester_1", "trimester_2", "trimester_3", "postpartum")))
     }
     
     # bind results
