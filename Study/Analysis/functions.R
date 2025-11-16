@@ -2535,18 +2535,18 @@ getMatchedCohort <- function(cohort, outcomes, name) {
   onlyPostpartum <- c("postpartum_endometritis", "postpartum_haemorrhage")
   postpartum <- "maternal_death"
 
-  strata <- list("maternal_age_group", "pregnancy_start_period")
+  strata <- c("maternal_age_group", "pregnancy_start_period")
   if (grepl("SIDIAP", cdmName(cdm))) {
-    strata <- c(strata, list("socioeconomic_status", "nationallity"))
+    strata <- c(strata, "socioeconomic_status", "nationallity")
   }
   if (grepl("CPRD", cdmName(cdm))) {
-    strata <- c(strata, list("socioeconomic_status", "ethnicity"))
+    strata <- c(strata, "socioeconomic_status", "ethnicity")
   }
   if (grepl("NLHR@UiO", cdmName(cdm))) {
-    strata <- c(strata, list("birth_continent"))
+    strata <- c(strata, "birth_continent")
   }
   if (grepl("SCIFI-PEARL", cdmName(cdm))) {
-    strata <- c(strata, list("socioeconomic_status", "birth_continent"))
+    strata <- c(strata, "socioeconomic_status", "birth_continent")
   }
   
   for (outcome in outcomes) {
