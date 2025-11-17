@@ -240,7 +240,7 @@ cif_aesi_inf <- estimateSingleEventSurvival(
 )
 ### MAE pregnancy
 maePregnancy <- c(
-  "miscarriage", "miscarriage_codelist", "stillbirth", "antepartum_haemorrhage", 
+  outcomeMiscarriage, "stillbirth", "antepartum_haemorrhage", 
   "dysfunctional_labour", "eclampsia", "ectopic_pregnancy", 
   "gestational_diabetes", "hellp", "preeclampsia", "preterm_labour"
 )
@@ -454,7 +454,7 @@ if (any(grepl("miscarriage", settings(cdm$mae)$cohort_name))) {
   cdm$ir_miscarriage <- cdm$miscarriage_denominator |>
     addCohortIntersectDate(
       targetCohortTable = "mae",
-      targetCohortId = c("miscarriage", "miscarriage_codelist"),
+      targetCohortId = outcomeMiscarriage,
       indexDate = "cohort_start_date",
       censorDate = "cohort_end_date",
       targetDate = "cohort_start_date",
@@ -463,7 +463,7 @@ if (any(grepl("miscarriage", settings(cdm$mae)$cohort_name))) {
       nameStyle = "{cohort_name}",
       name = "ir_miscarriage"
     ) |>
-    getTimeToEvent(washOut = 0,  outcomes = c("miscarriage", "miscarriage_codelist"))
+    getTimeToEvent(washOut = 0,  outcomes = outcomeMiscarriage)
 }
 
 ### Stillbirth
@@ -510,7 +510,7 @@ ir_postpartum_endometritis <- estimateIncidenceRate(cdm$ir_postpartum_endometrit
 ir_postpartum_haemorrhage <- estimateIncidenceRate(cdm$ir_postpartum_haemorrhage, strata, "postpartum_haemorrhage")
 ir_preterm_labour <- estimateIncidenceRate(cdm$ir_preterm_labour, strata, "preterm_labour")
 if (any(grepl("miscarriage", settings(cdm$mae)$cohort_name))) {
-  ir_miscarriage <- estimateIncidenceRate(cdm$ir_miscarriage, strata, c("miscarriage", "miscarriage_codelist"))
+  ir_miscarriage <- estimateIncidenceRate(cdm$ir_miscarriage, strata, outcomeMiscarriage)
 } else {
   ir_miscarriage <- NULL
 }

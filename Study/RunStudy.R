@@ -29,6 +29,12 @@ set.seed(123)
 # Hand-picked PS variables + confounders with SMD > 0.1
 covariatesPS <- getCovariateList(cdm)
 
+# Miscarriage
+outcomeMiscarriage <- c("miscarriage", "miscarriage_codelist")
+if (grepl("CPRD", cdmName(cdm))) {
+  outcomeMiscarriage <- c("miscarriage", "miscarriage_codelist", "elective_termination")
+}
+
 if (sensitvitySCIFIPEARL) {
   locations <- readr::read_csv(here::here("Data", "locations_sweden.csv"))
   cdm$person <- cdm$person |>

@@ -70,7 +70,7 @@ cdm$mea_miscarriage <- cdm$study_population |>
   ) |>
   addCohortIntersectDate(
     targetCohortTable = "mae",
-    targetCohortId = c("miscarriage", "miscarriage_codelist"),
+    targetCohortId = outcomeMiscarriage,
     window = c(1, Inf),
     nameStyle = "{cohort_name}",
     name = "mea_miscarriage"
@@ -83,7 +83,7 @@ cdm$mea_miscarriage <- cdm$study_population |>
   compute(name = "mea_miscarriage", temporary = FALSE)
 for (endDate in c("week_19_end", "week_19_end_sensitivity")) {
   maeResults[[jj]] <- estimateSurvivalRisk(
-    cohort = cdm$mea_miscarriage, outcomes = c("miscarriage", "miscarriage_codelist"), outcomeGroup = "Maternal Adverse Events",
+    cohort = cdm$mea_miscarriage, outcomes = outcomeMiscarriage, outcomeGroup = "Maternal Adverse Events",
     end = endDate, strata = strata, group = "cohort_name", weights = allCovariatesPS, ci = ci
   )
   jj <- 1 + jj
@@ -208,30 +208,46 @@ cdm$study_population_nco <- cdm$study_population |>
     window = c(1, Inf),
     nameStyle = "{cohort_name}",
     name = "study_population_nco"
-  ) |>
+  ) 
+cdm$study_population_pco <- cdm$study_population |>
   addCohortIntersectDate(
     targetCohortTable = "covid",
     indexDate = "cohort_start_date",
     targetDate = "cohort_start_date",
     order = "first",
-    window = c(1, Inf),
+    window = c(1, 90),
     nameStyle = "{cohort_name}",
-    name = "study_population_nco"
-  )
+    name = "study_population_pco"
+  ) %>% 
+  mutate(
+    end_90 = !!CDMConnector::dateadd("cohort_start_date", 90),
+    cohort_end_date = if_else(end_90 > cohort_end_date, cohort_end_date, end_90),
+    cohort_end_date_sensitivity = if_else(end_90 > cohort_end_date_sensitivity, cohort_end_date_sensitivity, end_90)
+  ) |>
+  compute(name = "study_population_pco", temporary = FALSE)
 
 if (getNCO) {
   nco <- estimateSurvivalRisk(
-    cohort = cdm$study_population_nco, outcomes = c(settings(cdm$nco)$cohort_name, "covid"), 
+    cohort = cdm$study_population_nco, outcomes = settings(cdm$nco)$cohort_name, 
     end = "cohort_end_date", strata = strata, group = "cohort_name", 
     weights = allCovariatesPS, outcomeGroup = "Negative Control Outcomes", ci = ci
   )
   nco_sensitivity <-   estimateSurvivalRisk(
-    cohort = cdm$study_population_nco, outcomes = c(settings(cdm$nco)$cohort_name, "covid"), 
+    cohort = cdm$study_population_nco, outcomes = settings(cdm$nco)$cohort_name, 
     end = "cohort_end_date_sensitivity", strata = strata, group = "cohort_name", 
     weights = allCovariatesPS, outcomeGroup = "Negative Control Outcomes", ci = ci
   )
-  
-  bind(nco, nco_sensitivity) |>
+  pco <- estimateSurvivalRisk(
+    cohort = cdm$study_population_pco, outcomes = "covid", 
+    end = "cohort_end_date", strata = strata, group = "cohort_name", 
+    weights = allCovariatesPS, outcomeGroup = "Positive Control Outcomes", ci = ci
+  )
+  pco_sensitivity <-   estimateSurvivalRisk(
+    cohort = cdm$study_population_pco, outcomes = "covid", 
+    end = "cohort_end_date_sensitivity", strata = strata, group = "cohort_name", 
+    weights = allCovariatesPS, outcomeGroup = "Positive Control Outcomes", ci = ci
+  )
+  bind(nco, nco_sensitivity, pco, pco_sensitivity) |>
     suppressRiskEstimates() |> 
     exportSummarisedResult(fileName = paste0("nco_", cdmName(cdm), ".csv"), path = output_folder)
 } 

@@ -11,7 +11,7 @@ cdm$characteristics_postpartum_endometritis <- getMatchedCohort(cdm$ir_postpartu
 cdm$characteristics_postpartum_haemorrhage <- getMatchedCohort(cdm$ir_postpartum_haemorrhage, "postpartum_haemorrhage", name = "characteristics_postpartum_haemorrhage")
 cdm$characteristics_preterm_labour <- getMatchedCohort(cdm$ir_preterm_labour, "preterm_labour", name = "characteristics_preterm_labour")
 if (any(grepl("miscarriage", settings(cdm$mae)$cohort_name))){
- cdm$characteristics_miscarriage <- getMatchedCohort(cdm$ir_miscarriage, c("miscarriage", "miscarriage_codelist"), name = "characteristics_miscarriage")
+ cdm$characteristics_miscarriage <- getMatchedCohort(cdm$ir_miscarriage, outcomeMiscarriage, name = "characteristics_miscarriage")
 } else {
  cdm$characteristics_miscarriage <- omopgenerics::emptyCohortTable(cdm = cdm , name = "characteristics_miscarriage")
 }
@@ -79,3 +79,4 @@ lsChars <- summariseLargeScaleCharacteristics(
 ## Export ----
 info(logger, "- Export results")
 exportSummarisedResult(baselineChars, lsChars, path = output_folder, fileName = paste0("background_characteristics_", cdmName(cdm), ".csv"))
+

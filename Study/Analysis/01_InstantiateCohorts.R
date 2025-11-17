@@ -326,7 +326,7 @@ cdm$mae_postpartum_12weeks <- cdm$base |>
   startsInPregnancy(start = "pregnancy_end_date", end = "end_12", reason = "In the firsts 12 weeks postpartum")
 cdm$mae_miscarriage <- cdm$base |>
   subsetCohorts(
-    cohortId = "miscarriage_codelist",
+    cohortId = outcomeMiscarriage,
     name = "mae_miscarriage"
   ) |>
   startsInPregnancy(start = "pregnancy_end_date_m7", end = "pregnancy_end_date_7", reason = "In pregnancy end date [7-day window]")
