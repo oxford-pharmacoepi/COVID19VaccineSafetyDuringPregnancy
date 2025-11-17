@@ -163,7 +163,7 @@ if (runBRCharacteristics) {
       writePrefix = tolower(table_stem),
       cdmName = database_name,
       cohortTables = c(
-        "mother_table", "aesi", "mae", "comedications",
+        "mother_table", "aesi", "mae", "comedications", "pregnancy_denominator", 
         "covariates_inf", "covariates_5", "other_vaccines",
         "aesi_90", "aesi_30", "aesi_inf", "mae", "aesi_180",
         "covid", "covid_test", "ir_aesi_30", "ir_aesi_inf", "ir_aesi_90", "ir_aesi_180",
