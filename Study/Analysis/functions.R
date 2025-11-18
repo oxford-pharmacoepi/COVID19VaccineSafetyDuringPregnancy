@@ -2655,10 +2655,10 @@ getCovariateList <- function(cdm) {
     covariatesPS <- c(covariatesPS, "birth_continent")
   }
   if (grepl("SCIFI-PEARL", cdmName(cdm))) {
-    covariatesPS <- c(covariatesPS, "nationallity", "socioeconomic_status")
+    covariatesPS <- c(covariatesPS, "birth_continent", "socioeconomic_status")
   }
   if (grepl("SIDIAP", cdmName(cdm))) {
-    covariatesPS <- c(covariatesPS, "birth_continent", "socioeconomic_status")
+    covariatesPS <- c(covariatesPS, "nationallity", "socioeconomic_status")
   }
   
   strataLevel <- c("overall","T1","T2","T3","pfizer","moderna","12 to 17","18 to 34","35 to 55")

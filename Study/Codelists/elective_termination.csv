@@ -1,0 +1,221 @@
+codelist_name,concept_name,concept_id,standard_concept
+elective_termination,Incomplete legal termination of pregnancy with genital tract or pelvic infection,193532,S
+elective_termination,Incomplete legal termination of pregnancy with delayed or excessive hemorrhage,440453,S
+elective_termination,Illegal termination of pregnancy with blood-clot embolism,4066227,S
+elective_termination,Induced termination of pregnancy complicated by embolism,43531710,S
+elective_termination,Induced termination of pregnancy complicated by endometritis,43530921,S
+elective_termination,Induced termination of pregnancy complicated by cardiac arrest,43530960,S
+elective_termination,Induced termination of pregnancy in first trimester,45763590,S
+elective_termination,Complete legal abortion complicated by excessive hemorrhage,44784433,S
+elective_termination,Illegal termination of pregnancy with complication,436169,S
+elective_termination,Incomplete termination of pregnancy,44805020,S
+elective_termination,Legal termination of pregnancy with pulmonary embolism,4178578,S
+elective_termination,Illegal termination of pregnancy with pulmonary embolism,4206453,S
+elective_termination,Illegal termination of pregnancy with fat embolism,4107907,S
+elective_termination,Excessive hemorrhage due to and following induced termination of pregnancy,37206226,S
+elective_termination,Illegal termination of pregnancy with perforation of cervix,4224143,S
+elective_termination,Abortion w/o D&C,38001496,S
+elective_termination,Incomplete induced termination of pregnancy with complication,45771353,S
+elective_termination,Legal termination of pregnancy with cerebral anoxia,4077454,S
+elective_termination,Incomplete illegal termination of pregnancy with embolism,438487,S
+elective_termination,"Illegal termination of pregnancy, complete",439310,S
+elective_termination,Legal termination of pregnancy with renal tubular necrosis,4070939,S
+elective_termination,Termination of pregnancy,4240605,S
+elective_termination,Induced termination of pregnancy complicated by shock,43531711,S
+elective_termination,Induced termination of pregnancy complicated by septic embolism,43530940,S
+elective_termination,Illegal termination of pregnancy with uremia,4183557,S
+elective_termination,Illegal termination of pregnancy with sepsis,4034753,S
+elective_termination,Legal termination of pregnancy with amniotic fluid embolism,4098441,S
+elective_termination,Illegal termination of pregnancy with laceration of bowel,4066994,S
+elective_termination,Illegal termination of pregnancy complicated by metabolic disorder,443705,S
+elective_termination,Incomplete illegal termination of pregnancy with damage to pelvic organs or tissues,439323,S
+elective_termination,Legal termination of pregnancy with postoperative shock,4058932,S
+elective_termination,Retained products of conception following induced termination of pregnancy,43531709,S
+elective_termination,Induced termination of pregnancy complicated by blood-clot embolism,43530917,S
+elective_termination,Induced termination of pregnancy complicated by bladder damage,43530957,S
+elective_termination,Legal termination of pregnancy with laceration of periurethral tissue,4324672,S
+elective_termination,Illegal termination of pregnancy with laceration of vagina,4249728,S
+elective_termination,Illegal termination of pregnancy with cerebral anoxia,4223627,S
+elective_termination,Legal termination of pregnancy complicated by damage to pelvic organ and/or tissues,192379,S
+elective_termination,Excessive hemorrhage due to and following legally induced termination of pregnancy,37206230,S
+elective_termination,Complete legal termination of pregnancy,441073,S
+elective_termination,Incomplete illegal termination of pregnancy with renal failure,439322,S
+elective_termination,Induced termination of pregnancy complicated by genital-pelvic infection,43530910,S
+elective_termination,Induced termination of pregnancy complicated by laceration of cervix,43531714,S
+elective_termination,Induced termination of pregnancy complicated by acute renal failure with oliguria,43530928,S
+elective_termination,Induced termination of pregnancy complicated by perforation of bowel,43530930,S
+elective_termination,Illegal termination of pregnancy with defibrination syndrome,4264914,S
+elective_termination,Legal termination of pregnancy with defibrination syndrome,4280224,S
+elective_termination,Illegal termination of pregnancy with perforation of periurethral tissue,4239192,S
+elective_termination,Illegal termination of pregnancy with intravascular hemolysis,4323434,S
+elective_termination,Illegal termination of pregnancy with renal tubular necrosis,4195297,S
+elective_termination,Legal termination of pregnancy with complication,441349,S
+elective_termination,Illegal termination of pregnancy with laceration of bladder,4180859,S
+elective_termination,Therapeutic termination of pregnancy,4204840,S
+elective_termination,Illegal termination of pregnancy with laceration of broad ligament,4105762,S
+elective_termination,Legal termination of pregnancy complicated by genital-pelvic infection,439883,S
+elective_termination,Legal termination of pregnancy with blood-clot embolism,4292089,S
+elective_termination,Legal termination of pregnancy with electrolyte imbalance,4214233,S
+elective_termination,Excessive hemorrhage due to and following illegally induced termination of pregnancy,37206231,S
+elective_termination,Illegal termination of pregnancy with pelvic peritonitis,4234979,S
+elective_termination,Illegal termination of pregnancy with laceration of cervix,4077275,S
+elective_termination,Incomplete legal termination of pregnancy with damage to pelvic organs or tissues,434705,S
+elective_termination,"Illegal termination of pregnancy, incomplete",439325,S
+elective_termination,Incomplete illegal termination of pregnancy with genital tract or pelvic infection,439324,S
+elective_termination,Incomplete illegal termination of pregnancy with metabolic disorder,439321,S
+elective_termination,Complete illegal termination of pregnancy with damage to pelvic organs or tissues,439319,S
+elective_termination,Induced termination of pregnancy complicated by fat embolism,43530922,S
+elective_termination,Induced termination of pregnancy complicated by pulmonary embolism,43530934,S
+elective_termination,Incomplete induced termination of pregnancy,45768717,S
+elective_termination,Illegal termination of pregnancy with perforation of uterus,4296872,S
+elective_termination,Legal termination of pregnancy with oliguria,4269450,S
+elective_termination,Illegal termination of pregnancy complicated by genital-pelvic infection,439400,S
+elective_termination,Illegal termination of pregnancy with salpingo-oophoritis,4313005,S
+elective_termination,Incomplete legal termination of pregnancy with renal failure,439331,S
+elective_termination,Complete legal termination of pregnancy with renal failure,435008,S
+elective_termination,Complete legal termination of pregnancy with shock,437934,S
+elective_termination,Legal termination of pregnancy complicated by embolism,442346,S
+elective_termination,Induced termination of pregnancy complicated by damage to pelvic organs and/or tissues,43530908,S
+elective_termination,Induced termination of pregnancy complicated by metabolic disorder,43530911,S
+elective_termination,Induced termination of pregnancy complicated by intravascular hemolysis,43530923,S
+elective_termination,Induced termination of pregnancy complicated by perforation of cervix,43530931,S
+elective_termination,Induced termination of pregnancy complicated by postoperative shock,43531716,S
+elective_termination,Complete legal abortion with complication,44784482,S
+elective_termination,Illegal termination of pregnancy with septic embolism,4324965,S
+elective_termination,Legal termination of pregnancy with laceration of cervix,4324695,S
+elective_termination,Illegal termination of pregnancy without complication,441915,S
+elective_termination,Illegal termination of pregnancy with air embolism,4185440,S
+elective_termination,Illegal termination of pregnancy with urinary tract infection,4140509,S
+elective_termination,Illegal termination of pregnancy with acute renal failure,4143190,S
+elective_termination,Secondary hemorrhage due to and following illegally induced termination of pregnancy,37206228,S
+elective_termination,Illegal termination of pregnancy with septic shock,4219608,S
+elective_termination,Legal termination of pregnancy with laceration of uterus,4045581,S
+elective_termination,Legal termination of pregnancy with parametritis,4049453,S
+elective_termination,Illegal termination of pregnancy with endometritis,4023781,S
+elective_termination,Complete legal termination of pregnancy with damage to pelvic organs or tissues,441911,S
+elective_termination,Complete illegal termination of pregnancy with delayed or excessive hemorrhage,434096,S
+elective_termination,Complete illegal termination of pregnancy with shock,439317,S
+elective_termination,Illegal termination of pregnancy with salpingitis,4318662,S
+elective_termination,Induced termination of pregnancy complicated by laceration of uterus,43530926,S
+elective_termination,Termination of pregnancy without complication,43530946,S
+elective_termination,Induced termination of pregnancy complicated by cardiac failure,43530961,S
+elective_termination,Legal termination of pregnancy with perforation of bladder,4271203,S
+elective_termination,Fetal death due to termination of pregnancy,436228,S
+elective_termination,Legal termination of pregnancy with perforation of periurethral tissue,4296459,S
+elective_termination,Legal termination of pregnancy with perforation of broad ligament,4198404,S
+elective_termination,Legal termination of pregnancy with sepsis,4188764,S
+elective_termination,Secondary hemorrhage due to and following legally induced termination of pregnancy,37206229,S
+elective_termination,Legal termination of pregnancy with uremia,4225572,S
+elective_termination,Illegal termination of pregnancy with perforation of bowel,4051784,S
+elective_termination,Termination of pregnancy with complication,43530907,S
+elective_termination,Induced termination of pregnancy complicated by afibrinogenemia,43530915,S
+elective_termination,Induced termination of pregnancy complicated by pelvic peritonitis,43531715,S
+elective_termination,Induced termination of pregnancy complicated by salpingitis,43530936,S
+elective_termination,Induced termination of pregnancy complicated by urinary tract infection,43530945,S
+elective_termination,Illegal termination of pregnancy with oliguria,4266243,S
+elective_termination,Legal termination of pregnancy with laceration of vagina,4204231,S
+elective_termination,Self-induced termination of pregnancy,4150823,S
+elective_termination,Secondary hemorrhage due to and following induced termination of pregnancy,37206227,S
+elective_termination,Incomplete legal termination of pregnancy,435868,S
+elective_termination,Incomplete legal termination of pregnancy with metabolic disorder,434095,S
+elective_termination,Incomplete legal termination of pregnancy with embolism,439329,S
+elective_termination,Complete legal termination of pregnancy with delayed or excessive hemorrhage,438196,S
+elective_termination,"Readmission for retained products of conception, legal termination of pregnancy",4113503,S
+elective_termination,Legal termination of pregnancy with urinary tract infection,4245041,S
+elective_termination,Induced termination of pregnancy complicated by amniotic fluid embolism,43531712,S
+elective_termination,Induced termination of pregnancy complicated by perforation of vagina,43530933,S
+elective_termination,Induced termination of pregnancy complicated by soap embolism,43530943,S
+elective_termination,Induced termination of pregnancy complicated by laceration of bladder,43530952,S
+elective_termination,Induced termination of pregnancy complicated by broad ligament damage,43530959,S
+elective_termination,Induced termination of pregnancy complicated by cervix damage,43530962,S
+elective_termination,Legal termination of pregnancy with salpingitis,4204206,S
+elective_termination,Incomplete legal termination of pregnancy with shock,439330,S
+elective_termination,Complete illegal termination of pregnancy with genital tract or pelvic infection,195870,S
+elective_termination,Induced termination of pregnancy complicated by tetanus,43530947,S
+elective_termination,Induced termination of pregnancy complicated by perforation of broad ligament,43530955,S
+elective_termination,Induced termination of pregnancy complicated by oliguria,43530966,S
+elective_termination,Induced termination of pregnancy complicated by vaginal damage,43530968,S
+elective_termination,Complete illegal abortion complicated by excessive hemorrhage,44782485,S
+elective_termination,Legal termination of pregnancy with perforation of vagina,4327321,S
+elective_termination,"Abortion w D&C, aspiration curettage or hysterotomy",38001490,S
+elective_termination,Legal termination of pregnancy complicated by shock,197333,S
+elective_termination,Complete legal termination of pregnancy with metabolic disorder,435017,S
+elective_termination,Complete illegal termination of pregnancy with renal failure,435871,S
+elective_termination,Legal termination of pregnancy with perforation of uterus,4068253,S
+elective_termination,Induced termination of pregnancy complicated by acute necrosis of liver,43530913,S
+elective_termination,Induced termination of pregnancy complicated by laceration of broad ligament,43530925,S
+elective_termination,Induced termination of pregnancy complicated by parametritis,43530929,S
+elective_termination,Induced termination of pregnancy complicated by salpingo-oophoritis,43530937,S
+elective_termination,Induced termination of pregnancy complicated by pelvic disorder,43530948,S
+elective_termination,Induced termination of pregnancy complicated by infectious disease,43530964,S
+elective_termination,Illegal termination of pregnancy with laceration of uterus,4229716,S
+elective_termination,Illegal termination of pregnancy,435869,S
+elective_termination,Legal termination of pregnancy with septic embolism,4106892,S
+elective_termination,Illegal abortion complicated by cardiac arrest,605119,S
+elective_termination,Inpatient care for termination of pregnancy,3661575,S
+elective_termination,Illegal termination of pregnancy with electrolyte imbalance,4101477,S
+elective_termination,Complete legal termination of pregnancy with genital tract or pelvic infection,196754,S
+elective_termination,Incomplete illegal termination of pregnancy with shock,439320,S
+elective_termination,Legal termination of pregnancy with laceration of bladder,4243658,S
+elective_termination,Induced termination of pregnancy complicated by cerebral anoxia,43530919,S
+elective_termination,Induced termination of pregnancy complicated by sepsis,43530939,S
+elective_termination,Induced termination of pregnancy complicated by perforation of periurethral tissue,43530956,S
+elective_termination,Induced termination of pregnancy complicated by periurethral tissue damage,43530965,S
+elective_termination,Illegal termination of pregnancy with afibrinogenemia,4138267,S
+elective_termination,Legal termination of pregnancy with air embolism,4009642,S
+elective_termination,Illegal termination of pregnancy with postoperative shock,4143018,S
+elective_termination,Incomplete illegal termination of pregnancy with delayed or excessive hemorrhage,437929,S
+elective_termination,Induced termination of pregnancy complicated by renal failure,43530912,S
+elective_termination,Induced termination of pregnancy complicated by perforation of uterus,43530932,S
+elective_termination,Induced termination of pregnancy complicated by bowel damage,43530958,S
+elective_termination,Legal termination of pregnancy with laceration of broad ligament,4216436,S
+elective_termination,Illegal abortion complicated by cardiac failure,605120,S
+elective_termination,Legal termination of pregnancy without complication,436747,S
+elective_termination,Legal termination of pregnancy,444077,S
+elective_termination,Illegal termination of pregnancy with parametritis,4305348,S
+elective_termination,Illegal termination of pregnancy complicated by embolism,193821,S
+elective_termination,Illegal termination of pregnancy with laceration of periurethral tissue,4025828,S
+elective_termination,Induced termination of pregnancy complicated by defibrination syndrome,43530920,S
+elective_termination,Induced termination of pregnancy complicated by laceration of vagina,43530927,S
+elective_termination,Induced termination of pregnancy complicated by septic shock,43530941,S
+elective_termination,Induced termination of pregnancy complicated by uremia,43530944,S
+elective_termination,Illegal termination of pregnancy complicated by shock,442596,S
+elective_termination,Induced termination of pregnancy in second trimester,45763591,S
+elective_termination,Vesicovaginal fistula with involvement of urinary continence mechanism following termination of pregnancy procedure,37110288,S
+elective_termination,Legal termination of pregnancy with endometritis,4294829,S
+elective_termination,Legal termination of pregnancy with perforation of bowel,4184150,S
+elective_termination,Legal abortion complicated by cardiac arrest,605116,S
+elective_termination,Legal termination of pregnancy complicated by metabolic disorder,436474,S
+elective_termination,Pregnancy termination care,4302270,S
+elective_termination,Illegal termination of pregnancy with amniotic fluid embolism,4303980,S
+elective_termination,Illegal termination of pregnancy with perforation of bladder,4197900,S
+elective_termination,Legal termination of pregnancy with perforation of cervix,4312358,S
+elective_termination,Illegal termination of pregnancy complicated by renal failure,195600,S
+elective_termination,Elective termination of pregnancy,4081422,S
+elective_termination,Complete illegal termination of pregnancy with metabolic disorder,439318,S
+elective_termination,"Readmission for retained products of conception, illegal termination of pregnancy",4114271,S
+elective_termination,Induced termination of pregnancy complicated by acute renal failure,43530914,S
+elective_termination,Induced termination of pregnancy complicated by air embolism,43530916,S
+elective_termination,Induced termination of pregnancy complicated by electrolyte imbalance,43531713,S
+elective_termination,Induced termination of pregnancy complicated by laceration of bowel,43530924,S
+elective_termination,Induced termination of pregnancy complicated by renal tubular necrosis,43530935,S
+elective_termination,Induced termination of pregnancy complicated by laceration of periurethral tissue,43530953,S
+elective_termination,Legal termination of pregnancy with fat embolism,4328084,S
+elective_termination,Legal termination of pregnancy complicated by renal failure,195595,S
+elective_termination,Legal termination of pregnancy with afibrinogenemia,4147533,S
+elective_termination,Legal abortion complicated by cardiac failure,605117,S
+elective_termination,Legal termination of pregnancy with septic shock,4105063,S
+elective_termination,Complete legal termination of pregnancy with embolism,439327,S
+elective_termination,Complete illegal termination of pregnancy with embolism,439316,S
+elective_termination,Induced termination of pregnancy complicated by perforation of bladder,43530954,S
+elective_termination,Induced termination of pregnancy complicated by uterus damage,43530967,S
+elective_termination,Illegal termination of pregnancy with perforation of broad ligament,4195243,S
+elective_termination,Incomplete legal abortion without complication,37110280,S
+elective_termination,Legal termination of pregnancy with salpingo-oophoritis,4197681,S
+elective_termination,Legal termination of pregnancy with acute renal failure,4181114,S
+elective_termination,Legal termination of pregnancy with laceration of bowel,4183680,S
+elective_termination,Legal termination of pregnancy with intravascular hemolysis,4046510,S
+elective_termination,Genital tract infection due to incomplete induced termination of pregnancy,45757774,S
+elective_termination,Illegal termination of pregnancy complicated by damage to pelvic organs and/or tissues,444048,S
+elective_termination,Illegal termination of pregnancy with perforation of vagina,4103148,S
+elective_termination,Legal termination of pregnancy with pelvic peritonitis,4094081,S
