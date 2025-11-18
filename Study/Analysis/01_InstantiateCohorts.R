@@ -16,6 +16,10 @@ for (csv in csvs) {
       union_all(read_csv(here("Codelists", csv)))
   }
 }
+if (cdmName(cdm) != "CPRD GOLD") {
+  codes <- codes |> 
+    filter(codelist_name != "elective_termination")
+}
 ncoNames <- read_csv(here("Codelists", "nco.csv")) |>
   pull("codelist_name") |>
   unique() |>
