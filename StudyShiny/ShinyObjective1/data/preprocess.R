@@ -21,7 +21,7 @@ result <- result |>
     ),
     additional_level = dplyr::case_when(
       .data$result_id %in% incidenceID & .data$group_level %in% c(
-        "preterm_labour", "miscarriage", "stillbirth", "maternal_death", 
+        "preterm_labour", "miscarriage", "miscarriage_codelist", "stillbirth", "maternal_death", 
         "dysfunctional_labour", "eclampsia", "ectopic_pregnancy", 
         "antepartum_haemorrhage", "gestational_diabetes", "hellp", "preeclampsia", 
         "postpartum_endometritis", "postpartum_haemorrhage"
@@ -29,7 +29,7 @@ result <- result |>
       .data$result_id %in% incidenceID & grepl("_sens", .data$group_level) ~ 
         "AESI Sensitivity (180 wash-out)",
       .data$result_id %in% incidenceID & !.data$group_level %in% c(
-        "preterm_labour", "miscarriage", "stillbirth", "maternal_death", 
+        "preterm_labour", "miscarriage", "miscarriage_codelist", "stillbirth", "maternal_death", 
         "dysfunctional_labour", "eclampsia", "ectopic_pregnancy", 
         "antepartum_haemorrhage", "gestational_diabetes", "hellp", "preeclampsia", 
         "postpartum_endometritis", "postpartum_haemorrhage"
