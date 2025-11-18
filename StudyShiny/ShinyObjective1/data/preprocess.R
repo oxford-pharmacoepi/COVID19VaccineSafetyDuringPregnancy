@@ -12,6 +12,13 @@ resultList <- list(
 
 source(file.path(getwd(), "functions.R"))
 
+mae <- c(
+  "preterm_labour", "miscarriage", "miscarriage_codelist", "stillbirth", "maternal_death", 
+  "dysfunctional_labour", "eclampsia", "ectopic_pregnancy", 
+  "antepartum_haemorrhage", "gestational_diabetes", "hellp", "preeclampsia", 
+  "postpartum_endometritis", "postpartum_haemorrhage"
+)
+
 result <- omopgenerics::importSummarisedResult(file.path(getwd(), "data"))
 incidenceID <- omopgenerics::settings(result) |> dplyr::filter(result_type == "") |> dplyr::pull("result_id")
 result <- result |>
@@ -20,24 +27,24 @@ result <- result |>
       .data$result_id %in% incidenceID, "outcome_group", .data$additional_name
     ),
     additional_level = dplyr::case_when(
-      .data$result_id %in% incidenceID & .data$group_level %in% c(
-        "preterm_labour", "miscarriage", "miscarriage_codelist", "stillbirth", "maternal_death", 
-        "dysfunctional_labour", "eclampsia", "ectopic_pregnancy", 
-        "antepartum_haemorrhage", "gestational_diabetes", "hellp", "preeclampsia", 
-        "postpartum_endometritis", "postpartum_haemorrhage"
-      ) ~ "Maternal Adverse Events",
-      .data$result_id %in% incidenceID & grepl("_sens", .data$group_level) ~ 
-        "AESI Sensitivity (180 wash-out)",
-      .data$result_id %in% incidenceID & !.data$group_level %in% c(
-        "preterm_labour", "miscarriage", "miscarriage_codelist", "stillbirth", "maternal_death", 
-        "dysfunctional_labour", "eclampsia", "ectopic_pregnancy", 
-        "antepartum_haemorrhage", "gestational_diabetes", "hellp", "preeclampsia", 
-        "postpartum_endometritis", "postpartum_haemorrhage"
-      ) ~ "Adverse Events of Special Interest",
+      .data$result_id %in% incidenceID & .data$group_level %in% mae ~ "Maternal Adverse Events",
+      .data$result_id %in% incidenceID & grepl("_sens", .data$group_level) ~ "AESI Sensitivity (180 wash-out)",
+      .data$result_id %in% incidenceID & !.data$group_level %in% mae ~ "Adverse Events of Special Interest",
       .default = .data$additional_level
     )
   ) |>
   omopgenerics::newSummarisedResult()
+
+cumulativeID <- omopgenerics::settings(result) |> dplyr::filter(result_type %in% c("survival_probability", "survival_events", "survival_summary", "survival_attrition")) |> dplyr::pull("result_id")
+attr(result, "settings") <- settings(result) |>
+  dplyr::mutate(
+    outcome_group = dplyr::case_when(
+      .data$result_id %in% cumulativeID & .data$outcome %in% mae ~ "Maternal Adverse Events",
+      .data$result_id %in% cumulativeID & grepl("_sens", .data$outcome) ~ "AESI Sensitivity (180 wash-out)",
+      .data$result_id %in% cumulativeID & !.data$outcome %in% mae ~ "Adverse Events of Special Interest",
+      .default = NA
+    )
+  )
 
 data <- prepareResult(result, resultList)
 attr(data$incidence, "settings") <- attr(data$incidence, "settings") |> dplyr::mutate(additional = "outcome_group")

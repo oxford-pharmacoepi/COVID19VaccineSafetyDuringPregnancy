@@ -429,6 +429,8 @@ ui <- bslib::page_navbar(
       icon = shiny::icon("chart-line"),
       bslib::layout_sidebar(
         sidebar = bslib::sidebar(
+          width = 400, 
+          open = "closed",
           shinyWidgets::pickerInput(
             inputId = "incidence_cdm_name",
             label = "CDM name",
@@ -565,7 +567,7 @@ ui <- bslib::page_navbar(
                     header = NULL,
                     sortable::add_rank_list(
                       text = "None",
-                      labels = c("outcome_cohort_name"),
+                      labels = c('outcome_group', "outcome_cohort_name"),
                       input_id = "incidence_table_none"
                     ),
                     sortable::add_rank_list(
@@ -580,7 +582,7 @@ ui <- bslib::page_navbar(
                     ),
                     sortable::add_rank_list(
                       text = "Hide",
-                      labels = c('outcome_group', 'gestational_trimester', 'maternal_age_group', 'pregnancy_start_period', 'socioeconomic_status', 'ethnicity', 'variable_name', 'variable_level'),
+                      labels = c('gestational_trimester', 'maternal_age_group', 'pregnancy_start_period', 'socioeconomic_status', 'ethnicity', 'variable_name', 'variable_level'),
                       input_id = "incidence_table_hide"
                     )
                   ),
@@ -685,6 +687,8 @@ ui <- bslib::page_navbar(
       icon = shiny::icon("chart-gantt"),
       bslib::layout_sidebar(
         sidebar = bslib::sidebar(
+          width = 400, 
+          open = "closed",
           shinyWidgets::pickerInput(
             inputId = "survival_cdm_name",
             label = "CDM name",
@@ -694,10 +698,18 @@ ui <- bslib::page_navbar(
             options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
           ),
           shinyWidgets::pickerInput(
+            inputId = "survival_outcome_group",
+            label = "Outcome group name",
+            choices = choices$survival_outcome_group,
+            selected = selected$survival_outcome_group[1],
+            multiple = TRUE,
+            options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
+          ),
+          shinyWidgets::pickerInput(
             inputId = "survival_outcome",
-            label = "Outcome cohort",
+            label = "Outcome cohort name",
             choices = choices$survival_outcome,
-            selected = selected$survival_outcome[1],
+            selected = selected$survival_outcome,
             multiple = TRUE,
             options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
           ),
@@ -733,15 +745,6 @@ ui <- bslib::page_navbar(
             multiple = TRUE,
             options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
           ),
-          # shinyWidgets::pickerInput(
-          #   inputId = "survival_estimate_name",
-          #   label = "Estimate name",
-          #   choices = choices$survival_estimate_name,
-          #   selected = selected$survival_estimate_name,
-          #   multiple = TRUE,
-          #   options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
-          # ),
-          width = 300,
           position = "left"
         ),
         bslib::navset_card_tab(
@@ -793,12 +796,12 @@ ui <- bslib::page_navbar(
                     header = "Table formatting",
                     sortable::add_rank_list(
                       text = "none",
-                      labels = c("cdm_name", "outcome_name"),
+                      labels = c("outcome_name"),
                       input_id = "survival_table_none"
                     ),
                     sortable::add_rank_list(
                       text = "header",
-                      labels = "estimate_name",
+                      labels = c("cdm_name", "estimate_name"),
                       input_id = "survival_table_header"
                     ),
                     sortable::add_rank_list(
@@ -819,52 +822,6 @@ ui <- bslib::page_navbar(
               )
             )
           ),
-          # bslib::nav_panel(
-          #   title = "Risk Table",
-          #   bslib::card(
-          #     full_screen = TRUE,
-          #     bslib::card_header(
-          #       bslib::popover(
-          #         shiny::icon("download"),
-          #         shinyWidgets::pickerInput(
-          #           inputId = "survival_at_risk_table_format",
-          #           label = "Format",
-          #           choices = c("docx", "png", "pdf", "html"),
-          #           selected = "docx",
-          #           multiple = FALSE,
-          #           options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
-          #         ),
-          #         shiny::downloadButton(outputId = "survival_at_risk_table_download", label = "Download table")
-          #       ),
-          #       class = "text-end"
-          #     ),
-          #     bslib::layout_sidebar(
-          #       sidebar = bslib::sidebar(
-          #         sortable::bucket_list(
-          #           header = "Table formatting",
-          #           sortable::add_rank_list(
-          #             text = "none",
-          #             labels = c("cdm_name", "traget_cohort", "ckd_stage", "outcome_name", "time", "event_gap"),
-          #             input_id = "survival_at_risk_none"
-          #           ),
-          #           sortable::add_rank_list(
-          #             text = "header",
-          #             labels = "estimate",
-          #             input_id = "survival_at_risk_header"
-          #           ),
-          #           sortable::add_rank_list(
-          #             text = "groupColumn",
-          #             labels = character(),
-          #             input_id = "survival_at_risk_groupColumn"
-          #           )
-          #         ),
-          #         position = "right"
-          #       ),
-          #       gt::gt_output("survival_at_risk_table") |>
-          #         shinycssloaders::withSpinner()
-          #     )
-          #   )
-          # ),
           bslib::nav_panel(
             title = "Plot",
             bslib::card(
@@ -925,15 +882,15 @@ ui <- bslib::page_navbar(
                     label = "Colour",
                     selected = c("outcome"),
                     multiple = TRUE,
-                    choices = c("cdm_name", "target_cohort", "outcome", "maternal_age_group", "pregnancy_start_period", "socioeconomic_status", "ethnicity"),
+                    choices = c("cdm_name", "outcome", "maternal_age_group", "pregnancy_start_period", "socioeconomic_status", "ethnicity"),
                     options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
                   ),
                   shinyWidgets::pickerInput(
                     inputId = "survival_plot_facet",
                     label = "Facet",
-                    selected = c("cdm_name", "target_cohort"),
+                    selected = c("cdm_name"),
                     multiple = TRUE,
-                    choices = c("cdm_name", "target_cohort", "outcome", "maternal_age_group", "pregnancy_start_period", "socioeconomic_status", "ethnicity"),
+                    choices = c("cdm_name", "outcome", "maternal_age_group", "pregnancy_start_period", "socioeconomic_status", "ethnicity"),
                     options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
                   ),
                   shinyWidgets::pickerInput(
@@ -1045,6 +1002,8 @@ ui <- bslib::page_navbar(
             multiple = TRUE,
             options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
           ),
+          width = 400, 
+          open = "closed",
           position = "left"
         ),
         bslib::navset_card_tab(
@@ -1088,7 +1047,7 @@ ui <- bslib::page_navbar(
                     ),
                     sortable::add_rank_list(
                       text = "Hide",
-                      labels = c("table_name", 'gestational_trimester', 'maternal_age_group', 'pregnancy_start_period', 'socioeconomic_status', 'ethnicity'),
+                      labels = c("table_name", 'trimester', 'maternal_age_group', 'pregnancy_start_period', 'socioeconomic_status', 'ethnicity'),
                       input_id = "summarise_characteristics_table_hide"
                     )
                   ),
@@ -1268,6 +1227,8 @@ ui <- bslib::page_navbar(
             multiple = TRUE,
             options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
           ),
+          width = 400, 
+          open = "closed",
           position = "left"
         ),
         bslib::navset_card_tab(
@@ -1287,8 +1248,8 @@ ui <- bslib::page_navbar(
                   shinyWidgets::pickerInput(
                     inputId = "summarise_large_scale_characteristics_table_lsc_hide",
                     label = "Hide",
-                    choices = c("cdm_name", "type", "variable_name", "variable_level", 'gestational_trimester', 'maternal_age_group', 'pregnancy_start_period', 'socioeconomic_status', 'ethnicity'),
-                    selected = c('gestational_trimester', 'maternal_age_group', 'pregnancy_start_period', 'socioeconomic_status', 'ethnicity', "type"),
+                    choices = c("cdm_name", "type", "variable_name", "variable_level", 'trimester', 'maternal_age_group', 'pregnancy_start_period', 'socioeconomic_status', 'ethnicity'),
+                    selected = c('trimester', 'maternal_age_group', 'pregnancy_start_period', 'socioeconomic_status', 'ethnicity', "type"),
                     multiple = TRUE,
                     options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
                   ),
@@ -1331,8 +1292,8 @@ ui <- bslib::page_navbar(
                   shinyWidgets::pickerInput(
                     inputId = "summarise_large_scale_characteristics_table_lsc_compared_hide",
                     label = "Hide",
-                    choices = c("cdm_name", "type", "variable_name", "variable_level", "smd", "asmd", 'gestational_trimester', 'maternal_age_group', 'pregnancy_start_period', 'socioeconomic_status', 'ethnicity'),
-                    selected = c('gestational_trimester', 'maternal_age_group', 'pregnancy_start_period', 'socioeconomic_status', 'ethnicity', "type"),
+                    choices = c("cdm_name", "type", "variable_name", "variable_level", "smd", "asmd", 'trimester', 'maternal_age_group', 'pregnancy_start_period', 'socioeconomic_status', 'ethnicity'),
+                    selected = c('trimester', 'maternal_age_group', 'pregnancy_start_period', 'socioeconomic_status', 'ethnicity', "type"),
                     multiple = TRUE,
                     options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
                   ),
@@ -1342,7 +1303,7 @@ ui <- bslib::page_navbar(
                   shinycssloaders::withSpinner()
               )
             )
-          )
+          ),
           # bslib::nav_panel(
           #   title = "Most common codes",
           #   bslib::card(
@@ -1379,50 +1340,51 @@ ui <- bslib::page_navbar(
           #     )
           #   )
           # ),
-          # bslib::nav_panel(
-          #   title = "Plot Compared",
-          #   bslib::card(
-          #     full_screen = TRUE,
-          #     bslib::layout_sidebar(
-          #       sidebar = bslib::sidebar(
-          #         shiny.fluent::Toggle.shinyInput(
-          #           label = "Missing data",
-          #           onText = "Interpolate 0",
-          #           offText = "Eliminate",
-          #           value = TRUE,
-          #           inputId = "summarise_large_scale_characteristics_plot_compared_missings"
-          #         ),
-          #         shinyWidgets::pickerInput(
-          #           inputId = "summarise_large_scale_characteristics_plot_compared_colour",
-          #           label = "Colour",
-          #           choices = c("cdm_name", "cohort_name", "type", "variable_level"),
-          #           selected = NULL,
-          #           multiple = FALSE,
-          #           options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
-          #         ),
-          #         shinyWidgets::pickerInput(
-          #           inputId = "summarise_large_scale_characteristics_plot_compared_reference",
-          #           label = "Reference",
-          #           choices = NULL,
-          #           selected = NULL,
-          #           multiple = FALSE,
-          #           options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
-          #         ),
-          #         shinyWidgets::pickerInput(
-          #           inputId = "summarise_large_scale_characteristics_plot_compared_facet",
-          #           label = "Facet",
-          #           choices = c("cdm_name", "cohort_name", "type", "variable_level"),
-          #           selected = c("cdm_name", "cohort_name"),
-          #           multiple = TRUE,
-          #           options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
-          #         ),
-          #         position = "right"
-          #       ),
-          #       plotly::plotlyOutput("summarise_large_scale_characteristics_plot_compared") |>
-          #         shinycssloaders::withSpinner()
-          #     )
-          #   )
-          # )
+          bslib::nav_panel(
+            title = "Plot Compared",
+            bslib::card(
+              full_screen = TRUE,
+              bslib::layout_sidebar(
+                sidebar = bslib::sidebar(
+                  shinyWidgets::pickerInput(
+                    inputId = "summarise_large_scale_characteristics_compared_cohort_name",
+                    label = "Comparator cohort name",
+                    choices = unique(gsub("_matched|_sampled", "", choices$summarise_characteristics_cohort_name)),
+                    selected = unique(gsub("_matched|_sampled", "", selected$summarise_characteristics_cohort_name))[1],
+                    multiple = FALSE,
+                    options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
+                  ),
+                  shinyWidgets::pickerInput(
+                    inputId = "summarise_large_scale_characteristics_compared_cohort_name_type",
+                    label = "Comparator chort type",
+                    choices = c("original", "matched", "sampled"),
+                    selected = "matched",
+                    multiple = FALSE,
+                    options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
+                  ),
+                  shinyWidgets::pickerInput(
+                    inputId = "summarise_large_scale_characteristics_plot_compared_colour",
+                    label = "Colour",
+                    choices = c("cdm_name", "cohort_name", 'trimester', 'maternal_age_group', 'pregnancy_start_period', 'socioeconomic_status', 'ethnicity', "type", "concept_id"),
+                    selected = "concept_id",
+                    multiple = FALSE,
+                    options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
+                  ),
+                  shinyWidgets::pickerInput(
+                    inputId = "summarise_large_scale_characteristics_plot_compared_facet",
+                    label = "Facet",
+                    choices = c("cdm_name", "cohort_name", 'trimester', 'maternal_age_group', 'pregnancy_start_period', 'socioeconomic_status', 'ethnicity', "type", "concept_id"),
+                    selected = c("cdm_name", "cohort_name"),
+                    multiple = TRUE,
+                    options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
+                  ),
+                  position = "right"
+                ),
+                plotly::plotlyOutput("summarise_large_scale_characteristics_plot_compared") |>
+                  shinycssloaders::withSpinner()
+              )
+            )
+          )
         )
       )
     )

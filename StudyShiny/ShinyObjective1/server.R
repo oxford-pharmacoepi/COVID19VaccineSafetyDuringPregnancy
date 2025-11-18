@@ -300,14 +300,14 @@ server <- function(input, output, session) {
           variable_name, 
           levels = c(
             "Number records", "Maternal age", "Maternal age group", 
-            "Trimester", "Season", "Season yearly","Previous pregnancies",
+            "Trimester", "Season", "Previous pregnancies",
             "Ethnicity", "Mental heatlh problems in the last year",
             "Covariates in the past 5 years", 
             "History of comorbidities", "Medications in the past year"
           ),
           labels = c(
             "Number pregnancies", "Maternal age", "Maternal age group", 
-            "Trimester", "Season", "Season yearly","Previous pregnancies",
+            "Trimester", "Season", "Previous pregnancies",
             "Ethnicity", "Mental heatlh problems in the last year",
             "Covariates in the past 5 years", 
             "History of comorbidities", "Medications in the past year"
@@ -434,6 +434,13 @@ server <- function(input, output, session) {
         .data$table_name %in% input$summarise_large_scale_characteristics_table_name,
         .data$type %in% input$summarise_large_scale_characteristics_type
       ) |>
+      omopgenerics::filterStrata(
+        .data$maternal_age_group %in% input$summarise_large_scale_characteristics_maternal_age_group,
+        .data$pregnancy_start_period %in% input$summarise_large_scale_characteristics_pregnancy_start_period,
+        .data$ethnicity %in% input$summarise_large_scale_characteristics_ethnicity,
+        .data$socioeconomic_status %in% input$summarise_large_scale_characteristics_socioeconomic_status,
+        .data$trimester %in% input$summarise_large_scale_characteristics_trimester
+      ) |>
       dplyr::filter(estimate_name == "percentage") |>
       omopgenerics::tidy() |>
       tidyr::pivot_wider(names_from = "cohort_name", values_from = "percentage") |>
@@ -529,11 +536,29 @@ server <- function(input, output, session) {
     }
   )
   getIncidenceTable <- shiny::reactive({
-    res <- getIncidenceData() |>
+    res <- getIncidenceData() 
+    outcomes <- res |>
+      dplyr::filter(estimate_name == "incidence_100000_pys") |>
+      dplyr::mutate(estimate_value = as.numeric(estimate_value)) |>
+      dplyr::arrange(desc(estimate_value)) |>
+      dplyr::pull(group_level) |>
+      unique()
+    res <- dplyr::bind_rows(
+      res, 
+      res |>
+        omopgenerics::pivotEstimates() |>
+        dplyr::mutate(estimate_value = if_else(!is.na(outcome_count), as.character(outcome_count/denominator_count * 100), NA_character_)) |>
+        dplyr::mutate(
+          estimate_name = "outcome_percentage",
+          estimate_type = "percentage"
+        )  |>
+        dplyr::select(omopgenerics::resultColumns())
+    )
+    res |>
       visOmopResults::visOmopTable(
         estimateName = c(
           "Pregnancies" = "<denominator_count>",
-          "Outcomes" = "<outcome_count>",
+          "Outcomes" = "<outcome_count> (<outcome_percentage> %)",
           "Outcomes in period" = "<outcome_in_period_count> (<outcome_in_period_percentage>%)",
           "Person-Days" = "<person_days_count>",
           "Person-Years" = "<person_years>",
@@ -542,8 +567,13 @@ server <- function(input, output, session) {
         header = input$incidence_table_header,
         groupColumn = input$incidence_table_group_column,
         hide = input$incidence_table_hide,
+        columnOrder = c(
+          "cdm_name", "outcome_group", "outcome_cohort_name", "gestational_trimester", "maternal_age_group", "pregnancy_start_period",        
+          "socioeconomic_status", "ethnicity", "nationallity", "birth_country", "variable_name", "variable_level", "estimate_name"                  
+        ),
         factor = list(
           "outcome_group" = c("Adverse Events of Special Interest", "Maternal Adverse Events", "AESI Sensitivity (180 wash-out)"),
+          "outcome_cohort_name" = outcomes,
           "maternal_age_group" = c("overall", "12 to 17", "18 to 34", "35 to 55"),
           "pregnancy_start_period" = c("overall", "Pre COVID-19", "COVID-19 main outbreak", "Post COVID-19 main outbreak"),
           "socioeconomic_status" = c("overall", paste0("Q", 1:5)),
@@ -636,7 +666,10 @@ server <- function(input, output, session) {
   # cumulative incidence -----
   ## get survival_probability data
   getSurvivalData <- shiny::reactive({
-    data[["survival"]] |>
+    data[["survival"]]  |>
+      omopgenerics::filterSettings(
+        .data$outcome_group %in% input$survival_outcome_group
+      ) |>
       dplyr::filter(
         .data$cdm_name %in% input$survival_cdm_name, 
         .data$variable_level %in% input$survival_outcome
@@ -693,6 +726,13 @@ server <- function(input, output, session) {
       }
     }
     
+    outcomes <- table |>
+      dplyr::filter(estimate_name == "n_events_percentage") |>
+      dplyr::mutate(estimate_value = as.numeric(estimate_value)) |>
+      dplyr::arrange(desc(estimate_value)) |>
+      dplyr::pull(variable_level) |>
+      unique()
+    
     table |>
       mutate(
         estimate_name = factor(
@@ -713,7 +753,15 @@ server <- function(input, output, session) {
         header = input$survival_table_header,
         groupColumn = input$survival_table_groupColumn,
         hide = c("variable_name", input$survival_table_hide),
+        settingsColumn = "outcome_group",
+        columnOrder = c(
+          "cdm_name", "target_cohort", "outcome_group", "variable_name", "variable_level",
+          "maternal_age_group", "pregnancy_start_period", "socioeconomic_status",               
+          "ethnicity", "nationallity", "birth_continent", "estimate_name"      
+        ),
         factor = list(
+          "outcome_group" = c("Adverse Events of Special Interest", "Maternal Adverse Events", "AESI Sensitivity (180 wash-out)"),
+          "variable_level" = outcomes,
           "maternal_age_group" = c("overall", "12 to 17", "18 to 34", "35 to 55"),
           "pregnancy_start_period" = c("overall", "Pre COVID-19", "COVID-19 main outbreak", "Post COVID-19 main outbreak"),
           "socioeconomic_status" = c("overall", paste0("Q", 1:5)),
