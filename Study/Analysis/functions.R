@@ -1408,52 +1408,20 @@ estimateSurvivalRisk <- function(cohort, outcomes, outcomeGroup, end, strata, gr
     ) |>
     select(!weighting) 
   
-  if (outcomeGroup == "Negative Control Outcomes") {
-    resultNCO <- results |>
-      filter(outcome_name != "covid") |>
-      omopgenerics::uniteAdditional(cols = c("outcome_name", "follow_up_end", "confidence_interval")) |>
-      newSummarisedResult(
-        settings = tibble(
-          result_id = 1:2L,
-          result_type = "incidence_rate_ratio", 
-          package_name = "study_code",
-          package_version = "v0.0.1",
-          outcome_group = outcomeGroup,
-          study_analysis = studyAnalysis,
-          weighting = c("TRUE", "FALSE")
-        )
+  results <- results |>
+    omopgenerics::uniteAdditional(cols = c("outcome_name", "follow_up_end", "confidence_interval")) |>
+    newSummarisedResult(
+      settings = tibble(
+        result_id = 1:2L,
+        result_type = "incidence_rate_ratio", 
+        package_name = "study_code",
+        package_version = "v0.0.1",
+        outcome_group = outcomeGroup,
+        study_analysis = studyAnalysis,
+        weighting = c("TRUE", "FALSE")
       )
-    resultPCO <- results |>
-      filter(outcome_name == "covid") |>
-      omopgenerics::uniteAdditional(cols = c("outcome_name", "follow_up_end", "confidence_interval")) |>
-      newSummarisedResult(
-        settings = tibble(
-          result_id = 1:2L,
-          result_type = "incidence_rate_ratio", 
-          package_name = "study_code",
-          package_version = "v0.0.1",
-          outcome_group = "Positive Control Outcomes",
-          study_analysis = studyAnalysis,
-          weighting = c("TRUE", "FALSE")
-        )
-      )
-    results <- bind(resultNCO, resultPCO)
-  } else {
-    results <- results |>
-      filter(outcome_name != "covid") |>
-      omopgenerics::uniteAdditional(cols = c("outcome_name", "follow_up_end", "confidence_interval")) |>
-      newSummarisedResult(
-        settings = tibble(
-          result_id = 1:2L,
-          result_type = "incidence_rate_ratio", 
-          package_name = "study_code",
-          package_version = "v0.0.1",
-          outcome_group = outcomeGroup,
-          study_analysis = studyAnalysis,
-          weighting = c("TRUE", "FALSE")
-        )
-      )
-  }
+    )
+  
   return(results)
 }
 
@@ -2531,10 +2499,10 @@ getMatchedCohort <- function(cohort, outcomes, name) {
   tmp <- tmpPrefix()
   tabName <- paste0(tmp, "matching")
   cdm <- omopgenerics::emptyCohortTable(cdm = cdm, name = tabName)
-
+  
   onlyPostpartum <- c("postpartum_endometritis", "postpartum_haemorrhage")
   postpartum <- "maternal_death"
-
+  
   strata <- c("maternal_age_group", "pregnancy_start_period")
   if (grepl("SIDIAP", cdmName(cdm))) {
     strata <- c(strata, "socioeconomic_status", "nationallity")
