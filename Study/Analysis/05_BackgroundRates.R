@@ -68,8 +68,9 @@ cdm$pregnancy_denominator <- cdm$mother_table |>
     postpartum_12_end = postpartum_12_weeks
   ) |>
   mutate(
-    trimester_2_start = if_else(trimester_2_start < pregnancy_end_date, trimester_2_start, NA),
-    trimester_3_start = if_else(trimester_3_start < pregnancy_end_date, trimester_3_start, NA),
+    trimester_1_end = if_else(trimester_1_end > pregnancy_end_date, pregnancy_end_date, trimester_1_end),
+    trimester_2_start = if_else(trimester_2_start <= pregnancy_end_date, trimester_2_start, NA),
+    trimester_3_start = if_else(trimester_3_start <= pregnancy_end_date, trimester_3_start, NA),
     trimester_2_end = case_when(
       is.na(trimester_2_start) ~ NA,
       trimester_2_end > pregnancy_end_date ~ pregnancy_end_date,

@@ -1935,7 +1935,10 @@ getMiscarriageDenominator <- function(cohort) {
     mutate(
       cohort_end_date = if_else(
         cohort_end_date > pregnancy_end_date, pregnancy_end_date, cohort_end_date
-      )
+      ), 
+      trimester_2_end = if_else(!is.na(trimester_2_end), cohort_end_date, trimester_2_end),
+      trimester_3_start = as.Date(NA),
+      trimester_3_end = as.Date(NA)
     ) |>
     compute(name = "miscarriage_denominator", temporary = FALSE) |>
     newCohortTable(
