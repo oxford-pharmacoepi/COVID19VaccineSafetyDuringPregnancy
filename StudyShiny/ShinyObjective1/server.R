@@ -451,19 +451,19 @@ server <- function(input, output, session) {
         ),
         ASMD = abs(SMD)
       ) |>
-      dplyr::rename(!!paste0(cohortName1, " (%)") := cohortName1, !!paste0(cohortName2, " (%)") := cohortName2)
+      dplyr::filter(!is.na(ASMD)) |>
+      dplyr::rename("concept_name" = "variable_name")
   })
   getSummariseLargeScaleCharacteristicsComparedTableLsc <- shiny::reactive({
     dropCols <- input$summarise_large_scale_characteristics_table_lsc_compared_hide
     dropCols[dropCols == "variable_name"] <- "concept_name"
     getSummariseLargeScaleCharacteristicsComparedData() |>
-      dplyr::rename("concept_name" = "variable_name") |>
       dplyr::select(!dplyr::any_of(c("analysis", dropCols))) |>
-      dplyr::filter(!is.na(ASMD)) |>
+      dplyr::rename(!!paste0(cohortName1, " (%)") := cohortName1, !!paste0(cohortName2, " (%)") := cohortName2) |>
       visOmopResults::formatTable(type = "reactable")
   })
   output$summarise_large_scale_characteristics_table_lsc_compared <- reactable::renderReactable({
-    getSummariseLargeScaleCharacteristicsComparedTableLsc()
+    getSummariseLargeScaleCharacteristicsComparedTableLsc() 
   })
   output$summarise_large_scale_characteristics_table_lsc_compared_download <- shiny::downloadHandler(
     filename = "smd_results.csv",
@@ -474,6 +474,49 @@ server <- function(input, output, session) {
         jsonlite::fromJSON() |>
         dplyr::as_tibble() |>
         readr::write_csv(file)
+    }
+  )
+  getComparedLSCPlot <- shiny::reactive({
+    x1 <- input$summarise_large_scale_characteristics_cohort_name
+    x2 <- input$summarise_large_scale_characteristics_cohort_name_type
+    cohortName1 <- do.call(paste0, expand.grid(x1, paste0("_", x2)))
+    cohortName1 <- gsub("_original", "", cohortName1)
+    y1 <- input$summarise_large_scale_characteristics_compared_cohort_name
+    y2 <- input$summarise_large_scale_characteristics_compared_cohort_name_type
+    cohortName2 <- do.call(paste0, expand.grid(y1, paste0("_", y2)))
+    cohortName2 <- gsub("_original", "", cohortName2)
+    getSummariseLargeScaleCharacteristicsComparedData() |>
+      visOmopResults::scatterPlot(
+        x = cohortName1,
+        y = cohortName2,
+        line = FALSE,
+        point = TRUE,
+        ribbon = FALSE,
+        ymin = NULL,
+        ymax = NULL,
+        facet = input$summarise_large_scale_characteristics_plot_compared_facet,
+        colour = input$summarise_large_scale_characteristics_plot_compared_colour,
+        label = c("ASMD", "SMD")
+      ) +
+      ggplot2::xlab(paste0(cohortName1, " (%)")) +
+      ggplot2::ylab(paste0(cohortName2, " (%)")) +
+      ggplot2::geom_abline(slope = 1, intercept = 0, linetype = "dashed", colour = "gray")
+  })
+  output$summarise_large_scale_characteristics_plot_compared <- shiny::renderUI({
+    x <- getComparedLSCPlot()
+    renderInteractivePlot(x, input$summarise_large_scale_characteristics_plot_interactive)
+  })
+  output$summarise_large_scale_characteristics_plot_download <- shiny::downloadHandler(
+    filename = "plot_lsc.png",
+    content = function(file) {
+      ggplot2::ggsave(
+        filename = file,
+        plot = getComparedLSCPlot(),
+        width = as.numeric(input$summarise_large_scale_characteristics_plot_width),
+        height = as.numeric(input$summarise_large_scale_characteristics_plot_height),
+        units = input$summarise_large_scale_characteristics_plot_units,
+        dpi = as.numeric(input$summarise_large_scale_characteristics_plot_dpi)
+      )
     }
   )
   # incidence -----

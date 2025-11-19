@@ -1304,48 +1304,47 @@ ui <- bslib::page_navbar(
               )
             )
           ),
-          # bslib::nav_panel(
-          #   title = "Most common codes",
-          #   bslib::card(
-          #     full_screen = TRUE,
-          #     bslib::card_header(
-          #       bslib::popover(
-          #         shiny::icon("download"),
-          #         shinyWidgets::pickerInput(
-          #           inputId = "summarise_large_scale_characteristics_table_most_common_format",
-          #           label = "Format",
-          #           choices = c("docx", "png", "pdf", "html"),
-          #           selected = "docx",
-          #           multiple = FALSE,
-          #           options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
-          #         ),
-          #         shiny::downloadButton(outputId = "summarise_large_scale_characteristics_table_most_common_download", label = "Download table")
-          #       ),
-          #       class = "text-end"
-          #     ),
-          #     bslib::layout_sidebar(
-          #       sidebar = bslib::sidebar(
-          #         shinyWidgets::pickerInput(
-          #           inputId = "summarise_large_scale_characteristics_table_most_common_top_concepts",
-          #           label = "Top concepts",
-          #           choices = c(10L, 25L, 100L),
-          #           selected = 10L,
-          #           multiple = FALSE,
-          #           options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
-          #         ),
-          #         position = "right"
-          #       ),
-          #       gt::gt_output("summarise_large_scale_characteristics_table_most_common") |>
-          #         shinycssloaders::withSpinner()
-          #     )
-          #   )
-          # ),
           bslib::nav_panel(
             title = "Plot Compared",
             bslib::card(
               full_screen = TRUE,
+              bslib::card_header(
+                bslib::popover(
+                  shiny::icon("download"),
+                  shiny::numericInput(
+                    inputId = "summarise_large_scale_characteristics_plot_width",
+                    label = "Width",
+                    value = 15
+                  ),
+                  shiny::numericInput(
+                    inputId = "summarise_large_scale_characteristics_plot_height",
+                    label = "Height",
+                    value = 15
+                  ),
+                  shinyWidgets::pickerInput(
+                    inputId = "summarise_large_scale_characteristics_plot_units",
+                    label = "Units",
+                    choices = c("px", "cm", "inch"),
+                    selected = "cm",
+                    multiple = FALSE,
+                    options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
+                  ),
+                  shiny::numericInput(
+                    inputId = "summarise_large_scale_characteristics_plot_dpi",
+                    label = "DPI",
+                    value = 300
+                  ),
+                  shiny::downloadButton(outputId = "summarise_large_scale_characteristics_plot_download", label = "Download plot")
+                ),
+                class = "text-end"
+              ),
               bslib::layout_sidebar(
                 sidebar = bslib::sidebar(
+                  shinyWidgets::materialSwitch(
+                    inputId = "summarise_large_scale_characteristics_plot_interactive",
+                    label = "Interactive",
+                    value = TRUE
+                  ),
                   shinyWidgets::pickerInput(
                     inputId = "summarise_large_scale_characteristics_compared_cohort_name",
                     label = "Comparator cohort name",
@@ -1373,14 +1372,14 @@ ui <- bslib::page_navbar(
                   shinyWidgets::pickerInput(
                     inputId = "summarise_large_scale_characteristics_plot_compared_facet",
                     label = "Facet",
-                    choices = c("cdm_name", "cohort_name", 'trimester', 'maternal_age_group', 'pregnancy_start_period', 'socioeconomic_status', 'ethnicity', "type", "concept_id"),
-                    selected = c("cdm_name", "cohort_name"),
+                    choices = c("cdm_name", 'trimester', 'maternal_age_group', 'pregnancy_start_period', 'socioeconomic_status', 'ethnicity', "type", "concept_id"),
+                    selected = c("cdm_name"),
                     multiple = TRUE,
                     options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
                   ),
                   position = "right"
                 ),
-                plotly::plotlyOutput("summarise_large_scale_characteristics_plot_compared") |>
+                shiny::uiOutput("summarise_large_scale_characteristics_plot_compared") |>
                   shinycssloaders::withSpinner()
               )
             )

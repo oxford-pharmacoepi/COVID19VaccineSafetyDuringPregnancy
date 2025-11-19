@@ -36,7 +36,7 @@ result <- result |>
   omopgenerics::newSummarisedResult()
 
 cumulativeID <- omopgenerics::settings(result) |> dplyr::filter(result_type %in% c("survival_probability", "survival_events", "survival_summary", "survival_attrition")) |> dplyr::pull("result_id")
-attr(result, "settings") <- settings(result) |>
+attr(result, "settings") <- omopgenerics::settings(result) |>
   dplyr::mutate(
     outcome_group = dplyr::case_when(
       .data$result_id %in% cumulativeID & .data$outcome %in% mae ~ "Maternal Adverse Events",
