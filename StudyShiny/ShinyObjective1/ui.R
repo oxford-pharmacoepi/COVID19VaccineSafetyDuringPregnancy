@@ -82,6 +82,7 @@ ui <- bslib::page_navbar(
             multiple = TRUE,
             options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
           ),
+          width = 400, 
           position = "left"
         ),
         bslib::navset_card_tab(
@@ -233,6 +234,7 @@ ui <- bslib::page_navbar(
             multiple = TRUE,
             options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
           ),
+          width = 400, 
           position = "left"
         ),
         bslib::navset_card_tab(

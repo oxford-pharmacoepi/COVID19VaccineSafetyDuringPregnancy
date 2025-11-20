@@ -80,6 +80,7 @@ ui <- bslib::page_navbar(
             multiple = TRUE,
             options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
           ),
+          width = 335,
           position = "left"
         ),
         shiny::actionButton(
@@ -237,6 +238,7 @@ ui <- bslib::page_navbar(
             multiple = TRUE,
             options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
           ),
+          width = 335,
           position = "left"
         ),
         shiny::actionButton(
@@ -354,11 +356,12 @@ ui <- bslib::page_navbar(
           shinyWidgets::pickerInput(
             inputId = "summarise_sampling_cohort_name",
             label = "Cohort name",
-            choices = paste0("population_objective_", 1:3),
-            selected = paste0("population_objective_", 1:3),
+            choices = paste0("objective_", 1:3),
+            selected = paste0("objective_", 1:3),
             multiple = TRUE,
             options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
           ),
+          width = 300, 
           position = "left"
         ),
         shiny::actionButton(
@@ -392,6 +395,14 @@ ui <- bslib::page_navbar(
                   div(
                     style = "margin-left: 20px;",
                     shinyWidgets::pickerInput(
+                      inputId = "summarise_cohort_count_population",
+                      label = "Population",
+                      choices = c("overall", "miscarriage", "preterm_labour"),
+                      selected = c("overall", "miscarriage", "preterm_labour"),
+                      multiple = TRUE,
+                      options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
+                    ),
+                    shinyWidgets::pickerInput(
                       inputId = "summarise_cohort_count_exposure_pop",
                       label = "Exposure",
                       choices = choices$summarise_characteristics_exposure,
@@ -420,14 +431,6 @@ ui <- bslib::page_navbar(
                       label = "Age group",
                       choices = choices$summarise_characteristics_age_group,
                       selected = "overall",
-                      multiple = TRUE,
-                      options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
-                    ),
-                    shinyWidgets::pickerInput(
-                      inputId = "summarise_cohort_count_weighting_pop",
-                      label = "Weighting",
-                      choices = c(TRUE, FALSE),
-                      selected = TRUE,
                       multiple = TRUE,
                       options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
                     )
@@ -654,6 +657,7 @@ ui <- bslib::page_navbar(
             multiple = TRUE,
             options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
           ),
+          width = 335,
           position = "left"
         ),
         shiny::actionButton(
@@ -844,6 +848,7 @@ ui <- bslib::page_navbar(
             multiple = TRUE,
             options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
           ),
+          width = 335,
           position = "left"
         ),
         shiny::actionButton(
@@ -983,6 +988,7 @@ ui <- bslib::page_navbar(
             multiple = TRUE,
             options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
           ),
+          width = 335,
           position = "left"
         ),
         shiny::actionButton(
@@ -1188,6 +1194,7 @@ ui <- bslib::page_navbar(
             multiple = FALSE,
             options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
           ),
+          width = 335,
           position = "left"
         ),
         shiny::actionButton(
@@ -1287,6 +1294,7 @@ ui <- bslib::page_navbar(
             multiple = TRUE,
             options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
           ),
+          width = 335,
           position = "left"
         ),
         shiny::actionButton(
@@ -1422,6 +1430,7 @@ ui <- bslib::page_navbar(
             multiple = TRUE,
             options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
           ),
+          width = 335,
           position = "left"
         ),
         shiny::actionButton(
@@ -1547,9 +1556,9 @@ ui <- bslib::page_navbar(
         ),
         shinyWidgets::pickerInput(
           inputId = "incidence_rate_ratio_cohort_name",
-          label = "Cohort name",
-          choices = choices$incidence_rate_ratio_cohort_name,
-          selected = selected$incidence_rate_ratio_cohort_name,
+          label = "Objective",
+          choices = paste0("objective_", 1:3),
+          selected = paste0("objective_", 1:3),
           multiple = TRUE,
           options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
         ),
@@ -1609,6 +1618,7 @@ ui <- bslib::page_navbar(
           multiple = TRUE,
           options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
         ),
+        width = 335,
         position = "left"
       ),
       shiny::actionButton(
@@ -1658,7 +1668,7 @@ ui <- bslib::page_navbar(
                   ),
                   sortable::add_rank_list(
                     text = "Hide",
-                    labels = c("vaccine_brand", "gestational_trimester", "age_group", "outcome_group", "follow_up_end", "weighting"),
+                    labels = c("vaccine_brand", "gestational_trimester", "age_group", "outcome_group", "follow_up_end", "weighting", "confidence_interval"),
                     input_id = "incidence_rate_ratio_table_hide_summary"
                   )
                 ),
