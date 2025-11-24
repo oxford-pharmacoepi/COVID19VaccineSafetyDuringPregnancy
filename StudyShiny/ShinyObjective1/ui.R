@@ -449,14 +449,7 @@ ui <- bslib::page_navbar(
             multiple = TRUE,
             options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
           ),
-          shinyWidgets::pickerInput(
-            inputId = "incidence_outcome_cohort_name",
-            label = "Outcome cohort name",
-            choices = choices$incidence_outcome_cohort_name,
-            selected = choices$incidence_outcome_cohort_name,
-            multiple = TRUE,
-            options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
-          ),
+          uiOutput("incidence_outcome_cohort_name_picker"),
           shinyWidgets::pickerInput(
             inputId = "incidence_gestational_trimester",
             label = "Gestational trimester",
@@ -707,14 +700,7 @@ ui <- bslib::page_navbar(
             multiple = TRUE,
             options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
           ),
-          shinyWidgets::pickerInput(
-            inputId = "survival_outcome",
-            label = "Outcome cohort name",
-            choices = choices$survival_outcome,
-            selected = selected$survival_outcome,
-            multiple = TRUE,
-            options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
-          ),
+          uiOutput("survival_outcome_cohort_name_picker"),
           shinyWidgets::pickerInput(
             inputId = "survival_maternal_age_group",
             label = "Maternal age",

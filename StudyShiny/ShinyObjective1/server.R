@@ -519,7 +519,6 @@ server <- function(input, output, session) {
       )
     }
   )
-  # incidence -----
   ## get incidence data
   getIncidenceData <- shiny::reactive({
     data[["incidence"]] |>
@@ -540,6 +539,22 @@ server <- function(input, output, session) {
       omopgenerics::filterAdditional(
         .data$outcome_group %in% input$incidence_outcome_group
       )
+  })
+  output$incidence_outcome_cohort_name_picker <- shiny::renderUI({
+    opts <- data[["incidence"]]  |>
+      omopgenerics::filterAdditional(
+        .data$outcome_group %in% input$incidence_outcome_group
+      ) |>
+      dplyr::pull(group_level) |>
+      unique()
+    shinyWidgets::pickerInput(
+      inputId = "incidence_outcome_cohort_name",
+      label = "Outcome cohort name",
+      choices = opts,
+      selected = opts,
+      multiple = TRUE,
+      options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
+    )
   })
   getIncidenceTidy <- shiny::reactive({
     getIncidenceData() |>
@@ -676,7 +691,8 @@ server <- function(input, output, session) {
         style = "default",
         label = label
       ) + 
-      ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, vjust = 0.5, hjust=1))
+      ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, vjust = 0.5, hjust=1)) +
+      ggplot2::facet_wrap(input$incidence_plot_facet, scales = "free_y")
   })
   output$incidence_plot <- shiny::renderUI({
     x <- getIncidencePlot()
@@ -723,6 +739,22 @@ server <- function(input, output, session) {
         .data$ethnicity %in% input$survival_ethnicity,
         .data$socioeconomic_status %in% input$survival_socioeconomic_status
       )
+  })
+  output$survival_outcome_cohort_name_picker <- shiny::renderUI({
+    opts <- data[["survival"]]  |>
+      omopgenerics::filterSettings(
+        .data$outcome_group %in% input$survival_outcome_group
+      ) |>
+      dplyr::pull(variable_level) |>
+      unique()
+    shinyWidgets::pickerInput(
+      inputId = "survival_outcome",
+      label = "Outcome cohort name",
+      choices = opts,
+      selected = opts,
+      multiple = TRUE,
+      options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
+    )
   })
   getSurvivalProbabilityTidy <- shiny::reactive({
     CohortSurvival::asSurvivalResult(getSurvivalData()) |>
@@ -852,7 +884,8 @@ server <- function(input, output, session) {
       cumulativeFailure = input$survival_plot_cf
     ) +
       labs(color = "Color") +
-      guides(fill = "none")
+      guides(fill = "none") +
+      ggplot2::facet_wrap(input$survival_plot_facet, scales = "free_y")
   })
   output$summarise_cohort_survival_plot <- shiny::renderUI({
     if(isTRUE(input$survival_plot_interactive)){

@@ -1506,14 +1506,6 @@ ui <- bslib::page_navbar(
                 fill = TRUE,
                 sidebar = bslib::sidebar(
                   shinyWidgets::pickerInput(
-                    inputId = "limit",
-                    label = "Scale limit",
-                    choices = c(1, 2, 5, 20),
-                    selected = c(NULL) ,
-                    multiple = TRUE,
-                    options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
-                  ),
-                  shinyWidgets::pickerInput(
                     inputId = "summarise_standardised_mean_differences_plot_facet",
                     label = "Facet",
                     choices = c("cdm_name", "cohort_name", "vaccine_brand", "gestational_trimester", "age_group"),

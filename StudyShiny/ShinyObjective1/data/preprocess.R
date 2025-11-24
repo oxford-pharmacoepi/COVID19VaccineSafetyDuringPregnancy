@@ -13,7 +13,8 @@ resultList <- list(
 source(file.path(getwd(), "functions.R"))
 
 mae <- c(
-  "preterm_labour", "miscarriage", "miscarriage_codelist", "stillbirth", "maternal_death", 
+  "preterm_labour", "miscarriage", "miscarriage_codelist", 
+  "stillbirth", "maternal_death", 'elective_termination',
   "dysfunctional_labour", "eclampsia", "ectopic_pregnancy", 
   "antepartum_haemorrhage", "gestational_diabetes", "hellp", "preeclampsia", 
   "postpartum_endometritis", "postpartum_haemorrhage"

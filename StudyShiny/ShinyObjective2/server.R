@@ -670,8 +670,12 @@ server <- function(input, output, session) {
       dplyr::filter(
         .data$cdm_name %in% input$incidence_rate_ratio_cdm_name
       ) |>
+      dplyr::mutate(
+        group_level = gsub("population_", "", group_level),
+        group_level = gsub("miscarriage_|preterm_labour_", "", group_level)
+      ) |>
       omopgenerics::filterGroup(
-        .data$cohort_name %in% paste0("population_", input$incidence_rate_ratio_cohort_name)
+        .data$cohort_name %in% input$incidence_rate_ratio_cohort_name
       ) |>
       omopgenerics::filterStrata(
         .data$vaccine_brand %in% input$incidence_rate_ratio_vaccine_brand,
@@ -687,7 +691,6 @@ server <- function(input, output, session) {
         .data$study_analysis %in% input$incidence_rate_ratio_study_analysis
       ) |>
       dplyr::mutate(
-        group_level = gsub("miscarriage_|preterm_labour_", "", group_level),
         strata_level = visOmopResults::customiseText(
           .data$strata_level, 
           custom = c("Trimester 1" = "T1", "Trimester 2" = "T2", "Trimester 3" = "T3"), 
@@ -1549,17 +1552,11 @@ server <- function(input, output, session) {
       ggplot2::geom_hline(yintercept = 0.1, color = "black", linewidth = 0.4) + 
       ggplot2::geom_abline(intercept = 0, slope = 1, color = "black", linewidth = 0.4, linetype = "dashed")
     
-    if (length(input$numeric) != 0) {
-      p <- p +
-        ggplot2::scale_x_continuous(limits = c(0, as.numeric(input$limit))) +
-        ggplot2::scale_y_continuous(limits = c(0, as.numeric(input$limit)))
-    }
-    
     if (input$summarise_standardised_mean_differences_plot_colour == "concept_id") {
       p <- p + ggplot2::theme(legend.position = "none")
     }
     
-    p + ggplot2::coord_equal()
+    p 
   })
   output$summarise_standardised_mean_differences_plot <- shiny::renderUI({
     x <- getSMDPlot()
