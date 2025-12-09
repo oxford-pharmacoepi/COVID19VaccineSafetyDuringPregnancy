@@ -23,6 +23,8 @@ data$summarise_standardised_mean_differences |>
   readr::write_csv("unbalanced_smd.csv")
 
 # csv to add to csv in study code ----
+previous <- readr::read_csv("largeScaleSMD.csv") |>
+  dplyr::select(!c("add_ps_nuria", "add_ps_dani"))
 data$summarise_standardised_mean_differences |>
   omopgenerics::pivotEstimates() |>
   dplyr::mutate(asmd = abs(smd)) |>
@@ -43,8 +45,11 @@ data$summarise_standardised_mean_differences |>
   ) |>
   dplyr::inner_join(
     readr::read_csv("unbalanced_smd.csv") |>
+      dplyr::filter(INCLUDE == "X") |>
       dplyr::mutate(
         identifier = paste0(concept_id, "_", gsub("-", "m", gsub(" to ", "_", window)))
       ) |>
-      dplyr::select(!concept_id)
-  )
+      dplyr::select(!c("concept_id", "INCLUDE"))
+  ) |>
+  dplyr::bind_rows(previous) |>
+  readr::write_csv("largeScaleSMD.csv")

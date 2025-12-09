@@ -2715,8 +2715,7 @@ getCovariateList <- function(cdm) {
     "pre_pregnancy_smoking"
   )
   covariatesSMD <- readr::read_csv(here::here("Codelists", "largeScaleSMD.csv")) |>
-    filter(grepl(cdmName(cdm), cdm_name)) |>
-    filter(add_ps_dani)
+    filter(grepl(cdmName(cdm), cdm_name)) 
   
   if (grepl("CPRD GOLD", cdmName(cdm))) {
     covariatesPS <- c(covariatesPS, "ethnicity", "socioeconomic_status")
