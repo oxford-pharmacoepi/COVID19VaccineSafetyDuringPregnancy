@@ -1958,6 +1958,8 @@ getBRCharacteristics <- function(cohort, strata) {
     'maternal_age' = c('min', 'max', 'q25', 'q75', 'median', 'sd', 'mean'),
     'maternal_age_group' = c('count', 'percentage'),
     'trimester' = c('count', 'percentage'),
+    'nationallity' = c('count', 'percentage'),
+    'birth_continent' = c('count', 'percentage'),
     'pregnancy_start_period' = c('count', 'percentage')
   )
   estimates <- estimates[names(estimates) %in% colnames(cohort)]
