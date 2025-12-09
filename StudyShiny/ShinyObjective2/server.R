@@ -664,23 +664,15 @@ server <- function(input, output, session) {
       selected = opts
     )
   })
-  shiny::observeEvent(input$incidence_rate_ratio_outcome_name, {
-    opts <- data$incidence_rate_ratio |>
-      omopgenerics::splitAdditional() |>
-      dplyr::filter(.data$outcome_name %in% input$incidence_rate_ratio_outcome_name) |>
-      dplyr::pull(follow_up_end) |>
-      unique()
-    shinyWidgets::updatePickerInput(
-      inputId = "incidence_rate_ratio_follow_up_end",
-      choices = opts,
-      selected = opts[!grepl("_sensitivity", opts)]
-    )
-  })
   ## get incidence_rate_ratio data
   getIncidenceRateRatioData <- shiny::eventReactive(input$update_incidence_rate_ratio, {
     data[["incidence_rate_ratio"]] |>
       dplyr::filter(
         .data$cdm_name %in% input$incidence_rate_ratio_cdm_name
+      ) |>
+      dplyr::mutate(
+        group_level = gsub("population_", "", group_level),
+        group_level = gsub("miscarriage_|preterm_labour_", "", group_level)
       ) |>
       omopgenerics::filterGroup(
         .data$cohort_name %in% input$incidence_rate_ratio_cohort_name
@@ -765,7 +757,7 @@ server <- function(input, output, session) {
   )
   getIncidenceRateRatioTableIRR <- shiny::reactive({
     getIncidenceRateRatioData() |>
-      dplyr::filter(.data$variable_name == "Risk estimate") |>
+      dplyr::filter(.data$variable_name == "Relative Risk") |>
       visOmopResults::visOmopTable(
         estimateName = c("IRR [95% CI]" = "<coef> [<lower_ci> - <upper_ci>]"),
         settingsColumn = c("weighting", "outcome_group"),
@@ -873,6 +865,30 @@ server <- function(input, output, session) {
                       },
                       ignoreInit = TRUE
   )
+  shiny::observeEvent(input$propensity_scores_vaccine_brand,
+                      {
+                        updateButtons$propensity_scores <- TRUE
+                      },
+                      ignoreInit = TRUE
+  )
+  shiny::observeEvent(input$propensity_scores_gestational_trimester,
+                      {
+                        updateButtons$propensity_scores <- TRUE
+                      },
+                      ignoreInit = TRUE
+  )
+  shiny::observeEvent(input$propensity_scores_age_group,
+                      {
+                        updateButtons$propensity_scores <- TRUE
+                      },
+                      ignoreInit = TRUE
+  )
+  shiny::observeEvent(input$propensity_scores_hide,
+                      {
+                        updateButtons$propensity_scores <- TRUE
+                      },
+                      ignoreInit = TRUE
+  )
   shiny::observeEvent(updateButtons$propensity_scores, {
     if (updateButtons$propensity_scores == TRUE) {
       output$update_message_propensity_scores <- shiny::renderText("Filters have changed please consider to use the update content button!")
@@ -886,6 +902,13 @@ server <- function(input, output, session) {
   
   ## propensity_score_coeficcients -----
   getPropensityScoreCoeficcientsTidy <- shiny::reactive({
+    # notHide <- NULL
+    # if (isFALSE(all(input$propensity_scores_vaccine_brand == "overall"))) notHide <- c(notHide, "vaccine_brand")
+    # if (isFALSE(all(input$propensity_scores_gestational_trimester == "overall"))) notHide <- c(notHide, "gestational_trimester")
+    # if (isFALSE(all(input$propensity_scores_age_group == "overall"))) notHide <- c(notHide, "age_group")
+    # hide <- input$propensity_score_hide
+    # hide <- hide[!input$propensity_score_hide %in% notHide]
+    
     data[["propensity_score_coeficcients"]] |>
       dplyr::filter(
         .data$cdm_name %in% input$propensity_scores_cdm_name,
@@ -896,11 +919,11 @@ server <- function(input, output, session) {
         .data$gestational_trimester %in% input$summarise_characteristics_gestational_trimester,
         .data$age_group %in% input$summarise_characteristics_age_group
       ) |>
-      visOmopResults::tidy()
+      visOmopResults::tidy() |>
+      select(!dplyr::any_of(input$propensity_score_hide))
   })
   output$propensity_score_coeficcients_tidy <- DT::renderDT({
-    getPropensityScoreCoeficcientsTidy() |>
-      select(!dplyr::any_of(input$propensity_score_hide))
+    getPropensityScoreCoeficcientsTidy()
   })
   output$propensity_score_coeficcients_tidy_download <- shiny::downloadHandler(
     filename = "tidy_results.csv",
@@ -986,19 +1009,20 @@ server <- function(input, output, session) {
   })
   ## population count ----
   getSummariseCohortCountDataPop <- shiny::eventReactive(input$update_summarise_sampling, {
+    cohorts <- as.vector(outer(input$summarise_cohort_count_population, input$summarise_sampling_cohort_name, paste, sep = "_"))
+    cohorts <- paste0("population_", cohorts)
+    cohorts <- gsub("overall_", "", cohorts)
     data[["summarise_characteristics"]] |>
       dplyr::filter(variable_name %in% c("Number records", "Number subjects")) |>
       dplyr::filter(.data$cdm_name %in% input$summarise_sampling_cdm_name) |>
-      omopgenerics::filterGroup(.data$cohort_name %in% input$summarise_sampling_cohort_name) |>
+      omopgenerics::filterGroup(.data$cohort_name %in% cohorts) |>
       omopgenerics::filterStrata(
         .data$exposure %in% input$summarise_cohort_count_exposure_pop,
         .data$vaccine_brand %in% input$summarise_cohort_count_vaccine_brand_pop,
         .data$gestational_trimester %in% input$summarise_cohort_count_gestational_trimester_pop,
         .data$age_group %in% input$summarise_cohort_count_age_group_pop
-      )|>
-      omopgenerics::filterSettings(
-        .data$weighting %in% input$summarise_cohort_count_weighting_pop
       ) |>
+      omopgenerics::filterSettings(.data$weighting == FALSE) |>
       dplyr::mutate(
         strata_level = factor(
           strata_level,
@@ -1023,10 +1047,12 @@ server <- function(input, output, session) {
   })
   getSummariseCohortCountTablePop <- shiny::reactive({
     getSummariseCohortCountDataPop() |>
-      CohortCharacteristics::tableCharacteristics(
+      visOmopResults::visOmopTable(
+        estimateName = c("N = <count>"),
         header = input$summarise_cohort_count_table_header_pop,
         groupColumn = input$summarise_cohort_count_table_group_column_pop,
-        hide = input$summarise_cohort_count_table_hide_pop
+        hide = input$summarise_cohort_count_table_hide_pop,
+        factor = list("cohort_name" = c(paste0("population_objective_", 1:3), paste0("population_miscarriage_objective_", 1:3), paste0("population_preterm_labour_objective_", 1:3)))
       )
   })
   output$summarise_cohort_count_table_pop <- gt::render_gt({
@@ -1042,10 +1068,11 @@ server <- function(input, output, session) {
   getSummariseCohortAttritionDataPop <- shiny::eventReactive(input$update_summarise_sampling, {
     data[["summarise_cohort_attrition"]] |>
       dplyr::filter(.data$cdm_name %in% input$summarise_sampling_cdm_name) |>
-      omopgenerics::filterGroup(.data$cohort_name %in% input$summarise_sampling_cohort_name) |>
+      omopgenerics::filterGroup(.data$cohort_name %in% paste0("population_", input$summarise_sampling_cohort_name)) |>
       omopgenerics::filterSettings(.data$table_name %in% "Study population") |>
       omopgenerics::filterSettings(.data$table_name %in% "Study population") |>
-      dplyr::filter(as.numeric(additional_level) < 15)
+      dplyr::filter(as.numeric(additional_level) < 15) |>
+      dplyr::mutate(group_level = paste0("source_", .data$group_level))
   })
   getSummariseCohortAttritionTablePop <- shiny::reactive({
     getSummariseCohortAttritionDataPop() |>
@@ -1086,7 +1113,7 @@ server <- function(input, output, session) {
   getSummariseSamplingData <- shiny::eventReactive(input$update_summarise_sampling, {
     data[["summarise_sampling"]] |>
       dplyr::filter(.data$cdm_name %in% input$summarise_sampling_cdm_name) |> 
-      omopgenerics::filterGroup(.data$cohort_name %in% paste0("source_", input$summarise_sampling_cohort_name))
+      omopgenerics::filterGroup(.data$cohort_name %in% paste0("source_population_", input$summarise_sampling_cohort_name))
   })
   getSummariseSamplingTable <- shiny::reactive({
     getSummariseSamplingData() |>
@@ -1363,7 +1390,8 @@ server <- function(input, output, session) {
         ) +
         ggplot2::theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +
         ggplot2::scale_x_date(breaks = "2 month") +
-        ggplot2::xlab("")
+        ggplot2::xlab("") +
+        ggplot2::facet_wrap(input$gestational_time_distributions_plot_facet, scales = "free_y")
     } else {
       getGestationalTimeDistributionsData() |>
         dplyr::filter(.data$variable_name == "gestational_week") |>
@@ -1378,7 +1406,8 @@ server <- function(input, output, session) {
           colour = input$gestational_time_distributions_plot_colour,
           facet = input$gestational_time_distributions_plot_facet
         ) +
-        ggplot2::theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) 
+        ggplot2::theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +
+        ggplot2::facet_wrap(input$gestational_time_distributions_plot_facet, scales = "free_y")
     }
   })
   output$gestational_time_distributions_plot <- shiny::renderPlot({
@@ -1523,17 +1552,11 @@ server <- function(input, output, session) {
       ggplot2::geom_hline(yintercept = 0.1, color = "black", linewidth = 0.4) + 
       ggplot2::geom_abline(intercept = 0, slope = 1, color = "black", linewidth = 0.4, linetype = "dashed")
     
-    if (length(input$numeric) != 0) {
-      p <- p +
-        ggplot2::scale_x_continuous(limits = c(0, as.numeric(input$limit))) +
-        ggplot2::scale_y_continuous(limits = c(0, as.numeric(input$limit)))
-    }
-    
     if (input$summarise_standardised_mean_differences_plot_colour == "concept_id") {
       p <- p + ggplot2::theme(legend.position = "none")
     }
     
-    p + ggplot2::coord_equal()
+    p 
   })
   output$summarise_standardised_mean_differences_plot <- shiny::renderUI({
     x <- getSMDPlot()

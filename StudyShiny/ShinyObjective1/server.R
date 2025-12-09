@@ -300,14 +300,14 @@ server <- function(input, output, session) {
           variable_name, 
           levels = c(
             "Number records", "Maternal age", "Maternal age group", 
-            "Trimester", "Season", "Season yearly","Previous pregnancies",
+            "Trimester", "Season", "Previous pregnancies",
             "Ethnicity", "Mental heatlh problems in the last year",
             "Covariates in the past 5 years", 
             "History of comorbidities", "Medications in the past year"
           ),
           labels = c(
             "Number pregnancies", "Maternal age", "Maternal age group", 
-            "Trimester", "Season", "Season yearly","Previous pregnancies",
+            "Trimester", "Season", "Previous pregnancies",
             "Ethnicity", "Mental heatlh problems in the last year",
             "Covariates in the past 5 years", 
             "History of comorbidities", "Medications in the past year"
@@ -434,6 +434,13 @@ server <- function(input, output, session) {
         .data$table_name %in% input$summarise_large_scale_characteristics_table_name,
         .data$type %in% input$summarise_large_scale_characteristics_type
       ) |>
+      omopgenerics::filterStrata(
+        .data$maternal_age_group %in% input$summarise_large_scale_characteristics_maternal_age_group,
+        .data$pregnancy_start_period %in% input$summarise_large_scale_characteristics_pregnancy_start_period,
+        .data$ethnicity %in% input$summarise_large_scale_characteristics_ethnicity,
+        .data$socioeconomic_status %in% input$summarise_large_scale_characteristics_socioeconomic_status,
+        .data$trimester %in% input$summarise_large_scale_characteristics_trimester
+      ) |>
       dplyr::filter(estimate_name == "percentage") |>
       omopgenerics::tidy() |>
       tidyr::pivot_wider(names_from = "cohort_name", values_from = "percentage") |>
@@ -444,19 +451,19 @@ server <- function(input, output, session) {
         ),
         ASMD = abs(SMD)
       ) |>
-      dplyr::rename(!!paste0(cohortName1, " (%)") := cohortName1, !!paste0(cohortName2, " (%)") := cohortName2)
+      dplyr::filter(!is.na(ASMD)) |>
+      dplyr::rename("concept_name" = "variable_name")
   })
   getSummariseLargeScaleCharacteristicsComparedTableLsc <- shiny::reactive({
     dropCols <- input$summarise_large_scale_characteristics_table_lsc_compared_hide
     dropCols[dropCols == "variable_name"] <- "concept_name"
     getSummariseLargeScaleCharacteristicsComparedData() |>
-      dplyr::rename("concept_name" = "variable_name") |>
       dplyr::select(!dplyr::any_of(c("analysis", dropCols))) |>
-      dplyr::filter(!is.na(ASMD)) |>
+      dplyr::rename(!!paste0(cohortName1, " (%)") := cohortName1, !!paste0(cohortName2, " (%)") := cohortName2) |>
       visOmopResults::formatTable(type = "reactable")
   })
   output$summarise_large_scale_characteristics_table_lsc_compared <- reactable::renderReactable({
-    getSummariseLargeScaleCharacteristicsComparedTableLsc()
+    getSummariseLargeScaleCharacteristicsComparedTableLsc() 
   })
   output$summarise_large_scale_characteristics_table_lsc_compared_download <- shiny::downloadHandler(
     filename = "smd_results.csv",
@@ -469,7 +476,49 @@ server <- function(input, output, session) {
         readr::write_csv(file)
     }
   )
-  # incidence -----
+  getComparedLSCPlot <- shiny::reactive({
+    x1 <- input$summarise_large_scale_characteristics_cohort_name
+    x2 <- input$summarise_large_scale_characteristics_cohort_name_type
+    cohortName1 <- do.call(paste0, expand.grid(x1, paste0("_", x2)))
+    cohortName1 <- gsub("_original", "", cohortName1)
+    y1 <- input$summarise_large_scale_characteristics_compared_cohort_name
+    y2 <- input$summarise_large_scale_characteristics_compared_cohort_name_type
+    cohortName2 <- do.call(paste0, expand.grid(y1, paste0("_", y2)))
+    cohortName2 <- gsub("_original", "", cohortName2)
+    getSummariseLargeScaleCharacteristicsComparedData() |>
+      visOmopResults::scatterPlot(
+        x = cohortName1,
+        y = cohortName2,
+        line = FALSE,
+        point = TRUE,
+        ribbon = FALSE,
+        ymin = NULL,
+        ymax = NULL,
+        facet = input$summarise_large_scale_characteristics_plot_compared_facet,
+        colour = input$summarise_large_scale_characteristics_plot_compared_colour,
+        label = c("ASMD", "SMD")
+      ) +
+      ggplot2::xlab(paste0(cohortName1, " (%)")) +
+      ggplot2::ylab(paste0(cohortName2, " (%)")) +
+      ggplot2::geom_abline(slope = 1, intercept = 0, linetype = "dashed", colour = "gray")
+  })
+  output$summarise_large_scale_characteristics_plot_compared <- shiny::renderUI({
+    x <- getComparedLSCPlot()
+    renderInteractivePlot(x, input$summarise_large_scale_characteristics_plot_interactive)
+  })
+  output$summarise_large_scale_characteristics_plot_download <- shiny::downloadHandler(
+    filename = "plot_lsc.png",
+    content = function(file) {
+      ggplot2::ggsave(
+        filename = file,
+        plot = getComparedLSCPlot(),
+        width = as.numeric(input$summarise_large_scale_characteristics_plot_width),
+        height = as.numeric(input$summarise_large_scale_characteristics_plot_height),
+        units = input$summarise_large_scale_characteristics_plot_units,
+        dpi = as.numeric(input$summarise_large_scale_characteristics_plot_dpi)
+      )
+    }
+  )
   ## get incidence data
   getIncidenceData <- shiny::reactive({
     data[["incidence"]] |>
@@ -490,6 +539,22 @@ server <- function(input, output, session) {
       omopgenerics::filterAdditional(
         .data$outcome_group %in% input$incidence_outcome_group
       )
+  })
+  output$incidence_outcome_cohort_name_picker <- shiny::renderUI({
+    opts <- data[["incidence"]]  |>
+      omopgenerics::filterAdditional(
+        .data$outcome_group %in% input$incidence_outcome_group
+      ) |>
+      dplyr::pull(group_level) |>
+      unique()
+    shinyWidgets::pickerInput(
+      inputId = "incidence_outcome_cohort_name",
+      label = "Outcome cohort name",
+      choices = opts,
+      selected = opts,
+      multiple = TRUE,
+      options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
+    )
   })
   getIncidenceTidy <- shiny::reactive({
     getIncidenceData() |>
@@ -529,11 +594,29 @@ server <- function(input, output, session) {
     }
   )
   getIncidenceTable <- shiny::reactive({
-    res <- getIncidenceData() |>
+    res <- getIncidenceData() 
+    outcomes <- res |>
+      dplyr::filter(estimate_name == "incidence_100000_pys") |>
+      dplyr::mutate(estimate_value = as.numeric(estimate_value)) |>
+      dplyr::arrange(desc(estimate_value)) |>
+      dplyr::pull(group_level) |>
+      unique()
+    res <- dplyr::bind_rows(
+      res, 
+      res |>
+        omopgenerics::pivotEstimates() |>
+        dplyr::mutate(estimate_value = if_else(!is.na(outcome_count), as.character(outcome_count/denominator_count * 100), NA_character_)) |>
+        dplyr::mutate(
+          estimate_name = "outcome_percentage",
+          estimate_type = "percentage"
+        )  |>
+        dplyr::select(omopgenerics::resultColumns())
+    )
+    res |>
       visOmopResults::visOmopTable(
         estimateName = c(
           "Pregnancies" = "<denominator_count>",
-          "Outcomes" = "<outcome_count>",
+          "Outcomes" = "<outcome_count> (<outcome_percentage> %)",
           "Outcomes in period" = "<outcome_in_period_count> (<outcome_in_period_percentage>%)",
           "Person-Days" = "<person_days_count>",
           "Person-Years" = "<person_years>",
@@ -542,8 +625,13 @@ server <- function(input, output, session) {
         header = input$incidence_table_header,
         groupColumn = input$incidence_table_group_column,
         hide = input$incidence_table_hide,
+        columnOrder = c(
+          "cdm_name", "outcome_group", "outcome_cohort_name", "gestational_trimester", "maternal_age_group", "pregnancy_start_period",        
+          "socioeconomic_status", "ethnicity", "nationallity", "birth_country", "variable_name", "variable_level", "estimate_name"                  
+        ),
         factor = list(
           "outcome_group" = c("Adverse Events of Special Interest", "Maternal Adverse Events", "AESI Sensitivity (180 wash-out)"),
+          "outcome_cohort_name" = outcomes,
           "maternal_age_group" = c("overall", "12 to 17", "18 to 34", "35 to 55"),
           "pregnancy_start_period" = c("overall", "Pre COVID-19", "COVID-19 main outbreak", "Post COVID-19 main outbreak"),
           "socioeconomic_status" = c("overall", paste0("Q", 1:5)),
@@ -603,7 +691,8 @@ server <- function(input, output, session) {
         style = "default",
         label = label
       ) + 
-      ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, vjust = 0.5, hjust=1))
+      ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, vjust = 0.5, hjust=1)) +
+      ggplot2::facet_wrap(input$incidence_plot_facet, scales = "free_y")
   })
   output$incidence_plot <- shiny::renderUI({
     x <- getIncidencePlot()
@@ -636,7 +725,10 @@ server <- function(input, output, session) {
   # cumulative incidence -----
   ## get survival_probability data
   getSurvivalData <- shiny::reactive({
-    data[["survival"]] |>
+    data[["survival"]]  |>
+      omopgenerics::filterSettings(
+        .data$outcome_group %in% input$survival_outcome_group
+      ) |>
       dplyr::filter(
         .data$cdm_name %in% input$survival_cdm_name, 
         .data$variable_level %in% input$survival_outcome
@@ -647,6 +739,22 @@ server <- function(input, output, session) {
         .data$ethnicity %in% input$survival_ethnicity,
         .data$socioeconomic_status %in% input$survival_socioeconomic_status
       )
+  })
+  output$survival_outcome_cohort_name_picker <- shiny::renderUI({
+    opts <- data[["survival"]]  |>
+      omopgenerics::filterSettings(
+        .data$outcome_group %in% input$survival_outcome_group
+      ) |>
+      dplyr::pull(variable_level) |>
+      unique()
+    shinyWidgets::pickerInput(
+      inputId = "survival_outcome",
+      label = "Outcome cohort name",
+      choices = opts,
+      selected = opts,
+      multiple = TRUE,
+      options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
+    )
   })
   getSurvivalProbabilityTidy <- shiny::reactive({
     CohortSurvival::asSurvivalResult(getSurvivalData()) |>
@@ -693,6 +801,13 @@ server <- function(input, output, session) {
       }
     }
     
+    outcomes <- table |>
+      dplyr::filter(estimate_name == "n_events_percentage") |>
+      dplyr::mutate(estimate_value = as.numeric(estimate_value)) |>
+      dplyr::arrange(desc(estimate_value)) |>
+      dplyr::pull(variable_level) |>
+      unique()
+    
     table |>
       mutate(
         estimate_name = factor(
@@ -713,7 +828,15 @@ server <- function(input, output, session) {
         header = input$survival_table_header,
         groupColumn = input$survival_table_groupColumn,
         hide = c("variable_name", input$survival_table_hide),
+        settingsColumn = "outcome_group",
+        columnOrder = c(
+          "cdm_name", "target_cohort", "outcome_group", "variable_name", "variable_level",
+          "maternal_age_group", "pregnancy_start_period", "socioeconomic_status",               
+          "ethnicity", "nationallity", "birth_continent", "estimate_name"      
+        ),
         factor = list(
+          "outcome_group" = c("Adverse Events of Special Interest", "Maternal Adverse Events", "AESI Sensitivity (180 wash-out)"),
+          "variable_level" = outcomes,
           "maternal_age_group" = c("overall", "12 to 17", "18 to 34", "35 to 55"),
           "pregnancy_start_period" = c("overall", "Pre COVID-19", "COVID-19 main outbreak", "Post COVID-19 main outbreak"),
           "socioeconomic_status" = c("overall", paste0("Q", 1:5)),
@@ -761,7 +884,8 @@ server <- function(input, output, session) {
       cumulativeFailure = input$survival_plot_cf
     ) +
       labs(color = "Color") +
-      guides(fill = "none")
+      guides(fill = "none") +
+      ggplot2::facet_wrap(input$survival_plot_facet, scales = "free_y")
   })
   output$summarise_cohort_survival_plot <- shiny::renderUI({
     if(isTRUE(input$survival_plot_interactive)){
