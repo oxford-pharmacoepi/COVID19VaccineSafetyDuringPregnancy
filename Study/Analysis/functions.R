@@ -1249,7 +1249,7 @@ processGroupStrata <- function(data, groupLevel, strataLevel, weights, ci, outco
     dataCol <- getWeights(dataCol, weights[[groupLevel]][[strataLevel]])
     cdm <- omopgenerics::cdmReference(data)
     cdm <- omopgenerics::insertTable(cdm = cdm, name = "irr_temp", table = dataCol)
-    rm(dtaCol)
+    rm(dataCol)
     data <- cdm$irr_temp |> pivotSurvivalData(outcomes)
   } else {
     data <- getWeights(data, weights[[groupLevel]][[strataLevel]])
