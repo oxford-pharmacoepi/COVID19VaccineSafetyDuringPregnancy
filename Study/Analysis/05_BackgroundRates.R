@@ -339,7 +339,7 @@ cdm$ir_aesi_inf <- cdm$pregnancy_denominator |>
     nameStyle = "prior_{cohort_name}",
     name = "ir_aesi_inf"
   ) |>
-  getTimeToEvent(washOut = 9999999, outcomes = settings(cdm$aesi_inf)$cohort_name)
+  getTimeToEvent(washOut = 9999, outcomes = settings(cdm$aesi_inf)$cohort_name)
 
 ### AESI 90
 cdm$ir_aesi_90 <- cdm$pregnancy_denominator |>

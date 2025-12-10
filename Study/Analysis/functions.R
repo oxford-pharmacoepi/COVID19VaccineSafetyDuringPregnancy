@@ -1928,7 +1928,7 @@ addSocioeconomicStatus <- function(cohort) {
         )
       ) |>
       select(subject_id = person_id, socioeconomic_status) |>
-      distinc() |>
+      distinct() |>
       compute()
     
     # add column
@@ -2209,7 +2209,7 @@ getTimeToEvent <- function(cohort, washOut, outcomes) {
           .fn = \(x){paste0(outcome, "_", x)},
           .cols = colsRename
         ) |>
-        compute(name = name, temporary = FALSE, overwrite = TRUE)
+        compute()
     }
   } else {
     for (outcome in outcomes) {
@@ -2291,9 +2291,11 @@ getTimeToEvent <- function(cohort, washOut, outcomes) {
           .fn = \(x){paste0(outcome, "_", x)},
           .cols = colsRename
         ) |>
-        compute(name = name, temporary = FALSE, overwrite = TRUE)
+        compute()
     }
   }
+  cohort <- cohort |>
+    computer(name = name, temporary = FALSE, overwrite = TRUE)
   return(cohort)
 }
 
