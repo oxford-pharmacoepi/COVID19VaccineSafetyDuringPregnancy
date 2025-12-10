@@ -2305,7 +2305,7 @@ addBRDenominatorStrata <- function(cohort) {
   cohort <- cohort |>
     addAge(
       ageName = "maternal_age",
-      ageGroup = list("12 to 17" = c(12, 17), "18 to 34" = c(18, 34), "35 to 50" = c(35, 50))
+      ageGroup = list("12 to 17" = c(12, 17), "18 to 34" = c(18, 34), "35 to 55" = c(35, 55))
     ) |>
     mutate(
       pregnancy_start_period = case_when(
