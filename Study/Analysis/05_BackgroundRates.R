@@ -451,7 +451,7 @@ cdm$ir_postpartum_haemorrhage <- cdm$postpartum_12_weeks_denominator |>
   getTimeToEvent(washOut = 0,  outcomes = c("postpartum_haemorrhage"))
 
 ### Miscarriage
-if (any(grepl("miscarriage", settings(cdm$mae)$cohort_name))) {
+if ("miscarriage" %in% settings(cdm$mae)$cohort_name) {
   cdm$ir_miscarriage <- cdm$miscarriage_denominator |>
     addCohortIntersectDate(
       targetCohortTable = "mae",
