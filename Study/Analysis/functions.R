@@ -2295,7 +2295,7 @@ getTimeToEvent <- function(cohort, washOut, outcomes) {
     }
   }
   cohort <- cohort |>
-    computer(name = name, temporary = FALSE, overwrite = TRUE)
+    compute(name = name, temporary = FALSE, overwrite = TRUE)
   return(cohort)
 }
 
