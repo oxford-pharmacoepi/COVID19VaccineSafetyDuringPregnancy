@@ -10,7 +10,7 @@ cdm$characteristics_maternal_death <- getMatchedCohort(cdm$ir_maternal_death, "m
 cdm$characteristics_postpartum_endometritis <- getMatchedCohort(cdm$ir_postpartum_endometritis, "postpartum_endometritis", name = "characteristics_postpartum_endometritis")
 cdm$characteristics_postpartum_haemorrhage <- getMatchedCohort(cdm$ir_postpartum_haemorrhage, "postpartum_haemorrhage", name = "characteristics_postpartum_haemorrhage")
 cdm$characteristics_preterm_labour <- getMatchedCohort(cdm$ir_preterm_labour, "preterm_labour", name = "characteristics_preterm_labour")
-if (any(grepl("miscarriage", settings(cdm$mae)$cohort_name))){
+if ("miscarriage" %in% settings(cdm$mae)$cohort_name){
  cdm$characteristics_miscarriage <- getMatchedCohort(cdm$ir_miscarriage, outcomeMiscarriage, name = "characteristics_miscarriage")
 } else {
  cdm$characteristics_miscarriage <- omopgenerics::emptyCohortTable(cdm = cdm , name = "characteristics_miscarriage")
