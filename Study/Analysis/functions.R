@@ -1759,10 +1759,10 @@ addSeason <- function(cohort) {
   cohort |>
     dplyr::mutate(
       season_yearly = dplyr::case_when(
-        clock::get_month(.data$cohort_start_date) %in% 3:5 ~ paste0("Spring ", clock::get_year(.data$cohort_start_date)),
-        clock::get_month(.data$cohort_start_date) %in% 6:8 ~ paste0("Summer ", clock::get_year(.data$cohort_start_date)),
-        clock::get_month(.data$cohort_start_date) %in% 9:11 ~ paste0("Autumn ", clock::get_year(.data$cohort_start_date)),
-        clock::get_month(.data$cohort_start_date) %in% c(12, 1:2) ~ paste0("Winter ", clock::get_year(.data$cohort_start_date))
+        clock::get_month(.data$cohort_start_date) %in% 3:5 ~ paste0("Spring ", as.character(clock::get_year(.data$cohort_start_date))),
+        clock::get_month(.data$cohort_start_date) %in% 6:8 ~ paste0("Summer ", as.character(clock::get_year(.data$cohort_start_date))),
+        clock::get_month(.data$cohort_start_date) %in% 9:11 ~ paste0("Autumn ", as.character(clock::get_year(.data$cohort_start_date))),
+        clock::get_month(.data$cohort_start_date) %in% c(12, 1:2) ~ paste0("Winter ", as.character(clock::get_year(.data$cohort_start_date)))
       ),
       season = dplyr::case_when(
         clock::get_month(.data$cohort_start_date) %in% 3:5 ~ "Spring",
