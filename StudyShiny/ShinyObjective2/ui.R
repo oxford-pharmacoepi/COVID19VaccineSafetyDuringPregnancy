@@ -1548,9 +1548,9 @@ ui <- bslib::page_navbar(
         ),
         shinyWidgets::pickerInput(
           inputId = "incidence_rate_ratio_cohort_name",
-          label = "Objective",
-          choices = paste0("objective_", 1:3),
-          selected = paste0("objective_", 1:3),
+          label = "Cohort name",
+          choices = choices$incidence_rate_ratio_cohort_name,
+          selected = paste0("population_objective_", 1:3),
           multiple = TRUE,
           options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
         ),
@@ -1660,7 +1660,7 @@ ui <- bslib::page_navbar(
                   ),
                   sortable::add_rank_list(
                     text = "Hide",
-                    labels = c("vaccine_brand", "gestational_trimester", "age_group", "outcome_group", "follow_up_end", "weighting", "confidence_interval"),
+                    labels = c("vaccine_brand", "gestational_trimester", "age_group", "outcome_group", "follow_up_end", "weighting", "confidence_interval", "study_analysis"),
                     input_id = "incidence_rate_ratio_table_hide_summary"
                   )
                 ),
