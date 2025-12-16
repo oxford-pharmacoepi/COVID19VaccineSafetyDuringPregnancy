@@ -1371,7 +1371,7 @@ getRiskEstimate <- function(data, group, strata, outcomes, weights = NULL, ci = 
   strata <- unlist(strata)
   strata <- unique(c(strata[strata != "exposure"], "overall"))
   
-  if (!grepl("CPRD GOLD", cdmName(cdm))) {
+  if (!grepl("CPRD GOLD|SIDIAP", cdmName(cdm))) {
     # eveyrthing possible in the server in the server
     dataProcess <- data |>
       mutate(overall = "overall") |>
