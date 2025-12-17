@@ -401,7 +401,7 @@
     },
     "Hmisc": {
       "Package": "Hmisc",
-      "Version": "5.2-3",
+      "Version": "5.2-4",
       "Source": "Repository",
       "Date": "2025-03-16",
       "Title": "Harrell Miscellaneous",
@@ -536,7 +536,7 @@
     },
     "MASS": {
       "Package": "MASS",
-      "Version": "7.3-58.2",
+      "Version": "7.3-65",
       "Source": "Repository",
       "Priority": "recommended",
       "Date": "2023-01-21",
@@ -572,7 +572,7 @@
     },
     "Matrix": {
       "Package": "Matrix",
-      "Version": "1.7-0",
+      "Version": "1.7-4",
       "Source": "Repository",
       "VersionNote": "do also bump src/version.h, inst/include/Matrix/version.h",
       "Date": "2024-03-16",
@@ -1452,7 +1452,7 @@
     },
     "cluster": {
       "Package": "cluster",
-      "Version": "2.1.4",
+      "Version": "2.1.8.1",
       "Source": "Repository",
       "Date": "2022-08-19",
       "Priority": "recommended",
@@ -1634,7 +1634,7 @@
     },
     "data.table": {
       "Package": "data.table",
-      "Version": "1.17.6",
+      "Version": "1.17.8",
       "Source": "Repository",
       "Title": "Extension of `data.frame`",
       "Depends": [
@@ -1969,7 +1969,7 @@
     },
     "foreign": {
       "Package": "foreign",
-      "Version": "0.8-84",
+      "Version": "0.8-90",
       "Source": "Repository",
       "Priority": "recommended",
       "Date": "2022-12-06",
@@ -3796,7 +3796,7 @@
     },
     "rpart": {
       "Package": "rpart",
-      "Version": "4.1.19",
+      "Version": "4.1.24",
       "Source": "Repository",
       "Priority": "recommended",
       "Date": "2022-10-21",
