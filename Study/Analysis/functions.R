@@ -1308,7 +1308,7 @@ processGroupStrata <- function(data, groupLevel, strataLevel, weights, ci, outco
     # if (!is.null(weights) && length(weights) != 0) {
     #   data <- getWeights(data, weights[[groupLevel]][[strataLevel]])
     # }
-    data <- data |> pivotSurvivalData(outcomes)
+    # data <- data |> pivotSurvivalData(outcomes)
     results <- getIRR(data, ci = "midp", outcomes = outcomes)
     
   } else {
