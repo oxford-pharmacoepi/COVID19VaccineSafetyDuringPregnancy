@@ -17,32 +17,6 @@ SCIFI-PEARLv2,population_preterm_labour_objective_2,vaccine_brand,pfizer,"SARS-C
 SCIFI-PEARLv2,population_preterm_labour_objective_3,vaccine_brand,pfizer,"SARS-CoV-2 (COVID-19) vaccine, mRNA spike protein Injectable Suspension [Spikevax]",-180 to -31,779678_m180_m31,0.121244819143091,0.121244819143091
 SCIFI-PEARLv2,population_preterm_labour_objective_3,vaccine_brand,pfizer,"SARS-CoV-2 (COVID-19) vaccine, mRNA spike protein Injectable Suspension [Comirnaty]",-180 to -31,1759205_m180_m31,0.147127405253251,0.147127405253251
 SCIFI-PEARLv2,population_preterm_labour_objective_3,vaccine_brand,moderna,"SARS-CoV-2 (COVID-19) vaccine, mRNA spike protein Injectable Suspension [Comirnaty]",-180 to -31,1759205_m180_m31,0.263845850461293,0.263845850461293
-SCIFI-PEARLv2,population_objective_1,vaccine_brand,pfizer,region,0127,overall_0127,0.121839539389082,0.121839539389082
-SCIFI-PEARLv2,population_objective_1,vaccine_brand,pfizer,region,0380,overall_0380,-0.108897508974841,0.108897508974841
-SCIFI-PEARLv2,population_objective_1,vaccine_brand,pfizer,region,2480,overall_2480,-0.116582162122426,0.116582162122426
-SCIFI-PEARLv2,population_objective_1,vaccine_brand,moderna,region,0114,overall_0114,0.122646221641491,0.122646221641491
-SCIFI-PEARLv2,population_objective_1,vaccine_brand,moderna,region,0123,overall_0123,0.130532418352525,0.130532418352525
-SCIFI-PEARLv2,population_objective_1,vaccine_brand,moderna,region,0160,overall_0160,0.122404044914035,0.122404044914035
-SCIFI-PEARLv2,population_objective_1,vaccine_brand,moderna,region,0180,overall_0180,-0.106460220153244,0.106460220153244
-SCIFI-PEARLv2,population_objective_1,vaccine_brand,moderna,region,0188,overall_0188,0.109990956722716,0.109990956722716
-SCIFI-PEARLv2,population_objective_3,vaccine_brand,pfizer,region,2480,overall_2480,-0.118338552366465,0.118338552366465
-SCIFI-PEARLv2,population_objective_3,vaccine_brand,moderna,region,0380,overall_0380,-0.194540708989374,0.194540708989374
-SCIFI-PEARLv2,population_miscarriage_objective_1,vaccine_brand,pfizer,region,0127,overall_0127,0.106530077389774,0.106530077389774
-SCIFI-PEARLv2,population_miscarriage_objective_1,vaccine_brand,pfizer,region,0380,overall_0380,-0.117495087576945,0.117495087576945
-SCIFI-PEARLv2,population_miscarriage_objective_1,vaccine_brand,moderna,region,0114,overall_0114,0.111389983852766,0.111389983852766
-SCIFI-PEARLv2,population_miscarriage_objective_1,vaccine_brand,moderna,region,0123,overall_0123,0.123650520783564,0.123650520783564
-SCIFI-PEARLv2,population_miscarriage_objective_3,vaccine_brand,pfizer,region,2480,overall_2480,-0.100180279658961,0.100180279658961
-SCIFI-PEARLv2,population_miscarriage_objective_3,vaccine_brand,moderna,region,0380,overall_0380,-0.190501429575728,0.190501429575728
-SCIFI-PEARLv2,population_miscarriage_objective_3,vaccine_brand,moderna,region,2580,overall_2580,0.115864435880547,0.115864435880547
-SCIFI-PEARLv2,population_preterm_labour_objective_1,vaccine_brand,pfizer,region,0127,overall_0127,0.122933470170979,0.122933470170979
-SCIFI-PEARLv2,population_preterm_labour_objective_1,vaccine_brand,pfizer,region,0380,overall_0380,-0.106516234023539,0.106516234023539
-SCIFI-PEARLv2,population_preterm_labour_objective_1,vaccine_brand,pfizer,region,2480,overall_2480,-0.114463459273468,0.114463459273468
-SCIFI-PEARLv2,population_preterm_labour_objective_1,vaccine_brand,moderna,region,0114,overall_0114,0.120234858119962,0.120234858119962
-SCIFI-PEARLv2,population_preterm_labour_objective_1,vaccine_brand,moderna,region,0123,overall_0123,0.128109266353519,0.128109266353519
-SCIFI-PEARLv2,population_preterm_labour_objective_1,vaccine_brand,moderna,region,0160,overall_0160,0.121107209950342,0.121107209950342
-SCIFI-PEARLv2,population_preterm_labour_objective_1,vaccine_brand,moderna,region,0188,overall_0188,0.108556382177072,0.108556382177072
-SCIFI-PEARLv2,population_preterm_labour_objective_3,vaccine_brand,pfizer,region,2480,overall_2480,-0.120925989275363,0.120925989275363
-SCIFI-PEARLv2,population_preterm_labour_objective_3,vaccine_brand,moderna,region,0380,overall_0380,-0.191031136911291,0.191031136911291
 SCIFI-PEARLv2,population_objective_2,gestational_trimester,T2,"SARS-CoV-2 (COVID-19) vaccine, mRNA spike protein Injectable Suspension [Spikevax]",-30 to -1,779678_m30_m1,0.179772079463958,0.179772079463958
 SCIFI-PEARLv2,population_objective_2,gestational_trimester,T3,"SARS-CoV-2 (COVID-19) vaccine, mRNA spike protein Injectable Suspension [Comirnaty]",-30 to -1,1759205_m30_m1,0.131139459467292,0.131139459467292
 SCIFI-PEARLv2,population_objective_2,gestational_trimester,T3,"SARS-CoV-2 (COVID-19) vaccine, mRNA spike protein Injectable Suspension [Spikevax]",-30 to -1,779678_m30_m1,0.115561897911585,0.115561897911585
@@ -63,24 +37,6 @@ SCIFI-PEARLv2,population_preterm_labour_objective_3,gestational_trimester,T2,"SA
 SCIFI-PEARLv2,population_preterm_labour_objective_3,gestational_trimester,T1,"SARS-CoV-2 (COVID-19) vaccine, mRNA spike protein Injectable Suspension [Spikevax]",-180 to -31,779678_m180_m31,0.189616549115387,0.189616549115387
 SCIFI-PEARLv2,population_preterm_labour_objective_3,gestational_trimester,T1,"SARS-CoV-2 (COVID-19) vaccine, mRNA spike protein Injectable Suspension [Comirnaty]",-180 to -31,1759205_m180_m31,0.23905829937881,0.23905829937881
 SCIFI-PEARLv2,population_preterm_labour_objective_3,gestational_trimester,T3,"SARS-CoV-2 (COVID-19) vaccine, mRNA spike protein Injectable Suspension [Comirnaty]",-180 to -31,1759205_m180_m31,0.173855587579312,0.173855587579312
-SCIFI-PEARLv2,population_objective_1,gestational_trimester,T2,region,0127,overall_0127,0.103956799078675,0.103956799078675
-SCIFI-PEARLv2,population_objective_1,gestational_trimester,T2,region,2480,overall_2480,-0.128490323101963,0.128490323101963
-SCIFI-PEARLv2,population_objective_1,gestational_trimester,T1,region,0380,overall_0380,-0.155231539565071,0.155231539565071
-SCIFI-PEARLv2,population_objective_1,gestational_trimester,T3,region,0127,overall_0127,0.109502643406082,0.109502643406082
-SCIFI-PEARLv2,population_objective_1,gestational_trimester,T3,region,2480,overall_2480,-0.107113397353606,0.107113397353606
-SCIFI-PEARLv2,population_objective_3,gestational_trimester,T2,region,2480,overall_2480,-0.110242465351417,0.110242465351417
-SCIFI-PEARLv2,population_objective_3,gestational_trimester,T3,region,2480,overall_2480,-0.105275452326527,0.105275452326527
-SCIFI-PEARLv2,population_miscarriage_objective_1,gestational_trimester,T2,region,0127,overall_0127,0.106269650933842,0.106269650933842
-SCIFI-PEARLv2,population_miscarriage_objective_1,gestational_trimester,T2,region,2480,overall_2480,-0.110489408829199,0.110489408829199
-SCIFI-PEARLv2,population_miscarriage_objective_1,gestational_trimester,T1,region,0380,overall_0380,-0.155231539565073,0.155231539565073
-SCIFI-PEARLv2,population_miscarriage_objective_3,gestational_trimester,T2,region,2480,overall_2480,-0.100736577771114,0.100736577771114
-SCIFI-PEARLv2,population_preterm_labour_objective_1,gestational_trimester,T2,region,0127,overall_0127,0.10395679907868,0.10395679907868
-SCIFI-PEARLv2,population_preterm_labour_objective_1,gestational_trimester,T2,region,2480,overall_2480,-0.128490323101974,0.128490323101974
-SCIFI-PEARLv2,population_preterm_labour_objective_1,gestational_trimester,T1,region,0380,overall_0380,-0.15523153956506,0.15523153956506
-SCIFI-PEARLv2,population_preterm_labour_objective_1,gestational_trimester,T3,region,0127,overall_0127,0.11480173540749,0.11480173540749
-SCIFI-PEARLv2,population_preterm_labour_objective_1,gestational_trimester,T3,region,2480,overall_2480,-0.101625632391733,0.101625632391733
-SCIFI-PEARLv2,population_preterm_labour_objective_3,gestational_trimester,T2,region,2480,overall_2480,-0.110242465351416,0.110242465351416
-SCIFI-PEARLv2,population_preterm_labour_objective_3,gestational_trimester,T3,region,2480,overall_2480,-0.115226675555416,0.115226675555416
 SCIFI-PEARLv2,population_objective_2,age_group,18 to 34,"SARS-CoV-2 (COVID-19) vaccine, mRNA spike protein Injectable Suspension [Comirnaty]",-180 to -31,1759205_m180_m31,-0.15678052518446,0.15678052518446
 SCIFI-PEARLv2,population_objective_2,age_group,18 to 34,"SARS-CoV-2 (COVID-19) vaccine, mRNA spike protein Injectable Suspension [Comirnaty]",-30 to -1,1759205_m30_m1,0.206787664286575,0.206787664286575
 SCIFI-PEARLv2,population_objective_2,age_group,18 to 34,"SARS-CoV-2 (COVID-19) vaccine, mRNA spike protein Injectable Suspension [Spikevax]",-30 to -1,779678_m30_m1,0.148482456635635,0.148482456635635
@@ -107,12 +63,6 @@ SCIFI-PEARLv2,population_preterm_labour_objective_2,age_group,35 to 55,"SARS-CoV
 SCIFI-PEARLv2,population_preterm_labour_objective_3,age_group,18 to 34,"SARS-CoV-2 (COVID-19) vaccine, mRNA spike protein Injectable Suspension [Spikevax]",-180 to -31,779678_m180_m31,0.113829574150178,0.113829574150178
 SCIFI-PEARLv2,population_preterm_labour_objective_3,age_group,18 to 34,"SARS-CoV-2 (COVID-19) vaccine, mRNA spike protein Injectable Suspension [Comirnaty]",-180 to -31,1759205_m180_m31,0.171972737098894,0.171972737098894
 SCIFI-PEARLv2,population_preterm_labour_objective_3,age_group,35 to 55,"SARS-CoV-2 (COVID-19) vaccine, mRNA spike protein Injectable Suspension [Comirnaty]",-180 to -31,1759205_m180_m31,0.173329008021558,0.173329008021558
-SCIFI-PEARLv2,population_objective_1,age_group,18 to 34,region,0127,overall_0127,0.115071633663152,0.115071633663152
-SCIFI-PEARLv2,population_objective_1,age_group,18 to 34,region,2480,overall_2480,-0.113440395685758,0.113440395685758
-SCIFI-PEARLv2,population_miscarriage_objective_1,age_group,18 to 34,region,0127,overall_0127,0.105134674201749,0.105134674201749
-SCIFI-PEARLv2,population_miscarriage_objective_1,age_group,18 to 34,region,0380,overall_0380,-0.107103093099767,0.107103093099767
-SCIFI-PEARLv2,population_preterm_labour_objective_1,age_group,18 to 34,region,0127,overall_0127,0.115995706153015,0.115995706153015
-SCIFI-PEARLv2,population_preterm_labour_objective_1,age_group,18 to 34,region,2480,overall_2480,-0.111719735496279,0.111719735496279
 SCIFI-PEARLv2,population_objective_2,overall,overall,"SARS-CoV-2 (COVID-19) vaccine, mRNA spike protein Injectable Suspension [Comirnaty]",-180 to -31,1759205_m180_m31,-0.14522857246646,0.14522857246646
 SCIFI-PEARLv2,population_objective_2,overall,overall,"SARS-CoV-2 (COVID-19) vaccine, mRNA spike protein Injectable Suspension [Comirnaty]",-30 to -1,1759205_m30_m1,0.193171967021008,0.193171967021008
 SCIFI-PEARLv2,population_objective_2,overall,overall,"SARS-CoV-2 (COVID-19) vaccine, mRNA spike protein Injectable Suspension [Spikevax]",-30 to -1,779678_m30_m1,0.145476485120844,0.145476485120844
@@ -128,55 +78,6 @@ SCIFI-PEARLv2,population_preterm_labour_objective_2,overall,overall,"SARS-CoV-2 
 SCIFI-PEARLv2,population_preterm_labour_objective_2,overall,overall,"SARS-CoV-2 (COVID-19) vaccine, mRNA spike protein Injectable Suspension [Spikevax]",-30 to -1,779678_m30_m1,0.143445210960947,0.143445210960947
 SCIFI-PEARLv2,population_preterm_labour_objective_3,overall,overall,"SARS-CoV-2 (COVID-19) vaccine, mRNA spike protein Injectable Suspension [Spikevax]",-180 to -31,779678_m180_m31,0.109090168477477,0.109090168477477
 SCIFI-PEARLv2,population_preterm_labour_objective_3,overall,overall,"SARS-CoV-2 (COVID-19) vaccine, mRNA spike protein Injectable Suspension [Comirnaty]",-180 to -31,1759205_m180_m31,0.173582893038582,0.173582893038582
-SCIFI-PEARLv2,population_objective_1,overall,overall,region,2480,overall_2480,-0.104883259950415,0.104883259950415
-SCIFI-PEARLv2,population_miscarriage_objective_1,overall,overall,region,0380,overall_0380,-0.107926457476873,0.107926457476873
-SCIFI-PEARLv2,population_preterm_labour_objective_1,overall,overall,region,2480,overall_2480,-0.10345040305144,0.10345040305144
-SCIFI-PEARLv2,population_objective_2,vaccine_brand,pfizer,Days previous dose,NA,overall_NA,-0.458128822852223,0.458128822852223
-SCIFI-PEARLv2,population_objective_2,vaccine_brand,moderna,Days previous dose,NA,overall_NA,-0.583385603377203,0.583385603377203
-SCIFI-PEARLv2,population_objective_3,vaccine_brand,pfizer,Days previous dose,NA,overall_NA,-1.34804972929125,1.34804972929125
-SCIFI-PEARLv2,population_objective_3,vaccine_brand,moderna,Days previous dose,NA,overall_NA,-1.92109187792202,1.92109187792202
-SCIFI-PEARLv2,population_miscarriage_objective_2,vaccine_brand,pfizer,Days previous dose,NA,overall_NA,-0.166165157258256,0.166165157258256
-SCIFI-PEARLv2,population_miscarriage_objective_2,vaccine_brand,moderna,Days previous dose,NA,overall_NA,-0.50749275960221,0.50749275960221
-SCIFI-PEARLv2,population_miscarriage_objective_3,vaccine_brand,pfizer,Days previous dose,NA,overall_NA,-1.45285419360617,1.45285419360617
-SCIFI-PEARLv2,population_miscarriage_objective_3,vaccine_brand,moderna,Days previous dose,NA,overall_NA,-1.7663444118036,1.7663444118036
-SCIFI-PEARLv2,population_preterm_labour_objective_2,vaccine_brand,pfizer,Days previous dose,NA,overall_NA,-0.454605345498552,0.454605345498552
-SCIFI-PEARLv2,population_preterm_labour_objective_2,vaccine_brand,moderna,Days previous dose,NA,overall_NA,-0.580168757673909,0.580168757673909
-SCIFI-PEARLv2,population_preterm_labour_objective_3,vaccine_brand,pfizer,Days previous dose,NA,overall_NA,-1.35495103246536,1.35495103246536
-SCIFI-PEARLv2,population_preterm_labour_objective_3,vaccine_brand,moderna,Days previous dose,NA,overall_NA,-1.94037181136815,1.94037181136815
-SCIFI-PEARLv2,population_objective_2,gestational_trimester,T2,Days previous dose,NA,overall_NA,-0.788162205420562,0.788162205420562
-SCIFI-PEARLv2,population_objective_2,gestational_trimester,T1,Days previous dose,NA,overall_NA,-0.420629459249467,0.420629459249467
-SCIFI-PEARLv2,population_objective_2,gestational_trimester,T3,Days previous dose,NA,overall_NA,-0.676149019065028,0.676149019065028
-SCIFI-PEARLv2,population_objective_3,gestational_trimester,T2,Days previous dose,NA,overall_NA,-1.30013992650653,1.30013992650653
-SCIFI-PEARLv2,population_objective_3,gestational_trimester,T1,Days previous dose,NA,overall_NA,-1.99016568302608,1.99016568302608
-SCIFI-PEARLv2,population_objective_3,gestational_trimester,T3,Days previous dose,NA,overall_NA,-1.27563427803805,1.27563427803805
-SCIFI-PEARLv2,population_miscarriage_objective_2,gestational_trimester,T2,Days previous dose,NA,overall_NA,-0.563638502870117,0.563638502870117
-SCIFI-PEARLv2,population_miscarriage_objective_2,gestational_trimester,T1,Days previous dose,NA,overall_NA,-0.420629459248865,0.420629459248865
-SCIFI-PEARLv2,population_miscarriage_objective_3,gestational_trimester,T2,Days previous dose,NA,overall_NA,-1.33726668017662,1.33726668017662
-SCIFI-PEARLv2,population_miscarriage_objective_3,gestational_trimester,T1,Days previous dose,NA,overall_NA,-1.99016568302401,1.99016568302401
-SCIFI-PEARLv2,population_preterm_labour_objective_2,gestational_trimester,T2,Days previous dose,NA,overall_NA,-0.788162205420502,0.788162205420502
-SCIFI-PEARLv2,population_preterm_labour_objective_2,gestational_trimester,T1,Days previous dose,NA,overall_NA,-0.420629459249519,0.420629459249519
-SCIFI-PEARLv2,population_preterm_labour_objective_2,gestational_trimester,T3,Days previous dose,NA,overall_NA,-0.679256975123523,0.679256975123523
-SCIFI-PEARLv2,population_preterm_labour_objective_3,gestational_trimester,T2,Days previous dose,NA,overall_NA,-1.30013992650653,1.30013992650653
-SCIFI-PEARLv2,population_preterm_labour_objective_3,gestational_trimester,T1,Days previous dose,NA,overall_NA,-1.99016568302617,1.99016568302617
-SCIFI-PEARLv2,population_preterm_labour_objective_3,gestational_trimester,T3,Days previous dose,NA,overall_NA,-1.31321362027117,1.31321362027117
-SCIFI-PEARLv2,population_objective_2,age_group,18 to 34,Days previous dose,NA,overall_NA,-0.76740351168652,0.76740351168652
-SCIFI-PEARLv2,population_objective_2,age_group,35 to 55,Days previous dose,NA,overall_NA,-0.406589618692705,0.406589618692705
-SCIFI-PEARLv2,population_objective_3,age_group,18 to 34,Days previous dose,NA,overall_NA,-1.37200190026072,1.37200190026072
-SCIFI-PEARLv2,population_objective_3,age_group,35 to 55,Days previous dose,NA,overall_NA,-1.35078729985875,1.35078729985875
-SCIFI-PEARLv2,population_miscarriage_objective_2,age_group,18 to 34,Days previous dose,NA,overall_NA,-0.697878408043902,0.697878408043902
-SCIFI-PEARLv2,population_miscarriage_objective_2,age_group,35 to 55,Days previous dose,NA,overall_NA,-0.328955789579072,0.328955789579072
-SCIFI-PEARLv2,population_miscarriage_objective_3,age_group,18 to 34,Days previous dose,NA,overall_NA,-1.4921956582392,1.4921956582392
-SCIFI-PEARLv2,population_miscarriage_objective_3,age_group,35 to 55,Days previous dose,NA,overall_NA,-1.46111972444753,1.46111972444753
-SCIFI-PEARLv2,population_preterm_labour_objective_2,age_group,18 to 34,Days previous dose,NA,overall_NA,-0.527396724988479,0.527396724988479
-SCIFI-PEARLv2,population_preterm_labour_objective_2,age_group,35 to 55,Days previous dose,NA,overall_NA,-0.408381166399021,0.408381166399021
-SCIFI-PEARLv2,population_preterm_labour_objective_3,age_group,18 to 34,Days previous dose,NA,overall_NA,-1.37829579831642,1.37829579831642
-SCIFI-PEARLv2,population_preterm_labour_objective_3,age_group,35 to 55,Days previous dose,NA,overall_NA,-1.34735501579253,1.34735501579253
-SCIFI-PEARLv2,population_objective_2,overall,overall,Days previous dose,NA,overall_NA,-0.71850837406984,0.71850837406984
-SCIFI-PEARLv2,population_objective_3,overall,overall,Days previous dose,NA,overall_NA,-1.38753306640928,1.38753306640928
-SCIFI-PEARLv2,population_miscarriage_objective_2,overall,overall,Days previous dose,NA,overall_NA,-0.656927555236692,0.656927555236692
-SCIFI-PEARLv2,population_miscarriage_objective_3,overall,overall,Days previous dose,NA,overall_NA,-1.4979261198741,1.4979261198741
-SCIFI-PEARLv2,population_preterm_labour_objective_2,overall,overall,Days previous dose,NA,overall_NA,-0.723815775686496,0.723815775686496
-SCIFI-PEARLv2,population_preterm_labour_objective_3,overall,overall,Days previous dose,NA,overall_NA,-1.39454175659756,1.39454175659756
 CPRD GOLD,population_miscarriage_objective_2,overall,overall,prochlorperazine 5 MG Oral Tablet,-30 to -1,752205_m30_m1,0.132075214583933,0.132075214583933
 CPRD GOLD,population_objective_2,overall,overall,prochlorperazine 5 MG Oral Tablet,-30 to -1,752205_m30_m1,0.116921798903514,0.116921798903514
 CPRD GOLD,population_preterm_labour_objective_2,overall,overall,prochlorperazine 5 MG Oral Tablet,-30 to -1,752205_m30_m1,0.119764642799587,0.119764642799587
@@ -522,53 +423,6 @@ CPRD GOLD,population_miscarriage_objective_2,age_group,35 to 55,"SARS-CoV-2 (COV
 CPRD GOLD,population_preterm_labour_objective_2,age_group,35 to 55,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.1 MG/ML Injectable Suspension",-180 to -31,37003436_m180_m31,-0.151201568578631,0.151201568578631
 CPRD GOLD,population_miscarriage_objective_3,age_group,35 to 55,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.1 MG/ML Injectable Suspension",-180 to -31,37003436_m180_m31,0.200706197307702,0.200706197307702
 CPRD GOLD,population_objective_2,age_group,35 to 55,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.1 MG/ML Injectable Suspension",-180 to -31,37003436_m180_m31,-0.15633887269965,0.15633887269965
-CPRD GOLD,population_objective_2,overall,overall,ethnicity,Missing,overall_Missing,-0.125555163836107,0.125555163836107
-CPRD GOLD,population_preterm_labour_objective_2,overall,overall,ethnicity,Missing,overall_Missing,-0.128931796509771,0.128931796509771
-CPRD GOLD,population_preterm_labour_objective_2,overall,overall,ethnicity,White,overall_White,0.123416363748169,0.123416363748169
-CPRD GOLD,population_objective_2,overall,overall,ethnicity,White,overall_White,0.119147143764951,0.119147143764951
-CPRD GOLD,population_miscarriage_objective_1,vaccine_brand,moderna,ethnicity,Asian,overall_Asian,-0.131931194824253,0.131931194824253
-CPRD GOLD,population_objective_2,vaccine_brand,moderna,ethnicity,Missing,overall_Missing,-0.162235150905156,0.162235150905156
-CPRD GOLD,population_miscarriage_objective_2,vaccine_brand,moderna,ethnicity,Missing,overall_Missing,-0.16569580484419,0.16569580484419
-CPRD GOLD,population_preterm_labour_objective_3,vaccine_brand,moderna,ethnicity,Missing,overall_Missing,0.100636779131461,0.100636779131461
-CPRD GOLD,population_preterm_labour_objective_2,vaccine_brand,moderna,ethnicity,Missing,overall_Missing,-0.147840278755221,0.147840278755221
-CPRD GOLD,population_objective_2,vaccine_brand,pfizer,ethnicity,Missing,overall_Missing,-0.121204490924885,0.121204490924885
-CPRD GOLD,population_preterm_labour_objective_2,vaccine_brand,pfizer,ethnicity,Missing,overall_Missing,-0.126591126624961,0.126591126624961
-CPRD GOLD,population_objective_2,vaccine_brand,moderna,ethnicity,White,overall_White,0.173959888502026,0.173959888502026
-CPRD GOLD,population_miscarriage_objective_2,vaccine_brand,moderna,ethnicity,White,overall_White,0.173611666462596,0.173611666462596
-CPRD GOLD,population_preterm_labour_objective_2,vaccine_brand,moderna,ethnicity,White,overall_White,0.162898992157791,0.162898992157791
-CPRD GOLD,population_objective_2,vaccine_brand,pfizer,ethnicity,White,overall_White,0.112556437727355,0.112556437727355
-CPRD GOLD,population_preterm_labour_objective_2,vaccine_brand,pfizer,ethnicity,White,overall_White,0.118474467773223,0.118474467773223
-CPRD GOLD,population_objective_2,gestational_trimester,T2,ethnicity,Missing,overall_Missing,-0.149545346003861,0.149545346003861
-CPRD GOLD,population_preterm_labour_objective_2,gestational_trimester,T2,ethnicity,Missing,overall_Missing,-0.149545346003861,0.149545346003861
-CPRD GOLD,population_preterm_labour_objective_2,gestational_trimester,T3,ethnicity,Missing,overall_Missing,-0.182685025784264,0.182685025784264
-CPRD GOLD,population_objective_2,gestational_trimester,T3,ethnicity,Missing,overall_Missing,-0.160469019191315,0.160469019191315
-CPRD GOLD,population_preterm_labour_objective_3,gestational_trimester,T2,ethnicity,White,overall_White,-0.102165118756167,0.102165118756167
-CPRD GOLD,population_preterm_labour_objective_2,gestational_trimester,T2,ethnicity,White,overall_White,0.143022695118384,0.143022695118384
-CPRD GOLD,population_miscarriage_objective_3,gestational_trimester,T2,ethnicity,White,overall_White,-0.113285421993747,0.113285421993747
-CPRD GOLD,population_objective_3,gestational_trimester,T2,ethnicity,White,overall_White,-0.102165118756167,0.102165118756167
-CPRD GOLD,population_objective_2,gestational_trimester,T2,ethnicity,White,overall_White,0.143022695118384,0.143022695118384
-CPRD GOLD,population_preterm_labour_objective_2,gestational_trimester,T3,ethnicity,White,overall_White,0.19080250780661,0.19080250780661
-CPRD GOLD,population_objective_2,gestational_trimester,T3,ethnicity,White,overall_White,0.16245826605722,0.16245826605722
-CPRD GOLD,population_objective_1,age_group,12 to 17,ethnicity,Missing,overall_Missing,-0.392441382766713,0.392441382766713
-CPRD GOLD,population_preterm_labour_objective_1,age_group,12 to 17,ethnicity,Missing,overall_Missing,-0.437430550298332,0.437430550298332
-CPRD GOLD,population_miscarriage_objective_2,age_group,18 to 34,ethnicity,Missing,overall_Missing,-0.129223619544094,0.129223619544094
-CPRD GOLD,population_preterm_labour_objective_2,age_group,18 to 34,ethnicity,Missing,overall_Missing,-0.159277882303402,0.159277882303402
-CPRD GOLD,population_objective_2,age_group,18 to 34,ethnicity,Missing,overall_Missing,-0.15496097461374,0.15496097461374
-CPRD GOLD,population_miscarriage_objective_3,age_group,35 to 55,ethnicity,Missing,overall_Missing,0.178278546120414,0.178278546120414
-CPRD GOLD,population_objective_3,age_group,35 to 55,ethnicity,Missing,overall_Missing,0.138115269497534,0.138115269497534
-CPRD GOLD,population_preterm_labour_objective_1,age_group,35 to 55,ethnicity,Missing,overall_Missing,0.154132317430186,0.154132317430186
-CPRD GOLD,population_miscarriage_objective_1,age_group,35 to 55,ethnicity,Missing,overall_Missing,0.147237755794763,0.147237755794763
-CPRD GOLD,population_preterm_labour_objective_3,age_group,35 to 55,ethnicity,Missing,overall_Missing,0.14079040265266,0.14079040265266
-CPRD GOLD,population_objective_1,age_group,35 to 55,ethnicity,Missing,overall_Missing,0.163204259562914,0.163204259562914
-CPRD GOLD,population_preterm_labour_objective_2,age_group,18 to 34,ethnicity,White,overall_White,0.140974393879709,0.140974393879709
-CPRD GOLD,population_objective_2,age_group,18 to 34,ethnicity,White,overall_White,0.137585093078298,0.137585093078298
-CPRD GOLD,population_miscarriage_objective_2,age_group,18 to 34,ethnicity,White,overall_White,0.103144005481991,0.103144005481991
-CPRD GOLD,population_objective_3,age_group,35 to 55,ethnicity,White,overall_White,-0.132119290361261,0.132119290361261
-CPRD GOLD,population_preterm_labour_objective_1,age_group,35 to 55,ethnicity,White,overall_White,-0.130737903428561,0.130737903428561
-CPRD GOLD,population_miscarriage_objective_3,age_group,35 to 55,ethnicity,White,overall_White,-0.191631191106576,0.191631191106576
-CPRD GOLD,population_objective_1,age_group,35 to 55,ethnicity,White,overall_White,-0.139114775849345,0.139114775849345
-CPRD GOLD,population_preterm_labour_objective_3,age_group,35 to 55,ethnicity,White,overall_White,-0.136862306585436,0.136862306585436
-CPRD GOLD,population_miscarriage_objective_1,age_group,35 to 55,ethnicity,White,overall_White,-0.127323089114292,0.127323089114292
 CPRD GOLD,population_objective_1,vaccine_brand,pfizer,pertussis vaccine,-180 to -31,19033193_m180_m31,-0.104791037781083,0.104791037781083
 CPRD GOLD,population_objective_1,vaccine_brand,moderna,Blood pressure finding,-180 to -31,4214962_m180_m31,-0.111051187035865,0.111051187035865
 CPRD GOLD,population_objective_3,vaccine_brand,moderna,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.1 MG/ML Injectable Suspension",-180 to -31,37003436_m180_m31,0.114304275973056,0.114304275973056
