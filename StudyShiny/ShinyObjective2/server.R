@@ -670,10 +670,6 @@ server <- function(input, output, session) {
       dplyr::filter(
         .data$cdm_name %in% input$incidence_rate_ratio_cdm_name
       ) |>
-      dplyr::mutate(
-        group_level = gsub("population_", "", group_level),
-        group_level = gsub("miscarriage_|preterm_labour_", "", group_level)
-      ) |>
       omopgenerics::filterGroup(
         .data$cohort_name %in% input$incidence_rate_ratio_cohort_name
       ) |>

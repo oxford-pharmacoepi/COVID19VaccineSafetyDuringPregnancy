@@ -10,25 +10,35 @@ cdm$characteristics_maternal_death <- getMatchedCohort(cdm$ir_maternal_death, "m
 cdm$characteristics_postpartum_endometritis <- getMatchedCohort(cdm$ir_postpartum_endometritis, "postpartum_endometritis", name = "characteristics_postpartum_endometritis")
 cdm$characteristics_postpartum_haemorrhage <- getMatchedCohort(cdm$ir_postpartum_haemorrhage, "postpartum_haemorrhage", name = "characteristics_postpartum_haemorrhage")
 cdm$characteristics_preterm_labour <- getMatchedCohort(cdm$ir_preterm_labour, "preterm_labour", name = "characteristics_preterm_labour")
-if (any(grepl("miscarriage", settings(cdm$mae)$cohort_name))){
+if ("miscarriage" %in% settings(cdm$mae)$cohort_name){
  cdm$characteristics_miscarriage <- getMatchedCohort(cdm$ir_miscarriage, outcomeMiscarriage, name = "characteristics_miscarriage")
-} else {
- cdm$characteristics_miscarriage <- omopgenerics::emptyCohortTable(cdm = cdm , name = "characteristics_miscarriage")
-}
+} 
 if ("stillbirth" %in% settings(cdm$mae)$cohort_name){
  cdm$characteristics_stillbirth <- getMatchedCohort(cdm$ir_stillbirth, "stillbirth", name = "characteristics_stillbirth")
 } else {
  cdm$characteristics_stillbirth <- omopgenerics::emptyCohortTable(cdm = cdm , name = "characteristics_stillbirth")
 }
 
-cdm <- bind(
+if ("miscarriage" %in% settings(cdm$mae)$cohort_name){
+ cdm <- bind(
   cdm$characteristics_aesi_30, cdm$characteristics_aesi_90, cdm$characteristics_aesi_inf, 
   cdm$characteristics_aesi_180, cdm$characteristics_mae, cdm$characteristics_maternal_death,
   cdm$characteristics_postpartum_endometritis, cdm$characteristics_postpartum_haemorrhage, 
   cdm$characteristics_preterm_labour, cdm$characteristics_miscarriage, cdm$characteristics_stillbirth, 
   cdm$pregnancy_denominator,
   name = "characteristics_br"
-)
+) 
+} else {
+  cdm <- bind(
+  cdm$characteristics_aesi_30, cdm$characteristics_aesi_90, cdm$characteristics_aesi_inf, 
+  cdm$characteristics_aesi_180, cdm$characteristics_mae, cdm$characteristics_maternal_death,
+  cdm$characteristics_postpartum_endometritis, cdm$characteristics_postpartum_haemorrhage, 
+  cdm$characteristics_preterm_labour, cdm$characteristics_stillbirth, 
+  cdm$pregnancy_denominator,
+  name = "characteristics_br"
+) 
+}
+
 
 ## Characterisation ----
 info(logger, "- Characterisation")

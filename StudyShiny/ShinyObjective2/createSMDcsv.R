@@ -1,11 +1,11 @@
-cdm_name <- c("SIDIAP", "CPRD GOLD")
+cdm_name <- c("SCIFI-PEARLv2")
 # csv to review ----
 fileData <- file.path(getwd(), "data", "shinyData.RData")
 load(fileData)
 data$summarise_standardised_mean_differences |>
   omopgenerics::pivotEstimates() |>
   dplyr::mutate(asmd = abs(smd)) |>
-  dplyr::filter(asmd > 0.1, cdm_name %in% cdm_name) |>
+  dplyr::filter(asmd > 0.1, .data$cdm_name %in% .env$cdm_name) |>
   dplyr::distinct(.data$group_level, .data$variable_name, .data$additional_level, .data$variable_level) |>
   dplyr::rename(
     "cohort_name" = "group_level",
@@ -28,7 +28,7 @@ previous <- readr::read_csv("largeScaleSMD.csv") |>
 data$summarise_standardised_mean_differences |>
   omopgenerics::pivotEstimates() |>
   dplyr::mutate(asmd = abs(smd)) |>
-  dplyr::filter(asmd > 0.1, cdm_name %in% cdm_name) |>
+  dplyr::filter(asmd > 0.1, .data$cdm_name %in% .env$cdm_name) |>
   dplyr::mutate(
     additional_level = paste0(additional_level, "_", gsub("-", "m", gsub(" to ", "_", variable_level)))
   ) |>
@@ -42,14 +42,6 @@ data$summarise_standardised_mean_differences |>
     "identifier" = "additional_level",
     "smd",
     "asmd"
-  ) |>
-  dplyr::inner_join(
-    readr::read_csv("unbalanced_smd.csv") |>
-      dplyr::filter(INCLUDE == "X") |>
-      dplyr::mutate(
-        identifier = paste0(concept_id, "_", gsub("-", "m", gsub(" to ", "_", window)))
-      ) |>
-      dplyr::select(!c("concept_id", "INCLUDE"))
   ) |>
   dplyr::bind_rows(previous) |>
   readr::write_csv("largeScaleSMD.csv")

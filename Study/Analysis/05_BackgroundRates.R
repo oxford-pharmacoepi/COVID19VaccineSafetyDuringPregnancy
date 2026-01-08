@@ -451,7 +451,7 @@ cdm$ir_postpartum_haemorrhage <- cdm$postpartum_12_weeks_denominator |>
   getTimeToEvent(washOut = 0,  outcomes = c("postpartum_haemorrhage"))
 
 ### Miscarriage
-if (any(grepl("miscarriage", settings(cdm$mae)$cohort_name))) {
+if ("miscarriage" %in% settings(cdm$mae)$cohort_name) {
   cdm$ir_miscarriage <- cdm$miscarriage_denominator |>
     addCohortIntersectDate(
       targetCohortTable = "mae",
@@ -510,7 +510,7 @@ ir_maternal_death <- estimateIncidenceRate(cdm$ir_maternal_death, strata, "mater
 ir_postpartum_endometritis <- estimateIncidenceRate(cdm$ir_postpartum_endometritis, strata, "postpartum_endometritis")
 ir_postpartum_haemorrhage <- estimateIncidenceRate(cdm$ir_postpartum_haemorrhage, strata, "postpartum_haemorrhage")
 ir_preterm_labour <- estimateIncidenceRate(cdm$ir_preterm_labour, strata, "preterm_labour")
-if (any(grepl("miscarriage", settings(cdm$mae)$cohort_name))) {
+if ("miscarriage" %in% settings(cdm$mae)$cohort_name) {
   ir_miscarriage <- estimateIncidenceRate(cdm$ir_miscarriage, strata, outcomeMiscarriage)
 } else {
   ir_miscarriage <- NULL

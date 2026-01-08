@@ -286,7 +286,9 @@ server <- function(input, output, session) {
         .data$pregnancy_start_period %in% input$summarise_characteristics_pregnancy_start_period,
         .data$ethnicity %in% input$summarise_characteristics_ethnicity,
         .data$socioeconomic_status %in% input$summarise_characteristics_socioeconomic_status,
-        .data$trimester %in% input$summarise_characteristics_trimester
+        .data$trimester %in% input$summarise_characteristics_trimester,
+        .data$nationallity %in% input$summarise_characteristics_nationallity,
+        .data$birth_continent %in% input$summarise_characteristics_birth_continent,
       )
   })
   getSummariseCharacteristicsTable <- shiny::reactive({
@@ -297,19 +299,23 @@ server <- function(input, output, session) {
       dplyr::mutate(
         variable_level = dplyr::if_else(variable_name == "Previous pregnancies", "-", variable_level),
         variable_name = factor(
-          variable_name, 
+          variable_name,
           levels = c(
-            "Number records", "Maternal age", "Maternal age group", 
+            "Number records", "Maternal age", "Maternal age group",
             "Trimester", "Season", "Previous pregnancies",
-            "Ethnicity", "Mental heatlh problems in the last year",
-            "Covariates in the past 5 years", 
+            "Ethnicity", "Birth continent", "Nationallity", 
+            'Socioeconomic status',
+            "Mental heatlh problems in the last year",
+            "Covariates in the past 5 years",
             "History of comorbidities", "Medications in the past year"
           ),
           labels = c(
-            "Number pregnancies", "Maternal age", "Maternal age group", 
+            "Number pregnancies", "Maternal age", "Maternal age group",
             "Trimester", "Season", "Previous pregnancies",
-            "Ethnicity", "Mental heatlh problems in the last year",
-            "Covariates in the past 5 years", 
+            "Ethnicity", "Birth continent", "Nationallity",
+            'Socioeconomic status',
+            "Mental heatlh problems in the last year",
+            "Covariates in the past 5 years",
             "History of comorbidities", "Medications in the past year"
           )
         ),
@@ -318,7 +324,7 @@ server <- function(input, output, session) {
           levels = c(
             "overall", "12 to 17", "18 to 34", "35 to 55", "Pre COVID-19",
             "COVID-19 main outbreak", "Post COVID-19 main outbreak",
-            paste0(1:10), "White", "Black", "Asian", "Missing", 
+            paste0(1:10), "White", "Black", "Asian", "Missing",
             paste0("Trimester ", 1:3), "Postpartum"
           )
         )
@@ -519,7 +525,7 @@ server <- function(input, output, session) {
       )
     }
   )
-  ## get incidence data
+  # incidence data  ----
   getIncidenceData <- shiny::reactive({
     data[["incidence"]] |>
       dplyr::filter(
@@ -533,6 +539,8 @@ server <- function(input, output, session) {
         .data$maternal_age_group %in% input$incidence_maternal_age_group,
         .data$pregnancy_start_period %in% input$incidence_pregnancy_start_period,
         .data$ethnicity %in% input$incidence_ethnicity,
+        .data$nationallity %in% input$incidence_nationallity,
+        .data$birth_continent %in% input$incidence_birth_continent,
         .data$socioeconomic_status %in% input$incidence_socioeconomic_status,
         .data$gestational_trimester %in% input$incidence_gestational_trimester
       ) |>
@@ -737,6 +745,8 @@ server <- function(input, output, session) {
         .data$maternal_age_group %in% input$survival_maternal_age_group,
         .data$pregnancy_start_period %in% input$survival_pregnancy_start_period,
         .data$ethnicity %in% input$survival_ethnicity,
+        .data$nationallity %in% input$survival_nationallity,
+        .data$birth_continent %in% input$survival_birth_continent,
         .data$socioeconomic_status %in% input$survival_socioeconomic_status
       )
   })

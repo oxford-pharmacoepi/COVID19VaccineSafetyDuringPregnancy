@@ -1308,7 +1308,7 @@ processGroupStrata <- function(data, groupLevel, strataLevel, weights, ci, outco
     # if (!is.null(weights) && length(weights) != 0) {
     #   data <- getWeights(data, weights[[groupLevel]][[strataLevel]])
     # }
-    data <- data |> pivotSurvivalData(outcomes)
+    # data <- data |> pivotSurvivalData(outcomes)
     results <- getIRR(data, ci = "midp", outcomes = outcomes)
     
   } else {
@@ -1371,7 +1371,7 @@ getRiskEstimate <- function(data, group, strata, outcomes, weights = NULL, ci = 
   strata <- unlist(strata)
   strata <- unique(c(strata[strata != "exposure"], "overall"))
   
-  if (!grepl("CPRD GOLD", cdmName(cdm))) {
+  if (!grepl("CPRD GOLD|SIDIAP", cdmName(cdm))) {
     # eveyrthing possible in the server in the server
     dataProcess <- data |>
       mutate(overall = "overall") |>
@@ -1759,10 +1759,10 @@ addSeason <- function(cohort) {
   cohort |>
     dplyr::mutate(
       season_yearly = dplyr::case_when(
-        clock::get_month(.data$cohort_start_date) %in% 3:5 ~ paste0("Spring ", clock::get_year(.data$cohort_start_date)),
-        clock::get_month(.data$cohort_start_date) %in% 6:8 ~ paste0("Summer ", clock::get_year(.data$cohort_start_date)),
-        clock::get_month(.data$cohort_start_date) %in% 9:11 ~ paste0("Autumn ", clock::get_year(.data$cohort_start_date)),
-        clock::get_month(.data$cohort_start_date) %in% c(12, 1:2) ~ paste0("Winter ", clock::get_year(.data$cohort_start_date))
+        clock::get_month(.data$cohort_start_date) %in% 3:5 ~ paste0("Spring ", as.character(clock::get_year(.data$cohort_start_date))),
+        clock::get_month(.data$cohort_start_date) %in% 6:8 ~ paste0("Summer ", as.character(clock::get_year(.data$cohort_start_date))),
+        clock::get_month(.data$cohort_start_date) %in% 9:11 ~ paste0("Autumn ", as.character(clock::get_year(.data$cohort_start_date))),
+        clock::get_month(.data$cohort_start_date) %in% c(12, 1:2) ~ paste0("Winter ", as.character(clock::get_year(.data$cohort_start_date)))
       ),
       season = dplyr::case_when(
         clock::get_month(.data$cohort_start_date) %in% 3:5 ~ "Spring",
@@ -2295,7 +2295,7 @@ getTimeToEvent <- function(cohort, washOut, outcomes) {
     }
   }
   cohort <- cohort |>
-    computer(name = name, temporary = FALSE, overwrite = TRUE)
+    compute(name = name, temporary = FALSE, overwrite = TRUE)
   return(cohort)
 }
 
