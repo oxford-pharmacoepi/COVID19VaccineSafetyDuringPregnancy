@@ -24,6 +24,7 @@ library(furrr)
 library(CohortSurvival)
 library(odbc)
 library(RPostgres)
+library(stringr)
 
 # Database name
 # Database names must contain the following words so database-specific code works:
