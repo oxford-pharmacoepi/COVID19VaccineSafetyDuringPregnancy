@@ -1086,7 +1086,7 @@ pivotSurvivalData <- function(data, outcomes) {
       rename_with(.fn = ~gsub("\`|\`", "", .x)) |>  
       mutate(
         variable = sql("CASE WHEN CHARINDEX('_time', outcome_name) > 0 THEN 'time' ELSE 'status' END"),
-        outcome_name = REGEXP_REPLACE(outcome_name, "_time|_status", "" )
+        outcome_name = sql("REPLACE(REPLACE(outcome_name, '_time', ''), '_status', '')")
       ) |>
       pivot_wider(names_from = "variable", values_from = "value") |>
       compute(name = "irr_temp", temporary = FALSE)
