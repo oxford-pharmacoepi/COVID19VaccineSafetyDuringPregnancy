@@ -1085,7 +1085,7 @@ pivotSurvivalData <- function(data, outcomes) {
       compute(name = "irr_temp", temporary = FALSE) |> 
       rename_with(.fn = ~gsub("\`|\`", "", .x)) |>  
       mutate(
-        variable = if_else(str_detect(outcome_name, "time"), "time", "status"),
+        variable = if_else(str_detect(outcome_name, fixed("time")), "time", "status"),
         outcome_name = REGEXP_REPLACE(outcome_name, "_time|_status", "" )
       ) |>
       pivot_wider(names_from = "variable", values_from = "value") |>
