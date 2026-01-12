@@ -7,7 +7,7 @@ toKeep <- c(
   "pregnancy_end_date", "exposed_match_id", "pregnancy_id", unique(unlist(strata)), 
   "exposure", unique(unlist(allCovariatesPS))
 ) |> unique()
-cdm$aesi_outcome <- cdm$study_population |>
+cdm$aesi_outcome <- cdm$study_population |> 
   subsetCohorts(
     cohortId = paste0("population_objective_", 1:3), 
     name = "aesi_outcome"
@@ -43,6 +43,10 @@ cdm$aesi_outcome <- cdm$study_population |>
 
 aesiOutcomes <- colnames(cdm$aesi_outcome)
 aesiOutcomes <- aesiOutcomes[!aesiOutcomes %in% toKeep & !grepl("_42", aesiOutcomes)]
+cdm$aesi_outcome <- cdm$aesi_outcome |> filterMinCellCount(minCellCount = minimum_counts, outcomes = aesiOutcomes)
+aesiOutcomes <- colnames(cdm$aesi_outcome)
+aesiOutcomes <- aesiOutcomes[!aesiOutcomes %in% toKeep & !grepl("_42", aesiOutcomes)]
+
 endDates <- c("end_42_days_or_pregnancy", "end_42_days", "end_42_days_or_pregnancy_sensitivity", "end_42_days_sensitivity")
 aesiResults <- list()
 jj <- 1
@@ -131,6 +135,7 @@ cdm$mae_outcome <- cdm$study_population |>
     nameStyle = "{cohort_name}",
     name = "mae_outcome"
   )
+
 info(logger, "  * Get IRR for MAE during pregnancy")
 outcomes <- c('antepartum_haemorrhage', 'eclampsia', 'hellp', 'dysfunctional_labour')
 cdm$mea_pregnancy <- cdm$mae_outcome  %>% 
@@ -139,6 +144,8 @@ cdm$mea_pregnancy <- cdm$mae_outcome  %>%
     pregnancy_end_sensitivity =  if_else(pregnancy_end_date < cohort_end_date_sensitivity, pregnancy_end_date, cohort_end_date_sensitivity)
   ) |>
   compute(name = "mea_pregnancy", temporary = FALSE)
+cdm$mea_pregnancy <- cdm$mea_pregnancy |> filterMinCellCount(minCellCount = minimum_counts, outcomes = outcomes)
+outcomes <- outcomes[outcomes %in% colnames(cdm$mae_pregnancy)]
 for (endDate in c("pregnancy_end", "pregnancy_end_sensitivity")) {
   maeResults[[jj]] <- estimateSurvivalRisk(
     cohort = cdm$mea_pregnancy, outcomes = outcomes, outcomeGroup = "Maternal Adverse Events",
@@ -157,6 +164,8 @@ cdm$mae_postpartum_6 <- cdm$mae_outcome %>%
     postpartum_6_weeks_sensitivity =  if_else(postpartum_6_weeks < cohort_end_date_sensitivity, postpartum_6_weeks, cohort_end_date_sensitivity)
   ) |>
   compute(name = "mae_postpartum_6", temporary = FALSE)
+cdm$mae_postpartum_6 <- cdm$mae_postpartum_6 |> filterMinCellCount(minCellCount = minimum_counts, outcomes = outcomes)
+outcomes <- outcomes[outcomes %in% colnames(cdm$mae_postpartum_6)]
 for (endDate in c("postpartum_6_weeks", "postpartum_6_weeks_sensitivity")) {
   maeResults[[jj]] <- estimateSurvivalRisk(
     cohort = cdm$mae_postpartum_6, outcomes = outcomes, outcomeGroup = "Maternal Adverse Events",
@@ -174,6 +183,7 @@ cdm$mea_postpartum_12 <- cdm$mae_outcome %>%
     postpartum_12_weeks_sensitivity =  if_else(postpartum_12_weeks < cohort_end_date_sensitivity, postpartum_12_weeks, cohort_end_date_sensitivity)
   ) |>
   compute(name = "mea_postpartum_12", temporary = FALSE)
+
 for (endDate in c("postpartum_12_weeks", "postpartum_12_weeks_sensitivity")) {
   maeResults[[jj]] <- estimateSurvivalRisk(
     cohort = cdm$mea_postpartum_12, outcomes = 'postpartum_haemorrhage', outcomeGroup = "Maternal Adverse Events",
@@ -209,6 +219,10 @@ cdm$study_population_nco <- cdm$study_population |>
     nameStyle = "{cohort_name}",
     name = "study_population_nco"
   ) 
+ncoOutcomes <- settings(cdm$nco)$cohort_name
+cdm$study_population_nco <- cdm$study_population_nco |> filterMinCellCount(minCellCount = minimum_counts, outcomes = ncoOutcomes)
+ncoOutcomes <- ncoOutcomes[ncoOutcomes %in% colnames(cdm$study_population_nco)]
+
 cdm$study_population_pco <- cdm$study_population |>
   addCohortIntersectDate(
     targetCohortTable = "covid",
@@ -228,12 +242,12 @@ cdm$study_population_pco <- cdm$study_population |>
 
 if (getNCO) {
   nco <- estimateSurvivalRisk(
-    cohort = cdm$study_population_nco, outcomes = settings(cdm$nco)$cohort_name, 
+    cohort = cdm$study_population_nco, outcomes = ncoOutcomes, 
     end = "cohort_end_date", strata = strata, group = "cohort_name", 
     weights = allCovariatesPS, outcomeGroup = "Negative Control Outcomes", ci = ci
   )
   nco_sensitivity <-   estimateSurvivalRisk(
-    cohort = cdm$study_population_nco, outcomes = settings(cdm$nco)$cohort_name, 
+    cohort = cdm$study_population_nco, outcomes = ncoOutcomes, 
     end = "cohort_end_date_sensitivity", strata = strata, group = "cohort_name", 
     weights = allCovariatesPS, outcomeGroup = "Negative Control Outcomes", ci = ci
   )

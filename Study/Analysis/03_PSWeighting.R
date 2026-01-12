@@ -51,9 +51,9 @@ for (nm in cohortNames) {
         
         ## Propensity Score
         psData <- lassoData |>
-          select(any_of(c(
+          select(all_of(c(
             "subject_id", "unique_id", "exposure", allCovariatesPS[[nm]][[stLevel]]
-          )))|>
+          ))) |>
           mutate(exposure = factor(exposure, levels = c("comparator", "exposed")))
         
         glmResult <- glm(exposure ~ ., data = psData |> select(-c("unique_id", "subject_id")), family = binomial(link = "logit"))
@@ -61,7 +61,7 @@ for (nm in cohortNames) {
         ps <- bind_rows(
           ps, 
           psData |>
-            select(any_of(c(
+            select(all_of(c(
               "subject_id", "unique_id", "exposure", allCovariatesPS[[nm]][[stLevel]]
             ))) |>
             bind_cols(
@@ -92,7 +92,7 @@ for (nm in cohortNames) {
         rm(glmResult)
         
       } else {
-        allCovariatesPS[[nm]][[stLevel]] <- covariatesPS[[nm]][[stLevel]]
+        allCovariatesPS[[nm]][[stLevel]] <- NULL
       }
     }
   }
@@ -106,11 +106,9 @@ save(allCovariatesPS, file = here::here(output_folder, "lasso.RData"))
 cdm$study_population <- cdm$study_population |>
   left_join(
     cdm$features |> 
-      select(any_of(c(
+      select(all_of(c(
         "cohort_definition_id", "subject_id", "cohort_start_date", "exposure", 
-        "pregnancy_id", "exposed_matched_id", "pregnancy_start_date",
-        "pregnancy_end_date", "observation_start", "exit_reason",
-        unique(unlist(allCovariatesPS))
+        "pregnancy_id", "exposed_match_id", unique(unlist(allCovariatesPS))
       ))) |> 
       distinct()
   ) |> 
@@ -175,7 +173,7 @@ ps |>
   ) |>
   exportSummarisedResult(fileName = paste0("ps_values_", cdmName(cdm)), path = output_folder)
 
-# Characterise ---- 
+# # Characterise ---- 
 info(logger, "- Baseline characteristics (weighted)")
 strata <- selectStrata(cdm, strata = c("vaccine_brand", "gestational_trimester", "age_group"))
 
@@ -186,7 +184,7 @@ baseline_characteristics <- getBaselineCharacteristics(cdm, strata, weights = al
 info(logger, "- Large Scale characteristics (weighted)")
 large_scale_characteristics <- getLargeScaleCharacteristics(cdm, strata, weights = allCovariatesPS)
 
-## censoring 
+## censoring
 info(logger, "- Censoring summary (weighted)")
 censoring <- summariseCohortExit(cdm = cdm, strata = strata, weights = allCovariatesPS)
 

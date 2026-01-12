@@ -2781,3 +2781,18 @@ cohortCodeUseFromCohort <- function(cohort) {
   }
   return(summaryCodeUse)
 }
+
+filterMinCellCount <- function(cohort, minCellCount, outcomes) {
+  name <- omopgenerics::tableName(cohort)
+  outExclude <- NULL
+  for (out in outcomes) {
+    nEventsExposed <- sum(!is.na(cohort |> dplyr::filter(exposure == "exposed") |> dplyr::pull(.data[[out]])), na.rm = TRUE) 
+    nEventsComparator <- sum(!is.na(cohort |> dplyr::filter(exposure == "comparator") |> dplyr::pull(.data[[out]])), na.rm = TRUE) 
+    if (nEventsExposed < minCellCount | nEventsComparator < minCellCount) {
+      outExclude <- c(outExclude, out)
+    }
+  }
+  cohort |>
+    dplyr::select(!dplyr::any_of(outExclude)) |>
+    dplyr::compute(name = name, temporary = FALSE, overwrite = TRUE)
+}
