@@ -1250,7 +1250,7 @@ processGroupStrata <- function(data, groupLevel, strataLevel, weights, ci, outco
   if (ci == "bootstrap") {
     # bootstrap
     coefBootstrap <- tibble()
-    nboot <- 1
+    nboot <- 200
     n <- as.integer(pull(tally(data)))
     
     for (ii in seq_len(nboot)) {
