@@ -1106,11 +1106,10 @@ pivotSurvivalData <- function(data, outcomes) {
 }
 
 getIRR <- function(x, ci, outcomes) {
-
+  
   summary_tbl <- bind_rows(
     # weighted summary
     x |>
-      collect() |>
       group_by(outcome_name, exposure) |>
       summarise(
         person_days = sum(as.numeric(time) * coalesce(.data$weight, 1), na.rm = TRUE),
@@ -1139,7 +1138,6 @@ getIRR <- function(x, ci, outcomes) {
         weighting = "FALSE",
         .groups = "drop"
       ) |>
-      collect() |>
       mutate(subject_count = as.numeric(subject_count))
   )
   
@@ -1206,7 +1204,7 @@ getWeights <- function(x, coefs) {
   # drop constant columns
   columns <- sapply(lapply(psData, unique), length)
   columns <- names(columns)[columns <= 1]
-  
+
   glm_data <- psData |> select(any_of(coefs)) |> select(!any_of(columns))
   glmResult <- glm(exposure ~ ., data = glm_data, family = binomial(link = "logit"))
   
@@ -1227,8 +1225,7 @@ getWeights <- function(x, coefs) {
 processGroupStrata <- function(data, groupLevel, strataLevel, weights, ci, outcomes) {
   data <- data |> ungroup()
   
-  # Basic safety checks
-  if (pull(tally(data)) <= 20) {
+  if (pull(tally(data)) <= 10) {
     return(tibble(
       variable_level = character(),
       estimate_type = character(),
@@ -1242,73 +1239,46 @@ processGroupStrata <- function(data, groupLevel, strataLevel, weights, ci, outco
   
   set.seed(123)
   
-  # main estimate on original data
-  # if (!is.null(weights) && length(weights) != 0) {
-  if ("tbl_sql" %in% class(data)) {
-    dataCol <- data |> collect()
-    dataCol <- getWeights(dataCol, weights[[groupLevel]][[strataLevel]])
-    cdm <- omopgenerics::cdmReference(data)
-    cdm <- omopgenerics::insertTable(cdm = cdm, name = "irr_temp", table = dataCol)
-    rm(dataCol)
-    data <- cdm$irr_temp |> pivotSurvivalData(outcomes)
-  } else {
-    data <- getWeights(data, weights[[groupLevel]][[strataLevel]])
-    data <- data |> pivotSurvivalData(outcomes)
-  }
-  # }
+  # PS
+  data <- getWeights(data, weights[[groupLevel]][[strataLevel]]) |>
+    select(all_of(c(
+      "subject_id", "start_date", "exposed_match_id", "exposure", "weight",
+      paste0(outcomes, "_status"), paste0(outcomes, "_time")
+    )))
+  data <- data |> pivotSurvivalData(outcomes)
   
   if (ci == "bootstrap") {
-    # bootstrap across the whole nested data
+    # bootstrap
     coefBootstrap <- tibble()
-    nboot <- 200
+    nboot <- 1
     n <- as.integer(pull(tally(data)))
     
-    data <- data |>
-      mutate(
-        unique_id = paste0(as.character(cohort_definition_id), as.character(subject_id), as.character(start_date), as.character(exposed_match_id), as.character(pregnancy_id), as.character(exposure))
-      ) |>
-      compute(name = 'irr_temp', temporary = FALSE)
-    uniqueId <- data |> select(unique_id) |> collect()
-    
     for (ii in seq_len(nboot)) {
-      if ("tbl_sql" %in% class(data)) {
-        uniqueId.ii <- uniqueId |> slice_sample(n = n, replace = TRUE)
-        cdm <- omopgenerics::insertTable(cdm = cdm, name = "sample_data_ii", table = uniqueId.ii)
-        data.ii <- cdm$sample_data_ii |>
-          left_join(data, by = "unique_id") |>
-          compute(name = "sample_data_ii", temporary = FALSE)
-      } else {
-        data.ii <- data |> slice_sample(n = n, replace = TRUE)
-      }
+      data.ii <- data |> slice_sample(n = n, replace = TRUE)
       irr_tbl <- getIRR(data.ii, ci = NULL, outcomes = outcomes) |> mutate(bootstrap = ii)
       coefBootstrap <- bind_rows(coefBootstrap, irr_tbl)
     }
     
-    # Compute bootstrap percentiles grouped by outcome_name & weighting
-    ci_tbl <- coefBootstrap |>
-      group_by(outcome_name, weighting) |>
-      summarise(
-        lower_ci = quantile(coef, 0.025, na.rm = TRUE),
-        upper_ci = quantile(coef, 0.975, na.rm = TRUE),
-        .groups = "drop"
-      )
-    rm(coefBootstrap)
-    
-    # # main estimate on original data
-    # if (!is.null(weights) && length(weights) != 0) {
-    #   data <- getWeights(data, weights[[groupLevel]][[strataLevel]])
-    # }
+    # Main estimate
     main_est <- getIRR(data, ci = NULL, outcomes = outcomes)
     
+    # CI
     results <- main_est |>
       select(!c("lower_ci", "upper_ci")) |>
-      left_join(ci_tbl, by = c("outcome_name", "weighting"))
+      left_join(
+        coefBootstrap |>
+          group_by(outcome_name, weighting) |>
+          summarise(
+            lower_ci = quantile(coef, 0.025, na.rm = TRUE),
+            upper_ci = quantile(coef, 0.975, na.rm = TRUE),
+            .groups = "drop"
+          ), 
+        by = c("outcome_name", "weighting")
+      )
+    
+    rm(coefBootstrap, data.ii)
     
   } else if (ci == "midp") {
-    # if (!is.null(weights) && length(weights) != 0) {
-    #   data <- getWeights(data, weights[[groupLevel]][[strataLevel]])
-    # }
-    # data <- data |> pivotSurvivalData(outcomes)
     results <- getIRR(data, ci = "midp", outcomes = outcomes)
     
   } else {
@@ -1355,6 +1325,7 @@ processGroupStrata <- function(data, groupLevel, strataLevel, weights, ci, outco
 }
 
 getRiskEstimate <- function(data, group, strata, outcomes, weights = NULL, ci = "midp") {
+  
   # proceed only if we have reasonable size
   if (data |> tally() |> pull() <= 10) {
     return(tibble(
@@ -1371,68 +1342,38 @@ getRiskEstimate <- function(data, group, strata, outcomes, weights = NULL, ci = 
   strata <- unlist(strata)
   strata <- unique(c(strata[strata != "exposure"], "overall"))
   
-  if (!grepl("CPRD GOLD|SIDIAP", cdmName(cdm))) {
-    # eveyrthing possible in the server in the server
-    dataProcess <- data |>
-      mutate(overall = "overall") |>
-      compute()
-    
-    for (nm in unique(dataProcess |> pull(cohort_name))) {
-      for (strataName in strata) {
-        strataLevels <- unique(dataProcess |> pull(.data[[strataName]]))
-        for (strataLevel in strataLevels) {
-          dataProcess |>
-            filter(.data[[strataName]] == .env$strataLevel) |>
-            processGroupStrata(
-              groupLevel = nm,
-              strataLevel = strataLevel,
-              outcomes = outcomes,
-              weights = weights,
-              ci = ci
-            )
-        }
+  name <- tableName(data)
+  data <- data |>
+    mutate(overall = "overall") |>
+    compute(name = name, temporary = FALSE, overview = TRUE)
+  
+  results <- list()
+  
+  for (nm in unique(data |> pull(cohort_name))) {
+    for (strataName in strata) {
+      strataLevels <- unique(data |> pull(.data[[strataName]]))
+      for (strataLevel in strataLevels) {
+        results[[strataLevel]] <- data |>
+          filter(.data$cohort_name == .env$nm, .data[[strataName]] == .env$strataLevel) |> 
+          collect() |>
+          processGroupStrata(
+            groupLevel = nm,
+            strataLevel = strataLevel,
+            outcomes = outcomes,
+            weights = weights,
+            ci = ci
+          ) |>
+          mutate(
+            group_name = "cohort_name",
+            group_level = nm,
+            strata_name = strataName,
+            strata_level = strataLevel
+          )
       }
     }
-    
-  } else {
-    # all local
-    nestedData <- data |>
-      mutate(overall = "overall") |>
-      tidyr::pivot_longer(
-        cols = all_of(strata),
-        names_to = "strata_name",
-        values_to = "strata_level"
-      ) |>
-      rename_with(~ gsub("`", "", .x)) |>
-      group_by(
-        group_name = group,               
-        group_level = .data[[group]],
-        strata_name,
-        strata_level
-      ) |>
-      collect() |>
-      nest()
-    
-    results <- nestedData |>
-      mutate(
-        results = purrr::pmap(
-          .l = list(data, group_level, strata_level),
-          .f = function(data, groupLevel, strataLevel) {
-            processGroupStrata(
-              data = data,
-              groupLevel = groupLevel,
-              strataLevel = strataLevel,
-              outcomes = outcomes,
-              weights = weights,
-              ci = ci
-            )
-          }
-        )
-      ) |>
-      select(-data) |>
-      unnest(results)
   }
   
+  results <- results |> bind_rows()
   
   return(results)
 }
@@ -2795,4 +2736,19 @@ filterMinCellCount <- function(cohort, minCellCount, outcomes) {
   cohort |>
     dplyr::select(!dplyr::any_of(outExclude)) |>
     dplyr::compute(name = name, temporary = FALSE, overwrite = TRUE)
+}
+
+addLowCountOutcomes <- function(x, outcomes) {
+  shell <- x |>
+    omopgenerics::filterAdditional(outcome_name == outcomes[1]) |>
+    splitAdditional() 
+  set <- settings(x)
+  for (out in outcomes[2:length(outcomes)]) {
+    x <- x |> 
+      bind_rows(
+        shell |> mutate(outcome_name = .env$out) |> uniteAdditional(cols = additionalColumns(x))
+      )
+  }
+  
+  x |> newSummarisedResult(settings = set)
 }
