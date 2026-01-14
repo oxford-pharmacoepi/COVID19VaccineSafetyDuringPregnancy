@@ -1353,7 +1353,7 @@ getRiskEstimate <- function(data, group, strata, outcomes, weights = NULL, ci = 
     for (strataName in strata) {
       strataLevels <- unique(data |> pull(.data[[strataName]]))
       for (strataLevel in strataLevels) {
-        results[[strataLevel]] <- data |>
+        results[[paste0(nm, "_", strataLevel)]] <- data |>
           filter(.data$cohort_name == .env$nm, .data[[strataName]] == .env$strataLevel) |> 
           collect() |>
           processGroupStrata(
