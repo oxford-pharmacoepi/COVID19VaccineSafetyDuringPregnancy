@@ -1,4 +1,163 @@
 cdm_name,cohort_name,strata_name,strata_level,concept_name,window,identifier,smd,asmd
+SIDIAP,population_objective_1,vaccine_brand,moderna,"Influenza, split virus, trivalent, injectable, contains preservative",-180 to -31,40213153_m180_m31,-0.110623011232505,0.110623011232505
+SIDIAP,population_objective_2,vaccine_brand,moderna,"SARS-COV-2 (COVID-19) vaccine, vector - Ad26 100000000000 UNT/ML Injectable Suspension",-30 to -1,739906_m30_m1,0.176896785927972,0.176896785927972
+SIDIAP,population_objective_3,vaccine_brand,moderna,"SARS-CoV-2 (COVID-19) vaccine, mRNA-1273 0.2 MG/ML Injectable Suspension",-180 to -31,37003518_m180_m31,0.175520999896963,0.175520999896963
+SIDIAP,population_objective_3,vaccine_brand,pfizer,enoxaparin sodium 100 MG/ML Prefilled Syringe,-180 to -31,42902906_m180_m31,0.126445868486517,0.126445868486517
+SIDIAP,population_objective_3,vaccine_brand,pfizer,"Influenza, split virus, trivalent, injectable, contains preservative",-180 to -31,40213153_m180_m31,-0.13549737357989,0.13549737357989
+SIDIAP,population_objective_3,vaccine_brand,pfizer,COVID-19,-180 to -31,37311061_m180_m31,0.207721049932418,0.207721049932418
+SIDIAP,population_miscarriage_objective_2,vaccine_brand,moderna,acetaminophen 1000 MG Oral Tablet,-30 to -1,19107244_m30_m1,0.11405323930279,0.11405323930279
+SIDIAP,population_miscarriage_objective_2,vaccine_brand,moderna,folic acid 5 MG Oral Tablet,-30 to -1,1387453_m30_m1,0.111816358961902,0.111816358961902
+SIDIAP,population_miscarriage_objective_2,vaccine_brand,moderna,ethinyl estradiol 0.02 MG / levonorgestrel 0.1 MG Oral Tablet,-180 to -31,1549801_m180_m31,0.121856953403908,0.121856953403908
+SIDIAP,population_miscarriage_objective_3,vaccine_brand,moderna,"Influenza, split virus, trivalent, injectable, contains preservative",-180 to -31,40213153_m180_m31,-0.165479379003792,0.165479379003792
+SIDIAP,population_miscarriage_objective_3,vaccine_brand,moderna,"SARS-CoV-2 (COVID-19) vaccine, mRNA-1273 0.2 MG/ML Injectable Suspension",-180 to -31,37003518_m180_m31,0.141218660439644,0.141218660439644
+SIDIAP,population_miscarriage_objective_3,vaccine_brand,moderna,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.1 MG/ML Injectable Suspension",-180 to -31,37003436_m180_m31,0.314433414494866,0.314433414494866
+SIDIAP,population_miscarriage_objective_3,vaccine_brand,pfizer,"Influenza, split virus, trivalent, injectable, contains preservative",-30 to -1,40213153_m30_m1,-0.147333116927931,0.147333116927931
+SIDIAP,population_miscarriage_objective_3,vaccine_brand,pfizer,"Influenza, split virus, trivalent, injectable, contains preservative",-180 to -31,40213153_m180_m31,-0.156672177977978,0.156672177977978
+SIDIAP,population_miscarriage_objective_3,vaccine_brand,pfizer,COVID-19,-180 to -31,37311061_m180_m31,0.116147682013459,0.116147682013459
+SIDIAP,population_preterm_labour_objective_1,vaccine_brand,moderna,"Influenza, split virus, trivalent, injectable, contains preservative",-180 to -31,40213153_m180_m31,-0.114375032453408,0.114375032453408
+SIDIAP,population_preterm_labour_objective_2,vaccine_brand,moderna,"SARS-COV-2 (COVID-19) vaccine, vector - Ad26 100000000000 UNT/ML Injectable Suspension",-30 to -1,739906_m30_m1,0.184346035791267,0.184346035791267
+SIDIAP,population_preterm_labour_objective_2,vaccine_brand,moderna,folic acid 5 MG Oral Tablet,-30 to -1,1387453_m30_m1,0.101442014944349,0.101442014944349
+SIDIAP,population_preterm_labour_objective_2,vaccine_brand,moderna,ethinyl estradiol 0.02 MG / levonorgestrel 0.1 MG Oral Tablet,-180 to -31,1549801_m180_m31,0.102738364648338,0.102738364648338
+SIDIAP,population_preterm_labour_objective_2,vaccine_brand,moderna,COVID-19,-180 to -31,37311061_m180_m31,0.199085325395095,0.199085325395095
+SIDIAP,population_preterm_labour_objective_3,vaccine_brand,moderna,"SARS-CoV-2 (COVID-19) vaccine, mRNA-1273 0.2 MG/ML Injectable Suspension",-180 to -31,37003518_m180_m31,0.176770024251038,0.176770024251038
+SIDIAP,population_preterm_labour_objective_3,vaccine_brand,pfizer,enoxaparin sodium 100 MG/ML Prefilled Syringe,-180 to -31,42902906_m180_m31,0.131590382284391,0.131590382284391
+SIDIAP,population_preterm_labour_objective_3,vaccine_brand,pfizer,"Influenza, split virus, trivalent, injectable, contains preservative",-180 to -31,40213153_m180_m31,-0.13396178311769,0.13396178311769
+SIDIAP,population_preterm_labour_objective_3,vaccine_brand,pfizer,COVID-19,-180 to -31,37311061_m180_m31,0.204692813933394,0.204692813933394
+SIDIAP,population_objective_1,vaccine_brand,moderna,region,CATALUNYA CENTRAL,overall_CATALUNYA CENTRAL,0.123901649859385,0.123901649859385
+SIDIAP,population_objective_3,vaccine_brand,pfizer,region,METROPOLITANA SUD,overall_METROPOLITANA SUD,0.100986161963416,0.100986161963416
+SIDIAP,population_miscarriage_objective_1,vaccine_brand,moderna,region,CATALUNYA CENTRAL,overall_CATALUNYA CENTRAL,0.113800311515972,0.113800311515972
+SIDIAP,population_preterm_labour_objective_1,vaccine_brand,moderna,region,CATALUNYA CENTRAL,overall_CATALUNYA CENTRAL,0.130139838519685,0.130139838519685
+SIDIAP,population_objective_2,gestational_trimester,T2,"SARS-CoV-2 (COVID-19) vaccine, mRNA-1273 0.2 MG/ML Injectable Suspension",-180 to -31,37003518_m180_m31,-0.109856481200484,0.109856481200484
+SIDIAP,population_objective_2,gestational_trimester,T2,COVID-19,-180 to -31,37311061_m180_m31,0.167399069093747,0.167399069093747
+SIDIAP,population_objective_3,gestational_trimester,T2,"Influenza, split virus, trivalent, injectable, contains preservative",-30 to -1,40213153_m30_m1,-0.170341042947613,0.170341042947613
+SIDIAP,population_objective_3,gestational_trimester,T2,COVID-19,-180 to -31,37311061_m180_m31,0.163913132608234,0.163913132608234
+SIDIAP,population_objective_3,gestational_trimester,T2,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.1 MG/ML Injectable Suspension",-180 to -31,37003436_m180_m31,0.149118599991416,0.149118599991416
+SIDIAP,population_objective_3,gestational_trimester,T3,ferrous sulfate 105 MG Extended Release Oral Tablet,-30 to -1,1396237_m30_m1,-0.100743056928621,0.100743056928621
+SIDIAP,population_objective_3,gestational_trimester,T3,enoxaparin sodium 100 MG/ML Prefilled Syringe,-180 to -31,42902906_m180_m31,0.198635200825063,0.198635200825063
+SIDIAP,population_objective_3,gestational_trimester,T3,"Influenza, split virus, trivalent, injectable, contains preservative",-180 to -31,40213153_m180_m31,-0.198931385183277,0.198931385183277
+SIDIAP,population_objective_3,gestational_trimester,T3,fosfomycin 3000 MG Granules for Oral Solution,-30 to -1,19132594_m30_m1,0.12188747818125,0.12188747818125
+SIDIAP,population_objective_3,gestational_trimester,T3,COVID-19,-180 to -31,37311061_m180_m31,0.238042750900783,0.238042750900783
+SIDIAP,population_objective_3,gestational_trimester,T3,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.1 MG/ML Injectable Suspension",-180 to -31,37003436_m180_m31,0.178261767984552,0.178261767984552
+SIDIAP,population_objective_3,gestational_trimester,T1,diazepam 5 MG Oral Tablet,-180 to -31,723042_m180_m31,0.13935170343868,0.13935170343868
+SIDIAP,population_objective_3,gestational_trimester,T1,"Influenza, split virus, trivalent, injectable, contains preservative",-30 to -1,40213153_m30_m1,-0.149545766336773,0.149545766336773
+SIDIAP,population_objective_3,gestational_trimester,T1,"Influenza, split virus, trivalent, injectable, contains preservative",-180 to -31,40213153_m180_m31,-0.12882767183758,0.12882767183758
+SIDIAP,population_objective_3,gestational_trimester,T1,Dental caries,-180 to -31,133228_m180_m31,0.12010236164056701,0.12010236164056701
+SIDIAP,population_objective_3,gestational_trimester,T1,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.1 MG/ML Injectable Suspension",-180 to -31,37003436_m180_m31,0.26833568036085,0.26833568036085
+SIDIAP,population_miscarriage_objective_2,gestational_trimester,T2,ferrous sulfate 80 MG,-180 to -31,19109921_m180_m31,0.128974378885421,0.128974378885421
+SIDIAP,population_miscarriage_objective_2,gestational_trimester,T2,"SARS-CoV-2 (COVID-19) vaccine, mRNA-1273 0.2 MG/ML Injectable Suspension",-180 to -31,37003518_m180_m31,-0.124611987736506,0.124611987736506
+SIDIAP,population_miscarriage_objective_2,gestational_trimester,T1,"SARS-COV-2 (COVID-19) vaccine, vector - Ad26 100000000000 UNT/ML Injectable Suspension",-180 to -31,739906_m180_m31,0.16381107419528,0.16381107419528
+SIDIAP,population_miscarriage_objective_3,gestational_trimester,T2,"Influenza, split virus, trivalent, injectable, contains preservative",-30 to -1,40213153_m30_m1,-0.11111255836197,0.11111255836197
+SIDIAP,population_miscarriage_objective_3,gestational_trimester,T2,"Influenza, split virus, trivalent, injectable, contains preservative",-180 to -31,40213153_m180_m31,-0.187802858270364,0.187802858270364
+SIDIAP,population_miscarriage_objective_3,gestational_trimester,T2,Mild hyperemesis gravidarum,-180 to -31,436166_m180_m31,0.102857583541837,0.102857583541837
+SIDIAP,population_miscarriage_objective_3,gestational_trimester,T2,COVID-19,-180 to -31,37311061_m180_m31,0.161064359774149,0.161064359774149
+SIDIAP,population_miscarriage_objective_3,gestational_trimester,T2,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.1 MG/ML Injectable Suspension",-180 to -31,37003436_m180_m31,0.117131156447473,0.117131156447473
+SIDIAP,population_miscarriage_objective_3,gestational_trimester,T1,diazepam 5 MG Oral Tablet,-180 to -31,723042_m180_m31,0.134085733214858,0.134085733214858
+SIDIAP,population_miscarriage_objective_3,gestational_trimester,T1,"Influenza, split virus, trivalent, injectable, contains preservative",-30 to -1,40213153_m30_m1,-0.147871056475943,0.147871056475943
+SIDIAP,population_miscarriage_objective_3,gestational_trimester,T1,"Influenza, split virus, trivalent, injectable, contains preservative",-180 to -31,40213153_m180_m31,-0.117773070351619,0.117773070351619
+SIDIAP,population_miscarriage_objective_3,gestational_trimester,T1,"SARS-CoV-2 (COVID-19) vaccine, mRNA-1273 0.2 MG/ML Injectable Suspension",-180 to -31,37003518_m180_m31,0.156311153733493,0.156311153733493
+SIDIAP,population_miscarriage_objective_3,gestational_trimester,T1,COVID-19,-180 to -31,37311061_m180_m31,0.100482677302939,0.100482677302939
+SIDIAP,population_preterm_labour_objective_2,gestational_trimester,T2,"SARS-CoV-2 (COVID-19) vaccine, mRNA-1273 0.2 MG/ML Injectable Suspension",-180 to -31,37003518_m180_m31,-0.109856481200474,0.109856481200474
+SIDIAP,population_preterm_labour_objective_2,gestational_trimester,T2,COVID-19,-180 to -31,37311061_m180_m31,0.167399069093747,0.167399069093747
+SIDIAP,population_preterm_labour_objective_2,gestational_trimester,T1,COVID-19,-180 to -31,37311061_m180_m31,0.189332828447886,0.189332828447886
+SIDIAP,population_preterm_labour_objective_2,gestational_trimester,T1,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.1 MG/ML Injectable Suspension",-180 to -31,37003436_m180_m31,-0.156768905945313,0.156768905945313
+SIDIAP,population_preterm_labour_objective_3,gestational_trimester,T2,"Influenza, split virus, trivalent, injectable, contains preservative",-30 to -1,40213153_m30_m1,-0.170341042947614,0.170341042947614
+SIDIAP,population_preterm_labour_objective_3,gestational_trimester,T2,COVID-19,-180 to -31,37311061_m180_m31,0.163913132608233,0.163913132608233
+SIDIAP,population_preterm_labour_objective_3,gestational_trimester,T2,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.1 MG/ML Injectable Suspension",-180 to -31,37003436_m180_m31,0.149118599991419,0.149118599991419
+SIDIAP,population_preterm_labour_objective_3,gestational_trimester,T3,ferrous sulfate 105 MG Extended Release Oral Tablet,-30 to -1,1396237_m30_m1,-0.107405406541422,0.107405406541422
+SIDIAP,population_preterm_labour_objective_3,gestational_trimester,T3,enoxaparin sodium 100 MG/ML Prefilled Syringe,-180 to -31,42902906_m180_m31,0.214047792046948,0.214047792046948
+SIDIAP,population_preterm_labour_objective_3,gestational_trimester,T3,"Influenza, split virus, trivalent, injectable, contains preservative",-180 to -31,40213153_m180_m31,-0.195646034868719,0.195646034868719
+SIDIAP,population_preterm_labour_objective_3,gestational_trimester,T3,fosfomycin 3000 MG Granules for Oral Solution,-30 to -1,19132594_m30_m1,0.128500837015154,0.128500837015154
+SIDIAP,population_preterm_labour_objective_3,gestational_trimester,T3,COVID-19,-180 to -31,37311061_m180_m31,0.238115965024962,0.238115965024962
+SIDIAP,population_preterm_labour_objective_3,gestational_trimester,T3,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.1 MG/ML Injectable Suspension",-180 to -31,37003436_m180_m31,0.174718724786254,0.174718724786254
+SIDIAP,population_preterm_labour_objective_3,gestational_trimester,T1,diazepam 5 MG Oral Tablet,-180 to -31,723042_m180_m31,0.13935170343868,0.13935170343868
+SIDIAP,population_preterm_labour_objective_3,gestational_trimester,T1,"Influenza, split virus, trivalent, injectable, contains preservative",-30 to -1,40213153_m30_m1,-0.149545766336773,0.149545766336773
+SIDIAP,population_preterm_labour_objective_3,gestational_trimester,T1,"Influenza, split virus, trivalent, injectable, contains preservative",-180 to -31,40213153_m180_m31,-0.12882767183758,0.12882767183758
+SIDIAP,population_preterm_labour_objective_3,gestational_trimester,T1,Dental caries,-180 to -31,133228_m180_m31,0.12010236164056701,0.12010236164056701
+SIDIAP,population_preterm_labour_objective_3,gestational_trimester,T1,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.1 MG/ML Injectable Suspension",-180 to -31,37003436_m180_m31,0.268335680360847,0.268335680360847
+SIDIAP,population_objective_3,gestational_trimester,T3,region,METROPOLITANA NORD,overall_METROPOLITANA NORD,-0.133441158406279,0.133441158406279
+SIDIAP,population_miscarriage_objective_3,gestational_trimester,T2,region,TARRAGONA,overall_TARRAGONA,0.102716578519774,0.102716578519774
+SIDIAP,population_preterm_labour_objective_3,gestational_trimester,T3,region,METROPOLITANA NORD,overall_METROPOLITANA NORD,-0.135480085928154,0.135480085928154
+SIDIAP,population_objective_1,age_group,12 to 17,Birth,-180 to -31,4216316_m180_m31,0.145310249211131,0.145310249211131
+SIDIAP,population_objective_3,age_group,18 to 34,enoxaparin sodium 100 MG/ML Prefilled Syringe,-180 to -31,42902906_m180_m31,0.101010047774843,0.101010047774843
+SIDIAP,population_objective_3,age_group,18 to 34,"Influenza, split virus, trivalent, injectable, contains preservative",-180 to -31,40213153_m180_m31,-0.171943153182535,0.171943153182535
+SIDIAP,population_objective_3,age_group,18 to 34,COVID-19,-180 to -31,37311061_m180_m31,0.144301361246872,0.144301361246872
+SIDIAP,population_objective_3,age_group,18 to 34,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.1 MG/ML Injectable Suspension",-180 to -31,37003436_m180_m31,0.223087922686445,0.223087922686445
+SIDIAP,population_objective_3,age_group,35 to 55,"Influenza, split virus, trivalent, injectable, contains preservative",-30 to -1,40213153_m30_m1,-0.137117385894093,0.137117385894093
+SIDIAP,population_objective_3,age_group,35 to 55,COVID-19,-180 to -31,37311061_m180_m31,0.157588814180356,0.157588814180356
+SIDIAP,population_miscarriage_objective_1,age_group,35 to 55,chorionic gonadotropin Prefilled Syringe,-180 to -31,40140967_m180_m31,0.110746194137732,0.110746194137732
+SIDIAP,population_miscarriage_objective_1,age_group,35 to 55,progesterone 100 MG Oral Capsule,-30 to -1,19067291_m30_m1,0.101289347817838,0.101289347817838
+SIDIAP,population_miscarriage_objective_1,age_group,12 to 17,Birth,-180 to -31,4216316_m180_m31,0.270984130210788,0.270984130210788
+SIDIAP,population_miscarriage_objective_2,age_group,35 to 55,"SARS-COV-2 (COVID-19) vaccine, vector - Ad26 100000000000 UNT/ML Injectable Suspension",-30 to -1,739906_m30_m1,0.257754445600131,0.257754445600131
+SIDIAP,population_miscarriage_objective_2,age_group,35 to 55,"SARS-COV-2 (COVID-19) vaccine, vector - Ad26 100000000000 UNT/ML Injectable Suspension",-180 to -31,739906_m180_m31,0.156757617992919,0.156757617992919
+SIDIAP,population_miscarriage_objective_2,age_group,35 to 55,fosfomycin 3000 MG Granules for Oral Solution,-180 to -31,19132594_m180_m31,0.123145837601599,0.123145837601599
+SIDIAP,population_miscarriage_objective_2,age_group,35 to 55,"SARS-CoV-2 (COVID-19) vaccine, mRNA-1273 0.2 MG/ML Injectable Suspension",-180 to -31,37003518_m180_m31,-0.119144056011623,0.119144056011623
+SIDIAP,population_miscarriage_objective_2,age_group,35 to 55,sertraline 50 MG Oral Tablet,-180 to -31,739209_m180_m31,0.114471276697274,0.114471276697274
+SIDIAP,population_miscarriage_objective_2,age_group,35 to 55,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.1 MG/ML Injectable Suspension",-180 to -31,37003436_m180_m31,-0.126468553906783,0.126468553906783
+SIDIAP,population_miscarriage_objective_3,age_group,18 to 34,"Influenza, split virus, trivalent, injectable, contains preservative",-180 to -31,40213153_m180_m31,-0.139910047244971,0.139910047244971
+SIDIAP,population_miscarriage_objective_3,age_group,18 to 34,amoxicillin 500 MG / clavulanate 125 MG Oral Tablet,-180 to -31,1713694_m180_m31,0.102796861920587,0.102796861920587
+SIDIAP,population_miscarriage_objective_3,age_group,18 to 34,COVID-19,-180 to -31,37311061_m180_m31,0.104567276110047,0.104567276110047
+SIDIAP,population_miscarriage_objective_3,age_group,18 to 34,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.1 MG/ML Injectable Suspension",-180 to -31,37003436_m180_m31,0.24525288454955,0.24525288454955
+SIDIAP,population_preterm_labour_objective_1,age_group,12 to 17,Birth,-180 to -31,4216316_m180_m31,0.156733607064137,0.156733607064137
+SIDIAP,population_preterm_labour_objective_3,age_group,18 to 34,"Influenza, split virus, trivalent, injectable, contains preservative",-30 to -1,40213153_m30_m1,-0.113368112295971,0.113368112295971
+SIDIAP,population_preterm_labour_objective_3,age_group,18 to 34,enoxaparin sodium 100 MG/ML Prefilled Syringe,-180 to -31,42902906_m180_m31,0.117335439141734,0.117335439141734
+SIDIAP,population_preterm_labour_objective_3,age_group,18 to 34,"SARS-CoV-2 (COVID-19) vaccine, mRNA-1273 0.2 MG/ML Injectable Suspension",-180 to -31,37003518_m180_m31,0.11294963091356,0.11294963091356
+SIDIAP,population_preterm_labour_objective_3,age_group,18 to 34,COVID-19,-180 to -31,37311061_m180_m31,0.154989332382611,0.154989332382611
+SIDIAP,population_preterm_labour_objective_3,age_group,35 to 55,"Influenza, split virus, trivalent, injectable, contains preservative",-30 to -1,40213153_m30_m1,-0.111749112868642,0.111749112868642
+SIDIAP,population_preterm_labour_objective_3,age_group,35 to 55,"Influenza, split virus, trivalent, injectable, contains preservative",-180 to -31,40213153_m180_m31,-0.189268829551624,0.189268829551624
+SIDIAP,population_preterm_labour_objective_3,age_group,35 to 55,COVID-19,-180 to -31,37311061_m180_m31,0.159858027216601,0.159858027216601
+SIDIAP,population_objective_1,age_group,12 to 17,region,METROPOLITANA NORD,overall_METROPOLITANA NORD,-0.367099826343909,0.367099826343909
+SIDIAP,population_miscarriage_objective_2,age_group,35 to 55,region,TARRAGONA,overall_TARRAGONA,-0.111596923722268,0.111596923722268
+SIDIAP,population_preterm_labour_objective_1,age_group,12 to 17,region,METROPOLITANA NORD,overall_METROPOLITANA NORD,-0.39293416544186,0.39293416544186
+SIDIAP,population_preterm_labour_objective_2,age_group,35 to 55,region,TARRAGONA,overall_TARRAGONA,-0.106533748063935,0.106533748063935
+SIDIAP,population_objective_3,overall,overall,"Influenza, split virus, trivalent, injectable, contains preservative",-30 to -1,40213153_m30_m1,-0.123423450017734,0.123423450017734
+SIDIAP,population_objective_3,overall,overall,enoxaparin sodium 100 MG/ML Prefilled Syringe,-180 to -31,42902906_m180_m31,0.102492757020627,0.102492757020627
+SIDIAP,population_objective_3,overall,overall,COVID-19,-180 to -31,37311061_m180_m31,0.162226767432741,0.162226767432741
+SIDIAP,population_miscarriage_objective_3,overall,overall,"Influenza, split virus, trivalent, injectable, contains preservative",-30 to -1,40213153_m30_m1,-0.118396729423621,0.118396729423621
+SIDIAP,population_miscarriage_objective_3,overall,overall,"Influenza, split virus, trivalent, injectable, contains preservative",-180 to -31,40213153_m180_m31,-0.166525565629532,0.166525565629532
+SIDIAP,population_miscarriage_objective_3,overall,overall,COVID-19,-180 to -31,37311061_m180_m31,0.10562194727637,0.10562194727637
+SIDIAP,population_miscarriage_objective_3,overall,overall,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.1 MG/ML Injectable Suspension",-180 to -31,37003436_m180_m31,0.206569512748372,0.206569512748372
+SIDIAP,population_preterm_labour_objective_3,overall,overall,"SARS-CoV-2 (COVID-19) vaccine, mRNA-1273 0.2 MG/ML Injectable Suspension",-180 to -31,37003518_m180_m31,0.103968455518954,0.103968455518954
+SIDIAP,population_objective_2,vaccine_brand,pfizer,Days previous dose,NA,overall_NA,-0.285927223940792,0.285927223940792
+SIDIAP,population_objective_2,vaccine_brand,moderna,Days previous dose,NA,overall_NA,-1.06242531057395,1.06242531057395
+SIDIAP,population_objective_3,vaccine_brand,pfizer,Days previous dose,NA,overall_NA,0.145803997557849,0.145803997557849
+SIDIAP,population_objective_3,vaccine_brand,moderna,Days previous dose,NA,overall_NA,-1.5506092861877,1.5506092861877
+SIDIAP,population_miscarriage_objective_2,vaccine_brand,pfizer,Days previous dose,NA,overall_NA,-0.20188666891266,0.20188666891266
+SIDIAP,population_miscarriage_objective_2,vaccine_brand,moderna,Days previous dose,NA,overall_NA,-1.27349904696762,1.27349904696762
+SIDIAP,population_miscarriage_objective_3,vaccine_brand,pfizer,Days previous dose,NA,overall_NA,0.197334263006458,0.197334263006458
+SIDIAP,population_miscarriage_objective_3,vaccine_brand,moderna,Days previous dose,NA,overall_NA,-2.50031886406826,2.50031886406826
+SIDIAP,population_preterm_labour_objective_2,vaccine_brand,pfizer,Days previous dose,NA,overall_NA,-0.280455438314585,0.280455438314585
+SIDIAP,population_preterm_labour_objective_2,vaccine_brand,moderna,Days previous dose,NA,overall_NA,-1.09810990646596,1.09810990646596
+SIDIAP,population_preterm_labour_objective_3,vaccine_brand,pfizer,Days previous dose,NA,overall_NA,0.172556354177334,0.172556354177334
+SIDIAP,population_preterm_labour_objective_3,vaccine_brand,moderna,Days previous dose,NA,overall_NA,-1.54611935491794,1.54611935491794
+SIDIAP,population_objective_2,gestational_trimester,T1,Days previous dose,NA,overall_NA,-0.244968619653076,0.244968619653076
+SIDIAP,population_objective_2,gestational_trimester,T3,Days previous dose,NA,overall_NA,-0.223765373926406,0.223765373926406
+SIDIAP,population_objective_3,gestational_trimester,T1,Days previous dose,NA,overall_NA,-1.12909382923594,1.12909382923594
+SIDIAP,population_objective_3,gestational_trimester,T3,Days previous dose,NA,overall_NA,-0.87569388648742,0.87569388648742
+SIDIAP,population_objective_3,gestational_trimester,T2,Days previous dose,NA,overall_NA,-0.942036943223897,0.942036943223897
+SIDIAP,population_miscarriage_objective_3,gestational_trimester,T1,Days previous dose,NA,overall_NA,-0.755591396691926,0.755591396691926
+SIDIAP,population_miscarriage_objective_3,gestational_trimester,T2,Days previous dose,NA,overall_NA,-1.08526323644085,1.08526323644085
+SIDIAP,population_preterm_labour_objective_2,gestational_trimester,T1,Days previous dose,NA,overall_NA,-0.22384832442744,0.22384832442744
+SIDIAP,population_preterm_labour_objective_2,gestational_trimester,T3,Days previous dose,NA,overall_NA,-0.21167002901489,0.21167002901489
+SIDIAP,population_preterm_labour_objective_3,gestational_trimester,T1,Days previous dose,NA,overall_NA,-1.12909382923594,1.12909382923594
+SIDIAP,population_preterm_labour_objective_3,gestational_trimester,T3,Days previous dose,NA,overall_NA,-0.840383493548187,0.840383493548187
+SIDIAP,population_preterm_labour_objective_3,gestational_trimester,T2,Days previous dose,NA,overall_NA,-0.942036943223897,0.942036943223897
+SIDIAP,population_objective_2,age_group,18 to 34,Days previous dose,NA,overall_NA,-0.193255703546781,0.193255703546781
+SIDIAP,population_objective_2,age_group,35 to 55,Days previous dose,NA,overall_NA,-0.166028063223539,0.166028063223539
+SIDIAP,population_objective_3,age_group,18 to 34,Days previous dose,NA,overall_NA,-0.96178503069539,0.96178503069539
+SIDIAP,population_objective_3,age_group,35 to 55,Days previous dose,NA,overall_NA,-0.918203119571491,0.918203119571491
+SIDIAP,population_miscarriage_objective_2,age_group,18 to 34,Days previous dose,NA,overall_NA,-0.332244036585147,0.332244036585147
+SIDIAP,population_miscarriage_objective_3,age_group,18 to 34,Days previous dose,NA,overall_NA,-1.17002074732224,1.17002074732224
+SIDIAP,population_miscarriage_objective_3,age_group,35 to 55,Days previous dose,NA,overall_NA,-1.02130375434449,1.02130375434449
+SIDIAP,population_preterm_labour_objective_2,age_group,18 to 34,Days previous dose,NA,overall_NA,-0.184147407905381,0.184147407905381
+SIDIAP,population_preterm_labour_objective_2,age_group,35 to 55,Days previous dose,NA,overall_NA,-0.144785686993554,0.144785686993554
+SIDIAP,population_preterm_labour_objective_3,age_group,18 to 34,Days previous dose,NA,overall_NA,-0.632270785874175,0.632270785874175
+SIDIAP,population_preterm_labour_objective_3,age_group,35 to 55,Days previous dose,NA,overall_NA,-0.865975906155708,0.865975906155708
+SIDIAP,population_objective_2,overall,overall,Days previous dose,NA,overall_NA,-0.18198457662578,0.18198457662578
+SIDIAP,population_objective_3,overall,overall,Days previous dose,NA,overall_NA,-0.718905169494117,0.718905169494117
+SIDIAP,population_miscarriage_objective_2,overall,overall,Days previous dose,NA,overall_NA,-0.266613457540462,0.266613457540462
+SIDIAP,population_miscarriage_objective_3,overall,overall,Days previous dose,NA,overall_NA,-1.12150683202425,1.12150683202425
+SIDIAP,population_preterm_labour_objective_2,overall,overall,Days previous dose,NA,overall_NA,-0.169834599850932,0.169834599850932
+SIDIAP,population_preterm_labour_objective_3,overall,overall,Days previous dose,NA,overall_NA,-0.709449328644109,0.709449328644109
 SCIFI-PEARLv2,population_objective_2,vaccine_brand,pfizer,"SARS-CoV-2 (COVID-19) vaccine, mRNA spike protein Injectable Suspension [Spikevax]",-30 to -1,779678_m30_m1,0.170656539152339,0.170656539152339
 SCIFI-PEARLv2,population_objective_3,vaccine_brand,pfizer,"SARS-CoV-2 (COVID-19) vaccine, mRNA spike protein Injectable Suspension [Spikevax]",-180 to -31,779678_m180_m31,0.117017229919545,0.117017229919545
 SCIFI-PEARLv2,population_objective_3,vaccine_brand,pfizer,"SARS-CoV-2 (COVID-19) vaccine, mRNA spike protein Injectable Suspension [Comirnaty]",-180 to -31,1759205_m180_m31,0.14799315547209899,0.14799315547209899
@@ -509,437 +668,6 @@ CPRD GOLD,population_objective_3,overall,overall,"SARS-CoV-2 (COVID-19) vaccine,
 CPRD GOLD,population_miscarriage_objective_1,overall,overall,Nitrofurantoin 100 MG Extended Release Oral Capsule,-180 to -31,42483274_m180_m31,0.112929589271505,0.112929589271505
 CPRD GOLD,population_miscarriage_objective_3,overall,overall,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.1 MG/ML Injectable Suspension",-180 to -31,37003436_m180_m31,0.177410587081575,0.177410587081575
 CPRD GOLD,population_preterm_labour_objective_3,overall,overall,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.1 MG/ML Injectable Suspension",-180 to -31,37003436_m180_m31,0.126639591019762,0.126639591019762
-SIDIAP,population_miscarriage_objective_3,overall,overall,"Influenza, seasonal, injectable",-30 to -1,40213153_m30_m1,-0.115742042752162,0.115742042752162
-SIDIAP,population_objective_1,overall,overall,"Influenza, seasonal, injectable",-30 to -1,40213153_m30_m1,-0.12635684239777,0.12635684239777
-SIDIAP,population_preterm_labour_objective_1,overall,overall,"Influenza, seasonal, injectable",-30 to -1,40213153_m30_m1,-0.125029712563709,0.125029712563709
-SIDIAP,population_miscarriage_objective_3,overall,overall,"Influenza, seasonal, injectable",-180 to -31,40213153_m180_m31,-0.201744456010729,0.201744456010729
-SIDIAP,population_objective_3,overall,overall,"Influenza, seasonal, injectable",-180 to -31,40213153_m180_m31,-0.234863700722824,0.234863700722824
-SIDIAP,population_preterm_labour_objective_3,overall,overall,"Influenza, seasonal, injectable",-180 to -31,40213153_m180_m31,-0.233788999236872,0.233788999236872
-SIDIAP,population_miscarriage_objective_2,overall,overall,"SARS-CoV-2 (COVID-19) vaccine, mRNA-1273 0.2 MG/ML Injectable Suspension",-30 to -1,37003518_m30_m1,0.205232019134732,0.205232019134732
-SIDIAP,population_objective_2,overall,overall,"SARS-CoV-2 (COVID-19) vaccine, mRNA-1273 0.2 MG/ML Injectable Suspension",-30 to -1,37003518_m30_m1,0.225008917841482,0.225008917841482
-SIDIAP,population_preterm_labour_objective_2,overall,overall,"SARS-CoV-2 (COVID-19) vaccine, mRNA-1273 0.2 MG/ML Injectable Suspension",-30 to -1,37003518_m30_m1,0.230350249268391,0.230350249268391
-SIDIAP,population_miscarriage_objective_2,overall,overall,"SARS-CoV-2 (COVID-19) vaccine, mRNA-1273 0.2 MG/ML Injectable Suspension",-180 to -31,37003518_m180_m31,-0.185127140089229,0.185127140089229
-SIDIAP,population_objective_2,overall,overall,"SARS-CoV-2 (COVID-19) vaccine, mRNA-1273 0.2 MG/ML Injectable Suspension",-180 to -31,37003518_m180_m31,-0.1657533073839,0.1657533073839
-SIDIAP,population_preterm_labour_objective_2,overall,overall,"SARS-CoV-2 (COVID-19) vaccine, mRNA-1273 0.2 MG/ML Injectable Suspension",-180 to -31,37003518_m180_m31,-0.167498944782172,0.167498944782172
-SIDIAP,population_miscarriage_objective_2,overall,overall,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.1 MG/ML Injectable Suspension",-30 to -1,37003436_m30_m1,-0.134182605069605,0.134182605069605
-SIDIAP,population_objective_2,overall,overall,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.1 MG/ML Injectable Suspension",-30 to -1,37003436_m30_m1,-0.118013918304323,0.118013918304323
-SIDIAP,population_preterm_labour_objective_2,overall,overall,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.1 MG/ML Injectable Suspension",-30 to -1,37003436_m30_m1,-0.117878015846478,0.117878015846478
-SIDIAP,population_miscarriage_objective_2,overall,overall,Birth of child,-180 to -31,4015270_m180_m31,-0.137465327476968,0.137465327476968
-SIDIAP,population_objective_2,overall,overall,COVID-19,-180 to -31,37311061_m180_m31,0.134968175366692,0.134968175366692
-SIDIAP,population_objective_3,overall,overall,COVID-19,-180 to -31,37311061_m180_m31,0.156098782594873,0.156098782594873
-SIDIAP,population_preterm_labour_objective_2,overall,overall,COVID-19,-180 to -31,37311061_m180_m31,0.133316767026236,0.133316767026236
-SIDIAP,population_preterm_labour_objective_3,overall,overall,COVID-19,-180 to -31,37311061_m180_m31,0.15583074156944,0.15583074156944
-SIDIAP,population_miscarriage_objective_3,overall,overall,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.1 MG/ML Injectable Suspension",-180 to -31,37003436_m180_m31,0.276196711555957,0.276196711555957
-SIDIAP,population_objective_3,overall,overall,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.1 MG/ML Injectable Suspension",-180 to -31,37003436_m180_m31,0.226281881405042,0.226281881405042
-SIDIAP,population_preterm_labour_objective_3,overall,overall,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.1 MG/ML Injectable Suspension",-180 to -31,37003436_m180_m31,0.227374455734712,0.227374455734712
-SIDIAP,population_miscarriage_objective_2,vaccine_brand,moderna,"SARS-COV-2 (COVID-19) vaccine, vector - Ad26 100000000000 UNT/ML Injectable Suspension",-180 to -31,739906_m180_m31,0.240109789575733,0.240109789575733
-SIDIAP,population_miscarriage_objective_3,vaccine_brand,pfizer,dienogest 2 MG / ethinyl estradiol 0.03 MG Oral Tablet,-180 to -31,19106315_m180_m31,-0.127691852746758,0.127691852746758
-SIDIAP,population_miscarriage_objective_3,vaccine_brand,pfizer,potassium iodide Oral Tablet,-30 to -1,40076509_m30_m1,-0.133677038240513,0.133677038240513
-SIDIAP,population_miscarriage_objective_3,vaccine_brand,pfizer,metoclopramide 10 MG Oral Tablet,-180 to -31,906891_m180_m31,0.167099925895448,0.167099925895448
-SIDIAP,population_objective_3,vaccine_brand,pfizer,metoclopramide 10 MG Oral Tablet,-180 to -31,906891_m180_m31,0.101054503400991,0.101054503400991
-SIDIAP,population_miscarriage_objective_2,vaccine_brand,moderna,lorazepam 1 MG Oral Tablet,-180 to -31,19019113_m180_m31,-0.107199394736396,0.107199394736396
-SIDIAP,population_miscarriage_objective_3,vaccine_brand,pfizer,Noninflammatory disorder of the vagina,-180 to -31,195867_m180_m31,0.116738252294919,0.116738252294919
-SIDIAP,population_miscarriage_objective_3,vaccine_brand,pfizer,Urinary tract infectious disease,-30 to -1,81902_m30_m1,-0.123831327679509,0.123831327679509
-SIDIAP,population_preterm_labour_objective_2,vaccine_brand,moderna,"Influenza, seasonal, injectable",-30 to -1,40213153_m30_m1,-0.134917502893855,0.134917502893855
-SIDIAP,population_preterm_labour_objective_1,vaccine_brand,moderna,"Influenza, seasonal, injectable",-30 to -1,40213153_m30_m1,-0.232899443580123,0.232899443580123
-SIDIAP,population_objective_3,vaccine_brand,moderna,"Influenza, seasonal, injectable",-30 to -1,40213153_m30_m1,-0.109979791934759,0.109979791934759
-SIDIAP,population_objective_2,vaccine_brand,moderna,"Influenza, seasonal, injectable",-30 to -1,40213153_m30_m1,-0.127597943809661,0.127597943809661
-SIDIAP,population_objective_1,vaccine_brand,moderna,"Influenza, seasonal, injectable",-30 to -1,40213153_m30_m1,-0.236532721908802,0.236532721908802
-SIDIAP,population_preterm_labour_objective_3,vaccine_brand,moderna,"Influenza, seasonal, injectable",-30 to -1,40213153_m30_m1,-0.114115814791066,0.114115814791066
-SIDIAP,population_miscarriage_objective_3,vaccine_brand,pfizer,"Influenza, seasonal, injectable",-30 to -1,40213153_m30_m1,-0.156513684990869,0.156513684990869
-SIDIAP,population_miscarriage_objective_3,vaccine_brand,pfizer,High risk pregnancy,-30 to -1,4188598_m30_m1,0.110496329511018,0.110496329511018
-SIDIAP,population_objective_3,vaccine_brand,pfizer,"tetanus toxoid vaccine, inactivated",-180 to -31,529411_m180_m31,-0.101886321269844,0.101886321269844
-SIDIAP,population_miscarriage_objective_3,vaccine_brand,pfizer,amoxicillin 1000 MG Oral Tablet,-180 to -31,1713412_m180_m31,0.12833778958395,0.12833778958395
-SIDIAP,population_preterm_labour_objective_3,vaccine_brand,pfizer,enoxaparin sodium 100 MG/ML Prefilled Syringe,-180 to -31,42902906_m180_m31,0.120304900748756,0.120304900748756
-SIDIAP,population_objective_3,vaccine_brand,pfizer,enoxaparin sodium 100 MG/ML Prefilled Syringe,-180 to -31,42902906_m180_m31,0.112547122837524,0.112547122837524
-SIDIAP,population_preterm_labour_objective_2,vaccine_brand,moderna,"Influenza, seasonal, injectable",-180 to -31,40213153_m180_m31,-0.173405093662055,0.173405093662055
-SIDIAP,population_miscarriage_objective_3,vaccine_brand,moderna,"Influenza, seasonal, injectable",-180 to -31,40213153_m180_m31,-0.185390592419071,0.185390592419071
-SIDIAP,population_preterm_labour_objective_1,vaccine_brand,moderna,"Influenza, seasonal, injectable",-180 to -31,40213153_m180_m31,-0.140629718107824,0.140629718107824
-SIDIAP,population_objective_3,vaccine_brand,moderna,"Influenza, seasonal, injectable",-180 to -31,40213153_m180_m31,-0.244643250311174,0.244643250311174
-SIDIAP,population_objective_2,vaccine_brand,moderna,"Influenza, seasonal, injectable",-180 to -31,40213153_m180_m31,-0.174392349027764,0.174392349027764
-SIDIAP,population_objective_1,vaccine_brand,moderna,"Influenza, seasonal, injectable",-180 to -31,40213153_m180_m31,-0.141197628965492,0.141197628965492
-SIDIAP,population_preterm_labour_objective_3,vaccine_brand,moderna,"Influenza, seasonal, injectable",-180 to -31,40213153_m180_m31,-0.241676125468856,0.241676125468856
-SIDIAP,population_preterm_labour_objective_3,vaccine_brand,pfizer,"Influenza, seasonal, injectable",-180 to -31,40213153_m180_m31,-0.173045317780407,0.173045317780407
-SIDIAP,population_miscarriage_objective_3,vaccine_brand,pfizer,"Influenza, seasonal, injectable",-180 to -31,40213153_m180_m31,-0.211258127021147,0.211258127021147
-SIDIAP,population_objective_3,vaccine_brand,pfizer,"Influenza, seasonal, injectable",-180 to -31,40213153_m180_m31,-0.173990254010573,0.173990254010573
-SIDIAP,population_preterm_labour_objective_2,vaccine_brand,moderna,"SARS-CoV-2 (COVID-19) vaccine, mRNA-1273 0.2 MG/ML Injectable Suspension",-30 to -1,37003518_m30_m1,-0.660066233831641,0.660066233831641
-SIDIAP,population_objective_2,vaccine_brand,moderna,"SARS-CoV-2 (COVID-19) vaccine, mRNA-1273 0.2 MG/ML Injectable Suspension",-30 to -1,37003518_m30_m1,-0.68618654178083,0.68618654178083
-SIDIAP,population_miscarriage_objective_2,vaccine_brand,moderna,"SARS-CoV-2 (COVID-19) vaccine, mRNA-1273 0.2 MG/ML Injectable Suspension",-30 to -1,37003518_m30_m1,-0.529777156457062,0.529777156457062
-SIDIAP,population_miscarriage_objective_2,vaccine_brand,pfizer,"SARS-CoV-2 (COVID-19) vaccine, mRNA-1273 0.2 MG/ML Injectable Suspension",-30 to -1,37003518_m30_m1,0.660656263239645,0.660656263239645
-SIDIAP,population_preterm_labour_objective_2,vaccine_brand,pfizer,"SARS-CoV-2 (COVID-19) vaccine, mRNA-1273 0.2 MG/ML Injectable Suspension",-30 to -1,37003518_m30_m1,0.658675672213304,0.658675672213304
-SIDIAP,population_objective_2,vaccine_brand,pfizer,"SARS-CoV-2 (COVID-19) vaccine, mRNA-1273 0.2 MG/ML Injectable Suspension",-30 to -1,37003518_m30_m1,0.653666873644989,0.653666873644989
-SIDIAP,population_preterm_labour_objective_2,vaccine_brand,moderna,"SARS-CoV-2 (COVID-19) vaccine, mRNA-1273 0.2 MG/ML Injectable Suspension",-180 to -31,37003518_m180_m31,-0.645576710158485,0.645576710158485
-SIDIAP,population_miscarriage_objective_3,vaccine_brand,moderna,"SARS-CoV-2 (COVID-19) vaccine, mRNA-1273 0.2 MG/ML Injectable Suspension",-180 to -31,37003518_m180_m31,0.132095203571049,0.132095203571049
-SIDIAP,population_objective_3,vaccine_brand,moderna,"SARS-CoV-2 (COVID-19) vaccine, mRNA-1273 0.2 MG/ML Injectable Suspension",-180 to -31,37003518_m180_m31,0.110352415900147,0.110352415900147
-SIDIAP,population_objective_2,vaccine_brand,moderna,"SARS-CoV-2 (COVID-19) vaccine, mRNA-1273 0.2 MG/ML Injectable Suspension",-180 to -31,37003518_m180_m31,-0.640329641106756,0.640329641106756
-SIDIAP,population_preterm_labour_objective_3,vaccine_brand,moderna,"SARS-CoV-2 (COVID-19) vaccine, mRNA-1273 0.2 MG/ML Injectable Suspension",-180 to -31,37003518_m180_m31,0.110985318460483,0.110985318460483
-SIDIAP,population_miscarriage_objective_2,vaccine_brand,moderna,"SARS-CoV-2 (COVID-19) vaccine, mRNA-1273 0.2 MG/ML Injectable Suspension",-180 to -31,37003518_m180_m31,-0.619581900108955,0.619581900108955
-SIDIAP,population_miscarriage_objective_2,vaccine_brand,pfizer,"SARS-CoV-2 (COVID-19) vaccine, mRNA-1273 0.2 MG/ML Injectable Suspension",-180 to -31,37003518_m180_m31,0.193372753315505,0.193372753315505
-SIDIAP,population_preterm_labour_objective_2,vaccine_brand,pfizer,"SARS-CoV-2 (COVID-19) vaccine, mRNA-1273 0.2 MG/ML Injectable Suspension",-180 to -31,37003518_m180_m31,0.17919542681408,0.17919542681408
-SIDIAP,population_objective_2,vaccine_brand,pfizer,"SARS-CoV-2 (COVID-19) vaccine, mRNA-1273 0.2 MG/ML Injectable Suspension",-180 to -31,37003518_m180_m31,0.175522781546115,0.175522781546115
-SIDIAP,population_preterm_labour_objective_2,vaccine_brand,moderna,folic acid 5 MG Oral Tablet,-30 to -1,1387453_m30_m1,0.103079595080348,0.103079595080348
-SIDIAP,population_objective_2,vaccine_brand,moderna,folic acid 5 MG Oral Tablet,-30 to -1,1387453_m30_m1,0.112094228849925,0.112094228849925
-SIDIAP,population_miscarriage_objective_3,vaccine_brand,pfizer,folic acid 5 MG Oral Tablet,-30 to -1,1387453_m30_m1,-0.114465138545234,0.114465138545234
-SIDIAP,population_miscarriage_objective_2,vaccine_brand,moderna,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.1 MG/ML Injectable Suspension",-30 to -1,37003436_m30_m1,1.10149464859294,1.10149464859294
-SIDIAP,population_miscarriage_objective_2,vaccine_brand,pfizer,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.1 MG/ML Injectable Suspension",-30 to -1,37003436_m30_m1,-0.526752063089646,0.526752063089646
-SIDIAP,population_preterm_labour_objective_2,vaccine_brand,pfizer,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.1 MG/ML Injectable Suspension",-30 to -1,37003436_m30_m1,-0.51514187292437,0.51514187292437
-SIDIAP,population_objective_2,vaccine_brand,pfizer,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.1 MG/ML Injectable Suspension",-30 to -1,37003436_m30_m1,-0.51692219571068,0.51692219571068
-SIDIAP,population_preterm_labour_objective_1,vaccine_brand,moderna,Birth of child,-180 to -31,4015270_m180_m31,0.116859340121378,0.116859340121378
-SIDIAP,population_objective_1,vaccine_brand,moderna,Birth of child,-180 to -31,4015270_m180_m31,0.115517381153196,0.115517381153196
-SIDIAP,population_miscarriage_objective_1,vaccine_brand,moderna,Birth of child,-180 to -31,4015270_m180_m31,0.105428662648158,0.105428662648158
-SIDIAP,population_miscarriage_objective_2,vaccine_brand,moderna,Birth of child,-180 to -31,4015270_m180_m31,-0.100171785026478,0.100171785026478
-SIDIAP,population_miscarriage_objective_3,vaccine_brand,pfizer,Birth of child,-180 to -31,4015270_m180_m31,-0.120506486108457,0.120506486108457
-SIDIAP,population_miscarriage_objective_2,vaccine_brand,pfizer,Birth of child,-180 to -31,4015270_m180_m31,-0.158551601667482,0.158551601667482
-SIDIAP,population_miscarriage_objective_3,vaccine_brand,pfizer,diclofenac sodium 50 MG Delayed Release Oral Tablet,-180 to -31,40162346_m180_m31,0.114694393291382,0.114694393291382
-SIDIAP,population_miscarriage_objective_3,vaccine_brand,pfizer,fosfomycin 3000 MG Powder for Oral Solution,-30 to -1,19132594_m30_m1,-0.125828666031491,0.125828666031491
-SIDIAP,population_miscarriage_objective_3,vaccine_brand,pfizer,levothyroxine sodium 0.05 MG Oral Tablet,-30 to -1,40175210_m30_m1,0.155211772681192,0.155211772681192
-SIDIAP,population_preterm_labour_objective_3,vaccine_brand,pfizer,folic acid 5 MG Oral Tablet,-180 to -31,1387453_m180_m31,-0.115971418947527,0.115971418947527
-SIDIAP,population_miscarriage_objective_3,vaccine_brand,pfizer,folic acid 5 MG Oral Tablet,-180 to -31,1387453_m180_m31,-0.121986539024204,0.121986539024204
-SIDIAP,population_objective_3,vaccine_brand,pfizer,folic acid 5 MG Oral Tablet,-180 to -31,1387453_m180_m31,-0.112743509238095,0.112743509238095
-SIDIAP,population_objective_3,vaccine_brand,pfizer,"diphtheria toxoid vaccine, inactivated",-180 to -31,529303_m180_m31,-0.101886321269844,0.101886321269844
-SIDIAP,population_miscarriage_objective_2,vaccine_brand,moderna,Clotrimazole 0.02 MG/MG Vaginal Cream,-180 to -31,41304877_m180_m31,-0.105748460132599,0.105748460132599
-SIDIAP,population_preterm_labour_objective_2,vaccine_brand,moderna,COVID-19,-180 to -31,37311061_m180_m31,0.148489717952787,0.148489717952787
-SIDIAP,population_objective_2,vaccine_brand,moderna,COVID-19,-180 to -31,37311061_m180_m31,0.149492616730277,0.149492616730277
-SIDIAP,population_miscarriage_objective_1,vaccine_brand,moderna,COVID-19,-180 to -31,37311061_m180_m31,-0.147667220920938,0.147667220920938
-SIDIAP,population_miscarriage_objective_2,vaccine_brand,moderna,COVID-19,-180 to -31,37311061_m180_m31,0.116072972295293,0.116072972295293
-SIDIAP,population_preterm_labour_objective_3,vaccine_brand,pfizer,COVID-19,-180 to -31,37311061_m180_m31,0.219897592964764,0.219897592964764
-SIDIAP,population_preterm_labour_objective_2,vaccine_brand,pfizer,COVID-19,-180 to -31,37311061_m180_m31,0.134188553375712,0.134188553375712
-SIDIAP,population_objective_3,vaccine_brand,pfizer,COVID-19,-180 to -31,37311061_m180_m31,0.22038006303868,0.22038006303868
-SIDIAP,population_objective_2,vaccine_brand,pfizer,COVID-19,-180 to -31,37311061_m180_m31,0.135846238484806,0.135846238484806
-SIDIAP,population_miscarriage_objective_2,vaccine_brand,moderna,progesterone 100 MG Oral Capsule,-180 to -31,19067291_m180_m31,-0.129214289350889,0.129214289350889
-SIDIAP,population_miscarriage_objective_1,vaccine_brand,moderna,Abdominal pain,-180 to -31,200219_m180_m31,-0.100142055686858,0.100142055686858
-SIDIAP,population_miscarriage_objective_3,vaccine_brand,pfizer,fenticonazole 0.02 MG/MG Topical Cream,-180 to -31,36892794_m180_m31,0.133772137215038,0.133772137215038
-SIDIAP,population_preterm_labour_objective_2,vaccine_brand,moderna,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.1 MG/ML Injectable Suspension",-180 to -31,37003436_m180_m31,0.227369512573356,0.227369512573356
-SIDIAP,population_miscarriage_objective_3,vaccine_brand,moderna,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.1 MG/ML Injectable Suspension",-180 to -31,37003436_m180_m31,0.356518432115183,0.356518432115183
-SIDIAP,population_objective_3,vaccine_brand,moderna,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.1 MG/ML Injectable Suspension",-180 to -31,37003436_m180_m31,0.347087127873987,0.347087127873987
-SIDIAP,population_objective_2,vaccine_brand,moderna,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.1 MG/ML Injectable Suspension",-180 to -31,37003436_m180_m31,0.226041434490831,0.226041434490831
-SIDIAP,population_preterm_labour_objective_3,vaccine_brand,moderna,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.1 MG/ML Injectable Suspension",-180 to -31,37003436_m180_m31,0.349571907900471,0.349571907900471
-SIDIAP,population_miscarriage_objective_2,vaccine_brand,moderna,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.1 MG/ML Injectable Suspension",-180 to -31,37003436_m180_m31,0.242368187208951,0.242368187208951
-SIDIAP,population_miscarriage_objective_3,vaccine_brand,pfizer,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.1 MG/ML Injectable Suspension",-180 to -31,37003436_m180_m31,0.119489341667045,0.119489341667045
-SIDIAP,population_miscarriage_objective_2,vaccine_brand,pfizer,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.1 MG/ML Injectable Suspension",-180 to -31,37003436_m180_m31,-0.101265889391997,0.101265889391997
-SIDIAP,population_preterm_labour_objective_2,vaccine_brand,moderna,"SARS-COV-2 (COVID-19) vaccine, vector - Ad26 100000000000 UNT/ML Injectable Suspension",-30 to -1,739906_m30_m1,0.203149800073348,0.203149800073348
-SIDIAP,population_objective_2,vaccine_brand,moderna,"SARS-COV-2 (COVID-19) vaccine, vector - Ad26 100000000000 UNT/ML Injectable Suspension",-30 to -1,739906_m30_m1,0.198388909088103,0.198388909088103
-SIDIAP,population_miscarriage_objective_2,vaccine_brand,moderna,"SARS-COV-2 (COVID-19) vaccine, vector - Ad26 100000000000 UNT/ML Injectable Suspension",-30 to -1,739906_m30_m1,0.301090533005525,0.301090533005525
-SIDIAP,population_preterm_labour_objective_2,gestational_trimester,T1,"SARS-COV-2 (COVID-19) vaccine, vector - Ad26 100000000000 UNT/ML Injectable Suspension",-180 to -31,739906_m180_m31,0.174510639459244,0.174510639459244
-SIDIAP,population_miscarriage_objective_2,gestational_trimester,T1,"SARS-COV-2 (COVID-19) vaccine, vector - Ad26 100000000000 UNT/ML Injectable Suspension",-180 to -31,739906_m180_m31,0.174510639459244,0.174510639459244
-SIDIAP,population_miscarriage_objective_3,gestational_trimester,T1,Threatened miscarriage,-30 to -1,440457_m30_m1,0.107163362298952,0.107163362298952
-SIDIAP,population_preterm_labour_objective_2,gestational_trimester,T3,pertussis vaccine,-30 to -1,19033193_m30_m1,0.110862623712472,0.110862623712472
-SIDIAP,population_objective_2,gestational_trimester,T3,pertussis vaccine,-30 to -1,19033193_m30_m1,0.110178991829166,0.110178991829166
-SIDIAP,population_miscarriage_objective_3,gestational_trimester,T2,paroxetine hydrochloride 20 MG Oral Tablet,-180 to -31,35604576_m180_m31,0.118849976500467,0.118849976500467
-SIDIAP,population_preterm_labour_objective_2,gestational_trimester,T3,"tetanus toxoid vaccine, inactivated",-30 to -1,529411_m30_m1,0.109115054190167,0.109115054190167
-SIDIAP,population_objective_2,gestational_trimester,T3,"tetanus toxoid vaccine, inactivated",-30 to -1,529411_m30_m1,0.108617591957248,0.108617591957248
-SIDIAP,population_preterm_labour_objective_3,gestational_trimester,T1,"Influenza, seasonal, injectable",-30 to -1,40213153_m30_m1,-0.123472012819973,0.123472012819973
-SIDIAP,population_miscarriage_objective_3,gestational_trimester,T1,"Influenza, seasonal, injectable",-30 to -1,40213153_m30_m1,-0.123472012819973,0.123472012819973
-SIDIAP,population_objective_3,gestational_trimester,T1,"Influenza, seasonal, injectable",-30 to -1,40213153_m30_m1,-0.123472012819973,0.123472012819973
-SIDIAP,population_preterm_labour_objective_1,gestational_trimester,T2,"Influenza, seasonal, injectable",-30 to -1,40213153_m30_m1,-0.128634333785479,0.128634333785479
-SIDIAP,population_miscarriage_objective_3,gestational_trimester,T2,"Influenza, seasonal, injectable",-30 to -1,40213153_m30_m1,-0.102560139426105,0.102560139426105
-SIDIAP,population_objective_3,gestational_trimester,T2,"Influenza, seasonal, injectable",-30 to -1,40213153_m30_m1,-0.131920655789302,0.131920655789302
-SIDIAP,population_objective_1,gestational_trimester,T2,"Influenza, seasonal, injectable",-30 to -1,40213153_m30_m1,-0.128634333785479,0.128634333785479
-SIDIAP,population_preterm_labour_objective_3,gestational_trimester,T2,"Influenza, seasonal, injectable",-30 to -1,40213153_m30_m1,-0.131920655789302,0.131920655789302
-SIDIAP,population_objective_1,gestational_trimester,T3,"Influenza, seasonal, injectable",-30 to -1,40213153_m30_m1,-0.157897733244815,0.157897733244815
-SIDIAP,population_preterm_labour_objective_1,gestational_trimester,T3,"Influenza, seasonal, injectable",-30 to -1,40213153_m30_m1,-0.157683102750793,0.157683102750793
-SIDIAP,population_miscarriage_objective_3,gestational_trimester,T2,High risk pregnancy,-30 to -1,4188598_m30_m1,0.133339380607905,0.133339380607905
-SIDIAP,population_miscarriage_objective_2,gestational_trimester,T2,ferrous sulfate 80 MG,-180 to -31,19109921_m180_m31,0.116563699831848,0.116563699831848
-SIDIAP,population_preterm_labour_objective_3,gestational_trimester,T3,potassium chloride,-180 to -31,19049105_m180_m31,0.106763102133659,0.106763102133659
-SIDIAP,population_objective_3,gestational_trimester,T3,potassium chloride,-180 to -31,19049105_m180_m31,0.108272153852923,0.108272153852923
-SIDIAP,population_miscarriage_objective_3,gestational_trimester,T2,alprazolam 0.25 MG Oral Tablet,-180 to -31,19072933_m180_m31,0.123369966270729,0.123369966270729
-SIDIAP,population_miscarriage_objective_3,gestational_trimester,T2,Nausea and vomiting,-180 to -31,27674_m180_m31,-0.100516125658141,0.100516125658141
-SIDIAP,population_preterm_labour_objective_3,gestational_trimester,T3,enoxaparin sodium 100 MG/ML Prefilled Syringe,-180 to -31,42902906_m180_m31,0.160920313908931,0.160920313908931
-SIDIAP,population_objective_3,gestational_trimester,T3,enoxaparin sodium 100 MG/ML Prefilled Syringe,-180 to -31,42902906_m180_m31,0.149747118343804,0.149747118343804
-SIDIAP,population_preterm_labour_objective_3,gestational_trimester,T1,"Influenza, seasonal, injectable",-180 to -31,40213153_m180_m31,-0.137323575753133,0.137323575753133
-SIDIAP,population_miscarriage_objective_3,gestational_trimester,T1,"Influenza, seasonal, injectable",-180 to -31,40213153_m180_m31,-0.137323575753133,0.137323575753133
-SIDIAP,population_objective_3,gestational_trimester,T1,"Influenza, seasonal, injectable",-180 to -31,40213153_m180_m31,-0.137323575753133,0.137323575753133
-SIDIAP,population_miscarriage_objective_3,gestational_trimester,T2,"Influenza, seasonal, injectable",-180 to -31,40213153_m180_m31,-0.249068582790879,0.249068582790879
-SIDIAP,population_preterm_labour_objective_2,gestational_trimester,T2,"Influenza, seasonal, injectable",-180 to -31,40213153_m180_m31,-0.106788979889348,0.106788979889348
-SIDIAP,population_objective_3,gestational_trimester,T2,"Influenza, seasonal, injectable",-180 to -31,40213153_m180_m31,-0.249949328289184,0.249949328289184
-SIDIAP,population_objective_2,gestational_trimester,T2,"Influenza, seasonal, injectable",-180 to -31,40213153_m180_m31,-0.106788979889348,0.106788979889348
-SIDIAP,population_preterm_labour_objective_3,gestational_trimester,T2,"Influenza, seasonal, injectable",-180 to -31,40213153_m180_m31,-0.249949328289184,0.249949328289184
-SIDIAP,population_preterm_labour_objective_3,gestational_trimester,T3,"Influenza, seasonal, injectable",-180 to -31,40213153_m180_m31,-0.257792330340515,0.257792330340515
-SIDIAP,population_objective_3,gestational_trimester,T3,"Influenza, seasonal, injectable",-180 to -31,40213153_m180_m31,-0.255863471917588,0.255863471917588
-SIDIAP,population_objective_2,gestational_trimester,T1,"SARS-CoV-2 (COVID-19) vaccine, mRNA-1273 0.2 MG/ML Injectable Suspension",-30 to -1,37003518_m30_m1,0.168342813159162,0.168342813159162
-SIDIAP,population_preterm_labour_objective_2,gestational_trimester,T1,"SARS-CoV-2 (COVID-19) vaccine, mRNA-1273 0.2 MG/ML Injectable Suspension",-30 to -1,37003518_m30_m1,0.168342813159162,0.168342813159162
-SIDIAP,population_miscarriage_objective_2,gestational_trimester,T1,"SARS-CoV-2 (COVID-19) vaccine, mRNA-1273 0.2 MG/ML Injectable Suspension",-30 to -1,37003518_m30_m1,0.168342813159162,0.168342813159162
-SIDIAP,population_preterm_labour_objective_2,gestational_trimester,T2,"SARS-CoV-2 (COVID-19) vaccine, mRNA-1273 0.2 MG/ML Injectable Suspension",-30 to -1,37003518_m30_m1,0.267301167842867,0.267301167842867
-SIDIAP,population_miscarriage_objective_2,gestational_trimester,T2,"SARS-CoV-2 (COVID-19) vaccine, mRNA-1273 0.2 MG/ML Injectable Suspension",-30 to -1,37003518_m30_m1,0.275601307327936,0.275601307327936
-SIDIAP,population_objective_2,gestational_trimester,T2,"SARS-CoV-2 (COVID-19) vaccine, mRNA-1273 0.2 MG/ML Injectable Suspension",-30 to -1,37003518_m30_m1,0.267301167842867,0.267301167842867
-SIDIAP,population_preterm_labour_objective_2,gestational_trimester,T3,"SARS-CoV-2 (COVID-19) vaccine, mRNA-1273 0.2 MG/ML Injectable Suspension",-30 to -1,37003518_m30_m1,0.241444157782524,0.241444157782524
-SIDIAP,population_objective_2,gestational_trimester,T3,"SARS-CoV-2 (COVID-19) vaccine, mRNA-1273 0.2 MG/ML Injectable Suspension",-30 to -1,37003518_m30_m1,0.228472011025655,0.228472011025655
-SIDIAP,population_preterm_labour_objective_1,gestational_trimester,T1,chorionic gonadotropin Prefilled Syringe,-180 to -31,40140967_m180_m31,0.102255984901516,0.102255984901516
-SIDIAP,population_objective_1,gestational_trimester,T1,chorionic gonadotropin Prefilled Syringe,-180 to -31,40140967_m180_m31,0.102255984901516,0.102255984901516
-SIDIAP,population_miscarriage_objective_1,gestational_trimester,T1,chorionic gonadotropin Prefilled Syringe,-180 to -31,40140967_m180_m31,0.102255984901516,0.102255984901516
-SIDIAP,population_objective_2,gestational_trimester,T1,"SARS-CoV-2 (COVID-19) vaccine, mRNA-1273 0.2 MG/ML Injectable Suspension",-180 to -31,37003518_m180_m31,-0.201613957343492,0.201613957343492
-SIDIAP,population_preterm_labour_objective_2,gestational_trimester,T1,"SARS-CoV-2 (COVID-19) vaccine, mRNA-1273 0.2 MG/ML Injectable Suspension",-180 to -31,37003518_m180_m31,-0.201613957343492,0.201613957343492
-SIDIAP,population_miscarriage_objective_2,gestational_trimester,T1,"SARS-CoV-2 (COVID-19) vaccine, mRNA-1273 0.2 MG/ML Injectable Suspension",-180 to -31,37003518_m180_m31,-0.201613957343492,0.201613957343492
-SIDIAP,population_preterm_labour_objective_2,gestational_trimester,T2,"SARS-CoV-2 (COVID-19) vaccine, mRNA-1273 0.2 MG/ML Injectable Suspension",-180 to -31,37003518_m180_m31,-0.155838866559994,0.155838866559994
-SIDIAP,population_miscarriage_objective_2,gestational_trimester,T2,"SARS-CoV-2 (COVID-19) vaccine, mRNA-1273 0.2 MG/ML Injectable Suspension",-180 to -31,37003518_m180_m31,-0.163897545106391,0.163897545106391
-SIDIAP,population_objective_2,gestational_trimester,T2,"SARS-CoV-2 (COVID-19) vaccine, mRNA-1273 0.2 MG/ML Injectable Suspension",-180 to -31,37003518_m180_m31,-0.155838866559994,0.155838866559994
-SIDIAP,population_preterm_labour_objective_2,gestational_trimester,T3,"SARS-CoV-2 (COVID-19) vaccine, mRNA-1273 0.2 MG/ML Injectable Suspension",-180 to -31,37003518_m180_m31,-0.15406646274635,0.15406646274635
-SIDIAP,population_objective_2,gestational_trimester,T3,"SARS-CoV-2 (COVID-19) vaccine, mRNA-1273 0.2 MG/ML Injectable Suspension",-180 to -31,37003518_m180_m31,-0.151114210990326,0.151114210990326
-SIDIAP,population_objective_2,gestational_trimester,T1,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.1 MG/ML Injectable Suspension",-30 to -1,37003436_m30_m1,-0.119345341841184,0.119345341841184
-SIDIAP,population_preterm_labour_objective_2,gestational_trimester,T1,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.1 MG/ML Injectable Suspension",-30 to -1,37003436_m30_m1,-0.119345341841184,0.119345341841184
-SIDIAP,population_miscarriage_objective_2,gestational_trimester,T1,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.1 MG/ML Injectable Suspension",-30 to -1,37003436_m30_m1,-0.119345341841184,0.119345341841184
-SIDIAP,population_preterm_labour_objective_2,gestational_trimester,T2,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.1 MG/ML Injectable Suspension",-30 to -1,37003436_m30_m1,-0.132830992261709,0.132830992261709
-SIDIAP,population_miscarriage_objective_2,gestational_trimester,T2,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.1 MG/ML Injectable Suspension",-30 to -1,37003436_m30_m1,-0.112219603133795,0.112219603133795
-SIDIAP,population_objective_2,gestational_trimester,T2,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.1 MG/ML Injectable Suspension",-30 to -1,37003436_m30_m1,-0.132830992261709,0.132830992261709
-SIDIAP,population_miscarriage_objective_3,gestational_trimester,T2,fosfomycin 3000 MG Powder for Oral Solution,-30 to -1,19132594_m30_m1,-0.141078051913642,0.141078051913642
-SIDIAP,population_objective_3,gestational_trimester,T2,fosfomycin 3000 MG Powder for Oral Solution,-30 to -1,19132594_m30_m1,-0.107398004546434,0.107398004546434
-SIDIAP,population_preterm_labour_objective_3,gestational_trimester,T2,fosfomycin 3000 MG Powder for Oral Solution,-30 to -1,19132594_m30_m1,-0.107398004546434,0.107398004546434
-SIDIAP,population_miscarriage_objective_3,gestational_trimester,T2,Threatened miscarriage,-180 to -31,440457_m180_m31,-0.110933964602715,0.110933964602715
-SIDIAP,population_preterm_labour_objective_3,gestational_trimester,T1,Dental caries,-180 to -31,133228_m180_m31,0.130944694874603,0.130944694874603
-SIDIAP,population_miscarriage_objective_3,gestational_trimester,T1,Dental caries,-180 to -31,133228_m180_m31,0.130944694874603,0.130944694874603
-SIDIAP,population_objective_3,gestational_trimester,T1,Dental caries,-180 to -31,133228_m180_m31,0.130944694874603,0.130944694874603
-SIDIAP,population_preterm_labour_objective_2,gestational_trimester,T3,"diphtheria toxoid vaccine, inactivated",-30 to -1,529303_m30_m1,0.109115054190167,0.109115054190167
-SIDIAP,population_objective_2,gestational_trimester,T3,"diphtheria toxoid vaccine, inactivated",-30 to -1,529303_m30_m1,0.108617591957248,0.108617591957248
-SIDIAP,population_miscarriage_objective_3,gestational_trimester,T2,COVID-19,-180 to -31,37311061_m180_m31,0.164134208332794,0.164134208332794
-SIDIAP,population_preterm_labour_objective_2,gestational_trimester,T2,COVID-19,-180 to -31,37311061_m180_m31,0.10101440039156,0.10101440039156
-SIDIAP,population_objective_3,gestational_trimester,T2,COVID-19,-180 to -31,37311061_m180_m31,0.186828976801118,0.186828976801118
-SIDIAP,population_objective_2,gestational_trimester,T2,COVID-19,-180 to -31,37311061_m180_m31,0.10101440039156,0.10101440039156
-SIDIAP,population_preterm_labour_objective_3,gestational_trimester,T2,COVID-19,-180 to -31,37311061_m180_m31,0.186828976801118,0.186828976801118
-SIDIAP,population_preterm_labour_objective_3,gestational_trimester,T3,COVID-19,-180 to -31,37311061_m180_m31,0.235296167349097,0.235296167349097
-SIDIAP,population_preterm_labour_objective_2,gestational_trimester,T3,COVID-19,-180 to -31,37311061_m180_m31,0.19750594305323,0.19750594305323
-SIDIAP,population_objective_2,gestational_trimester,T3,COVID-19,-180 to -31,37311061_m180_m31,0.195381741471037,0.195381741471037
-SIDIAP,population_objective_3,gestational_trimester,T3,COVID-19,-180 to -31,37311061_m180_m31,0.229846636449265,0.229846636449265
-SIDIAP,population_objective_2,gestational_trimester,T1,Malaise,-180 to -31,4272240_m180_m31,0.111406166900255,0.111406166900255
-SIDIAP,population_preterm_labour_objective_2,gestational_trimester,T1,Malaise,-180 to -31,4272240_m180_m31,0.111406166900255,0.111406166900255
-SIDIAP,population_miscarriage_objective_2,gestational_trimester,T1,Malaise,-180 to -31,4272240_m180_m31,0.111406166900255,0.111406166900255
-SIDIAP,population_miscarriage_objective_3,gestational_trimester,T2,Abdominal pain,-180 to -31,200219_m180_m31,0.113987632137916,0.113987632137916
-SIDIAP,population_objective_2,gestational_trimester,T1,Deliveries by cesarean,-180 to -31,193277_m180_m31,-0.100416765116393,0.100416765116393
-SIDIAP,population_preterm_labour_objective_2,gestational_trimester,T1,Deliveries by cesarean,-180 to -31,193277_m180_m31,-0.100416765116393,0.100416765116393
-SIDIAP,population_miscarriage_objective_2,gestational_trimester,T1,Deliveries by cesarean,-180 to -31,193277_m180_m31,-0.100416765116393,0.100416765116393
-SIDIAP,population_preterm_labour_objective_3,gestational_trimester,T1,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.1 MG/ML Injectable Suspension",-180 to -31,37003436_m180_m31,0.337148708545328,0.337148708545328
-SIDIAP,population_miscarriage_objective_3,gestational_trimester,T1,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.1 MG/ML Injectable Suspension",-180 to -31,37003436_m180_m31,0.337148708545328,0.337148708545328
-SIDIAP,population_objective_3,gestational_trimester,T1,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.1 MG/ML Injectable Suspension",-180 to -31,37003436_m180_m31,0.337148708545328,0.337148708545328
-SIDIAP,population_miscarriage_objective_3,gestational_trimester,T2,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.1 MG/ML Injectable Suspension",-180 to -31,37003436_m180_m31,0.169838681022063,0.169838681022063
-SIDIAP,population_objective_3,gestational_trimester,T2,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.1 MG/ML Injectable Suspension",-180 to -31,37003436_m180_m31,0.185312446507683,0.185312446507683
-SIDIAP,population_preterm_labour_objective_3,gestational_trimester,T2,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.1 MG/ML Injectable Suspension",-180 to -31,37003436_m180_m31,0.185312446507683,0.185312446507683
-SIDIAP,population_preterm_labour_objective_3,gestational_trimester,T3,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.1 MG/ML Injectable Suspension",-180 to -31,37003436_m180_m31,0.152063083107299,0.152063083107299
-SIDIAP,population_objective_3,gestational_trimester,T3,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.1 MG/ML Injectable Suspension",-180 to -31,37003436_m180_m31,0.155603364432238,0.155603364432238
-SIDIAP,population_miscarriage_objective_2,age_group,35 to 55,"SARS-COV-2 (COVID-19) vaccine, vector - Ad26 100000000000 UNT/ML Injectable Suspension",-180 to -31,739906_m180_m31,0.17610411189932,0.17610411189932
-SIDIAP,population_miscarriage_objective_3,age_group,18 to 34,Threatened miscarriage,-30 to -1,440457_m30_m1,0.11841963870795,0.11841963870795
-SIDIAP,population_preterm_labour_objective_2,age_group,18 to 34,pertussis vaccine,-30 to -1,19033193_m30_m1,0.11219913459749,0.11219913459749
-SIDIAP,population_objective_2,age_group,18 to 34,pertussis vaccine,-30 to -1,19033193_m30_m1,0.112165463600168,0.112165463600168
-SIDIAP,population_miscarriage_objective_3,age_group,35 to 55,levothyroxine sodium 0.1 MG Oral Tablet,-180 to -31,40169766_m180_m31,-0.103011830700317,0.103011830700317
-SIDIAP,population_objective_1,age_group,12 to 17,iron succinyl milk protein complex 53.3 MG/ML Oral Solution,-180 to -31,40222495_m180_m31,0.260820265478651,0.260820265478651
-SIDIAP,population_preterm_labour_objective_1,age_group,12 to 17,iron succinyl milk protein complex 53.3 MG/ML Oral Solution,-180 to -31,40222495_m180_m31,0.260820265478651,0.260820265478651
-SIDIAP,population_objective_1,age_group,12 to 17,metoclopramide 1 MG/ML Oral Solution,-180 to -31,19005929_m180_m31,0.467950961308748,0.467950961308748
-SIDIAP,population_preterm_labour_objective_1,age_group,12 to 17,metoclopramide 1 MG/ML Oral Solution,-180 to -31,19005929_m180_m31,0.467950961308748,0.467950961308748
-SIDIAP,population_preterm_labour_objective_2,age_group,18 to 34,"tetanus toxoid vaccine, inactivated",-30 to -1,529411_m30_m1,0.111443045810506,0.111443045810506
-SIDIAP,population_objective_2,age_group,18 to 34,"tetanus toxoid vaccine, inactivated",-30 to -1,529411_m30_m1,0.111440759698009,0.111440759698009
-SIDIAP,population_objective_1,age_group,12 to 17,acetaminophen 1000 MG Oral Tablet,-180 to -31,19107244_m180_m31,-0.253457276083945,0.253457276083945
-SIDIAP,population_preterm_labour_objective_1,age_group,12 to 17,acetaminophen 1000 MG Oral Tablet,-180 to -31,19107244_m180_m31,-0.214516177956402,0.214516177956402
-SIDIAP,population_miscarriage_objective_1,age_group,12 to 17,acetaminophen 1000 MG Oral Tablet,-180 to -31,19107244_m180_m31,-0.417821849335283,0.417821849335283
-SIDIAP,population_objective_3,age_group,18 to 34,"Influenza, seasonal, injectable",-30 to -1,40213153_m30_m1,-0.101308475199982,0.101308475199982
-SIDIAP,population_preterm_labour_objective_1,age_group,18 to 34,"Influenza, seasonal, injectable",-30 to -1,40213153_m30_m1,-0.128699853491327,0.128699853491327
-SIDIAP,population_preterm_labour_objective_3,age_group,18 to 34,"Influenza, seasonal, injectable",-30 to -1,40213153_m30_m1,-0.101389225756612,0.101389225756612
-SIDIAP,population_objective_1,age_group,18 to 34,"Influenza, seasonal, injectable",-30 to -1,40213153_m30_m1,-0.131824555814426,0.131824555814426
-SIDIAP,population_preterm_labour_objective_1,age_group,35 to 55,"Influenza, seasonal, injectable",-30 to -1,40213153_m30_m1,-0.124780019589251,0.124780019589251
-SIDIAP,population_objective_1,age_group,35 to 55,"Influenza, seasonal, injectable",-30 to -1,40213153_m30_m1,-0.12183814388421,0.12183814388421
-SIDIAP,population_miscarriage_objective_3,age_group,35 to 55,"Influenza, seasonal, injectable",-30 to -1,40213153_m30_m1,-0.150932045131493,0.150932045131493
-SIDIAP,population_objective_1,age_group,12 to 17,Anemia of pregnancy,-180 to -31,4099889_m180_m31,0.375293312520401,0.375293312520401
-SIDIAP,population_preterm_labour_objective_1,age_group,12 to 17,Anemia of pregnancy,-180 to -31,4099889_m180_m31,0.375293312520401,0.375293312520401
-SIDIAP,population_objective_1,age_group,12 to 17,Fosfomycin 3000 MG Granules for Oral Solution,-180 to -31,43151267_m180_m31,0.260820265478651,0.260820265478651
-SIDIAP,population_preterm_labour_objective_1,age_group,12 to 17,Fosfomycin 3000 MG Granules for Oral Solution,-180 to -31,43151267_m180_m31,0.260820265478651,0.260820265478651
-SIDIAP,population_miscarriage_objective_3,age_group,35 to 55,Fosfomycin 3000 MG Granules for Oral Solution,-180 to -31,43151267_m180_m31,0.119086537060412,0.119086537060412
-SIDIAP,population_objective_1,age_group,12 to 17,fosfomycin 3000 MG Powder for Oral Solution,-180 to -31,19132594_m180_m31,0.280351470587786,0.280351470587786
-SIDIAP,population_preterm_labour_objective_1,age_group,12 to 17,fosfomycin 3000 MG Powder for Oral Solution,-180 to -31,19132594_m180_m31,0.272165526975908,0.272165526975908
-SIDIAP,population_miscarriage_objective_2,age_group,35 to 55,fosfomycin 3000 MG Powder for Oral Solution,-180 to -31,19132594_m180_m31,0.100862346557129,0.100862346557129
-SIDIAP,population_miscarriage_objective_3,age_group,18 to 34,High risk pregnancy,-30 to -1,4188598_m30_m1,0.106529550891229,0.106529550891229
-SIDIAP,population_objective_1,age_group,12 to 17,"tetanus toxoid vaccine, inactivated",-180 to -31,529411_m180_m31,-0.151121553169195,0.151121553169195
-SIDIAP,population_objective_1,age_group,12 to 17,Doxylamine / pyridoxine Extended Release Oral Capsule,-30 to -1,42875031_m30_m1,0.260820265478651,0.260820265478651
-SIDIAP,population_preterm_labour_objective_1,age_group,12 to 17,Doxylamine / pyridoxine Extended Release Oral Capsule,-30 to -1,42875031_m30_m1,0.260820265478651,0.260820265478651
-SIDIAP,population_miscarriage_objective_3,age_group,18 to 34,Anxiety disorder,-30 to -1,442077_m30_m1,0.105383803387509,0.105383803387509
-SIDIAP,population_objective_3,age_group,18 to 34,"Influenza, seasonal, injectable",-180 to -31,40213153_m180_m31,-0.222450855923915,0.222450855923915
-SIDIAP,population_preterm_labour_objective_3,age_group,18 to 34,"Influenza, seasonal, injectable",-180 to -31,40213153_m180_m31,-0.21764009581008,0.21764009581008
-SIDIAP,population_miscarriage_objective_3,age_group,18 to 34,"Influenza, seasonal, injectable",-180 to -31,40213153_m180_m31,-0.167058191689976,0.167058191689976
-SIDIAP,population_preterm_labour_objective_3,age_group,35 to 55,"Influenza, seasonal, injectable",-180 to -31,40213153_m180_m31,-0.250675049799177,0.250675049799177
-SIDIAP,population_objective_3,age_group,35 to 55,"Influenza, seasonal, injectable",-180 to -31,40213153_m180_m31,-0.246283383069601,0.246283383069601
-SIDIAP,population_miscarriage_objective_3,age_group,35 to 55,"Influenza, seasonal, injectable",-180 to -31,40213153_m180_m31,-0.234177950277119,0.234177950277119
-SIDIAP,population_preterm_labour_objective_2,age_group,18 to 34,"SARS-CoV-2 (COVID-19) vaccine, mRNA-1273 0.2 MG/ML Injectable Suspension",-30 to -1,37003518_m30_m1,0.249274909527033,0.249274909527033
-SIDIAP,population_objective_2,age_group,18 to 34,"SARS-CoV-2 (COVID-19) vaccine, mRNA-1273 0.2 MG/ML Injectable Suspension",-30 to -1,37003518_m30_m1,0.242270954608849,0.242270954608849
-SIDIAP,population_miscarriage_objective_2,age_group,18 to 34,"SARS-CoV-2 (COVID-19) vaccine, mRNA-1273 0.2 MG/ML Injectable Suspension",-30 to -1,37003518_m30_m1,0.281678338025094,0.281678338025094
-SIDIAP,population_preterm_labour_objective_2,age_group,35 to 55,"SARS-CoV-2 (COVID-19) vaccine, mRNA-1273 0.2 MG/ML Injectable Suspension",-30 to -1,37003518_m30_m1,0.182206741766221,0.182206741766221
-SIDIAP,population_objective_2,age_group,35 to 55,"SARS-CoV-2 (COVID-19) vaccine, mRNA-1273 0.2 MG/ML Injectable Suspension",-30 to -1,37003518_m30_m1,0.180397156396815,0.180397156396815
-SIDIAP,population_miscarriage_objective_2,age_group,35 to 55,chorionic gonadotropin Prefilled Syringe,-180 to -31,40140967_m180_m31,-0.109983434318576,0.109983434318576
-SIDIAP,population_miscarriage_objective_3,age_group,35 to 55,chorionic gonadotropin Prefilled Syringe,-180 to -31,40140967_m180_m31,0.127724971653803,0.127724971653803
-SIDIAP,population_miscarriage_objective_1,age_group,35 to 55,chorionic gonadotropin Prefilled Syringe,-180 to -31,40140967_m180_m31,0.100304506705452,0.100304506705452
-SIDIAP,population_preterm_labour_objective_2,age_group,18 to 34,"SARS-CoV-2 (COVID-19) vaccine, mRNA-1273 0.2 MG/ML Injectable Suspension",-180 to -31,37003518_m180_m31,-0.177289719749081,0.177289719749081
-SIDIAP,population_objective_2,age_group,18 to 34,"SARS-CoV-2 (COVID-19) vaccine, mRNA-1273 0.2 MG/ML Injectable Suspension",-180 to -31,37003518_m180_m31,-0.176423883401513,0.176423883401513
-SIDIAP,population_miscarriage_objective_2,age_group,18 to 34,"SARS-CoV-2 (COVID-19) vaccine, mRNA-1273 0.2 MG/ML Injectable Suspension",-180 to -31,37003518_m180_m31,-0.186624693666396,0.186624693666396
-SIDIAP,population_preterm_labour_objective_2,age_group,35 to 55,"SARS-CoV-2 (COVID-19) vaccine, mRNA-1273 0.2 MG/ML Injectable Suspension",-180 to -31,37003518_m180_m31,-0.150295801019738,0.150295801019738
-SIDIAP,population_miscarriage_objective_2,age_group,35 to 55,"SARS-CoV-2 (COVID-19) vaccine, mRNA-1273 0.2 MG/ML Injectable Suspension",-180 to -31,37003518_m180_m31,-0.168602998117347,0.168602998117347
-SIDIAP,population_objective_2,age_group,35 to 55,"SARS-CoV-2 (COVID-19) vaccine, mRNA-1273 0.2 MG/ML Injectable Suspension",-180 to -31,37003518_m180_m31,-0.145523865280505,0.145523865280505
-SIDIAP,population_miscarriage_objective_3,age_group,18 to 34,Low back pain,-30 to -1,194133_m30_m1,-0.100803330522334,0.100803330522334
-SIDIAP,population_preterm_labour_objective_2,age_group,18 to 34,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.1 MG/ML Injectable Suspension",-30 to -1,37003436_m30_m1,-0.114405823049946,0.114405823049946
-SIDIAP,population_objective_2,age_group,18 to 34,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.1 MG/ML Injectable Suspension",-30 to -1,37003436_m30_m1,-0.112000595121809,0.112000595121809
-SIDIAP,population_miscarriage_objective_2,age_group,18 to 34,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.1 MG/ML Injectable Suspension",-30 to -1,37003436_m30_m1,-0.186569617836856,0.186569617836856
-SIDIAP,population_preterm_labour_objective_2,age_group,35 to 55,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.1 MG/ML Injectable Suspension",-30 to -1,37003436_m30_m1,-0.124463794767472,0.124463794767472
-SIDIAP,population_objective_2,age_group,35 to 55,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.1 MG/ML Injectable Suspension",-30 to -1,37003436_m30_m1,-0.130478851796719,0.130478851796719
-SIDIAP,population_preterm_labour_objective_2,age_group,12 to 17,Birth of child,-180 to -31,4015270_m180_m31,0.302203025246242,0.302203025246242
-SIDIAP,population_preterm_labour_objective_1,age_group,12 to 17,Birth of child,-180 to -31,4015270_m180_m31,0.111666835533707,0.111666835533707
-SIDIAP,population_miscarriage_objective_1,age_group,12 to 17,Birth of child,-180 to -31,4015270_m180_m31,0.167005873301247,0.167005873301247
-SIDIAP,population_objective_2,age_group,12 to 17,Birth of child,-180 to -31,4015270_m180_m31,0.417028828114149,0.417028828114149
-SIDIAP,population_preterm_labour_objective_2,age_group,35 to 55,Birth of child,-180 to -31,4015270_m180_m31,-0.144946433387962,0.144946433387962
-SIDIAP,population_miscarriage_objective_2,age_group,35 to 55,Birth of child,-180 to -31,4015270_m180_m31,-0.216228936386762,0.216228936386762
-SIDIAP,population_objective_2,age_group,35 to 55,Birth of child,-180 to -31,4015270_m180_m31,-0.130018348541117,0.130018348541117
-SIDIAP,population_objective_1,age_group,12 to 17,Amenorrhea,-180 to -31,443800_m180_m31,-0.208469935007148,0.208469935007148
-SIDIAP,population_preterm_labour_objective_1,age_group,12 to 17,Amenorrhea,-180 to -31,443800_m180_m31,-0.215052831216376,0.215052831216376
-SIDIAP,population_objective_1,age_group,12 to 17,amoxicillin 500 MG / clavulanate 125 MG Oral Tablet,-180 to -31,1713694_m180_m31,-0.137487257342037,0.137487257342037
-SIDIAP,population_preterm_labour_objective_1,age_group,12 to 17,amoxicillin 500 MG / clavulanate 125 MG Oral Tablet,-180 to -31,1713694_m180_m31,-0.144936981107642,0.144936981107642
-SIDIAP,population_objective_1,age_group,12 to 17,High risk pregnancy,-180 to -31,4188598_m180_m31,0.286691089540498,0.286691089540498
-SIDIAP,population_preterm_labour_objective_1,age_group,12 to 17,High risk pregnancy,-180 to -31,4188598_m180_m31,0.286691089540498,0.286691089540498
-SIDIAP,population_miscarriage_objective_3,age_group,35 to 55,Gastrointestinal infection,-180 to -31,37396146_m180_m31,-0.1005939904349,0.1005939904349
-SIDIAP,population_objective_1,age_group,12 to 17,calcium carbonate / cholecalciferol Oral Solution,-180 to -31,40019686_m180_m31,0.333333333333333,0.333333333333333
-SIDIAP,population_preterm_labour_objective_1,age_group,12 to 17,calcium carbonate / cholecalciferol Oral Solution,-180 to -31,40019686_m180_m31,0.333333333333333,0.333333333333333
-SIDIAP,population_miscarriage_objective_1,age_group,12 to 17,calcium carbonate / cholecalciferol Oral Solution,-180 to -31,40019686_m180_m31,0.372677996249965,0.372677996249965
-SIDIAP,population_objective_1,age_group,12 to 17,Miscarriage without complication,-180 to -31,436176_m180_m31,0.260820265478651,0.260820265478651
-SIDIAP,population_preterm_labour_objective_1,age_group,12 to 17,Miscarriage without complication,-180 to -31,436176_m180_m31,0.260820265478651,0.260820265478651
-SIDIAP,population_miscarriage_objective_3,age_group,35 to 55,aspirin 100 MG Delayed Release Oral Tablet,-180 to -31,19021575_m180_m31,-0.103193249150702,0.103193249150702
-SIDIAP,population_miscarriage_objective_3,age_group,35 to 55,Birth of child,-30 to -1,4015270_m30_m1,0.143603470981628,0.143603470981628
-SIDIAP,population_miscarriage_objective_3,age_group,18 to 34,potassium iodide Oral Tablet,-180 to -31,40076509_m180_m31,-0.103084122681872,0.103084122681872
-SIDIAP,population_miscarriage_objective_2,age_group,35 to 55,sertraline 50 MG Oral Tablet,-180 to -31,739209_m180_m31,0.103568894436551,0.103568894436551
-SIDIAP,population_objective_1,age_group,12 to 17,Mild hyperemesis gravidarum,-180 to -31,436166_m180_m31,0.260820265478651,0.260820265478651
-SIDIAP,population_preterm_labour_objective_1,age_group,12 to 17,Mild hyperemesis gravidarum,-180 to -31,436166_m180_m31,0.260820265478651,0.260820265478651
-SIDIAP,population_objective_1,age_group,12 to 17,"diphtheria toxoid vaccine, inactivated",-180 to -31,529303_m180_m31,-0.151121553169195,0.151121553169195
-SIDIAP,population_preterm_labour_objective_2,age_group,18 to 34,"diphtheria toxoid vaccine, inactivated",-30 to -1,529303_m30_m1,0.111443045810506,0.111443045810506
-SIDIAP,population_objective_2,age_group,18 to 34,"diphtheria toxoid vaccine, inactivated",-30 to -1,529303_m30_m1,0.111440759698009,0.111440759698009
-SIDIAP,population_objective_1,age_group,12 to 17,ferrous sulfate 80 MG,-30 to -1,19109921_m30_m1,-0.228414881085694,0.228414881085694
-SIDIAP,population_preterm_labour_objective_1,age_group,12 to 17,ferrous sulfate 80 MG,-30 to -1,19109921_m30_m1,-0.180997347965639,0.180997347965639
-SIDIAP,population_objective_3,age_group,18 to 34,COVID-19,-180 to -31,37311061_m180_m31,0.124235249628544,0.124235249628544
-SIDIAP,population_preterm_labour_objective_2,age_group,18 to 34,COVID-19,-180 to -31,37311061_m180_m31,0.138322442293497,0.138322442293497
-SIDIAP,population_preterm_labour_objective_3,age_group,18 to 34,COVID-19,-180 to -31,37311061_m180_m31,0.127364926740742,0.127364926740742
-SIDIAP,population_objective_2,age_group,18 to 34,COVID-19,-180 to -31,37311061_m180_m31,0.138823576251606,0.138823576251606
-SIDIAP,population_miscarriage_objective_2,age_group,18 to 34,COVID-19,-180 to -31,37311061_m180_m31,0.118659009372004,0.118659009372004
-SIDIAP,population_preterm_labour_objective_2,age_group,35 to 55,COVID-19,-180 to -31,37311061_m180_m31,0.119261317121881,0.119261317121881
-SIDIAP,population_preterm_labour_objective_3,age_group,35 to 55,COVID-19,-180 to -31,37311061_m180_m31,0.195291222845652,0.195291222845652
-SIDIAP,population_objective_2,age_group,35 to 55,COVID-19,-180 to -31,37311061_m180_m31,0.123764272816084,0.123764272816084
-SIDIAP,population_objective_3,age_group,35 to 55,COVID-19,-180 to -31,37311061_m180_m31,0.200708289207723,0.200708289207723
-SIDIAP,population_miscarriage_objective_3,age_group,35 to 55,COVID-19,-180 to -31,37311061_m180_m31,0.113347759168313,0.113347759168313
-SIDIAP,population_miscarriage_objective_2,age_group,35 to 55,Malaise,-180 to -31,4272240_m180_m31,0.170547091633803,0.170547091633803
-SIDIAP,population_miscarriage_objective_2,age_group,35 to 55,Deliveries by cesarean,-180 to -31,193277_m180_m31,-0.12566440203427,0.12566440203427
-SIDIAP,population_objective_3,age_group,18 to 34,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.1 MG/ML Injectable Suspension",-180 to -31,37003436_m180_m31,0.265081354005531,0.265081354005531
-SIDIAP,population_preterm_labour_objective_3,age_group,18 to 34,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.1 MG/ML Injectable Suspension",-180 to -31,37003436_m180_m31,0.266586829561817,0.266586829561817
-SIDIAP,population_miscarriage_objective_3,age_group,18 to 34,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.1 MG/ML Injectable Suspension",-180 to -31,37003436_m180_m31,0.334003134257654,0.334003134257654
-SIDIAP,population_preterm_labour_objective_3,age_group,35 to 55,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.1 MG/ML Injectable Suspension",-180 to -31,37003436_m180_m31,0.126094494824673,0.126094494824673
-SIDIAP,population_objective_3,age_group,35 to 55,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.1 MG/ML Injectable Suspension",-180 to -31,37003436_m180_m31,0.127162747189137,0.127162747189137
-SIDIAP,population_miscarriage_objective_3,age_group,35 to 55,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.1 MG/ML Injectable Suspension",-180 to -31,37003436_m180_m31,0.143666390996113,0.143666390996113
-SIDIAP,population_objective_1,age_group,12 to 17,acetaminophen 650 MG Oral Tablet,-180 to -31,1125393_m180_m31,-0.113714613710995,0.113714613710995
-SIDIAP,population_preterm_labour_objective_1,age_group,12 to 17,acetaminophen 650 MG Oral Tablet,-180 to -31,1125393_m180_m31,-0.121182778757518,0.121182778757518
-SIDIAP,population_objective_1,age_group,12 to 17,Low back pain,-180 to -31,194133_m180_m31,0.333333333333333,0.333333333333333
-SIDIAP,population_preterm_labour_objective_1,age_group,12 to 17,Low back pain,-180 to -31,194133_m180_m31,0.333333333333333,0.333333333333333
-SIDIAP,population_miscarriage_objective_1,age_group,12 to 17,Low back pain,-180 to -31,194133_m180_m31,0.372677996249965,0.372677996249965
-SIDIAP,population_objective_1,age_group,12 to 17,Urinary tract infectious disease,-180 to -31,81902_m180_m31,0.233979812131573,0.233979812131573
-SIDIAP,population_preterm_labour_objective_1,age_group,12 to 17,Urinary tract infectious disease,-180 to -31,81902_m180_m31,0.225797670283661,0.225797670283661
-SIDIAP,population_preterm_labour_objective_2,age_group,35 to 55,"SARS-COV-2 (COVID-19) vaccine, vector - Ad26 100000000000 UNT/ML Injectable Suspension",-30 to -1,739906_m30_m1,0.206930249571311,0.206930249571311
-SIDIAP,population_miscarriage_objective_2,age_group,35 to 55,"SARS-COV-2 (COVID-19) vaccine, vector - Ad26 100000000000 UNT/ML Injectable Suspension",-30 to -1,739906_m30_m1,0.298651483058989,0.298651483058989
-SIDIAP,population_objective_2,age_group,35 to 55,"SARS-COV-2 (COVID-19) vaccine, vector - Ad26 100000000000 UNT/ML Injectable Suspension",-30 to -1,739906_m30_m1,0.202056775634717,0.202056775634717
-SIDIAP,population_objective_1,vaccine_brand,moderna,"Influenza, seasonal, injectable",-30 to -1,40213153_m30_m1,-0.126024738269539,0.126024738269539
-SIDIAP,population_objective_1,vaccine_brand,moderna,"Influenza, seasonal, injectable",-180 to -31,40213153_m180_m31,-0.100839339249665,0.100839339249665
-SIDIAP,population_objective_2,vaccine_brand,moderna,folic acid 5 MG Oral Tablet,-30 to -1,1387453_m30_m1,0.105415211809726,0.105415211809726
-SIDIAP,population_objective_2,vaccine_brand,moderna,"SARS-COV-2 (COVID-19) vaccine, vector - Ad26 100000000000 UNT/ML Injectable Suspension",-30 to -1,739906_m30_m1,0.18592637774421,0.18592637774421
-SIDIAP,population_objective_3,vaccine_brand,pfizer,metoclopramide 10 MG Oral Tablet,-180 to -31,906891_m180_m31,0.109060292298571,0.109060292298571
-SIDIAP,population_objective_3,vaccine_brand,pfizer,enoxaparin sodium 100 MG/ML Prefilled Syringe,-180 to -31,42902906_m180_m31,0.139286406675573,0.139286406675573
-SIDIAP,population_objective_3,vaccine_brand,pfizer,"Influenza, seasonal, injectable",-180 to -31,40213153_m180_m31,-0.153983001617024,0.153983001617024
-SIDIAP,population_objective_3,vaccine_brand,pfizer,folic acid 5 MG Oral Tablet,-180 to -31,1387453_m180_m31,-0.108325569344993,0.108325569344993
-SIDIAP,population_objective_3,vaccine_brand,pfizer,COVID-19,-180 to -31,37311061_m180_m31,0.238184931201283,0.238184931201283
-SIDIAP,population_objective_3,vaccine_brand,moderna,"SARS-CoV-2 (COVID-19) vaccine, mRNA-1273 0.2 MG/ML Injectable Suspension",-180 to -31,37003518_m180_m31,0.185089014427628,0.185089014427628
-SIDIAP,population_miscarriage_objective_2,vaccine_brand,moderna,folic acid 5 MG Oral Tablet,-30 to -1,1387453_m30_m1,0.131958822330255,0.131958822330255
-SIDIAP,population_miscarriage_objective_3,vaccine_brand,pfizer,"Influenza, seasonal, injectable",-180 to -31,40213153_m180_m31,-0.185986381043647,0.185986381043647
-SIDIAP,population_miscarriage_objective_3,vaccine_brand,pfizer,fosfomycin 3000 MG Powder for Oral Solution,-30 to -1,19132594_m30_m1,-0.111940318601517,0.111940318601517
-SIDIAP,population_miscarriage_objective_3,vaccine_brand,pfizer,folic acid 5 MG Oral Tablet,-180 to -31,1387453_m180_m31,-0.100599698287552,0.100599698287552
-SIDIAP,population_miscarriage_objective_3,vaccine_brand,pfizer,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.1 MG/ML Injectable Suspension",-180 to -31,37003436_m180_m31,0.135025974260966,0.135025974260966
-SIDIAP,population_miscarriage_objective_3,vaccine_brand,moderna,"Influenza, seasonal, injectable",-180 to -31,40213153_m180_m31,-0.156256449334374,0.156256449334374
-SIDIAP,population_miscarriage_objective_3,vaccine_brand,moderna,"SARS-CoV-2 (COVID-19) vaccine, mRNA-1273 0.2 MG/ML Injectable Suspension",-180 to -31,37003518_m180_m31,0.217339845859119,0.217339845859119
-SIDIAP,population_preterm_labour_objective_1,vaccine_brand,moderna,"Influenza, seasonal, injectable",-30 to -1,40213153_m30_m1,-0.123452153820262,0.123452153820262
-SIDIAP,population_preterm_labour_objective_1,vaccine_brand,moderna,"Influenza, seasonal, injectable",-180 to -31,40213153_m180_m31,-0.104646734403838,0.104646734403838
-SIDIAP,population_preterm_labour_objective_2,vaccine_brand,moderna,levothyroxine sodium 0.05 MG Oral Tablet,-180 to -31,40175210_m180_m31,0.102300556505291,0.102300556505291
-SIDIAP,population_preterm_labour_objective_2,vaccine_brand,moderna,folic acid 5 MG Oral Tablet,-30 to -1,1387453_m30_m1,0.112200968903426,0.112200968903426
-SIDIAP,population_preterm_labour_objective_2,vaccine_brand,moderna,folic acid 0.4 MG Oral Tablet,-180 to -31,19020400_m180_m31,-0.103388970289461,0.103388970289461
-SIDIAP,population_preterm_labour_objective_2,vaccine_brand,moderna,ferrous sulfate 80 MG,-30 to -1,19109921_m30_m1,0.103735936381085,0.103735936381085
-SIDIAP,population_preterm_labour_objective_2,vaccine_brand,moderna,COVID-19,-180 to -31,37311061_m180_m31,0.202327294391543,0.202327294391543
-SIDIAP,population_preterm_labour_objective_2,vaccine_brand,moderna,"SARS-COV-2 (COVID-19) vaccine, vector - Ad26 100000000000 UNT/ML Injectable Suspension",-30 to -1,739906_m30_m1,0.192095219773105,0.192095219773105
-SIDIAP,population_preterm_labour_objective_3,vaccine_brand,pfizer,metoclopramide 10 MG Oral Tablet,-180 to -31,906891_m180_m31,0.108820011156645,0.108820011156645
-SIDIAP,population_preterm_labour_objective_3,vaccine_brand,pfizer,enoxaparin sodium 100 MG/ML Prefilled Syringe,-180 to -31,42902906_m180_m31,0.145476347800238,0.145476347800238
-SIDIAP,population_preterm_labour_objective_3,vaccine_brand,pfizer,"Influenza, seasonal, injectable",-180 to -31,40213153_m180_m31,-0.15498378152124,0.15498378152124
-SIDIAP,population_preterm_labour_objective_3,vaccine_brand,pfizer,folic acid 5 MG Oral Tablet,-180 to -31,1387453_m180_m31,-0.11055219301573,0.11055219301573
-SIDIAP,population_preterm_labour_objective_3,vaccine_brand,pfizer,COVID-19,-180 to -31,37311061_m180_m31,0.237433714321815,0.237433714321815
-SIDIAP,population_preterm_labour_objective_3,vaccine_brand,moderna,"SARS-CoV-2 (COVID-19) vaccine, mRNA-1273 0.2 MG/ML Injectable Suspension",-180 to -31,37003518_m180_m31,0.186213154473235,0.186213154473235
-SIDIAP,population_objective_2,gestational_trimester,T2,"SARS-CoV-2 (COVID-19) vaccine, mRNA-1273 0.2 MG/ML Injectable Suspension",-180 to -31,37003518_m180_m31,-0.103465665920804,0.103465665920804
-SIDIAP,population_objective_2,gestational_trimester,T2,COVID-19,-180 to -31,37311061_m180_m31,0.17234222780118,0.17234222780118
-SIDIAP,population_objective_3,gestational_trimester,T2,"Influenza, seasonal, injectable",-30 to -1,40213153_m30_m1,-0.165117976093548,0.165117976093548
-SIDIAP,population_objective_3,gestational_trimester,T2,fosfomycin 3000 MG Powder for Oral Solution,-30 to -1,19132594_m30_m1,-0.111341259482898,0.111341259482898
-SIDIAP,population_objective_3,gestational_trimester,T2,COVID-19,-180 to -31,37311061_m180_m31,0.174570285265671,0.174570285265671
-SIDIAP,population_objective_3,gestational_trimester,T2,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.1 MG/ML Injectable Suspension",-180 to -31,37003436_m180_m31,0.179936683358636,0.179936683358636
-SIDIAP,population_objective_3,gestational_trimester,T3,enoxaparin sodium 100 MG/ML Prefilled Syringe,-180 to -31,42902906_m180_m31,0.167233282684638,0.167233282684638
-SIDIAP,population_objective_3,gestational_trimester,T3,"Influenza, seasonal, injectable",-180 to -31,40213153_m180_m31,-0.195451887758627,0.195451887758627
-SIDIAP,population_objective_3,gestational_trimester,T3,COVID-19,-180 to -31,37311061_m180_m31,0.240397312023844,0.240397312023844
-SIDIAP,population_objective_3,gestational_trimester,T3,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.1 MG/ML Injectable Suspension",-180 to -31,37003436_m180_m31,0.18384399777631,0.18384399777631
-SIDIAP,population_objective_3,gestational_trimester,T1,diazepam 5 MG Oral Tablet,-180 to -31,723042_m180_m31,0.111097688478786,0.111097688478786
-SIDIAP,population_objective_3,gestational_trimester,T1,"Influenza, seasonal, injectable",-30 to -1,40213153_m30_m1,-0.117128679046132,0.117128679046132
-SIDIAP,population_objective_3,gestational_trimester,T1,"Influenza, seasonal, injectable",-180 to -31,40213153_m180_m31,-0.116262511285415,0.116262511285415
-SIDIAP,population_objective_3,gestational_trimester,T1,"SARS-CoV-2 (COVID-19) vaccine, mRNA-1273 0.2 MG/ML Injectable Suspension",-180 to -31,37003518_m180_m31,0.115664747102632,0.115664747102632
-SIDIAP,population_objective_3,gestational_trimester,T1,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.1 MG/ML Injectable Suspension",-180 to -31,37003436_m180_m31,0.379167756465284,0.379167756465284
-SIDIAP,population_miscarriage_objective_2,gestational_trimester,T2,ferrous sulfate 80 MG,-180 to -31,19109921_m180_m31,0.122474134537807,0.122474134537807
-SIDIAP,population_miscarriage_objective_2,gestational_trimester,T2,"SARS-CoV-2 (COVID-19) vaccine, mRNA-1273 0.2 MG/ML Injectable Suspension",-180 to -31,37003518_m180_m31,-0.117859618148607,0.117859618148607
-SIDIAP,population_miscarriage_objective_2,gestational_trimester,T1,"SARS-COV-2 (COVID-19) vaccine, vector - Ad26 100000000000 UNT/ML Injectable Suspension",-180 to -31,739906_m180_m31,0.143731140697796,0.143731140697796
-SIDIAP,population_miscarriage_objective_3,gestational_trimester,T2,acetaminophen 650 MG Oral Tablet,-30 to -1,1125393_m30_m1,0.101257976086331,0.101257976086331
-SIDIAP,population_miscarriage_objective_3,gestational_trimester,T2,"Influenza, seasonal, injectable",-180 to -31,40213153_m180_m31,-0.179988376077275,0.179988376077275
-SIDIAP,population_miscarriage_objective_3,gestational_trimester,T2,fosfomycin 3000 MG Powder for Oral Solution,-30 to -1,19132594_m30_m1,-0.13273569335027,0.13273569335027
-SIDIAP,population_miscarriage_objective_3,gestational_trimester,T2,COVID-19,-180 to -31,37311061_m180_m31,0.148206656537202,0.148206656537202
-SIDIAP,population_miscarriage_objective_3,gestational_trimester,T2,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.1 MG/ML Injectable Suspension",-180 to -31,37003436_m180_m31,0.159105897699823,0.159105897699823
-SIDIAP,population_miscarriage_objective_3,gestational_trimester,T1,"Influenza, seasonal, injectable",-30 to -1,40213153_m30_m1,-0.105271425125347,0.105271425125347
-SIDIAP,population_miscarriage_objective_3,gestational_trimester,T1,"SARS-CoV-2 (COVID-19) vaccine, mRNA-1273 0.2 MG/ML Injectable Suspension",-180 to -31,37003518_m180_m31,0.227924774911215,0.227924774911215
-SIDIAP,population_preterm_labour_objective_2,gestational_trimester,T2,"SARS-CoV-2 (COVID-19) vaccine, mRNA-1273 0.2 MG/ML Injectable Suspension",-180 to -31,37003518_m180_m31,-0.103465665920822,0.103465665920822
-SIDIAP,population_preterm_labour_objective_2,gestational_trimester,T2,COVID-19,-180 to -31,37311061_m180_m31,0.17234222780118,0.17234222780118
-SIDIAP,population_preterm_labour_objective_2,gestational_trimester,T1,"SARS-COV-2 (COVID-19) vaccine, vector - Ad26 100000000000 UNT/ML Injectable Suspension",-180 to -31,739906_m180_m31,0.143204712655769,0.143204712655769
-SIDIAP,population_preterm_labour_objective_3,gestational_trimester,T2,fosfomycin 3000 MG Powder for Oral Solution,-30 to -1,19132594_m30_m1,-0.109464301740572,0.109464301740572
-SIDIAP,population_preterm_labour_objective_3,gestational_trimester,T3,enoxaparin sodium 100 MG/ML Prefilled Syringe,-180 to -31,42902906_m180_m31,0.179167907694253,0.179167907694253
-SIDIAP,population_preterm_labour_objective_3,gestational_trimester,T3,"Influenza, seasonal, injectable",-180 to -31,40213153_m180_m31,-0.193939577765092,0.193939577765092
-SIDIAP,population_preterm_labour_objective_3,gestational_trimester,T3,COVID-19,-180 to -31,37311061_m180_m31,0.244795426341005,0.244795426341005
-SIDIAP,population_preterm_labour_objective_3,gestational_trimester,T3,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.1 MG/ML Injectable Suspension",-180 to -31,37003436_m180_m31,0.17738658681058,0.17738658681058
-SIDIAP,population_preterm_labour_objective_3,gestational_trimester,T1,diazepam 5 MG Oral Tablet,-180 to -31,723042_m180_m31,0.111097688478787,0.111097688478787
-SIDIAP,population_preterm_labour_objective_3,gestational_trimester,T1,"Influenza, seasonal, injectable",-30 to -1,40213153_m30_m1,-0.117128679046129,0.117128679046129
-SIDIAP,population_preterm_labour_objective_3,gestational_trimester,T1,"Influenza, seasonal, injectable",-180 to -31,40213153_m180_m31,-0.116262511285414,0.116262511285414
-SIDIAP,population_preterm_labour_objective_3,gestational_trimester,T1,"SARS-CoV-2 (COVID-19) vaccine, mRNA-1273 0.2 MG/ML Injectable Suspension",-180 to -31,37003518_m180_m31,0.115664747102636,0.115664747102636
-SIDIAP,population_preterm_labour_objective_3,gestational_trimester,T1,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.1 MG/ML Injectable Suspension",-180 to -31,37003436_m180_m31,0.37916775646529,0.37916775646529
-SIDIAP,population_objective_1,age_group,12 to 17,acetaminophen 1000 MG Oral Tablet,-180 to -31,19107244_m180_m31,-0.13967254065902,0.13967254065902
-SIDIAP,population_objective_1,age_group,12 to 17,Birth of child,-180 to -31,4015270_m180_m31,0.210865372753855,0.210865372753855
-SIDIAP,population_objective_3,age_group,18 to 34,"Influenza, seasonal, injectable",-30 to -1,40213153_m30_m1,-0.113965625934625,0.113965625934625
-SIDIAP,population_objective_3,age_group,35 to 55,"Influenza, seasonal, injectable",-180 to -31,40213153_m180_m31,-0.186252602148704,0.186252602148704
-SIDIAP,population_objective_3,age_group,35 to 55,COVID-19,-180 to -31,37311061_m180_m31,0.184245251057307,0.184245251057307
-SIDIAP,population_objective_3,age_group,35 to 55,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.1 MG/ML Injectable Suspension",-180 to -31,37003436_m180_m31,0.101844502402746,0.101844502402746
-SIDIAP,population_miscarriage_objective_1,age_group,35 to 55,chorionic gonadotropin Prefilled Syringe,-180 to -31,40140967_m180_m31,0.107489613234312,0.107489613234312
-SIDIAP,population_miscarriage_objective_1,age_group,12 to 17,Birth of child,-180 to -31,4015270_m180_m31,0.283277335220422,0.283277335220422
-SIDIAP,population_miscarriage_objective_2,age_group,18 to 34,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.1 MG/ML Injectable Suspension",-180 to -31,37003436_m180_m31,-0.152644999194122,0.152644999194122
-SIDIAP,population_miscarriage_objective_2,age_group,35 to 55,"SARS-COV-2 (COVID-19) vaccine, vector - Ad26 100000000000 UNT/ML Injectable Suspension",-180 to -31,739906_m180_m31,0.182774361316086,0.182774361316086
-SIDIAP,population_miscarriage_objective_2,age_group,35 to 55,"SARS-CoV-2 (COVID-19) vaccine, mRNA-1273 0.2 MG/ML Injectable Suspension",-180 to -31,37003518_m180_m31,-0.101717550707643,0.101717550707643
-SIDIAP,population_miscarriage_objective_2,age_group,35 to 55,sertraline 50 MG Oral Tablet,-180 to -31,739209_m180_m31,0.104699666872477,0.104699666872477
-SIDIAP,population_miscarriage_objective_2,age_group,35 to 55,Malaise,-180 to -31,4272240_m180_m31,0.15793995603304,0.15793995603304
-SIDIAP,population_miscarriage_objective_3,age_group,18 to 34,"Influenza, seasonal, injectable",-180 to -31,40213153_m180_m31,-0.123873058877,0.123873058877
-SIDIAP,population_miscarriage_objective_3,age_group,18 to 34,"SARS-CoV-2 (COVID-19) vaccine, mRNA-1273 0.2 MG/ML Injectable Suspension",-180 to -31,37003518_m180_m31,0.100332205684369,0.100332205684369
-SIDIAP,population_miscarriage_objective_3,age_group,18 to 34,Abdominal pain,-180 to -31,200219_m180_m31,0.101606343394058,0.101606343394058
-SIDIAP,population_miscarriage_objective_3,age_group,18 to 34,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.1 MG/ML Injectable Suspension",-180 to -31,37003436_m180_m31,0.345401302272807,0.345401302272807
-SIDIAP,population_miscarriage_objective_3,age_group,35 to 55,"Influenza, seasonal, injectable",-30 to -1,40213153_m30_m1,-0.144031749124194,0.144031749124194
-SIDIAP,population_miscarriage_objective_3,age_group,35 to 55,"Influenza, seasonal, injectable",-180 to -31,40213153_m180_m31,-0.202939559211952,0.202939559211952
-SIDIAP,population_miscarriage_objective_3,age_group,35 to 55,chorionic gonadotropin Prefilled Syringe,-180 to -31,40140967_m180_m31,0.140793415224359,0.140793415224359
-SIDIAP,population_miscarriage_objective_3,age_group,35 to 55,Birth of child,-30 to -1,4015270_m30_m1,0.125011647856686,0.125011647856686
-SIDIAP,population_miscarriage_objective_3,age_group,35 to 55,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.1 MG/ML Injectable Suspension",-180 to -31,37003436_m180_m31,0.121708762084682,0.121708762084682
-SIDIAP,population_preterm_labour_objective_1,age_group,12 to 17,Birth of child,-180 to -31,4015270_m180_m31,0.218305952371601,0.218305952371601
-SIDIAP,population_preterm_labour_objective_2,age_group,35 to 55,"SARS-CoV-2 (COVID-19) vaccine, mRNA-1273 0.2 MG/ML Injectable Suspension",-180 to -31,37003518_m180_m31,-0.15256159926402801,0.15256159926402801
-SIDIAP,population_preterm_labour_objective_2,age_group,35 to 55,COVID-19,-180 to -31,37311061_m180_m31,0.180953138225208,0.180953138225208
-SIDIAP,population_preterm_labour_objective_2,age_group,35 to 55,"SARS-COV-2 (COVID-19) vaccine, vector - Ad26 100000000000 UNT/ML Injectable Suspension",-30 to -1,739906_m30_m1,0.199195841625758,0.199195841625758
-SIDIAP,population_preterm_labour_objective_3,age_group,18 to 34,"Influenza, seasonal, injectable",-180 to -31,40213153_m180_m31,-0.156793806395027,0.156793806395027
-SIDIAP,population_preterm_labour_objective_3,age_group,18 to 34,COVID-19,-180 to -31,37311061_m180_m31,0.125145766268567,0.125145766268567
-SIDIAP,population_preterm_labour_objective_3,age_group,18 to 34,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.1 MG/ML Injectable Suspension",-180 to -31,37003436_m180_m31,0.265405897144441,0.265405897144441
-SIDIAP,population_preterm_labour_objective_3,age_group,35 to 55,"Influenza, seasonal, injectable",-30 to -1,40213153_m30_m1,-0.127523959649371,0.127523959649371
-SIDIAP,population_preterm_labour_objective_3,age_group,35 to 55,COVID-19,-180 to -31,37311061_m180_m31,0.166896076668935,0.166896076668935
-SIDIAP,population_objective_3,overall,overall,"Influenza, seasonal, injectable",-30 to -1,40213153_m30_m1,-0.118765064278095,0.118765064278095
-SIDIAP,population_objective_3,overall,overall,"SARS-CoV-2 (COVID-19) vaccine, mRNA-1273 0.2 MG/ML Injectable Suspension",-180 to -31,37003518_m180_m31,0.123555047938068,0.123555047938068
-SIDIAP,population_objective_3,overall,overall,COVID-19,-180 to -31,37311061_m180_m31,0.160414814157532,0.160414814157532
-SIDIAP,population_miscarriage_objective_3,overall,overall,"Influenza, seasonal, injectable",-180 to -31,40213153_m180_m31,-0.157259254289621,0.157259254289621
-SIDIAP,population_miscarriage_objective_3,overall,overall,"SARS-CoV-2 (COVID-19) vaccine, mRNA-BNT162b2 0.1 MG/ML Injectable Suspension",-180 to -31,37003436_m180_m31,0.283581755428138,0.283581755428138
-SIDIAP,population_preterm_labour_objective_3,overall,overall,"Influenza, seasonal, injectable",-30 to -1,40213153_m30_m1,-0.121196177482122,0.121196177482122
-SIDIAP,population_preterm_labour_objective_3,overall,overall,"SARS-CoV-2 (COVID-19) vaccine, mRNA-1273 0.2 MG/ML Injectable Suspension",-180 to -31,37003518_m180_m31,0.125500934511967,0.125500934511967
-SIDIAP,population_preterm_labour_objective_3,overall,overall,COVID-19,-180 to -31,37311061_m180_m31,0.15908408800305401,0.15908408800305401
 NLHR@UiO,population_objective_2,overall,overall,COVID-19,-18-1 to -31,37311061_m180_m31,0.117564919,0.117564919
 NLHR@UiO,population_objective_2,overall,overall,Coronavirus infection,-18-1 to -31,439676_m180_m31,0.117245822,0.117245822
 CPRD GOLD,population_objective_2,overall,overall,prochlorperazine 5 MG Oral Tablet,-3-1 to -1,752205_m30_m1,0.112291452,0.112291452
