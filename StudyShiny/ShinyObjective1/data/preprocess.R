@@ -20,7 +20,8 @@ mae <- c(
   "postpartum_endometritis", "postpartum_haemorrhage"
 )
 
-result <- omopgenerics::importSummarisedResult(file.path(getwd(), "data"))
+result <- omopgenerics::importSummarisedResult(file.path(getwd(), "data")) |>
+  dplyr::mutate(cdm_name = gsub("v2", "", .data$cdm_name)) 
 incidenceID <- omopgenerics::settings(result) |> dplyr::filter(result_type == "") |> dplyr::pull("result_id")
 result <- result |>
   dplyr::mutate(

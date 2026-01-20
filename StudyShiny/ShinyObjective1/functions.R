@@ -1,12 +1,12 @@
 backgroundCard <- function(fileName) {
   # read file
   content <- readLines(fileName)
-
+  
   # extract yaml metadata
   # Find the positions of the YAML delimiters (----- or ---)
   yamlStart <- grep("^---|^-----", content)[1]
   yamlEnd <- grep("^---|^-----", content)[2]
-
+  
   if (any(is.na(c(yamlStart, yamlEnd)))) {
     metadata <- NULL
   } else {
@@ -17,10 +17,10 @@ backgroundCard <- function(fileName) {
     # eliminate yaml part from content
     content <- content[-(yamlStart:yamlEnd)]
   }
-
+  
   tmpFile <- tempfile(fileext = ".md")
   writeLines(text = content, con = tmpFile)
-
+  
   # metadata referring to keys
   backgroundKeywords <- list(
     header = "bslib::card_header",
@@ -38,7 +38,7 @@ backgroundCard <- function(fileName) {
       }
     }) |>
     purrr::compact()
-
+  
   arguments <- c(
     # metadata referring to arguments of card
     metadata[names(metadata) %in% names(formals(bslib::card))],
@@ -52,9 +52,9 @@ backgroundCard <- function(fileName) {
     ) |>
       purrr::compact()
   )
-
+  
   unlink(tmpFile)
-
+  
   do.call(bslib::card, arguments)
 }
 summaryCdmName <- function(data) {
@@ -224,16 +224,16 @@ simpleTable <- function(result,
   if (length(header) == 0) header <- character()
   if (length(group) == 0) group <- NULL
   if (length(hide) == 0) hide <- character()
-
+  
   if (nrow(result) == 0) {
     return(gt::gt(dplyr::tibble()))
   }
-
+  
   result <- result |>
     omopgenerics::addSettings() |>
     omopgenerics::splitAll() |>
     dplyr::select(-"result_id")
-
+  
   # format estimate column
   formatEstimates <- c(
     "N (%)" = "<count> (<percentage>%)",
@@ -269,16 +269,16 @@ tidyDT <- function(x,
   strataColumns <- omopgenerics::strataColumns(x)
   additionalColumns <- omopgenerics::additionalColumns(x)
   settingsColumns <- omopgenerics::settingsColumns(x)
-
+  
   # split and add settings
   x <- x |>
     omopgenerics::splitAll() |>
     omopgenerics::addSettings()
-
+  
   # remove density
   x <- x |>
     dplyr::filter(!.data$estimate_name %in% c("density_x", "density_y"))
-
+  
   # estimate columns
   if (pivotEstimates) {
     estCols <- unique(x$estimate_name)
@@ -287,7 +287,7 @@ tidyDT <- function(x,
   } else {
     estCols <- c("estimate_name", "estimate_type", "estimate_value")
   }
-
+  
   # order columns
   cols <- list(
     "CDM name" = "cdm_name", "Group" = groupColumns, "Strata" = strataColumns,
@@ -299,7 +299,7 @@ tidyDT <- function(x,
   cols[["Estimates"]] <- estCols
   x <- x |>
     dplyr::select(dplyr::all_of(unname(unlist(cols))))
-
+  
   # prepare the header
   container <- shiny::tags$table(
     class = "display",
@@ -309,7 +309,7 @@ tidyDT <- function(x,
       shiny::tags$tr(purrr::map(unlist(cols), shiny::tags$th))
     )
   )
-
+  
   # create DT table
   DT::datatable(
     data = x,
@@ -363,7 +363,7 @@ getSelected <- function(choices) {
       if ("Both" %in% vals) return("Both")
       return(vals[[1]])
     }
-
+    
     if (grepl("_denominator_age_group$", nm)) {
       bounds <- regmatches(vals, regexec("^(\\d+) to (\\d+)$", vals))
       valid <- vapply(bounds, length, integer(1)) == 3
@@ -374,11 +374,11 @@ getSelected <- function(choices) {
         return(vals[[1]])
       }
     }
-
+    
     if (grepl("_outcome_cohort_name$", nm)) {
       return(vals[[1]])
     }
-
+    
     vals
   })
 }
@@ -457,4 +457,134 @@ getColsForTbl <- function(tbl, sortNALast = TRUE, names = c("Standard concept ID
   }
   
   return(cols)
+}
+
+metaIR <- function(df, rateMultiplier = 1e5, alpha = 0.05) {
+  
+  # need at least 2 databases
+  if (nrow(df) < 2) {
+    return(tibble(
+      pooled_incidence_100000_pys = NA_real_,
+      predicted_interval_95CI_lower = NA_real_,
+      predicted_interval_95CI_upper = NA_real_,
+      denominator_count = sum(df$denominator_count, na.rm = TRUE),
+      person_years = sum(df$person_years, na.rm = TRUE),
+      outcome_count = sum(df$outcome_count, na.rm = TRUE),
+      outcome_percentage = outcome_count/denominator_count * 100,
+      number_of_databases = nrow(df),
+      tau2 = NA_real_
+    ))
+  }
+  
+  # Fit Poisson GLMM
+  glmmModel <- tryCatch(
+    glmer(
+      outcome_count ~ 1 + (1 | cdm_name),
+      offset = log(person_years),
+      family = poisson(link = "log"),
+      data = df,
+      control = glmerControl(
+        optimizer = "bobyqa",
+        optCtrl = list(maxfun = 2e5)
+      )
+    ),
+    error = function(e) NULL
+  )
+  
+  if (is.null(glmmModel)) {
+    return(tibble(
+      pooled_incidence_100000_pys = NA_real_,
+      predicted_interval_95CI_lower = NA_real_,
+      predicted_interval_95CI_upper = NA_real_,
+      denominator_count = sum(df$denominator_count, na.rm = TRUE),
+      person_years = sum(df$person_years, na.rm = TRUE),
+      outcome_count = sum(df$outcome_count, na.rm = TRUE),
+      outcome_percentage = outcome_count/denominator_count * 100,
+      number_of_databases = nrow(df),
+      tau2 = NA_real_
+    ))
+  }
+  
+  # Extract fixed effect
+  pooledLogRate <- fixef(glmmModel)[["(Intercept)"]]
+  pooledLogRateSe <- sqrt(vcov(glmmModel)[1, 1])
+  
+  # Between-database variance
+  tau2 <- as.numeric(VarCorr(glmmModel)$cdm_name[1, 1])
+  
+  number_of_databases <- nrow(df)
+  tCritical <- qt(1 - alpha / 2, df = max(1, number_of_databases - 1))
+  
+  # Prediction interval (log scale)
+  piLogLower <- pooledLogRate - tCritical * sqrt(pooledLogRateSe^2 + tau2)
+  piLogUpper <- pooledLogRate + tCritical * sqrt(pooledLogRateSe^2 + tau2)
+  
+  tibble(
+    pooled_incidence_100000_pys = exp(pooledLogRate) * rateMultiplier,
+    predicted_interval_95CI_lower = exp(piLogLower) * rateMultiplier,
+    predicted_interval_95CI_upper = exp(piLogUpper) * rateMultiplier,
+    denominator_count = sum(df$denominator_count, na.rm = TRUE),
+    person_years = sum(df$person_years, na.rm = TRUE),
+    outcome_count = sum(df$outcome_count, na.rm = TRUE),
+    outcome_percentage = outcome_count/denominator_count * 100,
+    number_of_databases = number_of_databases,
+    tau2 = tau2
+  )
+}
+
+pIncidence <- function(data, x, scales, ribbon = TRUE) {
+  colors <- c(
+    "#C94A5A",  # Muted red
+    "#4A6FE3",  # Professional blue
+    "#4FAE6A",  # Academic green
+    "#E08A3C"   # Muted orange
+  )
+  p <- data |>
+    ggplot(aes_string(x = x, y = "incidence_100000_pys", ymin = "incidence_100000_pys_95CI_lower", ymax = "incidence_100000_pys_95CI_upper", colour = "cdm_name", fill = "cdm_name", group = "cdm_name")) +
+    geom_point(size = 2) +
+    geom_line(linewidth = 0.3) +
+    # geom_errorbar(width = 0.15,linewidth = 0.4) +
+    facet_wrap(vars(outcome_cohort_name), scales = scales, nrow = 2) +
+    scale_color_manual(values = colors) +
+    scale_fill_manual(values = colors) +
+    guides(
+      color = guide_legend(title = "Database"),
+      fill  = guide_legend(title = "Database")
+    ) +
+    ggplot2::theme_linedraw() +
+    theme(
+      strip.text = element_text(face = "bold", size = 10, colour = "white"),
+      legend.position = "top",
+      legend.title = element_text(face = "bold")
+    ) +
+    xlab("") +
+    ylab("Incidence (100,000 person-years)")
+  if (ribbon) {
+    p <- p +
+      geom_ribbon(  alpha = 0.15, color = NA, show.legend = FALSE)
+  }
+  p
+}
+
+pSurvival <- function(data) {
+  colors <- c("#C94A5A", "#4A6FE3", "#4FAE6A", "#E08A3C")
+  data |>
+    ggplot(aes(x = time, y = 1-estimate, ymin = 1-estimate_95CI_upper, ymax = 1-estimate_95CI_lower, colour = cdm_name, fill = cdm_name, group = cdm_name)) +
+    geom_line() +
+    geom_ribbon(color = NA, alpha = 0.3) +
+    facet_wrap(vars(outcome), scales = "free_y") +
+    scale_color_manual(values = colors) +
+    scale_fill_manual(values = colors) +
+    guides(
+      color = guide_legend(title = "Database"),
+      fill  = guide_legend(title = "Database")
+    ) +
+    ggplot2::theme_linedraw() +
+    theme(
+      strip.text = element_text(face = "bold", size = 10, colour = "white"),
+      legend.position = "top",
+      legend.title = element_text(face = "bold")
+    ) +
+    xlab("Time (days)") +
+    ylab("Cumulative Incidence")
 }

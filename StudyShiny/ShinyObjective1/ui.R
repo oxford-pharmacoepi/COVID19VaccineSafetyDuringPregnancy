@@ -1413,6 +1413,11 @@ ui <- bslib::page_navbar(
                     label = "Interactive",
                     value = TRUE
                   ),
+                  shinyWidgets::materialSwitch(
+                    inputId = "legend_none",
+                    label = "Show legend",
+                    value = FALSE
+                  ),
                   shinyWidgets::pickerInput(
                     inputId = "summarise_large_scale_characteristics_compared_cohort_name",
                     label = "Comparator cohort name",
@@ -1432,15 +1437,15 @@ ui <- bslib::page_navbar(
                   shinyWidgets::pickerInput(
                     inputId = "summarise_large_scale_characteristics_plot_compared_colour",
                     label = "Colour",
-                    choices = c("cdm_name", "cohort_name", 'trimester', 'maternal_age_group', 'pregnancy_start_period', 'socioeconomic_status', 'ethnicity', 'birth_continent', 'nationallity', "type", "concept_id"),
-                    selected = "concept_id",
+                    choices = c("cdm_name", "cohort_name", 'trimester', 'maternal_age_group', 'pregnancy_start_period', 'socioeconomic_status', 'ethnicity', 'birth_continent', 'nationallity', "type", "concept_id", "concept_name"),
+                    selected = "concept_name",
                     multiple = FALSE,
                     options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
                   ),
                   shinyWidgets::pickerInput(
                     inputId = "summarise_large_scale_characteristics_plot_compared_facet",
                     label = "Facet",
-                    choices = c("cdm_name", 'trimester', 'maternal_age_group', 'pregnancy_start_period', 'socioeconomic_status', 'ethnicity', 'birth_continent', 'nationallity', "type", "concept_id"),
+                    choices = c("cdm_name", 'trimester', 'maternal_age_group', 'pregnancy_start_period', 'socioeconomic_status', 'ethnicity', 'birth_continent', 'nationallity', "type", "concept_id", "concept_name"),
                     selected = c("cdm_name"),
                     multiple = TRUE,
                     options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")

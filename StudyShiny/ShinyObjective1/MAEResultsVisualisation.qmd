@@ -1,0 +1,597 @@
+---
+title: "Background rates of maternal adverse events"
+format: docx
+execute:
+  echo: false
+  message: false
+  warning: false
+---
+
+
+```{r}
+library(CohortCharacteristics)
+library(dplyr)
+library(ggplot2)
+library(IncidencePrevalence)
+library(markdown)
+library(omopgenerics)
+library(OmopSketch)
+library(tidyr)
+library(visOmopResults)
+library(CohortSurvival)
+library(flextable)
+
+# preprocess data if it has not been done
+fileData <- file.path(getwd(), "data", "shinyData.RData")
+if (!file.exists(fileData)) {
+  source(file.path(getwd(), "data", "preprocess.R"))
+}
+
+# load shiny data
+load(fileData)
+
+# source functions
+source(file.path(getwd(), "functions.R"))
+
+# Quarto options
+knitr::opts_chunk$set(
+  out.width  = "95%",  # figures occupy ~95% of document width
+  out.height = "auto",
+  dpi        = 320,    # ensure figure quality
+  fig.width  = 9,      # default aspect ratio (can be overridden per-figure)
+  fig.height = 6,
+  results    = "asis"  # enable Markdown produced via cat() inside chunks
+)
+
+outcomeCode <- c("miscarriage", "stillbirth", "preterm_labour", "dysfunctional_labour", "antepartum_haemorrhage",  "gestational_diabetes", "preeclampsia", "eclampsia", "hellp", "ectopic_pregnancy", "postpartum_endometritis", "postpartum_haemorrhage", "maternal_death")
+outcomeClean <- c("Miscarriage", "Ectopic pregnancy", "Stillbirth", "Preterm labour", "Dysfunctional labour", "Antepartum haemorrhage",  "Gestational diabetes", "Pre-eclampsia", "Eclampsia", "HELLP", "Postpartum endometritis", "Postpartum haemorrhage", "Maternal death")
+excludeCPRD <- c("Miscarriage", "Stillbirth")
+dbOrder <- c("NLHR@UiO", "SCIFI-PEARL", "SIDIAP", "CPRD GOLD")
+
+setGlobalTableOptions(type = "flextable")
+```
+
+# Maternal Adverse Events
+
+## Overall incidence by data source
+
+Table of overall incidence rates for Maternal Adverse Events across four databases: SCIFI-PEARL, NLHR@UiO, SIDIAP, and CPRD GOLD.
+```{r}
+# Table 
+table <- data$incidence |>
+  dplyr::filter(strata_name == "overall") |>
+  omopgenerics::filterAdditional(outcome_group == "Maternal Adverse Events") |>
+  dplyr::mutate(
+    group_level = factor(
+      .data$group_level, 
+      levels = outcomeCode, 
+      labels = outcomeClean
+    ),
+    group_level = as.character(group_level)
+  ) |>
+  dplyr::filter(!is.na(group_level)) |>
+  dplyr::filter(!(cdm_name == "CPRD GOLD" & group_level %in% excludeCPRD))
+
+table <- dplyr::bind_rows(
+  table, 
+  table |>
+    omopgenerics::pivotEstimates() |>
+    dplyr::mutate(estimate_value = if_else(!is.na(outcome_count), as.character(outcome_count/denominator_count * 100), NA_character_)) |>
+    dplyr::mutate(
+      estimate_name = "outcome_percentage",
+      estimate_type = "percentage"
+    )  |>
+    dplyr::select(omopgenerics::resultColumns())
+)
+table |>
+  dplyr::filter(!estimate_name %in% c("person_days_count", "outcome_in_period_count")) |>
+  dplyr::mutate(group_name = "outcome") |>
+  newSummarisedResult(settings = settings(data$incidence) |> mutate(group = "outcome")) |>
+  visOmopResults::visOmopTable(
+    estimateName = c(
+      "Pregnancies" = "<denominator_count>",
+      "Outcomes" = "<outcome_count> (<outcome_percentage> %)",
+      "Outcomes in period" = "<outcome_in_period_count> (<outcome_in_period_percentage>%)",
+      "Person-Days" = "<person_days_count>",
+      "Person-Years" = "<person_years>",
+      "Incidence" = c("<incidence_100000_pys> (<incidence_100000_pys_95CI_lower> - <incidence_100000_pys_95CI_upper>)")
+    ),
+    header = "cdm_name",
+    groupColumn = c("outcome"),
+    hide = c("outcome_group", "gestational_trimester", "maternal_age_group", "pregnancy_start_period", "socioeconomic_status", "ethnicity", "nationallity", "birth_continent", "variable_name", "variable_level"),
+    columnOrder = c(
+      "cdm_name", "outcome_group", "outcome", "gestational_trimester", "maternal_age_group", "pregnancy_start_period",  
+      "socioeconomic_status", "ethnicity", "nationallity", "birth_continent", "variable_name", "variable_level", "estimate_name"
+    ),
+    factor = list(
+      "cdm_name" = dbOrder,
+      "outcome_group" = c("Maternal Adverse Events", "AESI Sensitivity (180 wash-out)"),
+      "outcome" = outcomeClean,
+      "maternal_age_group" = c("overall", "12 to 17", "18 to 34", "35 to 55"),
+      "pregnancy_start_period" = c("overall", "Pre COVID-19", "COVID-19 main outbreak", "Post COVID-19 main outbreak"),
+      "socioeconomic_status" = c("overall", paste0("Q", 1:5)),
+      "ethnicity" = c("overall", "White", "Black", "Asian", "Missing"),
+      "gestational_trimester" = c("overall", "Trimester 1", "Trimester 2", "Trimester 3", "Postpartum")
+    ),
+    rename = c("Database" = "cdm_name")
+  ) |>
+  set_table_properties(width = 1, layout = "autofit")
+```
+
+Figure of cumulative incidence for Maternal Adverse Events across four databases: SCIFI-PEARL, NLHR@UiO, SIDIAP, and CPRD GOLD.
+```{r}
+# Figure 
+table <- data$survival |>
+  omopgenerics::filterSettings(outcome %in% outcomeCode) |>
+  omopgenerics::filterSettings(result_type == "survival_probability") |>
+  dplyr::filter(strata_name == "overall") |>
+  tidy() |>
+  dplyr::mutate(
+    outcome = factor(
+      .data$outcome, 
+      levels = outcomeCode, 
+      labels = outcomeClean
+    ),
+    cdm_name = factor(cdm_name, levels = dbOrder, labels = dbOrder),
+    time = as.numeric(time),
+    estimate = 1 - estimate,
+    estimate_95CI_lower = 1 - estimate_95CI_lower,
+    estimate_95CI_upper = 1 - estimate_95CI_upper
+  ) |>
+  dplyr::filter(!is.na(outcome)) |>
+  dplyr::filter(!(cdm_name == "CPRD GOLD" & outcome %in% excludeCPRD)) 
+colors <- c(
+  "#C94A5A",  # Muted red
+  "#4A6FE3",  # Professional blue
+  "#4FAE6A",  # Academic green
+  "#E08A3C"   # Muted orange
+)
+table |>
+  ggplot(
+    aes(
+      x = time,
+      y = estimate,
+      ymin = estimate_95CI_upper,
+      ymax = estimate_95CI_lower,
+      color = cdm_name,
+      fill  = cdm_name,
+      group = cdm_name
+    )
+  ) +
+  geom_ribbon(
+    alpha = 0.15,
+    color = NA,
+    show.legend = FALSE
+  ) +
+  # geom_errorbar(
+  #   width = 0.15,
+  #   linewidth = 0.5
+  # ) +
+  geom_line() +
+  facet_wrap(vars(outcome), scales = "free_y") +
+  scale_color_manual(values = colors) +
+  scale_fill_manual(values = colors) +
+  guides(
+    color = guide_legend(title = "Database"),
+    fill  = guide_legend(title = "Database")
+  ) +
+  theme_bw() +
+  theme(
+    # strip.background = element_rect(fill = "white", color = "black", linewidth = 0.5),
+    strip.text = element_text(face = "bold", size = 10, colour = "black"),
+    # axis.title.x = element_text(margin = margin(t = 6)),
+    # axis.title.y = element_text(margin = margin(r = 6)),
+    legend.position = "top",
+    legend.title = element_text(face = "bold")
+  ) +
+  xlab("Days") +
+  ylab("Cumulative Incidence")
+```
+
+
+## Incidence by data source and trimester
+
+Figure of incidence rates for Maternal Adverse Events by gestational trimester, and across four databases: SCIFI-PEARL, NLHR@UiO, SIDIAP, and CPRD GOLD.
+```{r}
+# Figure 
+table <- data$incidence |>
+  dplyr::filter(strata_name %in% c("gestational_trimester")) |>
+  omopgenerics::filterAdditional(outcome_group == "Maternal Adverse Events") |>
+  tidy() |>
+  dplyr::mutate(
+    outcome_cohort_name = factor(
+      .data$outcome_cohort_name, 
+      levels = outcomeCode, 
+      labels = outcomeClean
+    ),
+    cdm_name = factor(cdm_name, levels = dbOrder, labels = dbOrder),
+    gestational_trimester = factor(gestational_trimester, levels = c(paste0("Trimester ", 1:3), "Postpartum")) 
+  ) |>
+  dplyr::filter(!is.na(outcome_cohort_name)) |>
+  dplyr::filter(!(cdm_name == "CPRD GOLD" & outcome_cohort_name %in% excludeCPRD))
+colors <- c(
+  "#C94A5A",  # Muted red
+  "#4A6FE3",  # Professional blue
+  "#4FAE6A",  # Academic green
+  "#E08A3C"   # Muted orange
+)
+
+table |>
+  # filter(!grepl("Postpartum", gestational_trimester)) |>
+  ggplot(
+    aes(
+      x = gestational_trimester,
+      y = incidence_100000_pys,
+      ymin = incidence_100000_pys_95CI_lower,
+      ymax = incidence_100000_pys_95CI_upper,
+      color = cdm_name,
+      fill  = cdm_name,
+      group = cdm_name
+    )
+  ) +
+  geom_ribbon(
+    alpha = 0.15,
+    color = NA,
+    show.legend = FALSE
+  ) +
+  geom_errorbar(
+    width = 0.15,
+    linewidth = 0.5
+  ) +
+  geom_point(
+    size = 1.8
+  ) +
+  geom_line(linewidth = 0.25) +
+  facet_wrap(vars(outcome_cohort_name), scales = "free_y") +
+  scale_color_manual(values = colors) +
+  scale_fill_manual(values = colors) +
+  guides(
+    color = guide_legend(title = "Database"),
+    fill  = guide_legend(title = "Database")
+  ) +
+  theme_bw() +
+  theme(
+    # strip.background = element_rect(fill = "white", color = "black", linewidth = 0.5),
+    strip.text = element_text(face = "bold", size = 10, colour = "black"),
+    # axis.title.x = element_text(margin = margin(t = 6)),
+    # axis.title.y = element_text(margin = margin(r = 6)),
+    legend.position = "top",
+    legend.title = element_text(face = "bold")
+  ) +
+  xlab("") +
+  ylab("Incidence per 100,000 person-years")
+```
+
+Table of incidence rates for Maternal Adverse Events by gestational trimester, and across four databases: SCIFI-PEARL, NLHR@UiO, SIDIAP, and CPRD GOLD.
+```{r, fig.width=8.5, fig.height=6}
+# Table 
+table <- data$incidence |>
+  dplyr::filter(strata_name %in% c("gestational_trimester")) |>
+  omopgenerics::filterAdditional(outcome_group == "Maternal Adverse Events") |>
+  dplyr::mutate(
+    group_level = factor(
+      .data$group_level, 
+      levels = outcomeCode, 
+      labels = outcomeClean
+    ),
+    group_level = as.character(group_level)
+  ) |>
+  dplyr::filter(!is.na(group_level)) |>
+  dplyr::filter(!(cdm_name == "CPRD GOLD" & group_level %in% excludeCPRD))
+table <- dplyr::bind_rows(
+  table, 
+  table |>
+    omopgenerics::pivotEstimates() |>
+    dplyr::mutate(estimate_value = if_else(!is.na(outcome_count), as.character(outcome_count/denominator_count * 100), NA_character_)) |>
+    dplyr::mutate(
+      estimate_name = "outcome_percentage",
+      estimate_type = "percentage"
+    )  |>
+    dplyr::select(omopgenerics::resultColumns())
+)
+table |>
+  dplyr::filter(!estimate_name %in% c("person_days_count", "outcome_in_period_count")) |>
+  dplyr::mutate(group_name = "outcome") |>
+  newSummarisedResult(settings = settings(data$incidence) |> mutate(group = "outcome")) |>
+  visOmopResults::visOmopTable(
+    estimateName = c(
+      "Pregnancies" = "<denominator_count>",
+      "Outcomes" = "<outcome_count> (<outcome_percentage> %)",
+      "Outcomes in period" = "<outcome_in_period_count> (<outcome_in_period_percentage>%)",
+      "Person-Days" = "<person_days_count>",
+      "Person-Years" = "<person_years>",
+      "Incidence" = c("<incidence_100000_pys> (<incidence_100000_pys_95CI_lower> - <incidence_100000_pys_95CI_upper>)")
+    ),
+    header = c("estimate_name"),
+    groupColumn = c("outcome"),
+    hide = c("outcome_group", "maternal_age_group", "pregnancy_start_period", "socioeconomic_status", "ethnicity", "nationallity", "birth_continent", "variable_name", "variable_level"),
+    columnOrder = c(
+      "cdm_name", "outcome_group", "outcome", "gestational_trimester", "maternal_age_group", "pregnancy_start_period",  
+      "socioeconomic_status", "ethnicity", "nationallity", "birth_continent", "variable_name", "variable_level", "estimate_name"
+    ),
+    factor = list(
+      "cdm_name" = dbOrder,
+      "gestational_trimester" = c("overall", "Trimester 1", "Trimester 2", "Trimester 3", "Postpartum"),
+      "outcome_group" = c("Maternal Adverse Events", "AESI Sensitivity (180 wash-out)"),
+      "outcome" = outcomeClean,
+      "maternal_age_group" = c("overall", "12 to 17", "18 to 34", "35 to 55"),
+      "pregnancy_start_period" = c("overall", "Pre COVID-19", "COVID-19 main outbreak", "Post COVID-19 main outbreak"),
+      "socioeconomic_status" = c("overall", paste0("Q", 1:5)),
+      "ethnicity" = c("overall", "White", "Black", "Asian", "Missing")
+    ),
+    rename = c("Database" = "cdm_name")
+  ) |>
+  set_table_properties(width = 1, layout = "autofit")
+```
+
+## Incidence by data source and age group
+
+Figure of incidence rates for Maternal Adverse Events by maternal age, and across four databases: SCIFI-PEARL, NLHR@UiO, SIDIAP, and CPRD GOLD.
+```{r}
+# Figure 
+table <- data$incidence |>
+  dplyr::filter(strata_name %in% c("maternal_age_group")) |>
+  omopgenerics::filterAdditional(outcome_group == "Maternal Adverse Events") |>
+  tidy() |>
+  dplyr::mutate(
+    outcome_cohort_name = factor(
+      .data$outcome_cohort_name, 
+      levels = outcomeCode, 
+      labels = outcomeClean
+    ),
+    cdm_name = factor(cdm_name, levels = dbOrder, labels = dbOrder)
+  ) |>
+  dplyr::filter(!is.na(outcome_cohort_name)) |>
+  dplyr::filter(!(cdm_name == "CPRD GOLD" & outcome_cohort_name %in% excludeCPRD))
+
+colors <- c(
+  "#C94A5A",  # Muted red
+  "#4A6FE3",  # Professional blue
+  "#4FAE6A",  # Academic green
+  "#E08A3C"   # Muted orange
+)
+
+table |>
+  ggplot(
+    aes(
+      x = maternal_age_group,
+      y = incidence_100000_pys,
+      ymin = incidence_100000_pys_95CI_lower,
+      ymax = incidence_100000_pys_95CI_upper,
+      color = cdm_name,
+      fill  = cdm_name,
+      group = cdm_name
+    )
+  ) +
+  geom_ribbon(
+    alpha = 0.15,
+    color = NA,
+    show.legend = FALSE
+  ) +
+  geom_errorbar(
+    width = 0.15,
+    linewidth = 0.5
+  ) +
+  geom_point(
+    size = 1.8
+  ) +
+  facet_wrap(vars(outcome_cohort_name), scales = "free_y") +
+  scale_color_manual(values = colors) +
+  scale_fill_manual(values = colors) +
+  guides(
+    color = guide_legend(title = "Database"),
+    fill  = guide_legend(title = "Database")
+  ) +
+  theme_bw() +
+  theme(
+    # strip.background = element_rect(fill = "white", color = "black", linewidth = 0.5),
+    strip.text = element_text(face = "bold", size = 10, colour = "black"),
+    # axis.title.x = element_text(margin = margin(t = 6)),
+    # axis.title.y = element_text(margin = margin(r = 6)),
+    legend.position = "top",
+    legend.title = element_text(face = "bold")
+  ) +
+  xlab("") +
+  ylab("Incidence per 100,000 person-years") 
+  # scale_y_continuous(limits = c(0, 500), oob = scales::rescale_none)
+```
+Table of incidence rates for Maternal Adverse Events by maternal age and across four databases: SCIFI-PEARL, NLHR@UiO, SIDIAP, and CPRD GOLD.
+```{r, fig.width=8.5, fig.height=6}
+# Table 
+table <- data$incidence |>
+  dplyr::filter(strata_name %in% c("maternal_age_group")) |>
+  omopgenerics::filterAdditional(outcome_group == "Maternal Adverse Events") |>
+  dplyr::mutate(
+    group_level = factor(
+      .data$group_level, 
+      levels = outcomeCode, 
+      labels = outcomeClean
+    ),
+    group_level = as.character(group_level)
+  ) |>
+  dplyr::filter(!is.na(group_level)) |>
+  dplyr::filter(!(cdm_name == "CPRD GOLD" & group_level %in% excludeCPRD))
+table <- dplyr::bind_rows(
+  table, 
+  table |>
+    omopgenerics::pivotEstimates() |>
+    dplyr::mutate(estimate_value = if_else(!is.na(outcome_count), as.character(outcome_count/denominator_count * 100), NA_character_)) |>
+    dplyr::mutate(
+      estimate_name = "outcome_percentage",
+      estimate_type = "percentage"
+    )  |>
+    dplyr::select(omopgenerics::resultColumns())
+)
+table |>
+  dplyr::filter(!estimate_name %in% c("person_days_count", "outcome_in_period_count", "outcome_in_period_percentage")) |>
+  dplyr::mutate(group_name = "outcome") |>
+  newSummarisedResult(settings = settings(data$incidence) |> mutate(group = "outcome")) |>
+  visOmopResults::visOmopTable(
+    estimateName = c(
+      "Pregnancies" = "<denominator_count>",
+      "Outcomes" = "<outcome_count> (<outcome_percentage> %)",
+      "Outcomes in period" = "<outcome_in_period_count> (<outcome_in_period_percentage>%)",
+      "Person-Days" = "<person_days_count>",
+      "Person-Years" = "<person_years>",
+      "Incidence" = c("<incidence_100000_pys> (<incidence_100000_pys_95CI_lower> - <incidence_100000_pys_95CI_upper>)")
+    ),
+    header = c("estimate_name"),
+    groupColumn = c("outcome"),
+    hide = c("outcome_group", "gestational_trimester", "pregnancy_start_period", "socioeconomic_status", "ethnicity", "nationallity", "birth_continent", "variable_name", "variable_level"),
+    columnOrder = c(
+      "cdm_name", "outcome_group", "outcome", "gestational_trimester", "maternal_age_group", "pregnancy_start_period",  
+      "socioeconomic_status", "ethnicity", "nationallity", "birth_continent", "variable_name", "variable_level", "estimate_name"
+    ),
+    factor = list(
+      "cdm_name" = dbOrder,
+      "gestational_trimester" = c("overall", "Trimester 1", "Trimester 2", "Trimester 3", "Postpartum"),
+      "outcome_group" = c("Maternal Adverse Events", "AESI Sensitivity (180 wash-out)"),
+      "outcome" = outcomeClean,
+      "maternal_age_group" = c("overall", "12 to 17", "18 to 34", "35 to 55"),
+      "pregnancy_start_period" = c("overall", "2018-2019", "2020-2021", "≥2021"),
+      "socioeconomic_status" = c("overall", paste0("Q", 1:5)),
+      "ethnicity" = c("overall", "White", "Black", "Asian", "Missing")
+    ),
+    rename = c("Database" = "cdm_name")
+  ) |>
+  set_table_properties(width = 1, layout = "autofit")
+```
+
+
+## Incidence by data source and calendar time
+
+Figure of incidence rates for Maternal Adverse Events by calendar time, and across four databases: SCIFI-PEARL, NLHR@UiO, SIDIAP, and CPRD GOLD.
+```{r}
+# Figure 
+table <- data$incidence |>
+  dplyr::filter(strata_name %in% c("pregnancy_start_period")) |>
+  omopgenerics::filterAdditional(outcome_group == "Maternal Adverse Events") |>
+  tidy() |>
+  dplyr::mutate(
+    outcome_cohort_name = factor(
+      .data$outcome_cohort_name, 
+      levels = outcomeCode, 
+      labels = outcomeClean
+    ),
+    cdm_name = factor(cdm_name, levels = dbOrder, labels = dbOrder),
+    pregnancy_start_period = factor(pregnancy_start_period, levels = c("Pre COVID-19", "COVID-19 main outbreak", "Post COVID-19 main outbreak"), labels = c("2018-2019", "2020-2021", "≥2021"))
+  ) |>
+  dplyr::filter(!is.na(outcome_cohort_name)) |>
+  dplyr::filter(!(cdm_name == "CPRD GOLD" & outcome_cohort_name %in% excludeCPRD))
+
+colors <- c(
+  "#C94A5A",  # Muted red
+  "#4A6FE3",  # Professional blue
+  "#4FAE6A",  # Academic green
+  "#E08A3C"   # Muted orange
+)
+
+table |>
+  ggplot(
+    aes(
+      x = pregnancy_start_period,
+      y = incidence_100000_pys,
+      ymin = incidence_100000_pys_95CI_lower,
+      ymax = incidence_100000_pys_95CI_upper,
+      color = cdm_name,
+      fill  = cdm_name,
+      group = cdm_name
+    )
+  ) +
+  geom_ribbon(
+    alpha = 0.15,
+    color = NA,
+    show.legend = FALSE
+  ) +
+  geom_errorbar(
+    width = 0.15,
+    linewidth = 0.5
+  ) +
+  geom_point(
+    size = 1.8
+  ) +
+  geom_line(linewidth = 0.25) +
+  facet_wrap(vars(outcome_cohort_name), scale = "free_y") +
+  scale_color_manual(values = colors) +
+  scale_fill_manual(values = colors) +
+  guides(
+    color = guide_legend(title = "Database"),
+    fill  = guide_legend(title = "Database")
+  ) +
+  theme_bw() +
+  theme(
+    # strip.background = element_rect(fill = "white", color = "black", linewidth = 0.5),
+    strip.text = element_text(face = "bold", size = 10, colour = "black"),
+    # axis.title.x = element_text(margin = margin(t = 6)),
+    # axis.title.y = element_text(margin = margin(r = 6)),
+    legend.position = "top",
+    legend.title = element_text(face = "bold")
+  ) +
+  xlab("") +
+  ylab("Incidence per 100,000 person-years")
+```
+
+Table of incidence rates for Maternal Adverse Events by calendar time, and across four databases: SCIFI-PEARL, NLHR@UiO, SIDIAP, and CPRD GOLD.
+```{r, fig.width=8.5, fig.height=6}
+# Table 
+table <- data$incidence |>
+  dplyr::filter(strata_name %in% c("pregnancy_start_period")) |>
+  omopgenerics::filterAdditional(outcome_group == "Maternal Adverse Events") |>
+  dplyr::mutate(
+    group_level = factor(
+      .data$group_level, 
+      levels = outcomeCode, 
+      labels = outcomeClean
+    ),
+    group_level = as.character(group_level),
+     strata_level = factor(strata_level, levels = c("Pre COVID-19", "COVID-19 main outbreak", "Post COVID-19 main outbreak"), labels = c("2018-2019", "2020-2021", "≥2021")),
+    strata_level = as.character(strata_level),
+  ) |>
+  dplyr::filter(!is.na(group_level)) |>
+  dplyr::filter(!(cdm_name == "CPRD GOLD" & group_level %in% excludeCPRD))
+table <- dplyr::bind_rows(
+  table, 
+  table |>
+    omopgenerics::pivotEstimates() |>
+    dplyr::mutate(estimate_value = if_else(!is.na(outcome_count), as.character(outcome_count/denominator_count * 100), NA_character_)) |>
+    dplyr::mutate(
+      estimate_name = "outcome_percentage",
+      estimate_type = "percentage"
+    )  |>
+    dplyr::select(omopgenerics::resultColumns())
+)
+table |>
+  dplyr::filter(!estimate_name %in% c("person_days_count", "outcome_in_period_count", "outcome_in_period_percentage")) |>
+  dplyr::mutate(group_name = "outcome") |>
+  newSummarisedResult(settings = settings(data$incidence) |> mutate(group = "outcome")) |>
+  visOmopResults::visOmopTable(
+    estimateName = c(
+      "Pregnancies" = "<denominator_count>",
+      "Outcomes" = "<outcome_count> (<outcome_percentage> %)",
+      "Outcomes in period" = "<outcome_in_period_count> (<outcome_in_period_percentage>%)",
+      "Person-Days" = "<person_days_count>",
+      "Person-Years" = "<person_years>",
+      "Incidence" = c("<incidence_100000_pys> (<incidence_100000_pys_95CI_lower> - <incidence_100000_pys_95CI_upper>)")
+    ),
+    header = c("estimate_name"),
+    groupColumn = c("outcome"),
+    hide = c("outcome_group", "gestational_trimester", "maternal_age_group", "socioeconomic_status", "ethnicity", "nationallity", "birth_continent", "variable_name", "variable_level"),
+    columnOrder = c(
+      "cdm_name", "outcome_group", "outcome", "gestational_trimester", "maternal_age_group", "pregnancy_start_period",  
+      "socioeconomic_status", "ethnicity", "nationallity", "birth_continent", "variable_name", "variable_level", "estimate_name"
+    ),
+    factor = list(
+      "cdm_name" = dbOrder,
+      "gestational_trimester" = c("overall", "Trimester 1", "Trimester 2", "Trimester 3", "Postpartum"),
+      "outcome_group" = c("Maternal Adverse Events", "AESI Sensitivity (180 wash-out)"),
+      "outcome" = outcomeClean,
+      "maternal_age_group" = c("overall", "12 to 17", "18 to 34", "35 to 55"),
+      "pregnancy_start_period" = c("overall", "2018-2019", "2020-2021", "≥2021"),
+      "socioeconomic_status" = c("overall", paste0("Q", 1:5)),
+      "ethnicity" = c("overall", "White", "Black", "Asian", "Missing")
+    ),
+    rename = c("Database" = "cdm_name")
+  ) |>
+  set_table_properties(width = 1, layout = "autofit")
+```
+

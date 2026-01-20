@@ -461,6 +461,14 @@ server <- function(input, output, session) {
       dplyr::rename("concept_name" = "variable_name")
   })
   getSummariseLargeScaleCharacteristicsComparedTableLsc <- shiny::reactive({
+    x1 <- input$summarise_large_scale_characteristics_cohort_name
+    x2 <- input$summarise_large_scale_characteristics_cohort_name_type
+    cohortName1 <- do.call(paste0, expand.grid(x1, paste0("_", x2)))
+    cohortName1 <- gsub("_original", "", cohortName1)
+    y1 <- input$summarise_large_scale_characteristics_compared_cohort_name
+    y2 <- input$summarise_large_scale_characteristics_compared_cohort_name_type
+    cohortName2 <- do.call(paste0, expand.grid(y1, paste0("_", y2)))
+    cohortName2 <- gsub("_original", "", cohortName2)
     dropCols <- input$summarise_large_scale_characteristics_table_lsc_compared_hide
     dropCols[dropCols == "variable_name"] <- "concept_name"
     getSummariseLargeScaleCharacteristicsComparedData() |>
@@ -491,7 +499,7 @@ server <- function(input, output, session) {
     y2 <- input$summarise_large_scale_characteristics_compared_cohort_name_type
     cohortName2 <- do.call(paste0, expand.grid(y1, paste0("_", y2)))
     cohortName2 <- gsub("_original", "", cohortName2)
-    getSummariseLargeScaleCharacteristicsComparedData() |>
+    p <- getSummariseLargeScaleCharacteristicsComparedData() |>
       visOmopResults::scatterPlot(
         x = cohortName1,
         y = cohortName2,
@@ -502,11 +510,14 @@ server <- function(input, output, session) {
         ymax = NULL,
         facet = input$summarise_large_scale_characteristics_plot_compared_facet,
         colour = input$summarise_large_scale_characteristics_plot_compared_colour,
-        label = c("ASMD", "SMD")
+        label = c("ASMD", "SMD", "concept_name")
       ) +
       ggplot2::xlab(paste0(cohortName1, " (%)")) +
       ggplot2::ylab(paste0(cohortName2, " (%)")) +
       ggplot2::geom_abline(slope = 1, intercept = 0, linetype = "dashed", colour = "gray")
+    if (!input$legend_none) {
+      p <- p + ggplot2::theme(legend.position = "none")
+    }
   })
   output$summarise_large_scale_characteristics_plot_compared <- shiny::renderUI({
     x <- getComparedLSCPlot()
