@@ -544,7 +544,7 @@ pIncidence <- function(data, x, scales, ribbon = TRUE) {
     geom_point(size = 2) +
     geom_line(linewidth = 0.3) +
     # geom_errorbar(width = 0.15,linewidth = 0.4) +
-    facet_wrap(vars(outcome_cohort_name), scales = scales, nrow = 2) +
+    facet_wrap(vars(outcome_cohort_name), scales = scales, nrow = 1, labeller = label_wrap_gen(10)) +
     scale_color_manual(values = colors) +
     scale_fill_manual(values = colors) +
     guides(
@@ -555,7 +555,8 @@ pIncidence <- function(data, x, scales, ribbon = TRUE) {
     theme(
       strip.text = element_text(face = "bold", size = 10, colour = "white"),
       legend.position = "top",
-      legend.title = element_text(face = "bold")
+      legend.title = element_text(face = "bold"),
+      axis.text.x = element_text(face = "bold")
     ) +
     xlab("") +
     ylab("Incidence (100,000 person-years)")

@@ -26,6 +26,8 @@ library(visOmopResults)
 library(yaml)
 library(ggfortify)
 library(scales)
+library(meta)
+library(EmpiricalCalibration)
 
 # preprocess data if it has not been done
 fileData <- file.path(getwd(), "data", "shinyData.RData")

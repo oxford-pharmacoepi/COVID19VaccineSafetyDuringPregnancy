@@ -679,7 +679,8 @@ server <- function(input, output, session) {
         .data$age_group %in% input$incidence_rate_ratio_age_group
       ) |>
       omopgenerics::filterAdditional(
-        .data$outcome_name %in% input$incidence_rate_ratio_outcome_name
+        .data$outcome_name %in% input$incidence_rate_ratio_outcome_name,
+        .data$empirical_calibration %in% input$incidence_rate_ratio_empirical_calibration
       ) |>
       omopgenerics::filterSettings(
         .data$outcome_group %in% input$incidence_rate_ratio_outcome_group,
@@ -731,8 +732,8 @@ server <- function(input, output, session) {
         hide = input$incidence_rate_ratio_table_hide_summary,
         columnOrder = c(
           'cdm_name', 'cohort_name', 'vaccine_brand', 'gestational_trimester', 
-          'age_group', 'follow_up_end', 'outcome_group', 'outcome_name', 'variable_name', 'variable_level', 
-          'follow_up_end', 'weighting', 'estimate_name', 'estimate_value'),
+          'age_group', 'outcome_group', 'outcome_name', 'variable_name', 'variable_level', 
+          'weighting', 'estimate_name', 'estimate_value'),
         factor = list(
           "outcome_group" = c("Adverse Events of Special Interest", "Maternal Adverse Events", "Negative Control Outcomes", "Positive Control Outcomes"),
           "age_group" = c("overall", "12 to 17", "18 to 34", "35 to 55"),
@@ -762,8 +763,9 @@ server <- function(input, output, session) {
         hide = input$incidence_rate_ratio_table_hide_irr,
         columnOrder = c(
           'cdm_name', 'cohort_name', 'vaccine_brand', 'gestational_trimester', 
-          'age_group', 'follow_up_end', 'outcome_name', 'variable_name', 'variable_level', 
-          'follow_up_end', 'weighting', 'estimate_name', 'estimate_value'),
+          'age_group', 'outcome_group', 'outcome_name', 'variable_name', 
+          'variable_level', 'weighting', 'confidence_interval', 'empirical_calibration',
+          'estimate_name', 'estimate_value'),
         factor = list(
           "outcome_group" = c("Adverse Events of Special Interest", "Maternal Adverse Events", "Negative Control Outcomes", "Positive Control Outcomes"),
           "age_group" = c("overall", "12 to 17", "18 to 34", "35 to 55"),

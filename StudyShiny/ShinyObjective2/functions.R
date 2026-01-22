@@ -1,12 +1,12 @@
 backgroundCard <- function(fileName) {
   # read file
   content <- readLines(fileName)
-
+  
   # extract yaml metadata
   # Find the positions of the YAML delimiters (----- or ---)
   yamlStart <- grep("^---|^-----", content)[1]
   yamlEnd <- grep("^---|^-----", content)[2]
-
+  
   if (any(is.na(c(yamlStart, yamlEnd)))) {
     metadata <- NULL
   } else {
@@ -17,10 +17,10 @@ backgroundCard <- function(fileName) {
     # eliminate yaml part from content
     content <- content[-(yamlStart:yamlEnd)]
   }
-
+  
   tmpFile <- tempfile(fileext = ".md")
   writeLines(text = content, con = tmpFile)
-
+  
   # metadata referring to keys
   backgroundKeywords <- list(
     header = "bslib::card_header",
@@ -38,7 +38,7 @@ backgroundCard <- function(fileName) {
       }
     }) |>
     purrr::compact()
-
+  
   arguments <- c(
     # metadata referring to arguments of card
     metadata[names(metadata) %in% names(formals(bslib::card))],
@@ -52,9 +52,9 @@ backgroundCard <- function(fileName) {
     ) |>
       purrr::compact()
   )
-
+  
   unlink(tmpFile)
-
+  
   do.call(bslib::card, arguments)
 }
 summaryCdmName <- function(data) {
@@ -224,16 +224,16 @@ simpleTable <- function(result,
   if (length(header) == 0) header <- character()
   if (length(group) == 0) group <- NULL
   if (length(hide) == 0) hide <- character()
-
+  
   if (nrow(result) == 0) {
     return(gt::gt(dplyr::tibble()))
   }
-
+  
   result <- result |>
     omopgenerics::addSettings() |>
     omopgenerics::splitAll() |>
     dplyr::select(-"result_id")
-
+  
   # format estimate column
   formatEstimates <- c(
     "N (%)" = "<count> (<percentage>%)",
@@ -269,16 +269,16 @@ tidyDT <- function(x,
   strataColumns <- omopgenerics::strataColumns(x)
   additionalColumns <- omopgenerics::additionalColumns(x)
   settingsColumns <- omopgenerics::settingsColumns(x)
-
+  
   # split and add settings
   x <- x |>
     omopgenerics::splitAll() |>
     omopgenerics::addSettings()
-
+  
   # remove density
   x <- x |>
     dplyr::filter(!.data$estimate_name %in% c("density_x", "density_y"))
-
+  
   # estimate columns
   if (pivotEstimates) {
     estCols <- unique(x$estimate_name)
@@ -287,7 +287,7 @@ tidyDT <- function(x,
   } else {
     estCols <- c("estimate_name", "estimate_type", "estimate_value")
   }
-
+  
   # order columns
   cols <- list(
     "CDM name" = "cdm_name", "Group" = groupColumns, "Strata" = strataColumns,
@@ -299,7 +299,7 @@ tidyDT <- function(x,
   cols[["Estimates"]] <- estCols
   x <- x |>
     dplyr::select(dplyr::all_of(unname(unlist(cols))))
-
+  
   # prepare the header
   container <- shiny::tags$table(
     class = "display",
@@ -309,7 +309,7 @@ tidyDT <- function(x,
       shiny::tags$tr(purrr::map(unlist(cols), shiny::tags$th))
     )
   )
-
+  
   # create DT table
   DT::datatable(
     data = x,
@@ -363,7 +363,7 @@ getSelected <- function(choices) {
       if ("Both" %in% vals) return("Both")
       return(vals[[1]])
     }
-
+    
     if (grepl("_denominator_age_group$", nm)) {
       bounds <- regmatches(vals, regexec("^(\\d+) to (\\d+)$", vals))
       valid <- vapply(bounds, length, integer(1)) == 3
@@ -374,11 +374,11 @@ getSelected <- function(choices) {
         return(vals[[1]])
       }
     }
-
+    
     if (grepl("_outcome_cohort_name$", nm)) {
       return(vals[[1]])
     }
-
+    
     vals
   })
 }
@@ -387,5 +387,99 @@ renderInteractivePlot <- function(plt, interactive) {
     plotly::renderPlotly(plt)
   } else {
     shiny::renderPlot(plt)
+  }
+}
+
+metaAnalysis <- function(data) {
+  data <- data|> dplyr::ungroup()
+  if (nrow(data) < 2) {
+    return(NULL)
+  }
+  if (sum(!is.na(as.numeric(data$comparator_outcome_count)), na.rm = TRUE) < 2 | sum(!is.na(as.numeric(data$exposed_outcome_count)), na.rm = TRUE) < 2) {
+    return(NULL)
+  }
+  if (sum(as.numeric(data$comparator_outcome_count), na.rm = TRUE) == 0 | sum(as.numeric(data$exposed_outcome_count), na.rm = TRUE) == 0) {
+    return(NULL)
+  }
+  metaResults <- meta::metainc(
+    event.e = data$exposed_outcome_count,
+    time.e = data$exposed_person_days,
+    event.c = data$comparator_outcome_count,
+    time.c = data$comparator_person_days,
+    sm = "IRR"
+  )
+  dplyr::tibble(
+    cdm_name = "Meta Analysis", 
+    coef = exp(metaResults$TE.random),
+    lower_ci = exp(metaResults$lower.random),
+    upper_ci = exp(metaResults$upper.random),
+    heterogeneity = metaResults$I2,
+    comparator_record_count = sum(data$comparator_record_count, na.rm = TRUE),
+    exposed_record_count = sum(data$exposed_record_count, na.rm = TRUE),
+    comparator_outcome_count = sum(data$comparator_outcome_count, na.rm = TRUE),
+    exposed_outcome_count = sum(data$exposed_outcome_count, na.rm = TRUE),
+    comparator_person_days = sum(data$comparator_person_days, na.rm = TRUE),
+    exposed_person_days = sum(data$exposed_person_days, na.rm = TRUE)
+  ) |>
+    tidyr::pivot_longer(
+      cols = c(
+        "coef", "lower_ci", "upper_ci", "heterogeneity", "comparator_record_count", 
+        "exposed_record_count", "comparator_outcome_count", "exposed_outcome_count", 
+        "comparator_person_days", "exposed_person_days"
+      ),
+      names_to = "estimate_name",
+      values_to = "estimate_value"
+    ) |>
+    dplyr::mutate(
+      variable_name = dplyr::case_when(
+        estimate_name %in% c("coef", "lower_ci", "upper_ci", "heterogeneity") ~ "Relative Risk",
+        grepl("record_count", estimate_name) ~ "Number pregnancies",
+        grepl("outcome_count", estimate_name) ~ "Number events",
+        .default = "Person-Days"
+      ),
+      variable_level = dplyr::case_when(
+        grepl("exposed", estimate_name) ~ "exposed",
+        grepl("comparator", estimate_name) ~ "comparator",
+        .default = NA_character_
+      ),
+      estimate_type = dplyr::if_else(grepl("count", estimate_name), "integer", "numeric"),
+      estimate_name = gsub("exposed_|comparator_", "", estimate_name),
+      estimate_value = as.character(estimate_value)
+    )
+}
+
+empiricalCalibration <- function(data) {
+  # nco
+  nco <- data |> 
+    dplyr::filter(outcome_group %in% "Negative Control Outcomes") |>
+    dplyr::filter(!is.na(coef))
+  if (nrow(nco) > 5) {
+    estimates <- data |> 
+      dplyr::filter(!outcome_group %in% "Negative Control Outcomes") |>
+      dplyr::filter(!is.na(coef))
+    newNull <- EmpiricalCalibration::fitSystematicErrorModel(
+      logRr = log(nco$coef),
+      seLogRr = (log(nco$lower_ci) - log(nco$coef))/qnorm(0.025),
+      trueLogRr = rep(0, nrow(nco))
+    )
+    calibration <- EmpiricalCalibration::calibrateConfidenceInterval(
+      log(estimates$coef), 
+      (log(estimates$lower_ci) - log(estimates$coef))/qnorm(0.025), 
+      model = newNull
+    )
+    estimatesCalibrated <- estimates |>
+      dplyr::mutate(
+        coef = exp(calibration$logRr),
+        upper_ci = exp(calibration$logUb95Rr),
+        lower_ci = exp(calibration$logLb95Rr),
+        empirical_calibration = TRUE
+      ) 
+    return(
+      data |>
+        dplyr::mutate(empirical_calibration = FALSE) |>
+        dplyr::bind_rows(estimatesCalibrated)
+    )
+  } else {
+    return(data |> dplyr::mutate(empirical_calibration = FALSE))
   }
 }

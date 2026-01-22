@@ -57,8 +57,8 @@ knitr::opts_chunk$set(
 
 maeCode <- c("miscarriage", "stillbirth", "preterm_labour", "dysfunctional_labour", "antepartum_haemorrhage",  "gestational_diabetes", "preeclampsia", "eclampsia", "hellp", "ectopic_pregnancy", "postpartum_endometritis", "postpartum_haemorrhage", "maternal_death")
 maeClean <- c("Miscarriage", "Ectopic pregnancy", "Stillbirth", "Preterm labour", "Dysfunctional labour", "Antepartum haemorrhage",  "Gestational diabetes", "Pre-eclampsia", "Eclampsia", "HELLP", "Postpartum endometritis", "Postpartum haemorrhage", "Maternal death")
-aesiCode <- c("deep_vein_thrombosis", "pulmonary_embolism", "bells_palsy", "immune_thrombocytopenia", "anaphylaxis", "myocarditis_or_pericarditis", "ischaemic_stroke", "haemorrhagic_stroke", "tts",  "guillain_barre_syndrome",  "disseminated_intravascular_coagulation", "transverse_myelitis", "narcolepsy", "myocardial_infarction", "encephalitis")
-aesiClean <- c('Deep vein thrombosis', 'Pulmonary embolism', 'Bell’s palsy', 'Immune thrombocytopenia', 'Anaphylaxis', 'Myocarditis or pericarditis', 'Ischaemic stroke', 'Haemorrhagic stroke', 'Thrombosis with thrombocytopenia syndrome', 'Guillain–Barré syndrome', 'Disseminated intravascular coagulation', 'Transverse myelitis', 'Narcolepsy', 'Myocardial infarction', 'Encephalitis')
+aesiCode <- c("pulmonary_embolism", "deep_vein_thrombosis", "bells_palsy", "immune_thrombocytopenia", "anaphylaxis", "myocarditis_or_pericarditis", "ischaemic_stroke", "haemorrhagic_stroke", "tts",  "guillain_barre_syndrome",  "disseminated_intravascular_coagulation", "transverse_myelitis", "narcolepsy", "myocardial_infarction", "encephalitis")
+aesiClean <- c('Pulmonary embolism', 'Deep vein thrombosis', 'Bell’s palsy', 'Immune thrombocytopenia', 'Anaphylaxis', 'Myocarditis or pericarditis', 'Ischaemic stroke', 'Haemorrhagic stroke', 'Thrombosis with thrombocytopenia syndrome', 'Guillain–Barré syndrome', 'Disseminated intravascular coagulation', 'Transverse myelitis', 'Narcolepsy', 'Myocardial infarction', 'Encephalitis')
 excludeCPRD <- c("Miscarriage", "Stillbirth")
 dbOrder <- c("NLHR@UiO", "SCIFI-PEARL", "SIDIAP", "CPRD GOLD")
 
@@ -151,10 +151,7 @@ data$summarise_characteristics |>
   set_table_properties(width = 1, layout = "autofit") |>
   font(fontname = "calibri", part = "all") |>
   fontsize(size = 9, part = "body") |>
-  fontsize(size = 10, part = "header") |>
-  width(j = 1, width = 2.3, unit = "cm") |>
-  width(j = 1:3, width = 2.66, unit = "cm") |>
-  width(j = 1:3, width = 2.3, unit = "cm")
+  fontsize(size = 10, part = "header") 
 ```
 
 :::{custom-style="FooterNuria"}
@@ -235,10 +232,11 @@ data$meta_incidence |>
       .default = "numeric"
     ),
     outcome = factor(.data$outcome_cohort_name, levels = c(aesiClean, maeClean)),
-    estimate_value = as.character(estimate_value)
+    estimate_value = as.character(estimate_value),
+    outcome_group = factor(outcome_group, levels = c("Maternal Adverse Events", "Adverse Events of Special Interest"))
   ) |>
   filter(!is.na(outcome)) |>
-  arrange(outcome) |>
+  arrange(outcome_group, outcome) |>
   select(!"outcome_cohort_name") |>
   visTable(
     estimateName = c(
@@ -265,131 +263,8 @@ Pooled incidence rates were estimated per 100,000 person-years using Poisson gen
 IR = Incidence Rate; PI = Prediction Interval; 𝜏² = estimated in between-database variance
 :::
 
-
 :::{custom-style="Caption"}
-Figure 1. Incidence rates per 100,000 person-years for the 6-most frequent Adverse Events of Special Interest among pregnant women, stratified by gestational trimester and database.
-:::
-
-```{r,  fig.height = 9}
-# prepare results ----
-tidyIncidence <- data$incidence |>
-  dplyr::filter(strata_name %in% c("gestational_trimester", "maternal_age_group")) |>
-  omopgenerics::filterAdditional(outcome_group %in% c("Adverse Events of Special Interest")) |>
-  dplyr::mutate(
-    group_level = factor(
-      .data$group_level, 
-      levels = c(aesiCode, maeCode), 
-      labels = c(aesiClean, maeClean)
-    ),
-    group_level = as.character(group_level)
-  ) |>
-  dplyr::filter(!is.na(group_level)) |>
-  dplyr::filter(!(cdm_name == "CPRD GOLD" & group_level %in% excludeCPRD)) |>
-  tidy() |>
-  select(!c(
-    "socioeconomic_status", "ethnicity", "birth_continent", "nationallity", "variable_name", "variable_level", "person_days_count"
-  )) |>
-  filter(!outcome_cohort_name %in% c("Thrombosis with thrombocytopenia syndrome", "Narcolepsy", "Disseminated intravascular coagulation", "Encephalitis", "Guillain–Barré syndrome", "Myocardial infarction", "Transverse myelitis", "Ischaemic stroke", "Haemorrhagic stroke")) |>
-  mutate(
-    outcome_cohort_name = factor(.data$outcome_cohort_name, levels = aesiClean),
-    cdm_name = factor(cdm_name, dbOrder)
-  ) |>
-  arrange(cdm_name, outcome_cohort_name)
-
-pTrimester <- pIncidence(tidyIncidence |> filter(maternal_age_group == "overall"), "gestational_trimester", "free_y") +
-   ggh4x::facetted_pos_scales(
-     y  = list(
-       outcome_cohort_name == "Deep vein thrombosis" ~ scale_y_continuous(limits = c(0,170), oob = scales::rescale_none),
-       outcome_cohort_name == "Pulmonary embolism" ~ scale_y_continuous(limits = c(0,250), oob = scales::rescale_none),
-       outcome_cohort_name == "Bell’s palsy" ~ scale_y_continuous(limits = c(0,170), oob = scales::rescale_none),
-       outcome_cohort_name == "Immune thrombocytopenia" ~ scale_y_continuous(limits = c(0,150), oob = scales::rescale_none),
-       outcome_cohort_name == "Anaphylaxis" ~ scale_y_continuous(limits = c(0,50), oob = scales::rescale_none),
-       outcome_cohort_name == "Myocarditis or pericarditis" ~ scale_y_continuous(limits = c(0,30), oob = scales::rescale_none)
-     )
-   ) +
-  ggtitle("A) Incidence Rates by Gestational Trimester") +
-  theme(title = element_text(face = "bold", size = 13))
-pAge <- pIncidence(tidyIncidence |> filter(gestational_trimester == "overall"), "maternal_age_group", "free_y") +
-  # scale_y_continuous(limits = c(0,150)) +
-  theme(legend.position = "none") +
-     ggh4x::facetted_pos_scales(
-     y  = list(
-       outcome_cohort_name == "Deep vein thrombosis" ~ scale_y_continuous(limits = c(0,150), oob = scales::rescale_none),
-       outcome_cohort_name == "Pulmonary embolism" ~ scale_y_continuous(limits = c(0,250), oob = scales::rescale_none),
-       outcome_cohort_name == "Bell’s palsy" ~ scale_y_continuous(limits = c(0,100), oob = scales::rescale_none),
-       outcome_cohort_name == "Immune thrombocytopenia" ~ scale_y_continuous(limits = c(0,100), oob = scales::rescale_none),
-       outcome_cohort_name == "Anaphylaxis" ~ scale_y_continuous(limits = c(0,40), oob = scales::rescale_none),
-       outcome_cohort_name == "Myocarditis or pericarditis" ~ scale_y_continuous(limits = c(0,25), oob = scales::rescale_none)
-     )
-   ) +
-  ggtitle("B) Incidence Rates by Age") +
-  theme(title = element_text(face = "bold", size = 13))
-
-pTrimester / pAge + 
-  plot_layout(heights = c(2, 1.9)) 
-```
-
-```{r,  fig.height = 9}
-# prepare results ----
-tidyIncidence <- data$incidence |>
-  dplyr::filter(strata_name %in% c("gestational_trimester", "maternal_age_group")) |>
-  omopgenerics::filterAdditional(outcome_group %in% c("Adverse Events of Special Interest")) |>
-  dplyr::mutate(
-    group_level = factor(
-      .data$group_level, 
-      levels = c(aesiCode, maeCode), 
-      labels = c(aesiClean, maeClean)
-    ),
-    group_level = as.character(group_level)
-  ) |>
-  dplyr::filter(!is.na(group_level)) |>
-  dplyr::filter(!(cdm_name == "CPRD GOLD" & group_level %in% excludeCPRD)) |>
-  tidy() |>
-  select(!c(
-    "socioeconomic_status", "ethnicity", "birth_continent", "nationallity", "variable_name", "variable_level", "person_days_count"
-  )) |>
-  filter(!outcome_cohort_name %in% c("Thrombosis with thrombocytopenia syndrome", "Narcolepsy", "Disseminated intravascular coagulation", "Encephalitis", "Guillain–Barré syndrome", "Myocardial infarction", "Transverse myelitis", "Ischaemic stroke", "Haemorrhagic stroke")) |>
-  mutate(
-    outcome_cohort_name = factor(.data$outcome_cohort_name, levels = aesiClean),
-    cdm_name = factor(cdm_name, dbOrder)
-  ) |>
-  arrange(cdm_name, outcome_cohort_name)
-
-pTrimester <- pIncidence(tidyIncidence |> filter(maternal_age_group == "overall"), "gestational_trimester", "free_y", FALSE) +
-   ggh4x::facetted_pos_scales(
-     y  = list(
-       outcome_cohort_name == "Deep vein thrombosis" ~ scale_y_continuous(limits = c(0,170), oob = scales::rescale_none),
-       outcome_cohort_name == "Pulmonary embolism" ~ scale_y_continuous(limits = c(0,250), oob = scales::rescale_none),
-       outcome_cohort_name == "Bell’s palsy" ~ scale_y_continuous(limits = c(0,170), oob = scales::rescale_none),
-       outcome_cohort_name == "Immune thrombocytopenia" ~ scale_y_continuous(limits = c(0,150), oob = scales::rescale_none),
-       outcome_cohort_name == "Anaphylaxis" ~ scale_y_continuous(limits = c(0,50), oob = scales::rescale_none),
-       outcome_cohort_name == "Myocarditis or pericarditis" ~ scale_y_continuous(limits = c(0,30), oob = scales::rescale_none)
-     )
-   ) +
-  ggtitle("A) Incidence Rates by Gestational Trimester") +
-  theme(title = element_text(face = "bold", size = 13))
-pAge <- pIncidence(tidyIncidence |> filter(gestational_trimester == "overall"), "maternal_age_group", "free_y", FALSE) +
-  # scale_y_continuous(limits = c(0,150)) +
-  theme(legend.position = "none") +
-     ggh4x::facetted_pos_scales(
-     y  = list(
-       outcome_cohort_name == "Deep vein thrombosis" ~ scale_y_continuous(limits = c(0,150), oob = scales::rescale_none),
-       outcome_cohort_name == "Pulmonary embolism" ~ scale_y_continuous(limits = c(0,250), oob = scales::rescale_none),
-       outcome_cohort_name == "Bell’s palsy" ~ scale_y_continuous(limits = c(0,100), oob = scales::rescale_none),
-       outcome_cohort_name == "Immune thrombocytopenia" ~ scale_y_continuous(limits = c(0,100), oob = scales::rescale_none),
-       outcome_cohort_name == "Anaphylaxis" ~ scale_y_continuous(limits = c(0,40), oob = scales::rescale_none),
-       outcome_cohort_name == "Myocarditis or pericarditis" ~ scale_y_continuous(limits = c(0,25), oob = scales::rescale_none)
-     )
-   ) +
-  ggtitle("B) Incidence Rates by Age") +
-  theme(title = element_text(face = "bold", size = 13))
-
-pTrimester / pAge + 
-  plot_layout(heights = c(2, 1.9)) 
-```
-
-:::{custom-style="Caption"}
-Figure 2. Cumulative curves for Maternal Adverse Events across databases.
+Figure 1. Cumulative Incidence curves for Maternal Adverse Events across databases.
 :::
 
 ```{r, fig.width=10}
@@ -416,54 +291,77 @@ survivalTidy |>
   facet_wrap(vars(outcome), nrow = 3, ncol = 5, scales = "free", labeller = label_wrap_gen(10)) +
   ggh4x::facetted_pos_scales(
     y  = list(
-      outcome == "Ectopic pregnancy" ~ scale_y_continuous(limits = c(0,0.05), oob = scales::rescale_none),
+      outcome == "Ectopic pregnancy" ~ scale_y_continuous(limits = c(0,0.04), oob = scales::rescale_none),
       outcome == "Antepartum haemorrhage" ~ scale_y_continuous(limits = c(0,0.08), oob = scales::rescale_none),
       outcome == "Gestational diabetes" ~ scale_y_continuous(limits = c(0,0.1), oob = scales::rescale_none),
-      outcome == "Pre-eclampsia" ~ scale_y_continuous(labels = scales::label_comma(), oob = scales::rescale_none),
-      outcome == "Eclampsia"  ~ scale_y_continuous(limits = c(0,0.005), oob = scales::rescale_none)
+      outcome == "Pre-eclampsia" ~ scale_y_continuous(limits = c(0,0.001), labels = scales::label_comma(), oob = scales::rescale_none),
+      outcome == "Eclampsia"  ~ scale_y_continuous(limits = c(0,0.003), oob = scales::rescale_none)
     )
   )
 ```
 
 :::{custom-style="Caption"}
-Figure 3. Cumulative incidence curves for Maternal Adverse Events across databases, stratified by age.
+Figure 2. Cumulative incidence curves for Maternal Adverse Events across databases, stratified by age.
 :::
 
-```{r, fig.height=14}
+```{r, fig.height=16, fig.width=11}
 colors <- c("#C94A5A", "#4A6FE3", "#4FAE6A", "#E08A3C")
 survivalTidyAge <- survivalTidy |>
   filter(maternal_age_group != "overall") |>
   mutate(maternal_age_group = as.character(maternal_age_group))
-survivalTidyAge |>
+pPregnancy <- survivalTidyAge |>
+  filter(!grepl("Postpartum", outcome)) |>
   pSurvival() +
   geom_vline(data = filter(survivalTidyAge, !grepl("Postpartum", outcome)), aes(xintercept = 90), colour = "#495057", linetype = "dashed") +
   geom_vline(data = filter(survivalTidyAge, !grepl("Postpartum", outcome)), aes(xintercept = 180), colour = "#495057", linetype = "dashed") +
   facet_grid(rows = vars(outcome), cols = vars(maternal_age_group), scales = "free", labeller = label_wrap_gen(10)) +
   ggh4x::facetted_pos_scales(
-    # x  = list(
-    #   grepl("Postpartum", outcome) ~ scale_x_continuous(limits = c(0,84)),
-    #   !grepl("Postpartum", outcome) ~ scale_x_continuous(limits = c(0,308))
-    # ),
+  #   x  = list(
+  #     grepl("Postpartum", outcome) ~ scale_x_continuous(limits = c(0,84)),
+  #     !grepl("Postpartum", outcome) ~ scale_x_continuous(limits = c(0,308))
+  #   ),
     y  = list(
-      outcome == "Ectopic pregnancy" ~ scale_y_continuous(limits = c(0,0.03), oob = scales::rescale_none),
-      outcome == "Antepartum haemorrhage" ~ scale_y_continuous(limits = c(0,0.05), oob = scales::rescale_none),
+      outcome == "Ectopic pregnancy" ~ scale_y_continuous(limits = c(0,0.04), oob = scales::rescale_none),
+      outcome == "Antepartum haemorrhage" ~ scale_y_continuous(limits = c(0,0.1), oob = scales::rescale_none),
       outcome == "Gestational diabetes" ~ scale_y_continuous(limits = c(0,0.08), oob = scales::rescale_none),
       outcome == "Pre-eclampsia" ~ scale_y_continuous(limits = c(0,0.001), labels = scales::label_comma(), oob = scales::rescale_none),
       outcome == "Eclampsia" ~ scale_y_continuous(limits = c(0,0.003), oob = scales::rescale_none),
       outcome == "Postpartum endometritis" ~ scale_y_continuous(limits = c(0,0.006), oob = scales::rescale_none),
       outcome == "Postpartum haemorrhage" ~ scale_y_continuous(limits = c(0,0.02), oob = scales::rescale_none)
     )
+  ) +
+  ggtitle("A) Cumulative Incidence curves for Pregnancy Maternal Adverse Events") +
+  theme(
+    legend.position = "right", 
+    panel.spacing.y = unit(1, "lines"), 
+    panel.spacing.x = unit(0.7, "lines"),
+    plot.title = element_text(hjust = -0.05, face = "bold", size = 13)
   )
+pPostpartum <- survivalTidyAge |>
+  filter(grepl("Postpartum", outcome)) |>
+  pSurvival() +
+  facet_grid(rows = vars(outcome), cols = vars(maternal_age_group), scales = "free", labeller = label_wrap_gen(10)) +
+  theme(legend.position = "right") +
+  ggtitle("B) Cumulative Incidence curves for Postpartum Maternal Adverse Events") +
+  theme(
+    panel.spacing.y = unit(1, "lines"), 
+    panel.spacing.x = unit(0.7, "lines"),
+    plot.title = element_text(hjust = -0.05, face = "bold", size = 13)
+  )
+
+pPregnancy / pPostpartum +
+  plot_layout(heights = c(10, 1.9), guides = "collect")
 ```
 
 :::{custom-style="Caption"}
-Figure 3. Incidence rates for Maternal Adverse Events across databases, stratified by age.
+Figure 3. Incidence rates per 100,000 person-years for the 5-most frequent Adverse Events of Special Interest among pregnant women, stratified by gestational trimester and database.
 :::
 
-```{r, fig.height=9}
+```{r, fig.height=9, fig.width=13}
+# prepare results ----
 tidyIncidence <- data$incidence |>
-  dplyr::filter(strata_name %in% c("gestational_trimester", "maternal_age_group")) |>
-  omopgenerics::filterAdditional(outcome_group %in% c("Maternal Adverse Events")) |>
+  dplyr::filter(strata_name %in% c("gestational_trimester", "maternal_age_group", "pregnancy_start_period")) |>
+  omopgenerics::filterAdditional(outcome_group %in% c("Adverse Events of Special Interest")) |>
   dplyr::mutate(
     group_level = factor(
       .data$group_level, 
@@ -473,30 +371,78 @@ tidyIncidence <- data$incidence |>
     group_level = as.character(group_level)
   ) |>
   dplyr::filter(!is.na(group_level)) |>
-    dplyr::filter(group_level != "Maternal death") |>
   dplyr::filter(!(cdm_name == "CPRD GOLD" & group_level %in% excludeCPRD)) |>
   tidy() |>
   select(!c(
     "socioeconomic_status", "ethnicity", "birth_continent", "nationallity", "variable_name", "variable_level", "person_days_count"
   )) |>
+  filter(!outcome_cohort_name %in% c("Myocarditis or pericarditis", "Thrombosis with thrombocytopenia syndrome", "Narcolepsy", "Disseminated intravascular coagulation", "Encephalitis", "Guillain–Barré syndrome", "Myocardial infarction", "Transverse myelitis", "Ischaemic stroke", "Haemorrhagic stroke")) |>
   mutate(
-    outcome_cohort_name = factor(.data$outcome_cohort_name, levels = maeClean),
+    outcome_cohort_name = factor(.data$outcome_cohort_name, levels = aesiClean),
     cdm_name = factor(cdm_name, dbOrder)
   ) |>
   arrange(cdm_name, outcome_cohort_name)
 
-pAge <- pIncidence(tidyIncidence |> filter(gestational_trimester == "overall"), "maternal_age_group", "free_y", FALSE) +
-  facet_wrap(vars(outcome_cohort_name), scales = "free_y") +
+pTrimester <- tidyIncidence |> 
+  filter(maternal_age_group == "overall", pregnancy_start_period == "overall") |> 
+  pIncidence("gestational_trimester", "free_y") +
+  theme(legend.position = "none") +
    ggh4x::facetted_pos_scales(
      y  = list(
-       outcome_cohort_name == "Ectopic pregnancy" ~ scale_y_continuous(limits = c(0,3600), oob = scales::rescale_none),
-       outcome_cohort_name == "Stillbirth" ~ scale_y_continuous(limits = c(0,36000), oob = scales::rescale_none),
-       outcome_cohort_name == "Pre-eclampsia" ~ scale_y_continuous(limits = c(0, 50), oob = scales::rescale_none),
-       outcome_cohort_name == "Eclampsia" ~ scale_y_continuous(limits = c(0,200), oob = scales::rescale_none),
-       outcome_cohort_name == "HELLP" ~ scale_y_continuous(limits = c(0,3000), oob = scales::rescale_none),
-       outcome_cohort_name == "Postpartum endometritis" ~ scale_y_continuous(limits = c(0,2000), oob = scales::rescale_none),
-       outcome_cohort_name == "Postpartum haemorrhage" ~ scale_y_continuous(limits = c(0,7500), oob = scales::rescale_none)
+       outcome_cohort_name == "Deep vein thrombosis" ~ scale_y_continuous(limits = c(0,170), oob = scales::rescale_none),
+       outcome_cohort_name == "Pulmonary embolism" ~ scale_y_continuous(limits = c(0,250), oob = scales::rescale_none),
+       outcome_cohort_name == "Bell’s palsy" ~ scale_y_continuous(limits = c(0,170), oob = scales::rescale_none),
+       outcome_cohort_name == "Immune thrombocytopenia" ~ scale_y_continuous(limits = c(0,150), oob = scales::rescale_none),
+       outcome_cohort_name == "Anaphylaxis" ~ scale_y_continuous(limits = c(0,50), oob = scales::rescale_none),
+       outcome_cohort_name == "Myocarditis or pericarditis" ~ scale_y_continuous(limits = c(0,30), oob = scales::rescale_none)
      )
-   ) 
-pAge
+   ) +
+  ggtitle("A) Incidence Rates by Gestational Trimester") +
+  theme(plot.title = element_text(hjust = -0.05, face = "bold", size = 15))
+
+pAge <- tidyIncidence |> 
+  filter(gestational_trimester == "overall", pregnancy_start_period == "overall") |> 
+  pIncidence("maternal_age_group", "free_y") +
+  # scale_y_continuous(limits = c(0,150)) +
+  theme(legend.position = "none") +
+     ggh4x::facetted_pos_scales(
+     y  = list(
+       outcome_cohort_name == "Deep vein thrombosis" ~ scale_y_continuous(limits = c(0,150), oob = scales::rescale_none),
+       outcome_cohort_name == "Pulmonary embolism" ~ scale_y_continuous(limits = c(0,250), oob = scales::rescale_none),
+       outcome_cohort_name == "Bell’s palsy" ~ scale_y_continuous(limits = c(0,100), oob = scales::rescale_none),
+       outcome_cohort_name == "Immune thrombocytopenia" ~ scale_y_continuous(limits = c(0,100), oob = scales::rescale_none),
+       outcome_cohort_name == "Anaphylaxis" ~ scale_y_continuous(limits = c(0,40), oob = scales::rescale_none),
+       outcome_cohort_name == "Myocarditis or pericarditis" ~ scale_y_continuous(limits = c(0,25), oob = scales::rescale_none)
+     )
+   ) +
+  ggtitle("B) Incidence Rates by Age") +
+  theme(plot.title = element_text(hjust = -0.05, face = "bold", size = 15))
+
+pCalendar <- tidyIncidence |> 
+  filter(gestational_trimester == "overall", maternal_age_group == "overall") |> 
+  mutate(
+    pregnancy_start_period = factor(
+      pregnancy_start_period, 
+      levels = c("Pre COVID-19", "COVID-19 main outbreak", "Post COVID-19 main outbreak"), 
+      labels = c("2018-2019", "2020-2021", "≥2022")
+    )
+  ) |>
+  pIncidence("pregnancy_start_period", "free_y") +
+  # scale_y_continuous(limits = c(0,150)) +
+  theme(legend.position = "bottom") +
+     ggh4x::facetted_pos_scales(
+     y  = list(
+       outcome_cohort_name == "Deep vein thrombosis" ~ scale_y_continuous(limits = c(0,150), oob = scales::rescale_none),
+       outcome_cohort_name == "Pulmonary embolism" ~ scale_y_continuous(limits = c(0,270), oob = scales::rescale_none),
+       outcome_cohort_name == "Bell’s palsy" ~ scale_y_continuous(limits = c(0,100), oob = scales::rescale_none),
+       outcome_cohort_name == "Immune thrombocytopenia" ~ scale_y_continuous(limits = c(0,100), oob = scales::rescale_none),
+       outcome_cohort_name == "Anaphylaxis" ~ scale_y_continuous(limits = c(0,60), oob = scales::rescale_none),
+       outcome_cohort_name == "Myocarditis or pericarditis" ~ scale_y_continuous(limits = c(0,25), oob = scales::rescale_none)
+     )
+   ) +
+  ggtitle("C) Incidence Rates by Calendar Period") +
+  theme(plot.title = element_text(hjust = -0.05, face = "bold", size = 15)) 
+
+(pTrimester / pAge / pCalendar) + 
+  plot_layout(heights = c(1.9, 1.9, 2)) 
 ```

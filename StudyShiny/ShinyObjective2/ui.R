@@ -1610,6 +1610,14 @@ ui <- bslib::page_navbar(
           multiple = TRUE,
           options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
         ),
+        shinyWidgets::pickerInput(
+          inputId = "incidence_rate_ratio_empirical_calibration",
+          label = "Empirical Calibration",
+          choices = choices$incidence_rate_ratio_empirical_calibration,
+          selected = FALSE,
+          multiple = TRUE,
+          options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
+        ),
         width = 335,
         position = "left"
       ),
@@ -1660,7 +1668,7 @@ ui <- bslib::page_navbar(
                   ),
                   sortable::add_rank_list(
                     text = "Hide",
-                    labels = c("vaccine_brand", "gestational_trimester", "age_group", "outcome_group", "follow_up_end", "weighting", "confidence_interval", "study_analysis"),
+                    labels = c("vaccine_brand", "gestational_trimester", "age_group", "outcome_group", "weighting", "confidence_interval", "empirical_calibration", "study_analysis"),
                     input_id = "incidence_rate_ratio_table_hide_summary"
                   )
                 ),
@@ -1711,7 +1719,7 @@ ui <- bslib::page_navbar(
                   ),
                   sortable::add_rank_list(
                     text = "Hide",
-                    labels = c("vaccine_brand", "gestational_trimester", "age_group", "outcome_group", "follow_up_end", "weighting", "variable_name", "variable_level", "study_analysis", "confidence_interval", "study_analysis"),
+                    labels = c("vaccine_brand", "gestational_trimester", "age_group", "outcome_group", "weighting", "variable_name", "variable_level", "study_analysis", "confidence_interval", "empirical_calibration", "study_analysis"),
                     input_id = "incidence_rate_ratio_table_hide_irr"
                   )
                 ),
@@ -1762,7 +1770,7 @@ ui <- bslib::page_navbar(
                 shinyWidgets::pickerInput(
                   inputId = "incidence_rate_ratio_plot_y",
                   label = "Vertical component",
-                  choices = c("cdm_name", "cohort_name", "vaccine_brand", "gestational_trimester", "age_group", "weighting", "outcome_name", "outcome_group", "follow_up_end"),
+                  choices = c("cdm_name", "cohort_name", "vaccine_brand", "gestational_trimester", "age_group", "weighting", "outcome_name", "outcome_group", "empirical_calibration"),
                   selected = "outcome_name",
                   multiple = TRUE,
                   options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
@@ -1770,7 +1778,7 @@ ui <- bslib::page_navbar(
                 shinyWidgets::pickerInput(
                   inputId = "incidence_rate_ratio_plot_facet",
                   label = "Facet",
-                  choices = c("cdm_name", "cohort_name", "vaccine_brand", "gestational_trimester", "age_group", "weighting", "outcome_name", "outcome_group", "follow_up_end"),
+                  choices = c("cdm_name", "cohort_name", "vaccine_brand", "gestational_trimester", "age_group", "weighting", "outcome_name", "outcome_group", "empirical_calibration"),
                   selected = c("cdm_name", "cohort_name"),
                   multiple = TRUE,
                   options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
@@ -1778,7 +1786,7 @@ ui <- bslib::page_navbar(
                 shinyWidgets::pickerInput(
                   inputId = "incidence_rate_ratio_plot_colour",
                   label = "Colour",
-                  choices = c("cdm_name", "cohort_name", "vaccine_brand", "gestational_trimester", "age_group", "weighting", "outcome_name", "outcome_group", "follow_up_end"),
+                  choices = c("cdm_name", "cohort_name", "vaccine_brand", "gestational_trimester", "age_group", "weighting", "outcome_name", "outcome_group", "empirical_calibration"),
                   selected = "outcome_group",
                   multiple = TRUE,
                   options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")

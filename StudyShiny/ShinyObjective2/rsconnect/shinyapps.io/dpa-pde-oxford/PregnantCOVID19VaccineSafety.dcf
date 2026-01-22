@@ -5,8 +5,9 @@ account: dpa-pde-oxford
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 15219709
-bundleId: 10785713
+bundleId: 11478957
 url: https://dpa-pde-oxford.shinyapps.io/PregnantCOVID19VaccineSafety/
 version: 1
 asMultiple: FALSE
 asStatic: FALSE
+ignoredFiles: data copy
