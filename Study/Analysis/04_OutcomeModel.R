@@ -64,36 +64,37 @@ for (end in ends) {
 
 # MAE ----
 info(logger, "- Create MAE outcome cohort")
-## Group 1: < 20 weeks (miscarriage)
-info(logger, "  * Get IRR for miscarriage")
-cdm$mea_miscarriage <- cdm$study_population |>
-  dplyr::select(dplyr::all_of(toKeep)) %>% 
-  subsetCohorts(
-    cohortId = paste0("population_miscarriage_objective_", 1:3), 
-    name = "mea_miscarriage"
-  ) |>
-  addCohortIntersectDate(
-    targetCohortTable = "mae",
-    targetCohortId = outcomeMiscarriage,
-    window = c(1, Inf),
-    nameStyle = "{cohort_name}",
-    name = "mea_miscarriage"
-  ) %>% 
-  mutate(week_19_end = as.Date(!!dateadd("pregnancy_start_date", 19*7 + 6))) |>
-  mutate(
-    week_19_end =  if_else(week_19_end < cohort_end_date, week_19_end, cohort_end_date),
-    week_19_end_sensitivity =  if_else(week_19_end < cohort_end_date_sensitivity, week_19_end, cohort_end_date_sensitivity)
-  ) |>
-  compute(name = "mea_miscarriage", temporary = FALSE)
-for (end in c("week_19_end", "week_19_end_sensitivity")) {
-  estimateSurvivalRisk(
-    cohort = cdm$mea_miscarriage, outcomes = outcomeMiscarriage, outcomeGroup = "Maternal Adverse Events",
-    end = end, strata = strata, group = "cohort_name", weights = allCovariatesPS, ci = ci
-  ) |>
-    suppressRiskEstimates() |> 
-    exportSummarisedResult(fileName = glue("outcome_risk_{end}_{cdmName(cdm)}"), path = output_folder)
+if ("miscarriage" %in% settings(cdm$mae)$cohort_name) {
+  ## Group 1: < 20 weeks (miscarriage)
+  info(logger, "  * Get IRR for miscarriage")
+  cdm$mea_miscarriage <- cdm$study_population |>
+    dplyr::select(dplyr::all_of(toKeep)) %>% 
+    subsetCohorts(
+      cohortId = paste0("population_miscarriage_objective_", 1:3), 
+      name = "mea_miscarriage"
+    ) |>
+    addCohortIntersectDate(
+      targetCohortTable = "mae",
+      targetCohortId = outcomeMiscarriage,
+      window = c(1, Inf),
+      nameStyle = "{cohort_name}",
+      name = "mea_miscarriage"
+    ) %>% 
+    mutate(week_19_end = as.Date(!!dateadd("pregnancy_start_date", 19*7 + 6))) |>
+    mutate(
+      week_19_end =  if_else(week_19_end < cohort_end_date, week_19_end, cohort_end_date),
+      week_19_end_sensitivity =  if_else(week_19_end < cohort_end_date_sensitivity, week_19_end, cohort_end_date_sensitivity)
+    ) |>
+    compute(name = "mea_miscarriage", temporary = FALSE)
+  for (end in c("week_19_end", "week_19_end_sensitivity")) {
+    estimateSurvivalRisk(
+      cohort = cdm$mea_miscarriage, outcomes = outcomeMiscarriage, outcomeGroup = "Maternal Adverse Events",
+      end = end, strata = strata, group = "cohort_name", weights = allCovariatesPS, ci = ci
+    ) |>
+      suppressRiskEstimates() |> 
+      exportSummarisedResult(fileName = glue("outcome_risk_{end}_{cdmName(cdm)}"), path = output_folder)
+  }
 }
-
 ## Group 2: < 37 weeks (preterm labour)
 info(logger, "  * Get IRR for preterm labour")
 cdm$mea_preterm_labour <- cdm$study_population |>
