@@ -2032,7 +2032,7 @@ getPostpartum12Denominator <- function(cohort) {
 getMaternalDeathDenominator <- function(cohort) {
   cohort |>
     mutate(
-      cohort_start_date = pregnancy_end_date,
+      cohort_start_date = pregnancy_start_date,
       cohort_end_date = postpartum_6_weeks
     ) |>
     compute(name = "maternal_death_denominator", temporary = FALSE) |>
