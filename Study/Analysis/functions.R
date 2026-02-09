@@ -2550,7 +2550,7 @@ getMatchedCohort <- function(cohort, outcomes, name) {
         cohortAttritionRef = NULL,
         cohortCodelistRef = NULL
       )
-    if (outcome_cohort |> tally() |> pull() > 5) {
+    if (outcome_cohort |> tally() |> pull() >= 5) {
       outcome_match <- cohort |>
         filter(.data[[paste0(outcome, "_status")]] == 0) |>
         select(all_of(c(
