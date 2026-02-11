@@ -1,0 +1,302 @@
+---
+title: "Background rates of maternal adverse events and adverse events of special interest during pregnancy: a cohort study of four European countries"
+format:
+  docx:
+    reference-doc: ref.docx
+    fig-cap-location: top
+execute:
+  echo: false
+  message: false
+  warning: false
+---
+
+
+```{r}
+library(CohortCharacteristics)
+library(dplyr)
+library(ggplot2)
+library(IncidencePrevalence)
+library(markdown)
+library(omopgenerics)
+library(OmopSketch)
+library(tidyr)
+library(visOmopResults)
+library(CohortSurvival)
+library(flextable)
+library(lme4)
+library(broom)     
+library(glmmTMB)
+library(purrr)
+library(patchwork)
+library(ggh4x)
+
+# whether to run meta analysis
+runMetaAnalysis <- TRUE
+
+# preprocess data if it has not been done
+fileData <- file.path(getwd(), "data", "shinyData.RData")
+if (!file.exists(fileData)) {
+  source(file.path(getwd(), "data", "preprocess.R"))
+}
+
+# load shiny data
+load(fileData)
+
+# source functions
+source(file.path(getwd(), "functions.R"))
+
+# Quarto options
+knitr::opts_chunk$set(
+  out.width  = "95%",  # figures occupy ~95% of document width
+  out.height = "auto",
+  dpi        = 320,    # ensure figure quality
+  fig.width  = 9,      # default aspect ratio (can be overridden per-figure)
+  fig.height = 6,
+  results    = "asis"  # enable Markdown produced via cat() inside chunks
+)
+
+maeCode <- c(
+  "miscarriage", "ectopic_pregnancy", "stillbirth", 
+  
+  "gestational_diabetes", "preeclampsia", 
+  "eclampsia", "hellp", "antepartum_haemorrhage",  
+  
+  "preterm_labour", "dysfunctional_labour", 
+  
+  "postpartum_haemorrhage", "postpartum_endometritis", 
+  
+  "maternal_death"
+)
+maeClean <- c(
+  "Miscarriage", "Ectopic pregnancy", "Stillbirth",
+  
+  "Gestational diabetes", "Pre-eclampsia",
+  "Eclampsia", "HELLP syndrome", "Antepartum haemorrhage", 
+  
+  "Preterm labour", "Dysfunctional labour",
+  
+  "Postpartum haemorrhage", "Postpartum endometritis", 
+  
+  "Maternal death"
+)
+aesiCode <- c(
+  "pulmonary_embolism", "deep_vein_thrombosis", "tts",
+  "immune_thrombocytopenia", "disseminated_intravascular_coagulation", 
+  
+  "myocarditis_or_pericarditis", "myocardial_infarction", 
+  
+  "ischaemic_stroke", "haemorrhagic_stroke",   
+  
+  "anaphylaxis", 
+  
+  "bells_palsy", "guillain_barre_syndrome", 
+  "transverse_myelitis", "encephalitis", "narcolepsy"
+)
+aesiClean <- c(
+  'Pulmonary embolism', 'Deep vein thrombosis', 'Thrombosis with thrombocytopenia syndrome', 
+  'Immune thrombocytopenia', 'Disseminated intravascular coagulation', 
+  
+  'Myocarditis or pericarditis', 'Myocardial infarction', 
+  
+  'Ischaemic stroke', 'Haemorrhagic stroke', 
+  
+  'Anaphylaxis', 
+  
+  'Bell’s palsy', 'Guillain–Barré syndrome', 
+  'Transverse myelitis', 'Encephalitis', 'Narcolepsy'
+)
+excludeCPRD <- c("Miscarriage", "Stillbirth")
+dbOrder <- c("NLHR@UiO", "SCIFI-PEARL", "SIDIAP", "CPRD GOLD")
+
+setGlobalTableOptions(type = "flextable")
+```
+
+:::{custom-style="Caption"}
+Table 1. Characteristics of included pregnancies, stratified by database. 
+:::
+
+```{r}
+# prepare results ----
+data$summarise_characteristics |>
+  dplyr::filter(group_level == "pregnancy_denominator", strata_name == "overall") |>
+  dplyr::filter(
+    !variable_name %in% c("Cohort start date", "Cohort end date", "Age", "Sex", "Prior observation", "Future observation")
+  ) |>
+  dplyr::mutate(
+    estimate_value = if_else(variable_name == "Previous pregnancies", as.character(as.numeric(.data$estimate_value) - 1), .data$estimate_value),
+    cdm_name = factor(cdm_name, levels = dbOrder),
+    variable_level = dplyr::if_else(variable_name == "Previous pregnancies", "-", variable_level),
+    variable_name = factor(
+      variable_name,
+      levels = c(
+        "Number records", 
+        "Maternal age", 
+        "Maternal age group",
+        "Days in cohort", 
+        "Previous pregnancies", 
+        "Covariates in the past 5 years",
+        "History of comorbidities", 
+        "Medications in the past year"
+      ),
+      labels = c(
+        "Number pregnancies", 
+        "Maternal age", 
+        "Maternal age group",
+        "Pregnancy length (days)", 
+        "Previous pregnancies",
+        "Covariates (previous 5 years)",
+        "Comorbidities (any-time before)",
+        "Medications (previous year)"
+      )
+    ),
+    variable_level = factor(
+      variable_level,
+      levels = c(
+        "12 to 17", "18 to 34", "35 to 55", "-", 
+        
+        "Obesity", "Depression", "Anxiety", "Alcohol misuse dependence", 
+        
+        "Asthma", "Diabetes", "Thyroid disorder", 
+        "Essential hypertension", 
+        "Systemic lupus erythematosus", "Hiv", 
+        
+        "Antidepressants", "Antiinflammatory antirheumatic", "Nsaids", 
+        "Opioids", "Treatment acid related disorder", "Antiepileptics", 
+        "Diabetes treatments"
+      ),
+      labels = c(
+        "12 to 17", "18 to 34", "35 to 55", "-", 
+        
+        "Obesity", "Depression", "Anxiety", "Alcohol misuse dependence", 
+        
+        "Asthma", "Diabetes", "Thyroid disorder", 
+        "Essential hypertension", 
+        "SLE", "HIV", 
+        
+        "Antidepressants", "Antiinflammatory antirheumatic", "NSAIDs", 
+        "Opioids", "Acid-related disorder treatments", "Antiepileptics", 
+        "Diabetes treatments"
+      )
+    )
+  ) |>
+  dplyr::filter(!is.na(variable_name)) |>
+  dplyr::arrange(cdm_name, variable_name, variable_level) |>
+  visOmopTable(
+    estimateName = c(
+      "N (%)" = "<count> (<percentage>%)",
+      "N" = "<count>",
+      "Median [Q25 to Q75]" = "<median> [<q25> to <q75>]"
+    ),
+    rename = c("Database" = "cdm_name"),
+    header = "cdm_name",
+    hide = c("cohort_name", strataColumns(data$summarise_characteristics)),
+    .options = list(keepNotFormatted = FALSE, groupAsColumn = TRUE),
+    groupColumn = "variable_name"
+  ) |>
+  set_table_properties(width = 1, layout = "autofit") |>
+  font(fontname = "calibri", part = "all") |>
+  fontsize(size = 9, part = "body") |>
+  fontsize(size = 10, part = "header") 
+```
+
+
+:::{custom-style="Caption"}
+Table 2. Pooled Incidence Rates (per 100,000 person-years) and 95% Prediction Intervals for adverse events across four databases.
+
+:::
+
+```{r}
+# prepare results ----
+tidyIncidence <- data$incidence |>
+  dplyr::filter(strata_name %in% c("overall", "gestational_trimester", "maternal_age_group", "pregnancy_start_period")) |>
+  omopgenerics::filterAdditional(outcome_group %in% c("Maternal Adverse Events", "Adverse Events of Special Interest")) |>
+  dplyr::mutate(
+    group_level = factor(
+      .data$group_level, 
+      levels = c(aesiCode, maeCode), 
+      labels = c(aesiClean, maeClean)
+    ),
+    group_level = as.character(group_level)
+  ) |>
+  dplyr::filter(!is.na(group_level)) |>
+  dplyr::filter(!(cdm_name == "CPRD GOLD" & group_level %in% excludeCPRD)) |>
+  tidy() |>
+  select(!c(
+    "socioeconomic_status", "ethnicity", "birth_continent", "nationallity", "variable_name", "variable_level", "person_days_count", "incidence_100000_pys", "incidence_100000_pys_95CI_lower", "incidence_100000_pys_95CI_upper", "outcome_in_period_count", "outcome_in_period_percentage"
+  ))
+
+# pool results ----
+# --> model event counts using a Poisson distribution
+# --> account for different amounts of person-time in each database
+# --> random-effect for between-database heterogeneity. random intercept for database (1 | cdm_name)
+# --> consider databases with zero events
+if (runMetaAnalysis) {
+  data$meta_incidence <- tidyIncidence |>
+    filter(!is.na(outcome_count), !is.na(person_years)) |>
+    group_by(
+      outcome_cohort_name,
+      gestational_trimester,
+      maternal_age_group,
+      pregnancy_start_period,
+      outcome_group
+    ) |>
+    nest() |>
+    mutate(
+      meta = map(data, metaIR)
+    ) |>
+    unnest(meta) |>
+    ungroup() |>
+    select(!data)
+  save(data, choices, selected, values, file = file.path(getwd(), "data", "shinyData.RData"))
+} 
+
+# display results ----
+data$meta_incidence |>
+  dplyr::filter(
+    gestational_trimester == "overall",
+    maternal_age_group == "overall",
+    pregnancy_start_period == "overall"
+  ) |>
+  select(!c("gestational_trimester", "maternal_age_group", "pregnancy_start_period")) |>
+  pivot_longer(
+    cols = c("pooled_incidence_100000_pys", "predicted_interval_95CI_lower", "predicted_interval_95CI_upper", "tau2", "denominator_count", "outcome_count", "outcome_percentage", "number_of_databases", "person_years"),
+    values_to = "estimate_value",
+    names_to = "estimate_name"
+  ) |>
+  mutate(
+    estimate_type = case_when(
+      grepl("count", estimate_name) | estimate_name == "number_of_databases" ~ "integer",
+      grepl("percentage", estimate_name) | estimate_name == "tau2" ~ "percentage",
+      .default = "numeric"
+    ),
+    outcome = factor(.data$outcome_cohort_name, levels = c(aesiClean, maeClean)),
+    estimate_value = as.character(estimate_value),
+    outcome_group = factor(outcome_group, levels = c("Maternal Adverse Events", "Adverse Events of Special Interest"))
+  ) |>
+  filter(!is.na(outcome)) |>
+  arrange(outcome_group, outcome) |>
+  select(!"outcome_cohort_name") |>
+  visTable(
+    estimateName = c(
+      "Databases (N)" = "<number_of_databases>",
+      "Pregnancies (N)" = "<denominator_count>",
+      "Outcomes (N (%))" = "<outcome_count> (<outcome_percentage>%)",
+      "Person-Years" = "<person_years>",
+      "IR (95% PI)" = "<pooled_incidence_100000_pys> (<predicted_interval_95CI_lower> to <predicted_interval_95CI_upper>)",
+      "𝜏²" = "<tau2>"
+    ),
+    hide = "estimate_type",
+    header = "estimate_name",
+    groupColumn = "outcome_group",
+    .options = list(decimals = c(integer = 0, percentage = 3, numeric = 2))
+  ) |>
+  set_table_properties(width = 1, layout = "autofit") |>
+  font(fontname = "calibri", part = "all") |>
+  fontsize(size = 9, part = "body") |>
+  fontsize(size = 10, part = "header")
+```
+
+:::{custom-style="FooterNuria"}
+Pooled incidence rates were estimated per 100,000 person-years using Poisson generalized linear mixed models with a random intercept for database; 95% prediction intervals reflect between-database heterogeneity. Source-specific estimates are shown in Supplementary Tables Sx. Databases with event counts <5 were clouded as per data-protection rules and were not included in pooled estimates. 
+IR = Incidence Rate; PI = Prediction Interval; 𝜏² = estimated in between-database variance
+:::
