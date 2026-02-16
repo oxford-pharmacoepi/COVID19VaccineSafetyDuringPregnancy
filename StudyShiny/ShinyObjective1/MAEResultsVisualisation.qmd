@@ -43,8 +43,8 @@ knitr::opts_chunk$set(
   results    = "asis"  # enable Markdown produced via cat() inside chunks
 )
 
-outcomeCode <- c("miscarriage", "stillbirth", "preterm_labour", "dysfunctional_labour", "antepartum_haemorrhage",  "gestational_diabetes", "preeclampsia", "eclampsia", "hellp", "ectopic_pregnancy", "postpartum_endometritis", "postpartum_haemorrhage", "maternal_death")
-outcomeClean <- c("Miscarriage", "Ectopic pregnancy", "Stillbirth", "Preterm labour", "Dysfunctional labour", "Antepartum haemorrhage",  "Gestational diabetes", "Pre-eclampsia", "Eclampsia", "HELLP", "Postpartum endometritis", "Postpartum haemorrhage", "Maternal death")
+outcomeCode <- c("miscarriage", "stillbirth", "ectopic_pregnancy", "antepartum_haemorrhage",  "gestational_diabetes", "preeclampsia", "eclampsia", "hellp", "preterm_labour", "dysfunctional_labour", "postpartum_endometritis", "postpartum_haemorrhage", "maternal_death")
+outcomeClean <- c("Miscarriage", "Stillbirth", "Ectopic pregnancy", "Antepartum haemorrhage",  "Gestational diabetes", "Pre-eclampsia", "Eclampsia", "HELLP syndrome", "Preterm labour", "Dysfunctional labour", "Postpartum endometritis", "Postpartum haemorrhage", "Maternal death")
 excludeCPRD <- c("Miscarriage", "Stillbirth")
 dbOrder <- c("NLHR@UiO", "SCIFI-PEARL", "SIDIAP", "CPRD GOLD")
 

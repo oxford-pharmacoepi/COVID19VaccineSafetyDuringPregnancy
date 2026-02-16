@@ -793,8 +793,15 @@ server <- function(input, output, session) {
         ),
         gestational_trimester = factor(
           gestational_trimester, levels = c("overall", paste0("Trimester ", 1:3))
+        ),
+        outcome_name = factor(
+          outcome_name,
+          levels = rev(c("miscarriage", "stillbirth", "antepartum_haemorrhage",  "eclampsia", "hellp", "preterm_labour", "dysfunctional_labour", "postpartum_endometritis", "postpartum_haemorrhage", "maternal_death")),
+          labels = rev(c("Miscarriage", "Stillbirth", "Antepartum haemorrhage",  "Eclampsia", "HELLP Syndrome", "Preterm labour", "Dysfunctional labour", "Postpartum endometritis", "Postpartum haemorrhage", "Maternal death"))
         )
       ) |>
+      dplyr::arrange(outcome_name) |>
+      # dplyr::filter(!is.na(coef)) |>
       visOmopResults::scatterPlot(
         x = input$incidence_rate_ratio_plot_y,
         y = "coef",

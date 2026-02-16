@@ -453,7 +453,7 @@ empiricalCalibration <- function(data) {
   nco <- data |> 
     dplyr::filter(outcome_group %in% "Negative Control Outcomes") |>
     dplyr::filter(!is.na(coef))
-  if (nrow(nco) > 5) {
+  if (nrow(nco) > 10) {
     estimates <- data |> 
       dplyr::filter(!outcome_group %in% "Negative Control Outcomes") |>
       dplyr::filter(!is.na(coef))

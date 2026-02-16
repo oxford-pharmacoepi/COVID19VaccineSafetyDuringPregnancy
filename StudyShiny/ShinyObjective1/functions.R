@@ -532,7 +532,76 @@ metaIR <- function(df, rateMultiplier = 1e5, alpha = 0.05) {
   )
 }
 
-pIncidence <- function(data, x, scales, ribbon = TRUE) {
+metaCI <- function(df, rateMultiplier = 1e5, alpha = 0.05) {
+  
+  # need at least 2 databases
+  if (nrow(df) < 2) {
+    return(tibble(
+      pooled_estimate = NA_real_,
+      predicted_interval_95CI_lower = NA_real_,
+      predicted_interval_95CI_upper = NA_real_,
+      denominator_count = sum(df$number_records_count, na.rm = TRUE),
+      outcome_count = sum(df$n_events_count, na.rm = TRUE),
+      number_of_databases = nrow(df),
+      tau2 = NA_real_
+    ))
+  }
+  
+  # Fit Poisson GLMM
+  glmmCumInc <- tryCatch(
+    glmer(
+      cbind(n_events_count, number_records_count - n_events_count) ~ 1 + (1 | cdm_name), 
+      data = df, 
+      family = binomial(link = "logit"), 
+      control = glmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 2e5)) 
+    ),
+    error = function(e) NULL
+  )
+  
+  if (is.null(glmmCumInc)) {
+    return(tibble(
+      pooled_estimate = NA_real_,
+      predicted_interval_95CI_lower = NA_real_,
+      predicted_interval_95CI_upper = NA_real_,
+      denominator_count = sum(df$number_records_count, na.rm = TRUE),
+      outcome_count = sum(df$n_events_count, na.rm = TRUE),
+      number_of_databases = nrow(df),
+      tau2 = NA_real_
+    ))
+  }
+  
+  # Helper
+  invLogit <- function(x) exp(x) / (1 + exp(x))
+  
+  # Fixed effect (pooled logit)
+  beta0 <- fixef(glmmCumInc)[["(Intercept)"]]
+  seBeta0 <- sqrt(vcov(glmmCumInc)[1,1])
+  
+  # Between-database variance
+  tau2 <- as.numeric(VarCorr(glmmCumInc)$cdm_name[1,1])
+  
+  k <- length(unique(df$cdm_name))
+  tCrit <- qt(0.975, df = max(1, k - 1))
+  
+  # Pooled estimate
+  pooledProp <- invLogit(beta0) * 100
+
+  # 95% Prediction interval (expected range for a new database)
+  piLower <- invLogit(beta0 - tCrit * sqrt(seBeta0^2 + tau2)) * 100
+  piUpper <- invLogit(beta0 + tCrit * sqrt(seBeta0^2 + tau2)) * 100
+  
+  tibble(
+    pooled_estimate = pooledProp,
+    predicted_interval_95CI_lower = piLower,
+    predicted_interval_95CI_upper = piUpper,
+    denominator_count = sum(df$number_records_count, na.rm = TRUE),
+    outcome_count = sum(df$n_events_count, na.rm = TRUE),
+    number_of_databases = k,
+    tau2 = tau2
+  )
+}
+
+pIncidence <- function(data, x, scales, ribbon = TRUE, errorbar = FALSE) {
   colors <- c(
     "#C94A5A",  # Muted red
     "#4A6FE3",  # Professional blue
@@ -543,7 +612,6 @@ pIncidence <- function(data, x, scales, ribbon = TRUE) {
     ggplot(aes_string(x = x, y = "incidence_100000_pys", ymin = "incidence_100000_pys_95CI_lower", ymax = "incidence_100000_pys_95CI_upper", colour = "cdm_name", fill = "cdm_name", group = "cdm_name")) +
     geom_point(size = 2) +
     geom_line(linewidth = 0.3) +
-    # geom_errorbar(width = 0.15,linewidth = 0.4) +
     facet_wrap(vars(outcome_cohort_name), scales = scales, nrow = 1, labeller = label_wrap_gen(10)) +
     scale_color_manual(values = colors) +
     scale_fill_manual(values = colors) +
@@ -564,8 +632,13 @@ pIncidence <- function(data, x, scales, ribbon = TRUE) {
     p <- p +
       geom_ribbon(  alpha = 0.15, color = NA, show.legend = FALSE)
   }
+  if (errorbar) {
+    p <- p +
+      geom_errorbar(width = 0.3, linewidth = 0.6, alpha = 0.4) 
+  }
   p
 }
+
 
 pSurvival <- function(data) {
   colors <- c("#C94A5A", "#4A6FE3", "#4FAE6A", "#E08A3C")

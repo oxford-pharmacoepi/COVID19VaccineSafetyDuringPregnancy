@@ -1,4 +1,4 @@
-cdm_name <- c("SCIFI-PEARLv2")
+cdm_name <- c("SIDIAP")
 # csv to review ----
 fileData <- file.path(getwd(), "data", "shinyData.RData")
 load(fileData)
@@ -12,7 +12,7 @@ data$summarise_standardised_mean_differences |>
     "concept_id" = "additional_level", 
     "concept_name" = "variable_name", 
     "window" = "variable_level"
-    ) |>
+  ) |>
   dplyr::filter(
     !concept_name %in% c(
       "region", "nationallity", "pre_pregnancy_smoking", "Age", "Previous healthcare visits", 
@@ -24,7 +24,7 @@ data$summarise_standardised_mean_differences |>
 
 # csv to add to csv in study code ----
 previous <- readr::read_csv("largeScaleSMD.csv") |>
-  dplyr::select(!c("add_ps_nuria", "add_ps_dani"))
+  dplyr::filter(cdm_name != "SIDIAP") 
 data$summarise_standardised_mean_differences |>
   omopgenerics::pivotEstimates() |>
   dplyr::mutate(asmd = abs(smd)) |>

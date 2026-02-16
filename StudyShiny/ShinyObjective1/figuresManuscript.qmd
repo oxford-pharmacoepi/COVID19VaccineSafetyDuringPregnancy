@@ -55,8 +55,8 @@ knitr::opts_chunk$set(
   results    = "asis"  # enable Markdown produced via cat() inside chunks
 )
 
-maeCode <- c("miscarriage", "stillbirth", "preterm_labour", "dysfunctional_labour", "antepartum_haemorrhage",  "gestational_diabetes", "preeclampsia", "eclampsia", "hellp", "ectopic_pregnancy", "postpartum_endometritis", "postpartum_haemorrhage", "maternal_death")
-maeClean <- c("Miscarriage", "Ectopic pregnancy", "Stillbirth", "Preterm labour", "Dysfunctional labour", "Antepartum haemorrhage",  "Gestational diabetes", "Pre-eclampsia", "Eclampsia", "HELLP", "Postpartum endometritis", "Postpartum haemorrhage", "Maternal death")
+maeCode <- c("miscarriage", "ectopic_pregnancy", "stillbirth", "preterm_labour", "dysfunctional_labour", "antepartum_haemorrhage",  "gestational_diabetes", "preeclampsia", "eclampsia", "hellp", "postpartum_endometritis", "postpartum_haemorrhage", "maternal_death")
+maeClean <- c("Miscarriage", "Ectopic pregnancy", "Stillbirth", "Preterm labour", "Dysfunctional labour", "Antepartum haemorrhage",  "Gestational diabetes", "Pre-eclampsia", "Eclampsia", "HELLP Syndrome", "Postpartum endometritis", "Postpartum haemorrhage", "Maternal death")
 aesiCode <- c("pulmonary_embolism", "deep_vein_thrombosis", "bells_palsy", "immune_thrombocytopenia", "anaphylaxis", "myocarditis_or_pericarditis", "ischaemic_stroke", "haemorrhagic_stroke", "tts",  "guillain_barre_syndrome",  "disseminated_intravascular_coagulation", "transverse_myelitis", "narcolepsy", "myocardial_infarction", "encephalitis")
 aesiClean <- c('Pulmonary embolism', 'Deep vein thrombosis', 'Bell’s palsy', 'Immune thrombocytopenia', 'Anaphylaxis', 'Myocarditis or pericarditis', 'Ischaemic stroke', 'Haemorrhagic stroke', 'Thrombosis with thrombocytopenia syndrome', 'Guillain–Barré syndrome', 'Disseminated intravascular coagulation', 'Transverse myelitis', 'Narcolepsy', 'Myocardial infarction', 'Encephalitis')
 excludeCPRD <- c("Miscarriage", "Stillbirth")
@@ -85,6 +85,7 @@ data$summarise_characteristics |>
       variable_name,
       levels = c(
         "Number records", 
+        "Number subjects",
         "Maternal age", 
         "Maternal age group",
         "Days in cohort", 
@@ -95,6 +96,7 @@ data$summarise_characteristics |>
       ),
       labels = c(
         "Number pregnancies", 
+        "Number subjects",
         "Maternal age", 
         "Maternal age group",
         "Pregnancy length", 
@@ -258,6 +260,101 @@ data$meta_incidence |>
   fontsize(size = 10, part = "header")
 ```
 
+:::{custom-style="Caption"}
+Table 3. Pooled Cumulative Incidence overall pregnancy and 95% Prediction Intervals for adverse events across four databases.
+
+:::
+
+```{r}
+# prepare results ----
+tidySurvival <- data$survival |>
+  dplyr::filter(strata_name %in% c("overall", "gestational_trimester", "maternal_age_group", "pregnancy_start_period")) |>
+  omopgenerics::filterSettings(result_type == "survival_summary") |> 
+  dplyr::filter(estimate_name %in% c("number_records_count", "n_events_count")) |> 
+  omopgenerics::tidy() |>
+  dplyr::filter(.data$outcome_group %in% c("Maternal Adverse Events", "Adverse Events of Special Interest")) |>
+  dplyr::mutate(
+    outcome = factor(
+      .data$outcome, 
+      levels = c(aesiCode, maeCode), 
+      labels = c(aesiClean, maeClean)
+    ),
+    outcome = as.character(outcome)
+  ) |>
+  dplyr::filter(!is.na(outcome)) |>
+  dplyr::filter(!(cdm_name == "CPRD GOLD" & outcome %in% excludeCPRD)) |>
+  select(!c(
+ "target_cohort", "competing_outcome", "socioeconomic_status", "ethnicity", "birth_continent", "nationallity", "variable_name", "variable_level", "outcome_washout", "minimum_survival_days", "follow_up_days", "censor_on_cohort_exit",
+ "outcome_date_variable", "analysis_type"
+  ))
+
+# pool results ----
+# --> model event counts using a Poisson distribution
+# --> account for different amounts of person-time in each database
+# --> random-effect for between-database heterogeneity. random intercept for database (1 | cdm_name)
+# --> consider databases with zero events
+if (runMetaAnalysis) {
+  data$meta_cumulative_incidence <- tidySurvival |>
+    filter(!is.na(n_events_count), !is.na(number_records_count)) |>
+    group_by(
+      outcome,
+      maternal_age_group,
+      pregnancy_start_period,
+      outcome_group
+    ) |>
+    nest() |>
+    mutate(
+      meta = map(data, metaCI)
+    ) |>
+    unnest(meta) |>
+    ungroup() |>
+    select(!data)
+  save(data, choices, selected, values, file = file.path(getwd(), "data", "shinyData.RData"))
+} 
+
+# display results ----
+data$meta_cumulative_incidence |>
+  dplyr::filter(
+    maternal_age_group == "overall",
+    pregnancy_start_period == "overall"
+  ) |>
+  select(!c("maternal_age_group", "pregnancy_start_period")) |>
+  pivot_longer(
+    cols = c("pooled_estimate", "predicted_interval_95CI_lower", "predicted_interval_95CI_upper", "tau2", "denominator_count", "outcome_count", "number_of_databases"),
+    values_to = "estimate_value",
+    names_to = "estimate_name"
+  ) |>
+  mutate(
+    estimate_type = case_when(
+      grepl("count", estimate_name) | estimate_name == "number_of_databases" ~ "integer",
+      grepl("percentage", estimate_name) | estimate_name == "tau2" ~ "percentage",
+      .default = "numeric"
+    ),
+    outcome = factor(.data$outcome, levels = c(aesiClean, maeClean)),
+    estimate_value = as.character(estimate_value),
+    outcome_group = factor(outcome_group, levels = c("Maternal Adverse Events", "Adverse Events of Special Interest"))
+  ) |>
+  filter(!is.na(outcome)) |>
+  arrange(outcome_group, outcome) |>
+  visTable(
+    estimateName = c(
+      "Databases (N)" = "<number_of_databases>",
+      "Pregnancies (N)" = "<denominator_count>",
+      "Outcomes (N)" = "<outcome_count>",
+      "CI (95% PI)" = "<pooled_estimate> (<predicted_interval_95CI_lower> to <predicted_interval_95CI_upper>)",
+      "𝜏²" = "<tau2>"
+    ),
+    hide = "estimate_type",
+    header = "estimate_name",
+    groupColumn = "outcome_group",
+    .options = list(decimals = c(integer = 0, percentage = 3, numeric = 2))
+  ) |>
+  set_table_properties(width = 1, layout = "autofit") |>
+  font(fontname = "calibri", part = "all") |>
+  fontsize(size = 9, part = "body") |>
+  fontsize(size = 10, part = "header")
+```
+
 :::{custom-style="FooterNuria"}
 Pooled incidence rates were estimated per 100,000 person-years using Poisson generalized linear mixed models with a random intercept for database; 95% prediction intervals reflect between-database heterogeneity. Source-specific estimates are shown in Supplementary Table Sx. Databases with event counts <5 were clouded as per data-protection rules and were not included in pooled estimates. 
 IR = Incidence Rate; PI = Prediction Interval; 𝜏² = estimated in between-database variance
@@ -291,11 +388,14 @@ survivalTidy |>
   facet_wrap(vars(outcome), nrow = 3, ncol = 5, scales = "free", labeller = label_wrap_gen(10)) +
   ggh4x::facetted_pos_scales(
     y  = list(
-      outcome == "Ectopic pregnancy" ~ scale_y_continuous(limits = c(0,0.04), oob = scales::rescale_none),
-      outcome == "Antepartum haemorrhage" ~ scale_y_continuous(limits = c(0,0.08), oob = scales::rescale_none),
-      outcome == "Gestational diabetes" ~ scale_y_continuous(limits = c(0,0.1), oob = scales::rescale_none),
-      outcome == "Pre-eclampsia" ~ scale_y_continuous(limits = c(0,0.001), labels = scales::label_comma(), oob = scales::rescale_none),
-      outcome == "Eclampsia"  ~ scale_y_continuous(limits = c(0,0.003), oob = scales::rescale_none)
+      outcome == "Miscarriage" ~ scale_y_continuous(limits = c(0,0.2), oob = scales::rescale_none),
+      outcome == "Ectopic pregnancy" ~ scale_y_continuous(limits = c(0,0.015), oob = scales::rescale_none),
+      outcome == "Stillbirth" ~ scale_y_continuous(limits = c(0,0.2), oob = scales::rescale_none),
+      outcome == "Antepartum haemorrhage" ~ scale_y_continuous(limits = c(0,0.13), oob = scales::rescale_none),
+      outcome == "Gestational diabetes" ~ scale_y_continuous(limits = c(0,0.09), oob = scales::rescale_none),
+      outcome == "Pre-eclampsia" ~ scale_y_continuous(limits = c(0,0.1), labels = scales::label_comma(), oob = scales::rescale_none),
+      outcome == "Eclampsia"  ~ scale_y_continuous(limits = c(0,0.001), oob = scales::rescale_none),
+      outcome == "HELLP Syndrome"  ~ scale_y_continuous(limits = c(0,0.005), oob = scales::rescale_none)
     )
   )
 ```
@@ -321,13 +421,15 @@ pPregnancy <- survivalTidyAge |>
   #     !grepl("Postpartum", outcome) ~ scale_x_continuous(limits = c(0,308))
   #   ),
     y  = list(
-      outcome == "Ectopic pregnancy" ~ scale_y_continuous(limits = c(0,0.04), oob = scales::rescale_none),
-      outcome == "Antepartum haemorrhage" ~ scale_y_continuous(limits = c(0,0.1), oob = scales::rescale_none),
-      outcome == "Gestational diabetes" ~ scale_y_continuous(limits = c(0,0.08), oob = scales::rescale_none),
-      outcome == "Pre-eclampsia" ~ scale_y_continuous(limits = c(0,0.001), labels = scales::label_comma(), oob = scales::rescale_none),
-      outcome == "Eclampsia" ~ scale_y_continuous(limits = c(0,0.003), oob = scales::rescale_none),
+      outcome == "Ectopic pregnancy" ~ scale_y_continuous(limits = c(0,0.02), oob = scales::rescale_none),
+      outcome == "Stillbirth" ~ scale_y_continuous(limits = c(0,0.05), oob = scales::rescale_none),
+      outcome == "Antepartum haemorrhage" ~ scale_y_continuous(limits = c(0,0.15), oob = scales::rescale_none),
+      outcome == "Gestational diabetes" ~ scale_y_continuous(limits = c(0,0.15), oob = scales::rescale_none),
+      outcome == "Pre-eclampsia" ~ scale_y_continuous(limits = c(0,0.1), labels = scales::label_comma(), oob = scales::rescale_none),
+      outcome == "Eclampsia" ~ scale_y_continuous(limits = c(0,0.0015), oob = scales::rescale_none),
+      outcome == "HELLP Syndrome" ~ scale_y_continuous(limits = c(0,0.009), oob = scales::rescale_none),
       outcome == "Postpartum endometritis" ~ scale_y_continuous(limits = c(0,0.006), oob = scales::rescale_none),
-      outcome == "Postpartum haemorrhage" ~ scale_y_continuous(limits = c(0,0.02), oob = scales::rescale_none)
+      outcome == "Postpartum haemorrhage" ~ scale_y_continuous(limits = c(0,0.020), oob = scales::rescale_none)
     )
   ) +
   ggtitle("A) Cumulative Incidence curves for Pregnancy Maternal Adverse Events") +

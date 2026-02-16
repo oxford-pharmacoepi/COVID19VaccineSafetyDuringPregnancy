@@ -16,7 +16,7 @@ resultList <- list(
 
 source(file.path(getwd(), "functions.R"))
 
-result <- omopgenerics::importSummarisedResult(file.path(getwd(), "data")) |>
+result <- omopgenerics::importSummarisedResult(file.path(getwd(), "data copy")) |>
   dplyr::filter(!grepl("miscarriage_codelist", additional_level)) |>
   dplyr::filter(!(grepl("miscarriage", additional_level) & cdm_name == "CPRD GOLD")) |>
   dplyr::filter(!grepl("miscarriage_codelist", group_level)) |>

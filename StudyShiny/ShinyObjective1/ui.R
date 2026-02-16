@@ -1026,7 +1026,7 @@ ui <- bslib::page_navbar(
             inputId = "summarise_characteristics_variable_name",
             label = "Variable name",
             choices = c(
-              "Number records", "Maternal age", "Maternal age group",
+              "Number records", "Number subjects", "Maternal age", "Maternal age group",
               "Trimester", "Season", "Previous pregnancies",
               "Ethnicity", "Birth continent", "Nationallity", 
               'Socioeconomic status',
@@ -1035,7 +1035,7 @@ ui <- bslib::page_navbar(
               "History of comorbidities", "Medications in the past year"
             ),
             selected = c(
-              "Number records", "Maternal age", "Maternal age group",
+              "Number records", "Number subjects", "Maternal age", "Maternal age group",
               "Trimester", "Season", "Previous pregnancies",
               "Ethnicity", "Birth continent", "Nationallity", 
               'Socioeconomic status',

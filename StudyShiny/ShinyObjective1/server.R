@@ -288,7 +288,7 @@ server <- function(input, output, session) {
         .data$socioeconomic_status %in% input$summarise_characteristics_socioeconomic_status,
         .data$trimester %in% input$summarise_characteristics_trimester,
         .data$nationallity %in% input$summarise_characteristics_nationallity,
-        .data$birth_continent %in% input$summarise_characteristics_birth_continent,
+        .data$birth_continent %in% input$summarise_characteristics_birth_continent
       )
   })
   getSummariseCharacteristicsTable <- shiny::reactive({
@@ -297,11 +297,12 @@ server <- function(input, output, session) {
         !variable_name %in% c("Cohort start date", "Cohort end date", "Age", "Sex", "Prior observation", "Future observation", "Days in cohort")
       ) |>
       dplyr::mutate(
+        estimate_value = if_else(variable_name == "Previous pregnancies" & .data$estimate_name != "sd", as.character(as.numeric(.data$estimate_value) - 1), .data$estimate_value),
         variable_level = dplyr::if_else(variable_name == "Previous pregnancies", "-", variable_level),
         variable_name = factor(
           variable_name,
           levels = c(
-            "Number records", "Maternal age", "Maternal age group",
+            "Number records", "Number subjects", "Maternal age", "Maternal age group",
             "Trimester", "Season", "Previous pregnancies",
             "Ethnicity", "Birth continent", "Nationallity", 
             'Socioeconomic status',
@@ -310,7 +311,7 @@ server <- function(input, output, session) {
             "History of comorbidities", "Medications in the past year"
           ),
           labels = c(
-            "Number pregnancies", "Maternal age", "Maternal age group",
+            "Number pregnancies", "Number subjects", "Maternal age", "Maternal age group",
             "Trimester", "Season", "Previous pregnancies",
             "Ethnicity", "Birth continent", "Nationallity",
             'Socioeconomic status',
@@ -392,6 +393,8 @@ server <- function(input, output, session) {
         .data$maternal_age_group %in% input$summarise_large_scale_characteristics_maternal_age_group,
         .data$pregnancy_start_period %in% input$summarise_large_scale_characteristics_pregnancy_start_period,
         .data$ethnicity %in% input$summarise_large_scale_characteristics_ethnicity,
+        .data$nationallity %in% input$summarise_large_scale_characteristics_nationallity,
+        .data$birth_continent %in% input$summarise_large_scale_characteristics_birth_continent,
         .data$socioeconomic_status %in% input$summarise_large_scale_characteristics_socioeconomic_status,
         .data$trimester %in% input$summarise_large_scale_characteristics_trimester
       )
@@ -444,6 +447,8 @@ server <- function(input, output, session) {
         .data$maternal_age_group %in% input$summarise_large_scale_characteristics_maternal_age_group,
         .data$pregnancy_start_period %in% input$summarise_large_scale_characteristics_pregnancy_start_period,
         .data$ethnicity %in% input$summarise_large_scale_characteristics_ethnicity,
+        .data$nationallity %in% input$summarise_large_scale_characteristics_nationallity,
+        .data$birth_continent %in% input$summarise_large_scale_characteristics_birth_continent,
         .data$socioeconomic_status %in% input$summarise_large_scale_characteristics_socioeconomic_status,
         .data$trimester %in% input$summarise_large_scale_characteristics_trimester
       ) |>
@@ -590,14 +595,20 @@ server <- function(input, output, session) {
           pregnancy_start_period, levels = c("overall", "Pre COVID-19", "COVID-19 main outbreak", "Post COVID-19 main outbreak")
         ),
         socioeconomic_status = factor(
-          socioeconomic_status, levels = c("overall", paste0("Q", 1:5))
+          socioeconomic_status, c("overall", paste0("Q", 1:5), "R", paste0("U", 1:5), "0N", "Missing")
         ),
         ethnicity = factor(
           ethnicity, levels = c("overall", "White", "Black", "Asian", "Missing")
+        ),
+        nationallity = factor(
+          nationallity, levels = c("overall", "Africa", "Asia", "Central/South America", "Europe", "North America", "Oceania", "Missing")
+        ),
+        birth_continent = factor(
+          birth_continent, levels = c("overall", "Africa", "Asia", "Central/South America", "Europe", "North America", "Oceania", "Missing")
         )
       ) |>
       dplyr::filter(!is.na(.data$outcome_group)) |>
-      dplyr::arrange(maternal_age_group, pregnancy_start_period, socioeconomic_status, ethnicity, outcome_group) |>
+      dplyr::arrange(maternal_age_group, pregnancy_start_period, socioeconomic_status, ethnicity, nationallity, birth_continent, outcome_group) |>
       dplyr::select(dplyr::any_of(c(input$incidence_tidy_columns))) |>
       visOmopResults::formatTable(type = "reactable")
   })
@@ -653,10 +664,12 @@ server <- function(input, output, session) {
           "outcome_cohort_name" = outcomes,
           "maternal_age_group" = c("overall", "12 to 17", "18 to 34", "35 to 55"),
           "pregnancy_start_period" = c("overall", "Pre COVID-19", "COVID-19 main outbreak", "Post COVID-19 main outbreak"),
-          "socioeconomic_status" = c("overall", paste0("Q", 1:5)),
+          "socioeconomic_status" = c("overall", paste0("Q", 1:5), "R", paste0("U", 1:5), "0N", "Missing"),
           "ethnicity" = c("overall", "White", "Black", "Asian", "Missing"),
+          "nationallity" = c("overall", "Africa", "Asia", "Central/South America", "Europe", "North America", "Oceania", "Missing"),
+          "birth_continent" = c("overall", "Africa", "Asia", "Central/South America", "Europe", "North America", "Oceania", "Missing"),
           "gestational_trimester" = c("overall", "Trimester 1", "Trimester 2", "Trimester 3", "Postpartum")
-          )
+        )
       )
   })
   output$incidence_table <- gt::render_gt({
@@ -686,10 +699,16 @@ server <- function(input, output, session) {
           pregnancy_start_period, levels = c("overall", "Pre COVID-19", "COVID-19 main outbreak", "Post COVID-19 main outbreak")
         ),
         socioeconomic_status = factor(
-          socioeconomic_status, levels = c("overall", paste0("Q", 1:5))
+          socioeconomic_status, levels = c("overall", paste0("Q", 1:5), "R", paste0("U", 1:5), "0N", "Missing")
         ),
         ethnicity = factor(
           ethnicity, levels = c("overall", "White", "Black", "Asian", "Missing")
+        ),
+        nationallity = factor(
+          nationallity, levels = c("overall", "Africa", "Asia", "Central/South America", "Europe", "North America", "Oceania", "Missing")
+        ),
+        birth_continent = factor(
+          birth_continent, levels = c("overall", "Africa", "Asia", "Central/South America", "Europe", "North America", "Oceania", "Missing")
         ),
         gestational_trimester = factor(
           gestational_trimester, levels = c("overall", "Trimester 1", "Trimester 2", "Trimester 3", "Postpartum")
@@ -860,8 +879,10 @@ server <- function(input, output, session) {
           "variable_level" = outcomes,
           "maternal_age_group" = c("overall", "12 to 17", "18 to 34", "35 to 55"),
           "pregnancy_start_period" = c("overall", "Pre COVID-19", "COVID-19 main outbreak", "Post COVID-19 main outbreak"),
-          "socioeconomic_status" = c("overall", paste0("Q", 1:5)),
-          "ethnicity" = c("overall", "White", "Black", "Asian", "Missing")
+          "socioeconomic_status" = c("overall", paste0("Q", 1:5), "R", paste0("U", 1:5), "0N", "Missing"),
+          "ethnicity" = c("overall", "White", "Black", "Asian", "Missing"),
+          "nationallity" = c("overall", "Africa", "Asia", "Central/South America", "Europe", "North America", "Oceania", "Missing"),
+          "birth_continent" = c("overall", "Africa", "Asia", "Central/South America", "Europe", "North America", "Oceania", "Missing")
         )
       )
   })
