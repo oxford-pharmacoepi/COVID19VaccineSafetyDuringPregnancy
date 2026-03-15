@@ -326,22 +326,6 @@ startsInPregnancy <- function(cohort,
   return(cdm[[name]])
 }
 
-
-getWashOut <- function(washout, source) {
-  washout |>
-    inner_join(
-      source |> distinct(subject_id, pregnancy_start_date, pregnancy_end_date),
-      by = "subject_id"
-    ) |>
-    filter(
-      cohort_start_date >= as.Date(clock::add_days(.data$pregnancy_start_date, -.data$days)),
-      cohort_start_date <= .data$pregnancy_end_date
-    ) |>
-    select(!c("pregnancy_start_date", "pregnancy_end_date", "days")) |>
-    distinct()
-}
-
-
 samplingSummary <- function(sampling_source, reason, results, cohortId = 1:3, variable = c("exposed", "comparator", "ratio")) {
   x <- sampling_source |>
     dplyr::filter(.data$cohort_definition_id %in% .env$cohortId) |>
@@ -1105,41 +1089,64 @@ pivotSurvivalData <- function(data, outcomes) {
   }
 }
 
-getIRR <- function(x, ci, outcomes) {
+getIRR <- function(x, ci, outcomes, stats = FALSE) {
   
-  summary_tbl <- bind_rows(
-    # weighted summary
-    x |>
-      group_by(outcome_name, exposure) |>
-      summarise(
-        person_days = sum(as.numeric(time) * coalesce(.data$weight, 1), na.rm = TRUE),
-        cases = sum(as.numeric(status) * coalesce(.data$weight, 1), na.rm = TRUE),
-        person_days_median = as.numeric(Hmisc::wtd.quantile(as.numeric(time), weights = .data$weight, probs = 0.5, na.rm = TRUE)),
-        person_days_q25 = as.numeric(Hmisc::wtd.quantile(as.numeric(time), weights = .data$weight, probs = 0.25, na.rm = TRUE)),
-        person_days_q75 = as.numeric(Hmisc::wtd.quantile(as.numeric(time), weights = .data$weight, probs = 0.75, na.rm = TRUE)),
-        person_days_min = min(as.numeric(time), na.rm = TRUE),
-        person_days_max = max(as.numeric(time), na.rm = TRUE),
-        subject_count = sum(.data$weight, na.rm = TRUE),
-        weighting = "TRUE",
-        .groups = "drop"
-      ) , 
-    # unweighted summary
-    x |>
-      group_by(outcome_name, exposure) |>
-      summarise(
-        person_days = sum(as.numeric(time), na.rm = TRUE),
-        cases = sum(as.numeric(status), na.rm = TRUE),
-        person_days_median = as.numeric(quantile(as.numeric(time), probs = 0.5, na.rm = TRUE)),
-        person_days_q25 = as.numeric(quantile(as.numeric(time), probs = 0.25, na.rm = TRUE)),
-        person_days_q75 = as.numeric(quantile(as.numeric(time), probs = 0.75, na.rm = TRUE)),
-        person_days_min = min(as.numeric(time), na.rm = TRUE),
-        person_days_max = max(as.numeric(time), na.rm = TRUE),
-        subject_count = n(),
-        weighting = "FALSE",
-        .groups = "drop"
-      ) |>
-      mutate(subject_count = as.numeric(subject_count))
-  )
+  if (stats) {
+    summary_tbl <- bind_rows(
+      # weighted summary
+      x |>
+        group_by(outcome_name, exposure) |>
+        summarise(
+          person_days = sum(as.numeric(time) * coalesce(.data$weight, 1), na.rm = TRUE),
+          cases = sum(as.numeric(status) * coalesce(.data$weight, 1), na.rm = TRUE),
+          person_days_median = as.numeric(Hmisc::wtd.quantile(as.numeric(time), weights = .data$weight, probs = 0.5, na.rm = TRUE)),
+          person_days_q25 = as.numeric(Hmisc::wtd.quantile(as.numeric(time), weights = .data$weight, probs = 0.25, na.rm = TRUE)),
+          person_days_q75 = as.numeric(Hmisc::wtd.quantile(as.numeric(time), weights = .data$weight, probs = 0.75, na.rm = TRUE)),
+          person_days_min = min(as.numeric(time), na.rm = TRUE),
+          person_days_max = max(as.numeric(time), na.rm = TRUE),
+          subject_count = sum(.data$weight, na.rm = TRUE),
+          weighting = "TRUE",
+          .groups = "drop"
+        ) , 
+      # unweighted summary
+      x |>
+        group_by(outcome_name, exposure) |>
+        summarise(
+          person_days = sum(as.numeric(time), na.rm = TRUE),
+          cases = sum(as.numeric(status), na.rm = TRUE),
+          person_days_median = as.numeric(quantile(as.numeric(time), probs = 0.5, na.rm = TRUE)),
+          person_days_q25 = as.numeric(quantile(as.numeric(time), probs = 0.25, na.rm = TRUE)),
+          person_days_q75 = as.numeric(quantile(as.numeric(time), probs = 0.75, na.rm = TRUE)),
+          person_days_min = min(as.numeric(time), na.rm = TRUE),
+          person_days_max = max(as.numeric(time), na.rm = TRUE),
+          subject_count = n(),
+          weighting = "FALSE",
+          .groups = "drop"
+        ) |>
+        mutate(subject_count = as.numeric(subject_count))
+    )
+  } else {
+    summary_tbl <- bind_rows(
+      # weighted summary
+      x |>
+        group_by(outcome_name, exposure) |>
+        summarise(
+          person_days = sum(as.numeric(time) * coalesce(.data$weight, 1), na.rm = TRUE),
+          cases = sum(as.numeric(status) * coalesce(.data$weight, 1), na.rm = TRUE),
+          weighting = "TRUE",
+          .groups = "drop"
+        ) , 
+      # unweighted summary
+      x |>
+        group_by(outcome_name, exposure) |>
+        summarise(
+          person_days = sum(as.numeric(time), na.rm = TRUE),
+          cases = sum(as.numeric(status), na.rm = TRUE),
+          weighting = "FALSE",
+          .groups = "drop"
+        )
+    )
+  }
   
   # add 0.01 if 0 cases - avoid denominator 0
   summary_tbl <- summary_tbl |>
@@ -1150,11 +1157,12 @@ getIRR <- function(x, ci, outcomes) {
     )
   
   # one row per coeficcient
+  statsVars <- c("person_days_median", "person_days_q25", "person_days_q75", "person_days_min", "person_days_max", "subject_count")
   wide <- summary_tbl |>
     pivot_wider(
       id_cols = c("outcome_name", "weighting"),
       names_from = "exposure",
-      values_from = c("person_days", "cases", "person_days_median", "person_days_q25", "person_days_q75", "person_days_min", "person_days_max", "subject_count", "cases_fix", "person_days_fix"),
+      values_from = c("person_days", "cases", "cases_fix", "person_days_fix", statsVars[stats]),
       names_sep = "_"
     )
   
@@ -1260,7 +1268,7 @@ processGroupStrata <- function(data, groupLevel, strataLevel, weights, ci, outco
     }
     
     # Main estimate
-    main_est <- getIRR(data, ci = NULL, outcomes = outcomes)
+    main_est <- getIRR(data, ci = NULL, outcomes = outcomes, stats = TRUE)
     
     # CI
     results <- main_est |>
@@ -1279,7 +1287,7 @@ processGroupStrata <- function(data, groupLevel, strataLevel, weights, ci, outco
     rm(coefBootstrap, data.ii)
     
   } else if (ci == "midp") {
-    results <- getIRR(data, ci = "midp", outcomes = outcomes)
+    results <- getIRR(data, ci = "midp", outcomes = outcomes, stats = TRUE)
     
   } else {
     stop("Unsupported ci method: ", ci)
@@ -1639,7 +1647,7 @@ applyPopulationWashout <- function(x, censorDate = "pregnancy_start_date") {
   x |>
     # No COVID-19
     requireCohortIntersect(
-      targetCohortTable = "covid_washout",
+      targetCohortTable = "covid",
       window = list(c(-90, 0)),
       intersections = 0,
       indexDate = "exposure_date",
@@ -1657,7 +1665,7 @@ applyPopulationWashout <- function(x, censorDate = "pregnancy_start_date") {
     ) |>
     # No recurrent AESI (30)
     requireCohortIntersect(
-      targetCohortTable = "aesi_30_washout",
+      targetCohortTable = "aesi_30",
       window = list(c(-30, 0)),
       intersections = 0,
       indexDate = "exposure_date",

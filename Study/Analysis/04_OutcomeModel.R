@@ -1,3 +1,11 @@
+# Population ----
+# Remove cohort 2 as diferential censoring by desing
+cdm$study_population_04 <- cdm$study_population |> 
+  subsetCohorts(
+    cohortId = c(),
+    name = "study_population_04"
+  )
+  
 # AESI ----
 info(logger, "- Create AESI outcome cohort")
 strata <- selectStrata(cdm, strata = c("vaccine_brand", "gestational_trimester", "age_group"))
@@ -7,7 +15,7 @@ toKeep <- c(
   "pregnancy_end_date", "exposed_match_id", "pregnancy_id", unique(unlist(strata)), 
   "exposure", unique(unlist(allCovariatesPS))
 ) |> unique()
-cdm$aesi_outcome <- cdm$study_population |> 
+cdm$aesi_outcome <- cdm$study_population_04 |> 
   subsetCohorts(
     cohortId = paste0("population_objective_", 1:3), 
     name = "aesi_outcome"
@@ -67,7 +75,7 @@ info(logger, "- Create MAE outcome cohort")
 if ("miscarriage" %in% settings(cdm$mae)$cohort_name) {
   ## Group 1: < 20 weeks (miscarriage)
   info(logger, "  * Get IRR for miscarriage")
-  cdm$mea_miscarriage <- cdm$study_population |>
+  cdm$mea_miscarriage <- cdm$study_population_04 |>
     dplyr::select(dplyr::all_of(toKeep)) %>% 
     subsetCohorts(
       cohortId = paste0("population_miscarriage_objective_", 1:3), 
@@ -97,7 +105,7 @@ if ("miscarriage" %in% settings(cdm$mae)$cohort_name) {
 }
 ## Group 2: < 37 weeks (preterm labour)
 info(logger, "  * Get IRR for preterm labour")
-cdm$mea_preterm_labour <- cdm$study_population |>
+cdm$mea_preterm_labour <- cdm$study_population_04 |>
   subsetCohorts(
     cohortId = paste0("population_preterm_labour_objective_", 1:3), 
     name = "mea_preterm_labour"
@@ -126,7 +134,7 @@ for (end in c("week_37_end", "week_37_end_sensitivity")) {
 
 ## Group 3: during pregnancy
 info(logger, "  * Add other MAE outcomes")
-cdm$mae_outcome <- cdm$study_population |>
+cdm$mae_outcome <- cdm$study_population_04 |>
   subsetCohorts(
     cohortId = paste0("population_objective_", 1:3), 
     name = "mae_outcome"
@@ -203,7 +211,7 @@ for (end in c("postpartum_12_weeks", "postpartum_12_weeks_sensitivity")) {
 
 # NCO ----
 info(logger, "- Negative Control Outcomes")
-cdm$study_population_nco <- cdm$study_population |>
+cdm$study_population_nco <- cdm$study_population_04 |>
   select(any_of(c(
     "cohort_definition_id", "cohort_name", "subject_id", "cohort_start_date", "cohort_end_date",
     "cohort_end_date_sensitivity", "exposure", "exposed_match_id", "pregnancy_id",
@@ -225,7 +233,7 @@ cdm$study_population_nco <- cdm$study_population_nco |> filterMinCellCount(minCe
 lowCountNco <- ncoOutcomes[!ncoOutcomes %in% colnames(cdm$study_population_nco)]
 ncoOutcomes <- ncoOutcomes[!ncoOutcomes %in% lowCountNco]
 
-cdm$study_population_pco <- cdm$study_population |>
+cdm$study_population_pco <- cdm$study_population_04 |>
   addCohortIntersectDate(
     targetCohortTable = "covid",
     indexDate = "cohort_start_date",

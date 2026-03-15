@@ -65,6 +65,13 @@ if (sensitvitySCIFIPEARL) {
     compute()
 }
 
+if (database_name == "SIDIAP") {
+  info(logger, "SIDIAP: Filter drug exposure table")
+  cdm$drug_exposure <- cdm$drug_exposure |>
+    filter(drug_type_concept_id == 32839) |>
+    compute()
+}
+
 # Database snapshot:
 summariseOmopSnapshot(cdm) |>
   exportSummarisedResult(path = output_folder, fileName = paste0("cdm_snapshot_", cdmName(cdm), ".csv"))
@@ -141,50 +148,7 @@ if (runOutcomeModel) {
   source(here("Analysis", "04_OutcomeModel.R"))
 }
 
-if (runBackgroundRates) {
-  if (!runInstantiateCohorts | !runOutcomeModel) {
-    cdm <- cdmFromCon(
-      con = db,
-      cdmSchema = cdm_database_schema,
-      writeSchema = results_database_schema,
-      writePrefix = tolower(table_stem),
-      cdmName = database_name,
-      cohortTables = c(
-        "mother_table", "aesi_90", "aesi_30", "aesi_inf", "mae", "comedications",
-        "covariates_inf", "covariates_5", "other_vaccines", 
-        "covid", "covid_test", "base", "thrombocytopenia", "aesi"
-      ),
-      .softValidation = TRUE
-    )
-  }
-  info(logger, "STEP 5 BACKGROUND RATES ----")
-  source(here("Analysis", "05_BackgroundRates.R"))
-}
-
-if (runBRCharacteristics) {
-  if (!runBackgroundRates) {
-    cdm <- cdmFromCon(
-      con = db,
-      cdmSchema = cdm_database_schema,
-      writeSchema = results_database_schema,
-      writePrefix = tolower(table_stem),
-      cdmName = database_name,
-      cohortTables = c(
-        "mother_table", "aesi", "mae", "comedications", "pregnancy_denominator", 
-        "covariates_inf", "covariates_5", "other_vaccines",
-        "aesi_90", "aesi_30", "aesi_inf", "mae", "aesi_180",
-        "covid", "covid_test", "ir_aesi_30", "ir_aesi_inf", "ir_aesi_90", "ir_aesi_180",
-        "ir_mae", "ir_maternal_death", "ir_postpartum_endometritis",
-        "ir_postpartum_haemorrhage", "ir_preterm_labour", "ir_miscarriage", "ir_stillbirth"
-      ),
-      .softValidation = TRUE
-    )
-  }
-  info(logger, "STEP 6 BACKGROUND RATES CHARACTERISTICS ----")
-  source(here("Analysis", "06_BRCharacterisation.R"))
-}
-
-info(logger, "STEP 6 ZIP RESULTS ----")
+info(logger, "STEP 5 ZIP RESULTS ----")
 output_folder <- basename(output_folder)
 zip(
   zipfile = paste0(output_folder, "_", gsub("-", "", Sys.Date()), ".zip"),

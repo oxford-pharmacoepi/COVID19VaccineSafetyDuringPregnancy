@@ -16,10 +16,7 @@ for (csv in csvs) {
       union_all(read_csv(here("Codelists", csv)))
   }
 }
-if (cdmName(cdm) != "CPRD GOLD") {
-  codes <- codes |> 
-    filter(codelist_name != "elective_termination")
-}
+
 ncoNames <- read_csv(here("Codelists", "nco.csv")) |>
   pull("codelist_name") |>
   unique() |>
@@ -27,7 +24,7 @@ ncoNames <- read_csv(here("Codelists", "nco.csv")) |>
 # construct codelsit
 codelist <- split(codes$concept_id, codes$codelist_name)
 # base cohorts subsetted
-baseCodelist <- codelist[!names(codelist) %in% c("platelet_measurement")] # if any measurement
+baseCodelist <- codelist[!names(codelist) %in% c("platelet_measurement", "covid_test", "bmi_measurement", "body_weight")] 
 cdm$base <- conceptCohort(
   cdm = cdm,
   conceptSet = baseCodelist,
@@ -186,7 +183,7 @@ cdm$covid_test <- cdm$base |>
 
 # Comedications ----
 comedications <- c(
-  "nsaids", "antidepressants", "antiepileptics", "antiinflammatory_antirheumatic",
+  "antidepressants", "antiepileptics", "antiinflammatory_antirheumatic",
   "diabetes_treatments", "opioids", "treatment_acid_related_disorder"
 )
 cdm$comedications <- cdm$base |>
@@ -303,8 +300,7 @@ cdm$maternal_death <- deathCohort(cdm = cdm, name = "maternal_death") |>
 cdm$mae_pregnancy <- cdm$base |>
   subsetCohorts(
     cohortId = c(
-      "dysfunctional_labour", "eclampsia", "ectopic_pregnancy", "antepartum_haemorrhage",
-      "gestational_diabetes", "hellp", "preeclampsia"
+      "dysfunctional_labour", "eclampsia", "antepartum_haemorrhage", "hellp", 
     ),
     name = "mae_pregnancy"
   ) |>
@@ -328,17 +324,11 @@ cdm$mae_postpartum_12weeks <- cdm$base |>
     name = "mae_postpartum_12weeks"
   ) |>
   startsInPregnancy(start = "pregnancy_end_date", end = "end_12", reason = "In the firsts 12 weeks postpartum")
-cdm$mae_miscarriage <- cdm$base |>
-  subsetCohorts(
-    cohortId = outcomeMiscarriage,
-    name = "mae_miscarriage"
-  ) |>
-  startsInPregnancy(start = "pregnancy_end_date_m7", end = "pregnancy_end_date_7", reason = "In pregnancy end date [7-day window]")
 
 # Bind all
 cdm <- bind(
   cdm$mae_pregnancy, cdm$mae_postpartum_6weeks, cdm$mae_postpartum_12weeks,
-  cdm$maternal_death, cdm$mae_omop, cdm$mae_miscarriage, name = "mae"
+  cdm$maternal_death, cdm$mae_omop, name = "mae"
 )
 
 # NCO ----
@@ -348,21 +338,7 @@ cdm$nco <- cdm$base |>
 
 # Small wash-out cohorts ----
 info(logger, "- Wash-out reduced cohort")
-cdm$covid_washout <- cdm$covid |>
-  mutate(days = 90) |>
-  getWashOut(cdm$source_population) |>
-  compute(name = "covid_washout", temporary = FALSE)
-cdm$aesi_90_washout <- cdm$aesi_90 |>
-  mutate(days = 90) |>
-  getWashOut(cdm$source_population) |>
-  mutate(cohort_end_date = cohort_start_date) |>
-  compute(name = "aesi_90_washout", temporary = FALSE) |>
-  CohortConstructor::unionCohorts(cohortName = "aesi_90")
-cdm$aesi_30_washout <- cdm$aesi_30 |>
-  mutate(days = 30) |>
-  getWashOut(cdm$source_population) |>
-  compute(name = "aesi_30_washout", temporary = FALSE) |>
-  newCohortTable()
+  CohortConstructor::unionCohorts(cohortName = "aesi_90", name = "aesi_90_washout")
 cdm$mae_washout <- cdm$mae_pregnancy |>
   unionCohorts(cohortName = "mae_during_pregnancy", name = "mae_washout")
 
