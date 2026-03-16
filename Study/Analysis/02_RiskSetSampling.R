@@ -205,6 +205,16 @@ sampling_source <- sampling_source |>
 
 sampling_summary <- samplingSummary(sampling_source, "Comparator eligible to contribute at matched vaccination day", sampling_summary)
 
+## Sample ----
+sampling_source <- sampling_source |> 
+  slice_sample(
+    n =  10, 
+    by = all_of(c("cohort_definition_id", "cohort_name", "exposed_id", "exposure_date", "exposed_pregnancy_id"))
+  )
+  compute(name = "sampling_source", temporary = FALSE)
+
+sampling_summary <- samplingSummary(sampling_source, "Sample to 10 comparators max", sampling_summary)
+
 ## Export sampling summary ----
 sampling_summary |>
   mutate(cdm_name = cdmName(cdm)) |>
@@ -386,6 +396,7 @@ cdm$study_population <- cdm$study_population |>
   addCohortName() 
 
 # Add cohort for miscarriage and preterm birth ----
+if (!grepl("SCIFI-PEARL|CPRD GOLD", cdmName(cdm))) {
 cdm$miscarriage <- cdm$study_population %>% 
   mutate(max_index_date = !!dateadd("pregnancy_start_date", 19*7 + 6)) |>
   filter(cohort_start_date < max_index_date) |>
@@ -393,6 +404,7 @@ cdm$miscarriage <- cdm$study_population %>%
   compute(name = "miscarriage", temporary = FALSE) |>
   recordCohortAttrition(reason = "Study population for miscarriage") |>
   renameCohort(cohortId = 1:3, newCohortName = paste0("population_miscarriage_objective_", 1:3))
+}
 
 cdm$preterm_labour <- cdm$study_population %>% 
   mutate(max_index_date = !!dateadd("pregnancy_start_date", 37*7)) |>
@@ -402,7 +414,11 @@ cdm$preterm_labour <- cdm$study_population %>%
   recordCohortAttrition(reason = "Study population for preterm labour") |>
   renameCohort(cohortId = 1:3, newCohortName = paste0("population_preterm_labour_objective_", 1:3))
 
-cdm <- bind(cdm$study_population, cdm$miscarriage, cdm$preterm_labour, name = "study_population")
+if (grepl("SCIFI-PEARL|CPRD GOLD", cdmName(cdm))) {
+  cdm <- bind(cdm$study_population, cdm$preterm_labour, name = "study_population")
+} else {
+  cdm <- bind(cdm$study_population, cdm$miscarriage, cdm$preterm_labour, name = "study_population")
+}
 
 cdm$study_population <- cdm$study_population |>
   addCohortName() |>
@@ -412,16 +428,16 @@ cdm$study_population <- cdm$study_population |>
 strata <- selectStrata(cdm, strata = c("vaccine_brand", "gestational_trimester", "age_group"))
 ## table one
 info(logger, "- Baseline characteristics")
-baseline_characteristics <- getBaselineCharacteristics(cdm, strata, weights = NULL)
+baseline_characteristics <- getBaselineCharacteristics(cdm, strata, weights = FALSE)
 ## large scale
 info(logger, "- Large Scale characteristics")
 cdm <- getFeaturesTable(cdm, strata, covariatesPS)
-large_scale_characteristics <- getLargeScaleCharacteristics(cdm, strata, weights = NULL)
+large_scale_characteristics <- getLargeScaleCharacteristics(cdm, strata, weights = FALSE)
 ## censoring 
 info(logger, "- Censoring summary")
-censoring <- summariseCohortExit(cdm = cdm, strata = strata, weights = NULL)
+censoring <- summariseCohortExit(cdm = cdm, strata = strata, weights = FALSE)
 ## index date and gestational age
-timeDistribution <- summariseTimeDistribution(cdm = cdm, strata = strata, weights = NULL)
+timeDistribution <- summariseTimeDistribution(cdm = cdm, strata = strata, weights = FALSE)
 
 # Confounding ----
 ## SMD

@@ -4,13 +4,18 @@ cohortNames <- settings(cdm$study_population)$cohort_name
 allCovariatesPS <- vector("list", 3)  
 ps <- NULL
 psCovariates <- NULL
+requiredWeightCols <- paste0("weights_", c("_overall", "_pfizer", "_moderna", "_12_to_17", "_18_to_34", "_35_to_55", "_t1", "_t2", "_t3"))
 cdm$study_population <- cdm$study_population |>
+  mutate(unique_id = paste0(as.character(subject_id), "_", as.character(exposed_match_id), "_", as.character(pregnancy_id))) |>
   addCohortName() |>
   dplyr::select(!dplyr::starts_with("ps")) |>
-  dplyr::select(!dplyr::starts_with("weight")) %>% 
+  dplyr::select(!dplyr::starts_with("weight")) |>
+  dplyr::select(!dplyr::any_of(requiredWeightCols)) |>
   dplyr::mutate(overall = "overall")
 for (nm in cohortNames) {
   info(logger, paste0("  - Cohort: ", nm))
+  cdm[[nm]] <- cdm$study_population |>
+    subsetCohorts(cohortId = nm, name = nm)
   for (stName in c("overall", "vaccine_brand", "gestational_trimester", "age_group")) {
     strataLevels <- cdm$study_population |>
       pull(.data[[stName]]) |>
@@ -19,11 +24,9 @@ for (nm in cohortNames) {
       info(logger, paste0("    - Strata: ", stLevel))
       ## LASSO 
       lassoData <- cdm$features |>
-        filter(cohort_name == nm) |> 
         inner_join(
-          cdm$study_population |>
-            mutate(unique_id = paste0(as.character(subject_id), "_", as.character(exposed_match_id), "_", as.character(pregnancy_id))) |>
-            filter(cohort_name == nm, .data[[stName]] == stLevel) |>
+          cdm[[nm]] |>
+            filter(.data[[stName]] == stLevel) |>
             select(any_of(c(
               "subject_id", "unique_id", "cohort_name", "exposed_match_id", "pregnancy_id", unique(unlist(covariatesPS))
             )))
@@ -35,6 +38,7 @@ for (nm in cohortNames) {
             "cohort_definition_id", "age_group", "weight", "region"
           ))) |>
         collect()
+      weightColumn <- paste0("weights_", stLevel) |> toSnakeCase()
       if (nrow(lassoData) > 10) {
         # drop any columsn with 1 level
         columns <- sapply(lapply(lassoData, unique), length)
@@ -58,18 +62,33 @@ for (nm in cohortNames) {
         
         glmResult <- glm(exposure ~ ., data = psData |> select(-c("unique_id", "subject_id")), family = binomial(link = "logit"))
         
+        psPredicted <- psData |>
+          select(all_of(c(
+            "subject_id", "unique_id", "exposure", allCovariatesPS[[nm]][[stLevel]]
+          ))) |>
+          bind_cols(
+            predict.glm(glmResult, newdata = psData |> select(!c("unique_id", "subject_id", "exposure")), type = "response") |>
+              as_tibble() |>
+              rename("ps" = "value")
+          ) |>
+          filter(!is.na(ps))
+        
+        # fill in weights in cohort
+        cdm[[nm]] <- cdm[[nm]] |>
+          left_join(
+            psPredicted |> 
+              mutate(
+                !!weightColumn := if_else(exposure == "exposed", 1 - ps, ps)
+              ) |>
+              select(all_of(c("unique_id", weightColumn))),
+            copy = TRUE
+          ) |>
+          compute(name = nm, temporary = FALSE)
+        
+        # save ps for distribution
         ps <- bind_rows(
           ps, 
-          psData |>
-            select(all_of(c(
-              "subject_id", "unique_id", "exposure", allCovariatesPS[[nm]][[stLevel]]
-            ))) |>
-            bind_cols(
-              predict.glm(glmResult, newdata = psData |> select(!c("unique_id", "subject_id", "exposure")), type = "response") |>
-                as_tibble() |>
-                rename("ps" = "value")
-            ) |>
-            filter(!is.na(ps)) |>
+          psPredicted |>
             select(exposure, ps) |>
             mutate(
               cohort_name = nm,
@@ -78,6 +97,7 @@ for (nm in cohortNames) {
             ) 
         )
         
+        # save model covariates
         psCovariates <- bind_rows(
           psCovariates,
           tibble(
@@ -90,9 +110,13 @@ for (nm in cohortNames) {
         )
         
         rm(glmResult)
-        
       } else {
         allCovariatesPS[[nm]][[stLevel]] <- NULL
+        cdm[[nm]] <- cdm[[nm]] |>
+          mutate(
+            !!weightColumn := NA_real_
+          ) |>
+          compute(name = nm, temporary = FALSE)
       }
     }
   }
@@ -102,20 +126,48 @@ info(logger, "- Export PS results")
 # Save PS covariates
 save(allCovariatesPS, file = here::here(output_folder, "lasso.RData"))
 
-# Update study populationa cohort with covariates and export cohort summary
-cdm$study_population <- cdm$study_population |>
+
+# Study population weighted
+if (grepl("SCIFI-PEARL|CPRD GOLD", cdmName(cdm))) {
+  cdm <- bind(
+    cdm$population_objective_1, 
+    cdm$population_objective_2, 
+    cdm$population_objective_3,
+    cdm$population_preterm_labour_objective_1, 
+    cdm$population_preterm_labour_objective_2, 
+    cdm$population_preterm_labour_objective_3,
+    name = "study_population_weighted"
+  )
+} else {
+  cdm <- bind(
+    cdm$population_objective_1, 
+    cdm$population_objective_2, 
+    cdm$population_objective_3,
+    cdm$population_miscarriage_objective_1, 
+    cdm$population_miscarriage_objective_2, 
+    cdm$population_miscarriage_objective_3,
+    cdm$population_preterm_labour_objective_1, 
+    cdm$population_preterm_labour_objective_2, 
+    cdm$population_preterm_labour_objective_3,
+    name = "study_population_weighted"
+  )
+}
+
+cdm$study_population_weighted <- cdm$study_population_weighted |>
+  filter(!is.na(.data$weights_overall)) |>
   left_join(
     cdm$features |> 
       select(all_of(c(
         "cohort_definition_id", "subject_id", "cohort_start_date", "exposure", 
-        "pregnancy_id", "exposed_match_id", unique(unlist(allCovariatesPS))
+        "pregnancy_id", "exposed_match_id", "unique_id", unique(unlist(allCovariatesPS))
       ))) |> 
       distinct()
   ) |> 
   distinct() |>
-  compute(name = "study_population", temporary = FALSE) |>
+  recordCohortAttrition("Weighting") |>
+  compute(name = "study_population_weighted", temporary = FALSE) |>
   newCohortTable(.softValidation = TRUE)
-sumCohort <- summaryCohort(cdm$study_population)
+sumCohort <- summaryCohort(cdm$study_population_weighted)
 newSummarisedResult(sumCohort, settings = settings(sumCohort) |> mutate(weighting = "TRUE")) |>
   exportSummarisedResult(path = output_folder, fileName = paste0("weighted_study_cohort_summary_", cdmName(cdm), ".csv"))
 
@@ -178,18 +230,18 @@ info(logger, "- Baseline characteristics (weighted)")
 strata <- selectStrata(cdm, strata = c("vaccine_brand", "gestational_trimester", "age_group"))
 
 ## table one
-baseline_characteristics <- getBaselineCharacteristics(cdm, strata, weights = allCovariatesPS)
+baseline_characteristics <- getBaselineCharacteristics(cdm, strata, weights = TRUE)
 
 ## large scale
 info(logger, "- Large Scale characteristics (weighted)")
-large_scale_characteristics <- getLargeScaleCharacteristics(cdm, strata, weights = allCovariatesPS)
+large_scale_characteristics <- getLargeScaleCharacteristics(cdm, strata, weights = TRUE)
 
 ## censoring
 info(logger, "- Censoring summary (weighted)")
-censoring <- summariseCohortExit(cdm = cdm, strata = strata, weights = allCovariatesPS)
+censoring <- summariseCohortExit(cdm = cdm, strata = strata, weights = TRUE)
 
 ## index date and gestational age
-timeDistribution <- summariseTimeDistribution(cdm = cdm, strata = strata, weights = allCovariatesPS)
+timeDistribution <- summariseTimeDistribution(cdm = cdm, strata = strata, weights = TRUE)
 
 # Confounding ----
 ## SMD

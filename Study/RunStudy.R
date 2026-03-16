@@ -30,12 +30,6 @@ set.seed(123)
 # Hand-picked PS variables + confounders with SMD > 0.1
 covariatesPS <- getCovariateList(cdm)
 
-# Miscarriage
-outcomeMiscarriage <- c("miscarriage", "miscarriage_codelist")
-if (grepl("CPRD", cdmName(cdm))) {
-  outcomeMiscarriage <- c("miscarriage", "miscarriage_codelist", "elective_termination")
-}
-
 if (sensitvitySCIFIPEARL) {
   locations <- readr::read_csv(here::here("Data", "locations_sweden.csv"))
   cdm$person <- cdm$person |>
@@ -92,8 +86,8 @@ if (runRiskSetSampling) {
       cohortTables = c(
         "mother_table", "base", "covid_vaccines", "covid_vaccines_dose", 
         "covid", "covariates_inf", "covariates_5", "other_vaccines",
-        "covid_test", "aesi_90", "aesi_30", "aesi_inf", "nco", "covid_washout",
-        "aesi_90_washout", "aesi_30_washout", "covid_vaccines_booster", "mae",
+        "covid_test", "aesi_90", "aesi_30", "aesi_inf", "nco",
+        "aesi_90_washout", "covid_vaccines_booster", "mae",
         "mae_washout", "comedications", "non_mrna_covid_vaccines",
         "non_mrna_covid_vaccines", "source_population"
       ),
@@ -136,8 +130,8 @@ if (runOutcomeModel) {
       cohortTables = c(
         "mother_table", "base", "covid_vaccines", "covid_vaccines_dose", 
         "covid", "covariates_inf", "covariates_5", "other_vaccines",
-        "covid_test", "aesi_90", "aesi_30", "aesi_inf", "nco", "covid_washout", 
-        "aesi_90_washout", "aesi_30_washout", "study_population", 
+        "covid_test", "aesi_90", "aesi_30", "aesi_inf", "nco", 
+        "aesi_90_washout", "study_population", 
         "mae", "features", "comedications", "source_population"
       ),
       .softValidation = TRUE

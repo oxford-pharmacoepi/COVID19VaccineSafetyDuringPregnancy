@@ -1,23 +1,35 @@
 # Population ----
 # Remove cohort 2 as diferential censoring by desing
-cdm$study_population_04 <- cdm$study_population |> 
+cohort04 <- c(
+  "population_objective_1", 
+  "population_objective_3",
+  "population_miscarriage_objective_1", 
+  "population_miscarriage_objective_3",
+  "population_preterm_labour_objective_1", 
+  "population_preterm_labour_objective_3"
+)
+if (grepl("SCIFI-PEARL|CPRD GOLD", cdmName(cdm))) {
+  cohort04 <- cohort04[!grepl("miscarriage", cohort04)]
+}
+cdm$study_population_04 <- cdm$study_population_weighted |> 
   subsetCohorts(
-    cohortId = c(),
+    cohortId = cohort04,
     name = "study_population_04"
   )
   
 # AESI ----
 info(logger, "- Create AESI outcome cohort")
 strata <- selectStrata(cdm, strata = c("vaccine_brand", "gestational_trimester", "age_group"))
+requiredWeightCols <- paste0("weights_", c("_overall", "_pfizer", "_moderna", "_12_to_17", "_18_to_34", "_35_to_55", "_t1", "_t2", "_t3"))
 toKeep <- c(
   "cohort_definition_id", "cohort_name", "subject_id", "cohort_start_date", 
   "cohort_end_date", "cohort_end_date_sensitivity", "pregnancy_start_date",
   "pregnancy_end_date", "exposed_match_id", "pregnancy_id", unique(unlist(strata)), 
-  "exposure", unique(unlist(allCovariatesPS))
+  "exposure", requiredWeightCols
 ) |> unique()
 cdm$aesi_outcome <- cdm$study_population_04 |> 
   subsetCohorts(
-    cohortId = paste0("population_objective_", 1:3), 
+    cohortId = paste0("population_objective_", c(1, 3)), 
     name = "aesi_outcome"
   ) |>
   dplyr::select(dplyr::all_of(toKeep)) %>% 
@@ -59,12 +71,10 @@ ends <- c("end_42_days_or_pregnancy", "end_42_days", "end_42_days_or_pregnancy_s
 for (end in ends) {
   info(logger, glue::glue("- Get IRR for AESI : analysis '{end}'"))
   
-  x <- estimateSurvivalRisk(
+  estimateSurvivalRisk(
     cohort = cdm$aesi_outcome |> mutate(!! lowCountAesi[1] := as.Date(NA)), outcomes = c(aesiOutcomes, lowCountAesi[1]), outcomeGroup = "Adverse Events of Special Interest",
     end = end, strata = strata, group = "cohort_name", weights = allCovariatesPS, ci = ci
-  ) 
-  
-  x |>
+  ) |>
     addLowCountOutcomes(lowCountAesi) |>
     suppressRiskEstimates() |>
     exportSummarisedResult(fileName = glue("outcome_risk_{end}_{cdmName(cdm)}"), path = output_folder)
@@ -78,12 +88,12 @@ if ("miscarriage" %in% settings(cdm$mae)$cohort_name) {
   cdm$mea_miscarriage <- cdm$study_population_04 |>
     dplyr::select(dplyr::all_of(toKeep)) %>% 
     subsetCohorts(
-      cohortId = paste0("population_miscarriage_objective_", 1:3), 
+      cohortId = paste0("population_miscarriage_objective_", c(1,3)), 
       name = "mea_miscarriage"
     ) |>
     addCohortIntersectDate(
       targetCohortTable = "mae",
-      targetCohortId = outcomeMiscarriage,
+      targetCohortId = "miscarriage",
       window = c(1, Inf),
       nameStyle = "{cohort_name}",
       name = "mea_miscarriage"
@@ -96,7 +106,7 @@ if ("miscarriage" %in% settings(cdm$mae)$cohort_name) {
     compute(name = "mea_miscarriage", temporary = FALSE)
   for (end in c("week_19_end", "week_19_end_sensitivity")) {
     estimateSurvivalRisk(
-      cohort = cdm$mea_miscarriage, outcomes = outcomeMiscarriage, outcomeGroup = "Maternal Adverse Events",
+      cohort = cdm$mea_miscarriage, outcomes = "miscarriage", outcomeGroup = "Maternal Adverse Events",
       end = end, strata = strata, group = "cohort_name", weights = allCovariatesPS, ci = ci
     ) |>
       suppressRiskEstimates() |> 
@@ -107,7 +117,7 @@ if ("miscarriage" %in% settings(cdm$mae)$cohort_name) {
 info(logger, "  * Get IRR for preterm labour")
 cdm$mea_preterm_labour <- cdm$study_population_04 |>
   subsetCohorts(
-    cohortId = paste0("population_preterm_labour_objective_", 1:3), 
+    cohortId = paste0("population_preterm_labour_objective_", c(1,3)), 
     name = "mea_preterm_labour"
   ) |>
   addCohortIntersectDate(
