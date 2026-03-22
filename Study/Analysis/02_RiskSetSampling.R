@@ -1,12 +1,16 @@
 # Risk Set Sampling ----
+cdm$source_population <- cdm$source_population %>% 
+  mutate(pregnancy_start_week_6 = !!CDMConnector::dateadd("pregnancy_start_date", 6*7))
 ## Potential comparator cohort ---- 
 info(logger, "- Potential comparator cohort")
 cdm$comparator_source <- cdm$source_population |>
   addCohortName() %>% 
   mutate(
+    # only contribute if no vaccine before week 6 
     cohort_start_date = if_else(
-      cohort_start_date < vaccine_date | is.na(vaccine_date), cohort_start_date, NA
+      pregnancy_start_week_6 <= vaccine_date | is.na(vaccine_date), cohort_start_date, NA
     ),
+    # cohort end date if vaccinated during pregnancy updated to day before vaccine
     cohort_end_date = if_else(
       cohort_end_date < vaccine_date | is.na(vaccine_date), cohort_end_date, as.Date(!!dateadd("vaccine_date", -1))
     )
@@ -19,7 +23,7 @@ info(logger, "- Potential exposed cohort")
 cdm$exposed_source <- cdm$source_population |>
   addCohortName() |>
   mutate(
-    exposure_date = if_else(vaccine_date < cohort_end_date, vaccine_date, NA)
+    exposure_date = if_else(vaccine_date < cohort_end_date & vaccine_date > pregnancy_start_week_6, vaccine_date, NA)
   ) |>
   filter(!is.na(exposure_date)) |>
   # vaccine brand and dose
@@ -88,8 +92,8 @@ cdm$exposed_source <- cdm$exposed_source |>
   ) |>
   filter(
     cohort_definition_id == 1 |
-      cohort_definition_id == 2 & previous_dose >= 16 |
-      cohort_definition_id == 3 & previous_dose >= 90
+      # cohort_definition_id == 2 & previous_dose >= 16 |
+      cohort_definition_id == 2 & previous_dose >= 90
   ) |>
   compute(name = "exposed_source", temporary = FALSE)
 
@@ -143,18 +147,19 @@ sampling_source <- cdm$exposed_source |>
         "pregnancy_outcome_study",
         "age_group",
         "number_previous_doses",
-        "pre_pregnancy_smoking"
+        "pre_pregnancy_smoking", 
+        "pregnancy_start_week_6"
       ))) |>
       rename_with(
         .fn = \(x){glue("comparator_{x}")}, 
-        .cols = c("pregnancy_id", "pregnancy_start_date", "pregnancy_end_date", "observation_period_start_date", "observation_period_end_date", "previous_dose", "pregnancy_outcome_study", "age_group", "number_previous_doses", "pre_pregnancy_smoking")
+        .cols = c("pregnancy_id", "pregnancy_start_date", "pregnancy_start_week_6", "pregnancy_end_date", "observation_period_start_date", "observation_period_end_date", "previous_dose", "pregnancy_outcome_study", "age_group", "number_previous_doses", "pre_pregnancy_smoking")
       ),
     by = c("cohort_name", "age_group_sample", "pregnancy_start_band"),
     relationship = "many-to-many"
   ) |>
-  # control must be pregnant and exposure-free at potential index date
+  # control must be pregnant (week 6 onwoard) and exposure-free at potential index date
   filter(
-    exposure_date >= cohort_start_date & exposure_date <= cohort_end_date
+    exposure_date >= comparator_pregnancy_start_week_6 & exposure_date <= cohort_end_date
   )  |>
   compute(name = "sampling_source", temporary = FALSE)
 
@@ -167,36 +172,36 @@ sampling_source <- sampling_source %>%
     #  previous dose days window: 16 days objecive 2, 90 days objective 3
     comparator_previous_dose_band = case_when(
       .data$cohort_definition_id == 1 ~ NA_character_,
-      .data$cohort_definition_id == 2 ~ cut(comparator_previous_dose, !!seq(0, 1500, 16), include.lowest = TRUE),
-      .data$cohort_definition_id == 3 ~ cut(comparator_previous_dose, !!seq(0, 1500, 90), include.lowest = TRUE)
+      # .data$cohort_definition_id == 2 ~ cut(comparator_previous_dose, !!seq(0, 1500, 16), include.lowest = TRUE),
+      .data$cohort_definition_id == 2 ~ cut(comparator_previous_dose, !!seq(0, 1500, 90), include.lowest = TRUE)
     ),
     exposed_previous_dose_band = case_when(
       .data$cohort_definition_id == 1 ~ NA_character_,
-      .data$cohort_definition_id == 2 ~ cut(exposed_previous_dose, !!seq(0, 1500, 16), include.lowest = TRUE),
-      .data$cohort_definition_id == 3 ~ cut(exposed_previous_dose, !!seq(0, 1500, 90), include.lowest = TRUE)
+      # .data$cohort_definition_id == 2 ~ cut(exposed_previous_dose, !!seq(0, 1500, 16), include.lowest = TRUE),
+      .data$cohort_definition_id == 2 ~ cut(exposed_previous_dose, !!seq(0, 1500, 90), include.lowest = TRUE)
     )
   ) |>
   compute(name = "sampling_source", temporary = FALSE) |>
   filter((is.na(exposed_previous_dose_band) & is.na(comparator_previous_dose_band)) | (comparator_previous_dose_band == exposed_previous_dose_band)) |>
   compute(name = "sampling_source", temporary = FALSE) 
 
-sampling_summary <- samplingSummary(sampling_source, "Previous vaccine time-window (16-days band) matching", sampling_summary, cohortId = 2)
-sampling_summary <- samplingSummary(sampling_source, "Previous vaccine time-window (90-days band) matching", sampling_summary, cohortId = 3)
+# sampling_summary <- samplingSummary(sampling_source, "Previous vaccine time-window (16-days band) matching", sampling_summary, cohortId = 2)
+sampling_summary <- samplingSummary(sampling_source, "Previous vaccine time-window (90-days band) matching", sampling_summary, cohortId = 2)
 
 ## Match on number of previous doses (Objective 3) ----
 sampling_source <- sampling_source |>
   filter((is.na(exposed_number_previous_doses) & is.na(comparator_number_previous_doses)) | (comparator_number_previous_doses == exposed_number_previous_doses)) |>
   compute(name = "sampling_source", temporary = FALSE) 
 
-sampling_summary <- samplingSummary(sampling_source, "Number of previous COVID-19 vaccines matching", sampling_summary, cohortId = 3)
+sampling_summary <- samplingSummary(sampling_source, "Number of previous COVID-19 vaccines matching", sampling_summary, cohortId = 2)
 
 ## Check comparator eligibility ----
 sampling_source <- sampling_source |> 
   # days since previous vaccine - comparator
   filter(
     cohort_definition_id == 1 |
-      cohort_definition_id == 2 & comparator_previous_dose >= 16 |
-      cohort_definition_id == 3 & comparator_previous_dose >= 90
+      # cohort_definition_id == 2 & comparator_previous_dose >= 16 |
+      cohort_definition_id == 2 & comparator_previous_dose >= 90
   ) %>% 
   select(!c("age_group_sample")) |>
   compute(name = "sampling_source", temporary = FALSE) |>
@@ -210,10 +215,10 @@ sampling_source <- sampling_source |>
   slice_sample(
     n =  10, 
     by = all_of(c("cohort_definition_id", "cohort_name", "exposed_id", "exposure_date", "exposed_pregnancy_id"))
-  )
+  ) |>
   compute(name = "sampling_source", temporary = FALSE)
 
-sampling_summary <- samplingSummary(sampling_source, "Sample to 10 comparators max", sampling_summary)
+sampling_summary <- samplingSummary(sampling_source, "Sample to 10 comparators", sampling_summary)
 
 ## Export sampling summary ----
 sampling_summary |>
@@ -383,6 +388,13 @@ cdm$study_population <- cdm$study_population |>
     nameStyle = "previous_pregnant_covid_vaccines",
     name = "study_population"
   ) |>
+  addCohortIntersectFlag(
+    targetCohortTable = "covid", 
+    window = list(c(-365, -1)),
+    censorDate = "pregnancy_start_date",
+    nameStyle = "covid_previous_year",
+    name = "study_population"
+  ) |>
   mutate(
     previous_covid_vaccines = as.character(previous_covid_vaccines),
     previous_pregnant_covid_vaccines = as.character(previous_pregnant_covid_vaccines)
@@ -403,7 +415,7 @@ cdm$miscarriage <- cdm$study_population %>%
   select(!max_index_date) |>
   compute(name = "miscarriage", temporary = FALSE) |>
   recordCohortAttrition(reason = "Study population for miscarriage") |>
-  renameCohort(cohortId = 1:3, newCohortName = paste0("population_miscarriage_objective_", 1:3))
+  renameCohort(cohortId = 1:2, newCohortName = paste0("population_miscarriage_objective_", c(1,3)))
 }
 
 cdm$preterm_labour <- cdm$study_population %>% 
@@ -412,7 +424,7 @@ cdm$preterm_labour <- cdm$study_population %>%
   select(!max_index_date) |>
   compute(name = "preterm_labour", temporary = FALSE) |>
   recordCohortAttrition(reason = "Study population for preterm labour") |>
-  renameCohort(cohortId = 1:3, newCohortName = paste0("population_preterm_labour_objective_", 1:3))
+  renameCohort(cohortId = 1:2, newCohortName = paste0("population_preterm_labour_objective_", c(1,3)))
 
 if (grepl("SCIFI-PEARL|CPRD GOLD", cdmName(cdm))) {
   cdm <- bind(cdm$study_population, cdm$preterm_labour, name = "study_population")

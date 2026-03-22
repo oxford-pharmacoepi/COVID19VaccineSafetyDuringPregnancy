@@ -89,11 +89,11 @@ cdm$covid_vaccines_booster <- unionCohorts(
 info(logger, "- Source cohorts")
 # objective-specific source populations
 cdm$source_1 <- getSourcePopulation(cdm, 1, enrollment1)
-cdm$source_2 <- getSourcePopulation(cdm, 2, enrollment2)
+# cdm$source_2 <- getSourcePopulation(cdm, 2, enrollment2)
 cdm$source_3 <- getSourcePopulation(cdm, 3, enrollment3)
 
 # bind source population cohorts
-cdm <- omopgenerics::bind(cdm$source_1, cdm$source_2, cdm$source_3, name = "source_population")
+cdm <- omopgenerics::bind(cdm$source_1, cdm$source_3, name = "source_population")
 
 # add index vaccine dose date and other important covariates
 cdm$source_population <- cdm$source_population |>
@@ -247,7 +247,14 @@ cdm$cnsi_90 <- cdm$base |>
   ) |> unionCohorts(cohortName = "central_nervous_system_immune") |>
   padCohortEnd(days = 90)
 
-cdm <- bind(cdm$aesi_90, cdm$cnsi_90, cdm$tts, name = "aesi_90")
+cdm$venous_thromboembolism_90 <- cdm$base |>
+  subsetCohorts(
+    cohortId = c("deep_vein_thrombosis", "pulmonary_embolism"),
+    name = "venous_thromboembolism_90"
+  ) |> unionCohorts(cohortName = "venous_thromboembolism") |>
+  padCohortEnd(days = 90)
+
+cdm <- bind(cdm$aesi_90, cdm$cnsi_90, cdm$venous_thromboembolism_90, cdm$tts, name = "aesi_90")
 
 ## AESI recurrent
 info(logger, "  - Recurrent")
@@ -299,19 +306,24 @@ cdm$maternal_death <- deathCohort(cdm = cdm, name = "maternal_death") |>
 # From phenotype
 cdm$mae_pregnancy <- cdm$base |>
   subsetCohorts(
-    cohortId = c(
-      "dysfunctional_labour", "eclampsia", "antepartum_haemorrhage", "hellp", 
-    ),
+    cohortId = c("dysfunctional_labour", "eclampsia", "hellp"),
     name = "mae_pregnancy"
   ) |>
   startsInPregnancy()
 cdm$mother_table <- cdm$mother_table %>%
   mutate(
+    start_24 = !!CDMConnector::dateadd("pregnancy_start_date", 24*7),
     end_6 = !!CDMConnector::dateadd("pregnancy_end_date", 42),
     end_12 = !!CDMConnector::dateadd("pregnancy_end_date", 84),
     pregnancy_end_date_m7 = !!CDMConnector::dateadd("pregnancy_end_date", -7),
     pregnancy_end_date_7 = !!CDMConnector::dateadd("pregnancy_end_date", 7)
   )
+cdm$mae_antepartum_haemorrhage <- cdm$base |>
+  subsetCohorts(
+    cohortId = "antepartum_haemorrhage",
+    name = "mae_antepartum_haemorrhage"
+  ) |>
+  startsInPregnancy(start = "start_24", reason = "From week 24 of pregnancy")
 cdm$mae_postpartum_6weeks <- cdm$base |>
   subsetCohorts(
     cohortId = "postpartum_endometritis",
@@ -328,7 +340,7 @@ cdm$mae_postpartum_12weeks <- cdm$base |>
 # Bind all
 cdm <- bind(
   cdm$mae_pregnancy, cdm$mae_postpartum_6weeks, cdm$mae_postpartum_12weeks,
-  cdm$maternal_death, cdm$mae_omop, name = "mae"
+  cdm$maternal_death, cdm$mae_omop, cdm$mae_antepartum_haemorrhage, name = "mae"
 )
 
 # NCO ----

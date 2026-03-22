@@ -35,7 +35,7 @@ for (nm in cohortNames) {
           !any_of(c(
             "cohort_name", "cohort_definition_id", "pregnancy_id", "cohort_end_date",
             "exposed_match_id", "vaccine_brand", "gestational_trimester", 
-            "cohort_definition_id", "age_group", "weight", "region"
+            "cohort_definition_id", "age_group"
           ))) |>
         collect()
       weightColumn <- paste0("weights_", stLevel) |> toSnakeCase()
@@ -55,7 +55,7 @@ for (nm in cohortNames) {
         
         ## Propensity Score
         psData <- lassoData |>
-          select(all_of(c(
+          select(any_of(c(
             "subject_id", "unique_id", "exposure", allCovariatesPS[[nm]][[stLevel]]
           ))) |>
           mutate(exposure = factor(exposure, levels = c("comparator", "exposed")))
@@ -63,7 +63,7 @@ for (nm in cohortNames) {
         glmResult <- glm(exposure ~ ., data = psData |> select(-c("unique_id", "subject_id")), family = binomial(link = "logit"))
         
         psPredicted <- psData |>
-          select(all_of(c(
+          select(any_of(c(
             "subject_id", "unique_id", "exposure", allCovariatesPS[[nm]][[stLevel]]
           ))) |>
           bind_cols(
@@ -114,7 +114,7 @@ for (nm in cohortNames) {
         allCovariatesPS[[nm]][[stLevel]] <- NULL
         cdm[[nm]] <- cdm[[nm]] |>
           mutate(
-            !!weightColumn := NA_real_
+            !!weightColumn := as.numeric(NA)
           ) |>
           compute(name = nm, temporary = FALSE)
       }
@@ -131,23 +131,18 @@ save(allCovariatesPS, file = here::here(output_folder, "lasso.RData"))
 if (grepl("SCIFI-PEARL|CPRD GOLD", cdmName(cdm))) {
   cdm <- bind(
     cdm$population_objective_1, 
-    cdm$population_objective_2, 
     cdm$population_objective_3,
     cdm$population_preterm_labour_objective_1, 
-    cdm$population_preterm_labour_objective_2, 
     cdm$population_preterm_labour_objective_3,
     name = "study_population_weighted"
   )
 } else {
   cdm <- bind(
     cdm$population_objective_1, 
-    cdm$population_objective_2, 
     cdm$population_objective_3,
     cdm$population_miscarriage_objective_1, 
-    cdm$population_miscarriage_objective_2, 
     cdm$population_miscarriage_objective_3,
     cdm$population_preterm_labour_objective_1, 
-    cdm$population_preterm_labour_objective_2, 
     cdm$population_preterm_labour_objective_3,
     name = "study_population_weighted"
   )
@@ -157,7 +152,7 @@ cdm$study_population_weighted <- cdm$study_population_weighted |>
   filter(!is.na(.data$weights_overall)) |>
   left_join(
     cdm$features |> 
-      select(all_of(c(
+      select(any_of(c(
         "cohort_definition_id", "subject_id", "cohort_start_date", "exposure", 
         "pregnancy_id", "exposed_match_id", "unique_id", unique(unlist(allCovariatesPS))
       ))) |> 
@@ -234,6 +229,12 @@ baseline_characteristics <- getBaselineCharacteristics(cdm, strata, weights = TR
 
 ## large scale
 info(logger, "- Large Scale characteristics (weighted)")
+cdm$features_weighted <- cdm$features |>
+  inner_join(
+    cdm$study_population_weighted |>
+      select(unique_id, cohort_name, starts_with("weight"))
+    ) |>
+  compute(name = "features_weighted", temporary = FALSE)
 large_scale_characteristics <- getLargeScaleCharacteristics(cdm, strata, weights = TRUE)
 
 ## censoring

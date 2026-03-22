@@ -475,6 +475,10 @@ getBaselineCharacteristics <- function(cdm, strata, weights) {
     'vaccine_brand' = c('count', 'percentage'),
     "previous_covid_vaccines" = c('count', 'percentage'),
     "previous_pregnant_covid_vaccines" = c('count', 'percentage'),
+    "socioeconomic_status" = c('count', 'percentage'),
+    "ethnicity" = c('count', 'percentage'),
+    "birth_continent" = c('count', 'percentage'),
+    "nationallity" = c('count', 'percentage'),
     "number_pregnancies_weighted" = 'sum'
   )
   if (weights) {
@@ -526,14 +530,13 @@ getBaselineCharacteristics <- function(cdm, strata, weights) {
       for(strataLevel.k in strataLevels) { # strata level
         # data
         data.k <- data |>
-          filter(.data[[strata.k]] == strataLevel.k) |>
-          collect()
-        if (nrow(data.k) > 10) {
+          filter(.data[[strata.k]] == strataLevel.k) 
+        if (tally(data.k) |> pull() > 10) {
           strataBaseline <- "exposure"
           if (strata.k != "overall") strataBaseline <- (c("exposure", strata.k))
-          weightCol <- paste0("weights_", strataLevel.k)
-          baseline.k <- baselineData |>
-            mutate(number_pregnancies_weighted = .data[[weightCol]])|>
+          weightCol <- toSnakeCase(paste0("weights_", strataLevel.k)) 
+          baseline.k <- data.k |>
+            mutate(number_pregnancies_weighted = .data[[weightCol]]) |>
             summariseCharacteristics(
               strata = strataBaseline,
               counts = TRUE,
@@ -716,7 +719,7 @@ getLargeScaleCharacteristics <- function(cdm, strata, weights) {
           filter(.data[[strata.k]] == strataLevel.k) |>
           compute()
         
-        weightCol <- paste0("weights_", strataLevel.k)
+        weightCol <- toSnakeCase(paste0("weights_", strataLevel.k))
         
         strataBaseline <- "exposure"
         if (strata.k != "overall") strataBaseline <- (c("exposure", strata.k))
@@ -777,8 +780,7 @@ getLargeScaleCharacteristics <- function(cdm, strata, weights) {
           result_type = "summarise_large_scale_characteristics",
           analysis = "standard", table_name = NA, type = "event",
           weighting = weighting
-        ) |>
-        select(!any_of("weights"))
+        ) 
     )
   return(lsc)
 }
@@ -916,7 +918,7 @@ cohortExit <- function(x, strata, weights) {
     newSummarisedResult(
       settings = settings(main) |>
         mutate(result_type = "cohort_exit", weighting = weighting) |>
-        select(!any_of("weights"))
+        select(!any_of(weights))
     )
 }
 
@@ -929,7 +931,7 @@ summariseCohortExit <- function(cdm, strata, weights) {
   
   if (!weights) {
     summaryExit <- cdm$study_population |>
-      mutate(weights = 1) |>
+      mutate(weights_null = 1) |>
       cohortExit(strataCens, "weights_null")
   } else {
     summaryExit <- NULL
@@ -944,7 +946,7 @@ summariseCohortExit <- function(cdm, strata, weights) {
             filter(.data[[strata.k]] == strataLevel.k) |>
             collect()
           if (nrow(data.k) > 10) {
-            weightCol <- paste0("weights_", strataLevel.k)
+            weightCol <- toSnakeCase(paste0("weights_", strataLevel.k))
             # characteristics
             summaryExit.k <- cohortExit(data.k, list("exit_reason", "exposure", c("exposure", "exit_reason")), weightCol)
             if (strata.k != "overall") {
@@ -1531,17 +1533,16 @@ summariseTimeDistribution <- function(cdm, strata, weights = FALSE) {
         right = FALSE
       )
     )
-  for (group in settings(cdm$study_population)$cohort_name) { # group level
     for (strata.k in strataNew) { # strata name
       strataLevels <- unique(tab[,strata.k]) |> pull()
       for(strataLevel.k in strataLevels) { # strata level
         # data
         data.k <- tab |>
-          filter(cohort_name == group, .data[[strata.k]] == strataLevel.k)
+          filter(.data[[strata.k]] == strataLevel.k)
         if (nrow(data.k) > 10) {
           # weights
           if (weights) {
-            weightCol <- paste0("weights_", strataLevel.k)
+            weightCol <- toSnakeCase(paste0("weights_", strataLevel.k))
           }
           # time distribution
           timeDistribution <- dplyr::bind_rows(
@@ -1551,7 +1552,6 @@ summariseTimeDistribution <- function(cdm, strata, weights = FALSE) {
           )
         }
       }
-    }
   }
   
   # summarised result
@@ -1876,7 +1876,7 @@ getCovariateList <- function(cdm) {
     "exposure", "age", "gestational_day", "cohort_start_date",
     "previous_observation", "previous_pregnancies", "previous_healthcare_visits",
     "alcohol_misuse_dependence", "obesity", "anxiety", "depression", 
-    "pre_pregnancy_smoking"
+    "pre_pregnancy_smoking", "covid_previous_year", "region"
   )
   covariatesSMD <- readr::read_csv(here::here("Codelists", "largeScaleSMD.csv")) |>
     filter(grepl(cdmName(cdm), cdm_name)) 
