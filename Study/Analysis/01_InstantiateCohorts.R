@@ -350,6 +350,7 @@ cdm$nco <- cdm$base |>
 
 # Small wash-out cohorts ----
 info(logger, "- Wash-out reduced cohort")
+cdm$aesi_90_washout <- cdm$aesi_90 |>
   CohortConstructor::unionCohorts(cohortName = "aesi_90", name = "aesi_90_washout")
 cdm$mae_washout <- cdm$mae_pregnancy |>
   unionCohorts(cohortName = "mae_during_pregnancy", name = "mae_washout")
