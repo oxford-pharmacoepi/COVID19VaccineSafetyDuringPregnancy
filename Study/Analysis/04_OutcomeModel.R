@@ -225,7 +225,7 @@ cdm$study_population_nco <- cdm$study_population_04 |>
   select(any_of(c(
     "cohort_definition_id", "cohort_name", "subject_id", "cohort_start_date", "cohort_end_date",
     "cohort_end_date_sensitivity", "exposure", "exposed_match_id", "pregnancy_id", "pregnancy_end_date",
-    unlist(strata), unique(unlist(allCovariatesPS))
+    unlist(strata), unique(unlist(allCovariatesPS)), requiredWeightCols
   ))) |>
   mutate(
     pregnancy_end =  if_else(pregnancy_end_date < cohort_end_date, pregnancy_end_date, cohort_end_date),

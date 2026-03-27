@@ -1068,7 +1068,7 @@ pivotSurvivalData <- function(data, outcomes) {
   }
 }
 
-getIRR <- function(x, ci, outcomes, stats = FALSE) {
+getIRR <- function(x, ci, outcomes, stats = FALSE, weightsCol) {
   
   if (stats) {
     summary_tbl <- bind_rows(
@@ -1076,14 +1076,14 @@ getIRR <- function(x, ci, outcomes, stats = FALSE) {
       x |>
         group_by(outcome_name, exposure) |>
         summarise(
-          person_days = sum(as.numeric(time) * coalesce(.data$weight, 1), na.rm = TRUE),
-          cases = sum(as.numeric(status) * coalesce(.data$weight, 1), na.rm = TRUE),
-          person_days_median = as.numeric(Hmisc::wtd.quantile(as.numeric(time), weights = .data$weight, probs = 0.5, na.rm = TRUE)),
-          person_days_q25 = as.numeric(Hmisc::wtd.quantile(as.numeric(time), weights = .data$weight, probs = 0.25, na.rm = TRUE)),
-          person_days_q75 = as.numeric(Hmisc::wtd.quantile(as.numeric(time), weights = .data$weight, probs = 0.75, na.rm = TRUE)),
+          person_days = sum(as.numeric(time) * coalesce(.data[[weightsCol]], 1), na.rm = TRUE),
+          cases = sum(as.numeric(status) * coalesce(.data[[weightsCol]], 1), na.rm = TRUE),
+          person_days_median = as.numeric(Hmisc::wtd.quantile(as.numeric(time), weights = .data[[weightsCol]], probs = 0.5, na.rm = TRUE)),
+          person_days_q25 = as.numeric(Hmisc::wtd.quantile(as.numeric(time), weights = .data[[weightsCol]], probs = 0.25, na.rm = TRUE)),
+          person_days_q75 = as.numeric(Hmisc::wtd.quantile(as.numeric(time), weights = .data[[weightsCol]], probs = 0.75, na.rm = TRUE)),
           person_days_min = min(as.numeric(time), na.rm = TRUE),
           person_days_max = max(as.numeric(time), na.rm = TRUE),
-          subject_count = sum(.data$weight, na.rm = TRUE),
+          subject_count = sum(.data[[weightsCol]], na.rm = TRUE),
           weighting = "TRUE",
           .groups = "drop"
         ) , 
@@ -1110,8 +1110,8 @@ getIRR <- function(x, ci, outcomes, stats = FALSE) {
       x |>
         group_by(outcome_name, exposure) |>
         summarise(
-          person_days = sum(as.numeric(time) * coalesce(.data$weight, 1), na.rm = TRUE),
-          cases = sum(as.numeric(status) * coalesce(.data$weight, 1), na.rm = TRUE),
+          person_days = sum(as.numeric(time) * coalesce(.data[[weightsCol]], 1), na.rm = TRUE),
+          cases = sum(as.numeric(status) * coalesce(.data[[weightsCol]], 1), na.rm = TRUE),
           weighting = "TRUE",
           .groups = "drop"
         ) , 
@@ -1209,7 +1209,7 @@ getWeights <- function(x, coefs) {
   return(psData)
 }
 
-processGroupStrata <- function(data, groupLevel, strataLevel, weights, ci, outcomes) {
+processGroupStrata <- function(data, groupLevel, strataLevel, ci, outcomes, weights) {
   data <- data |> ungroup()
   
   if (pull(tally(data)) <= 10) {
@@ -1226,10 +1226,9 @@ processGroupStrata <- function(data, groupLevel, strataLevel, weights, ci, outco
   
   set.seed(123)
   
-  # PS
-  data <- getWeights(data, weights[[groupLevel]][[strataLevel]]) |>
+  data <- data |>
     select(all_of(c(
-      "subject_id", "start_date", "exposed_match_id", "exposure", "weight",
+      "subject_id", "start_date", "exposed_match_id", "exposure", weights,
       paste0(outcomes, "_status"), paste0(outcomes, "_time")
     )))
   data <- data |> pivotSurvivalData(outcomes)
@@ -1242,12 +1241,12 @@ processGroupStrata <- function(data, groupLevel, strataLevel, weights, ci, outco
     
     for (ii in seq_len(nboot)) {
       data.ii <- data |> slice_sample(n = n, replace = TRUE)
-      irr_tbl <- getIRR(data.ii, ci = NULL, outcomes = outcomes) |> mutate(bootstrap = ii)
+      irr_tbl <- getIRR(data.ii, ci = NULL, outcomes = outcomes, weightsCol = weights) |> mutate(bootstrap = ii)
       coefBootstrap <- bind_rows(coefBootstrap, irr_tbl)
     }
     
     # Main estimate
-    main_est <- getIRR(data, ci = NULL, outcomes = outcomes, stats = TRUE)
+    main_est <- getIRR(data, ci = NULL, outcomes = outcomes, stats = TRUE, weightsCol = weights)
     
     # CI
     results <- main_est |>
@@ -1266,7 +1265,7 @@ processGroupStrata <- function(data, groupLevel, strataLevel, weights, ci, outco
     rm(coefBootstrap, data.ii)
     
   } else if (ci == "midp") {
-    results <- getIRR(data, ci = "midp", outcomes = outcomes, stats = TRUE)
+    results <- getIRR(data, ci = "midp", outcomes = outcomes, stats = TRUE, weightsCol = weights)
     
   } else {
     stop("Unsupported ci method: ", ci)
@@ -1340,6 +1339,7 @@ getRiskEstimate <- function(data, group, strata, outcomes, weights = NULL, ci = 
     for (strataName in strata) {
       strataLevels <- unique(data |> pull(.data[[strataName]]))
       for (strataLevel in strataLevels) {
+        weightCol <- toSnakeCase(paste0("weights_", strataLevel))
         results[[paste0(nm, "_", strataLevel)]] <- data |>
           filter(.data$cohort_name == .env$nm, .data[[strataName]] == .env$strataLevel) |> 
           collect() |>
@@ -1347,7 +1347,7 @@ getRiskEstimate <- function(data, group, strata, outcomes, weights = NULL, ci = 
             groupLevel = nm,
             strataLevel = strataLevel,
             outcomes = outcomes,
-            weights = weights,
+            weights = weightCol,
             ci = ci
           ) |>
           mutate(
