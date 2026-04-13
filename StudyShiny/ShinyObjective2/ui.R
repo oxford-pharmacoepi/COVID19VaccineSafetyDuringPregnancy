@@ -1456,7 +1456,7 @@ ui <- bslib::page_navbar(
                   shinyWidgets::pickerInput(
                     inputId = "summarise_standardised_mean_differences_table_hide",
                     label = "Hide",
-                    choices = c("cdm_name", "cohort_name", "exposure", "vaccine_brand", "gestational_trimester", "age_group", "variable_level", "weighting"),
+                    choices = c("cdm_name", "cohort_name", "exposure", "vaccine_brand", "gestational_trimester", "age_group", "variable_level", "weighting", "weights"),
                     selected = c("vaccine_brand", "gestational_trimester", "age_group", "weighting"),
                     multiple = TRUE,
                     options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
@@ -1786,7 +1786,7 @@ ui <- bslib::page_navbar(
                 shinyWidgets::pickerInput(
                   inputId = "incidence_rate_ratio_plot_colour",
                   label = "Colour",
-                  choices = c("cdm_name", "cohort_name", "vaccine_brand", "gestational_trimester", "age_group", "weighting", "outcome_name", "outcome_group", "empirical_calibration"),
+                  choices = c("cdm_name", "cohort_name", "association", "vaccine_brand", "gestational_trimester", "age_group", "weighting", "outcome_name", "outcome_group", "empirical_calibration"),
                   selected = "outcome_group",
                   multiple = TRUE,
                   options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")

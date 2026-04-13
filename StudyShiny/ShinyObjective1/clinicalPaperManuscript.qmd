@@ -1,0 +1,769 @@
+---
+title: "Cumulative incidence and characterization of adverse events during pregnancy: a multi-country European cohort study"
+format:
+  docx:
+    reference-doc: ref.docx
+    fig-cap-location: top
+execute:
+  echo: false
+  message: false
+  warning: false
+---
+
+
+```{r}
+library(CohortCharacteristics)
+library(dplyr)
+library(ggplot2)
+library(IncidencePrevalence)
+library(markdown)
+library(omopgenerics)
+library(OmopSketch)
+library(tidyr)
+library(visOmopResults)
+library(CohortSurvival)
+library(flextable)
+library(lme4)
+library(broom)     
+library(glmmTMB)
+library(purrr)
+library(patchwork)
+library(ggh4x)
+
+# whether to run meta analysis
+runMetaAnalysis <- FALSE
+
+# preprocess data if it has not been done
+fileData <- file.path(getwd(), "data", "shinyData.RData")
+if (!file.exists(fileData)) {
+  source(file.path(getwd(), "data", "preprocess.R"))
+}
+
+# load shiny data
+load(fileData)
+
+# source functions
+source(file.path(getwd(), "functions.R"))
+
+# Quarto options
+knitr::opts_chunk$set(
+  out.width  = "95%",  # figures occupy ~95% of document width
+  out.height = "auto",
+  dpi        = 360,    # ensure figure quality
+  fig.width  = 9,      # default aspect ratio (can be overridden per-figure)
+  fig.height = 6,
+  results    = "asis"  # enable Markdown produced via cat() inside chunks
+)
+
+maeCode <- c(
+  "miscarriage", "ectopic_pregnancy", "stillbirth", 
+  
+  "gestational_diabetes", "antepartum_haemorrhage", 
+  "preeclampsia", "eclampsia", "hellp",  
+  
+  "preterm_labour", "dysfunctional_labour", 
+  
+  # "maternal_death",
+  
+  "postpartum_haemorrhage"
+  #, "postpartum_endometritis"
+)
+maeClean <- c(
+  "Miscarriage", "Ectopic pregnancy", "Stillbirth",
+  
+  "Gestational diabetes mellitus", "Antepartum haemorrhage", 
+  "Pre-eclampsia", "Eclampsia", "HELLP syndrome", 
+  
+  "Preterm delivery", "Dysfunctional labour",
+  
+  # "Maternal death",
+  
+  "Postpartum haemorrhage"
+  #, "Postpartum endometritis"
+)
+aesiCode <- c(
+  "pulmonary_embolism", "deep_vein_thrombosis"
+  # "immune_thrombocytopenia", "bells_palsy"
+  
+  # "disseminated_intravascular_coagulation", "tts",
+  # 
+  # "myocarditis_or_pericarditis", "myocardial_infarction", 
+  # 
+  # "ischaemic_stroke", "haemorrhagic_stroke",   
+  # 
+  # "bells_palsy", "guillain_barre_syndrome", 
+  # "transverse_myelitis", "encephalitis", "narcolepsy",
+  # 
+  # "anaphylaxis"
+)
+aesiClean <- c(
+  'Pulmonary embolism', 'Deep vein thrombosis'
+  # 'Immune thrombocytopenia', 'Bell’s palsy'
+  
+  # 'Disseminated intravascular coagulation',
+  # 'Thrombosis with thrombocytopenia syndrome', 
+  # 
+  # 'Myocarditis or pericarditis', 'Myocardial infarction', 
+  # 
+  # 'Ischaemic stroke', 'Haemorrhagic stroke', 
+  # 
+  # 'Guillain–Barré syndrome', 
+  # 'Transverse myelitis', 'Encephalitis', 'Narcolepsy',
+  # 
+  # 'Anaphylaxis'
+)
+excludeCPRD <- c("Miscarriage", "Dysfunctional labour")
+excludeSCIFI <- c("Ectopic pregnancy")
+dbOrder <- c("SCIFI-PEARL", "NLHR", "SIDIAP")
+
+setGlobalTableOptions(type = "flextable")
+
+# characterisation ----
+characteristics <- data$summarise_characteristics |>
+  filter(cdm_name %in% dbOrder) |>
+  filter(!grepl("_sens", group_level)) |>
+  dplyr::mutate( 
+    variable_name = factor(
+      variable_name,
+      levels = c(
+        "Number records", 
+        "Number subjects",
+        "Maternal age", 
+        "Maternal age group",
+        "Trimester",
+        "Days in cohort", 
+        "Covariates in the past year",
+        "History of comorbidities", 
+        "Medications in the past 6 months",
+        "Maternal Adverse Events during pregnancy",
+        "Maternal Adverse Events during previous pregnancy",
+        "Season",
+        "Socioeconomic status",
+        "Ethnicity",
+        "Nationallity",
+        "Birth continent",
+        "Pregnancy start period"
+      ),
+      labels = c(
+        "Number\npregnancies", 
+        "Number\nsubjects",
+        "Maternal age", 
+        "Maternal age\ngroup",
+        "Trimester",
+        "Pregnancy length\n(days)",
+        "Comorbidities\n(prior year)",
+        "Comorbidities\n(any-time before)",
+        "Medications\n(prior 6 months)",
+        "Maternal Adverse Events\n(during pregnancy)",
+        "Maternal Adverse Events\n(prior pregnancy)",
+        "Season",
+        "Socioeconomic status",
+        "Ethnicity",
+        "Nationallity",
+        "Birth continent",
+        "Pregnancy start period"
+      )
+    ),
+    variable_level = factor(
+      variable_level,
+      levels = c(
+        "12 to 17", "18 to 34", "35 to 55", "-",
+        
+        paste0("Trimester ", 1:3), "Postpartum",
+        
+        "Obesity", "Depression", "Anxiety", "Alcohol misuse dependence",
+        
+        "Asthma", "Diabetes", "Thyroid disorder",
+        "Essential hypertension",
+        "Systemic lupus erythematosus", "Hiv",
+        "Uterus malformations", "Polycystic ovary syndrome",
+        "Chronic viral hepatitis", "Inflammatory bowel disease",
+        
+        "Antidepressants", "Antiinflammatory antirheumatic", "Nsaids",
+        "Opioids", "Treatment acid related disorder", "Antiepileptics",
+        "Diabetes treatments", "Antithrombotics", "Immunosupressants",
+        "Corticosteroids",
+        
+        maeCode,
+        
+        "Autumn", "Spring", "Summer", "Winter",
+        
+        "Q1", "Q2", "Q3", "Q4", "Q5", "U1", "U2", "U3", "U4", "U5", "R", "0n", 
+        
+        "White", "Asian", "Black", 
+        
+        "Asia", "Central/south america", "Europe", "Africa", "North america", "Oceania", "Missing",
+        
+        "Pre covid-19", "Covid-19 main outbreak", "Post covid-19 main outbreak"
+      ),
+      labels = c(
+        "12 to 17", "18 to 34", "35 to 55", "-",
+        
+        paste0("Trimester ", 1:3), "Postpartum",
+        
+        "Obesity", "Depression", "Anxiety", "Alcohol misuse\ndependence",
+        
+        "Asthma", "Diabetes", "Thyroid disorder",
+        "Essential\nhypertension",
+        "SLE", "HIV",
+        "Uterus malformations", "PCOS",
+        "Chronic viral hepatitis", "Inflammatory bowel disease",
+        
+        "Antidepressants", "Antiinflammatory/\nantirheumatic", "NSAIDs",
+        "Opioids", "Acid-related disorder\ntreatments", "Antiepileptics",
+        "Diabetes treatments", "Antithrombotics", "Immunosupressants",
+        "Corticosteroids",
+        
+        maeClean,
+        
+        "Winter", "Autumn", "Spring", "Summer",
+        
+        "Q1", "Q2", "Q3", "Q4", "Q5", "U1", "U2", "U3", "U4", "U5", "R", "0n", 
+        
+        "White", "Asian", "Black", 
+        "Asia", "Central/south america", "Europe", "Africa", "North america", "Oceania", "Missing",
+        
+        "Pre COVID-19", "COVID-19 main outbreak", "Post COVID-19 main outbreak"
+      )
+    )
+  ) |>
+  filter(!is.na(variable_name), !is.na(group_level)) |>
+  filter(!(cdm_name == "CPRD GOLD" & variable_name %in% excludeCPRD)) |>
+  filter(!(cdm_name == "CPRD GOLD" & grepl(paste0(toSnakeCase(excludeCPRD), collapse = "|"), group_level))) |>
+  filter(!(cdm_name == "SCIFI-PEARL" & variable_name %in% excludeSCIFI)) |>
+  filter(!(cdm_name == "SCIFI-PEARL" & grepl(paste0(toSnakeCase(excludeSCIFI), collapse = "|"), group_level))) |>
+  mutate(
+    group_level = as.character(factor(
+      group_level, 
+      levels = c(maeCode, paste0(maeCode, "_matched"), paste0(maeCode, "_sampled"), aesiCode, paste0(aesiCode, "_matched"), paste0(aesiCode, "_sampled")), 
+      labels = c(maeClean, paste0(maeClean, "_matched"), paste0(maeClean, "_sampled"), aesiClean, paste0(aesiClean, "_matched"), paste0(aesiClean, "_sampled"))
+    ))
+  ) |>
+  filter(!is.na(group_level)) |>
+  filter(!(gsub("_matched|_sampled", "", group_level) == variable_level & variable_name == "Maternal Adverse Events\n(during pregnancy)")) 
+
+# SURVIVAL ----
+survival <-data$survival |>
+  filter(cdm_name %in% dbOrder) |>
+  filter(strata_name %in% c("overall", "maternal_age_group")) |>
+  omopgenerics::filterSettings(result_type == "survival_probability") |>
+  tidy() |>
+  dplyr::mutate(
+    outcome = factor(
+      .data$outcome, 
+      levels = c(maeCode, aesiCode), 
+      labels = c(maeClean, aesiClean), 
+    ),
+    cdm_name = factor(cdm_name, levels = dbOrder),
+    time = as.numeric(time),
+    estimate = 1 - estimate,
+    estimate_95CI_lower = 1 - estimate_95CI_lower,
+    estimate_95CI_upper = 1 - estimate_95CI_upper
+  ) |>
+  dplyr::filter(!is.na(outcome)) 
+
+limit_grid <- bind_rows(
+  survival |>
+    filter(target_cohort == "pregnancy_denominator") |>
+    group_by(outcome) |>
+    summarise(facet_max = max(estimate, na.rm = TRUE), .groups = "drop") |>
+    mutate(upper_limit = facet_max),
+  survival |>
+    filter(target_cohort %in% c("postpartum_6_weeks_denominator", "postpartum_12_weeks_denominator")) |>
+    group_by(outcome) |>
+    summarise(facet_max = max(estimate, na.rm = TRUE), .groups = "drop") |>
+    mutate(upper_limit = facet_max)
+)
+
+custom_scales_list <- pmap(limit_grid, function(outcome, maternal_age_group, upper_limit, ...) {
+  as.formula(
+    paste0(
+      'outcome == "', outcome, '" ~ ',
+      'scale_y_continuous(limits = c(0, ', upper_limit, '), 
+                          expand = expansion(mult = c(0.05, 0.1)),
+                          oob = scales::rescale_none)'
+    )
+  )
+})
+
+colors <- c("#C94A5A", "#4A6FE3", "#4FAE6A", "#E08A3C")
+cif <- function(x, ylimits, colors = c("#BC4749", "#7D6B91", "#1982C4")) {
+  x |>
+    ggplot(aes(x = time, y = estimate, color = maternal_age_group, fill = maternal_age_group, group = maternal_age_group)) +
+    geom_ribbon(
+      aes(
+        ymin = estimate_95CI_lower, 
+        ymax = estimate_95CI_upper 
+      ),
+      alpha = 0.15,
+      color = NA
+    ) +
+    geom_line() +
+    facet_grid(outcome ~ cdm_name, scales = "free",  labeller = labeller(outcome = label_wrap_gen(width = 10)),) +
+    facetted_pos_scales(y = ylimits) +
+    scale_color_manual(values = colors) +
+    scale_fill_manual(values = colors) +
+    theme_bw() +
+    theme(
+      strip.text = element_text(face = "bold", size = 10, colour = "black"),
+      legend.position = "top",
+      legend.title = element_text(face = "bold"),
+      panel.grid.minor = element_blank(),
+      plot.title = element_text(face = "bold", size = 14)
+    ) +
+    guides(
+      color = guide_legend(title = "Data source"),
+      fill  = guide_legend(title = "Data source")
+    ) 
+}
+```
+
+
+# Cumulative Incidence Curves
+```{r, fig.height=16, fig.width=9}
+trimester_days <- c(91, 189)
+
+pPregnancy <- survival |>
+  filter(maternal_age_group != "overall") |>
+  filter(target_cohort == "pregnancy_denominator", outcome %in% c(maeClean, aesiClean)) |>
+  mutate(maternal_age_group = factor(maternal_age_group, levels = c("overall", "12 to 17", "18 to 34", "35 to 55"), labels = c("Overall", "12 to 17", "18 to 34", "35 to 55"))) |>
+  cif(custom_scales_list) +
+  geom_vline(xintercept = trimester_days, linetype = "dashed", color = "grey40", alpha = 0.7) +
+  labs(x = "Pregnancy time (days)", y = "Cumulative Incidence (%)") +
+  ggtitle("A) Events during Pregnancy")
+
+# pAesi <- survival |>
+#   filter(maternal_age_group != "overall") |>
+#   filter(target_cohort == "pregnancy_denominator", !outcome %in% maeClean) |>
+#   mutate(maternal_age_group = factor(maternal_age_group, levels = c("overall", "12 to 17", "18 to 34", "35 to 55"), labels = c("Overall", "12 to 17", "18 to 34", "35 to 55"))) |>
+#   cif(custom_scales_list) +
+#   geom_vline(xintercept = trimester_days, linetype = "dashed", color = "grey40", alpha = 0.7) +
+#   labs(x = "Pregnancy time (days)", y = "Cumulative Incidence (%)") +
+#   # theme(legend.position = "bottom") +
+#   ggtitle("B) Venous Thromboembolic Events during Pregnancy")
+
+pPostpartum <- survival |>
+  filter(maternal_age_group != "overall") |>
+  filter(target_cohort %in% c("postpartum_6_weeks_denominator", "postpartum_12_weeks_denominator")) |>
+  mutate(maternal_age_group = factor(maternal_age_group, levels = c("overall", "12 to 17", "18 to 34", "35 to 55"), labels = c("Overall", "12 to 17", "18 to 34", "35 to 55"))) |>
+  cif(custom_scales_list) +
+  labs(x = "Postpartum time (days)", y = "Cumulative Incidence (%)") +
+  ggtitle("B) Events during Postpartum")
+
+pPregnancy / pPostpartum + 
+  plot_layout(heights = c(2, 0.2), guides = "collect") & 
+  theme(legend.position = "bottom")
+```
+
+# Cumulative Incidence Table
+```{r}
+outcomesPregnancy <- c(maeClean[maeClean != "Postpartum haemorrhage"], aesiClean)
+survival |>
+  filter(target_cohort != "pregnancy_and_12_weeks_postpartum") |>
+  group_by(cdm_name, outcome, maternal_age_group) |>
+  filter(
+    # time == max(time) | 
+    time %in% seq.int(30, 330, 30)
+  ) |>
+  ungroup() |>
+  filter(!(outcome == "Postpartum haemorrhage" & target_cohort == "pregnancy_denominator")) |>
+  filter(maternal_age_group == "overall") |>
+  select(cdm_name, outcome, maternal_age_group, time, estimate, estimate_95CI_lower, estimate_95CI_upper) |>
+  pivot_longer(
+    cols = c("estimate", "estimate_95CI_lower", "estimate_95CI_upper"),
+    names_to = "estimate_name",
+    values_to = "estimate_value"
+  ) |>
+  mutate(
+    estimate_type = "numeric",
+    time = paste0(time, " days"),
+    # time = case_when(
+    #   time == 90 ~ "Trimester 1",
+    #   time == 180 ~ "Trimester 2",
+    #   outcome == "Postpartum haemorrhage" ~ "Postpartum (12 weeks)",
+    #   .default = "Trimester 3"
+    # ),
+    estimate_value = 100*estimate_value
+  ) |>
+  filter(outcome != "Postpartum haemorrhage") |>
+  visTable(
+    estimateName = c("Cumulative Incidence (95% CI)" = "<estimate> (<estimate_95CI_upper> - <estimate_95CI_lower>)"),
+    hide = c("estimate_type", "maternal_age_group"),
+    groupColumn = "outcome",
+    header = c("estimate_name", "time"),
+    # header = c("estimate_name", "outcome"),
+    .options = list(includeHeaderName = FALSE)
+  )
+```
+
+# Characterisation
+```{r}
+commonVarNames <- c("Number\npregnancies", "Number\nsubjects", "Maternal age")
+commonVarLevels <- c(NA, NA, NA)
+
+filters <- bind_rows(
+  # Miscarriage ----
+  tibble(
+    group_level = "Miscarriage",
+    variable_name = c(commonVarNames, "Maternal Adverse Events\n(prior pregnancy)"),
+    variable_level = c(commonVarLevels, "Miscarriage")
+  ),
+  # Ectopic pregnancy ----
+  tibble(
+    group_level = "Ectopic pregnancy",
+    variable_name = c(commonVarNames, "Maternal Adverse Events\n(during pregnancy)", "Maternal Adverse Events\n(during pregnancy)"),
+    variable_level = c(commonVarLevels, "Miscarriage", "Stillbirth")
+  ),
+  # Stillbirth ----
+  tibble(
+    group_level = "Stillbirth",
+    variable_name = c(commonVarNames, "Maternal Adverse Events\n(during pregnancy)", "Maternal Adverse Events\n(prior pregnancy)", "Maternal Adverse Events\n(prior pregnancy)"),
+    variable_level = c(commonVarLevels, "Preterm delivery", "Miscarriage", "Stillbirth")
+  ), 
+  # Gestational diabetes mellitus ----
+  tibble(
+    group_level = "Gestational diabetes mellitus",
+    variable_name = c(commonVarNames, "Maternal Adverse Events\n(prior pregnancy)"),
+    variable_level = c(commonVarLevels, "Gestational diabetes mellitus")
+  ),
+  # Antepartum haemorrhage ----
+  tibble(
+    group_level = "Antepartum haemorrhage",
+    variable_name = c(commonVarNames, "Maternal Adverse Events\n(during pregnancy)", "Maternal Adverse Events\n(during pregnancy)"),
+    variable_level = c(commonVarLevels, "Preterm delivery", "Gestational diabetes mellitus")
+  ), 
+  # Pre-eclampsia ----
+  tibble(
+    group_level = "Pre-eclampsia",
+    variable_name = c(commonVarNames, "Maternal Adverse Events\n(during pregnancy)", "Maternal Adverse Events\n(during pregnancy)", "Maternal Adverse Events\n(during pregnancy)", "Maternal Adverse Events\n(during pregnancy)", "Maternal Adverse Events\n(during pregnancy)"),
+    variable_level = c(commonVarLevels, "Gestational diabetes mellitus", "Antepartum haemorrhage", "Eclampsia", "HELLP syndrome", "Preterm delivery")
+  ), 
+  # Eclampsia ----
+  tibble(
+    group_level = "Eclampsia",
+    variable_name = c(commonVarNames, "Maternal Adverse Events\n(during pregnancy)", "Maternal Adverse Events\n(during pregnancy)", "Maternal Adverse Events\n(during pregnancy)", "Maternal Adverse Events\n(during pregnancy)"),
+    variable_level = c(commonVarLevels, "Gestational diabetes mellitus", "Pre-eclampsia", "HELLP syndrome", "Preterm delivery")
+  ), 
+  # HELLP syndrome ----
+  tibble(
+    group_level = "HELLP syndrome",
+    variable_name = c(commonVarNames, "Maternal Adverse Events\n(during pregnancy)", "Maternal Adverse Events\n(during pregnancy)", "Maternal Adverse Events\n(during pregnancy)", "Maternal Adverse Events\n(during pregnancy)"),
+    variable_level = c(commonVarLevels, "Gestational diabetes mellitus", "Pre-eclampsia", "HELLP syndrome", "Preterm delivery")
+  ),
+  # Preterm delivery ----
+  tibble(
+    group_level = "Preterm delivery",
+    variable_name = c(commonVarNames, "Maternal Adverse Events\n(during pregnancy)", "Maternal Adverse Events\n(during pregnancy)", "Maternal Adverse Events\n(during pregnancy)"),
+    variable_level = c(commonVarLevels, "Stillbirth", "Gestational diabetes mellitus", "Pre-eclampsia")
+  ), 
+  # Dysfunctional labour ----
+  tibble(
+    group_level = "Dysfunctional labour",
+    variable_name = c(commonVarNames, "Maternal Adverse Events\n(during pregnancy)", "Maternal Adverse Events\n(during pregnancy)", "Maternal Adverse Events\n(during pregnancy)"),
+    variable_level = c(commonVarLevels, "Gestational diabetes mellitus", "Pre-eclampsia", "Preterm delivery")
+  )
+)
+
+# cumulative incidence:
+cif <- survival |>
+  filter(maternal_age_group == "overall") |>
+  filter((target_cohort == "pregnancy_denominator" & outcome %in% c(maeClean, aesiClean)) | target_cohort == "postpartum_12_weeks_denominator") |>
+  group_by(cdm_name, outcome) |>
+  filter(time == max(time)) |>
+  ungroup() |>
+    pivot_longer(
+    cols = c("estimate", "estimate_95CI_lower", "estimate_95CI_upper"),
+    names_to = "estimate_name",
+    values_to = "estimate_value"
+  ) |>
+  select(cdm_name, group_level = outcome, estimate_value, estimate_name) |>
+  mutate(
+    result_id = 1L,
+    estimate_value = as.character(estimate_value*100),
+    estimate_type = "numeric",
+    variable_name = "Cumulative Incidence\nper 10,000 pregnancies\n(95% CI)",
+    variable_level = NA_character_,
+    group_name = "cohort_name",
+    strata_name = "overall",
+    strata_level = "overall",
+    additional_name = "overall",
+    additional_level = "overall"
+  ) |>
+  newSummarisedResult()
+characteristics |>
+  filter(strata_name == "overall") |>
+  filter(!grepl("matched|sampled", group_level)) |>
+  mutate(
+    estimate_name = if_else(variable_name == "Number\nsubjects", "count_subjects", estimate_name),
+    variable_name = factor(
+      variable_name,
+      levels = c(
+        "Number\npregnancies", 
+        "Number\nsubjects",
+        "Maternal age", 
+        # "Trimester",
+        "Maternal Adverse Events\n(during pregnancy)"
+        # "Maternal Adverse Events\n(prior pregnancy)"
+      ),
+      labels = c(
+        "Pregnancies, N\n(Subjects, N)", 
+        "Pregnancies, N\n(Subjects, N)", 
+        "Maternal age,\nMedian [IQR]", 
+        # "Trimester",
+        "Maternal Adverse Events\n(during pregnancy),\nN (%)"
+        # "Maternal Adverse Events\n(prior pregnancy)"
+      )
+    )
+  ) |>
+  filter(!is.na(variable_name)) |>
+  filter(estimate_name %in% c("count", "count_subjects", "percentage", "median", "q25", "q75")) |>
+  # inner_join(filters) |>
+  bind(cif) |>
+  mutate(cdm_name = factor(cdm_name, dbOrder)) |>
+  arrange(cdm_name) |>
+  mutate(
+    cdm_name = case_when(
+      cdm_name == "SCIFI-PEARL" ~ "SCIFI-PEARL\n[header_level]N=536,808 pregnancies",
+      cdm_name == "NLHR" ~ "NLHR\n[header_level]N=391,459 pregnancies",
+      cdm_name == "SIDIAP" ~ "SIDIAP\n[header_level]N=161,385 pregnancies"
+    )
+  ) |>
+  formatEstimateValue() |>
+  formatEstimateName(
+     estimateName = c(
+      "N(%)" = "<count> (<percentage>%)",
+      "N(sub)" = "<count> (<count_subjects>)",
+      "N" = "<count>",
+      "Median [IQR]" = "<median> [<q25> - <q75>]",
+      "cif" = "<estimate> (<estimate_95CI_upper> - <estimate_95CI_lower>)"
+    )
+  ) |>
+  rename_with(~customiseText(.x, custom = c("Data source" = "cdm_name"), keep = c("estimate_value", "group_name", "group_level"))) |>
+  select(!c("Result id", starts_with("Strata"), starts_with("Additional"), starts_with("Estimate", ignore.case = FALSE))) |>
+  formatHeader("Data source") |>
+  splitGroup() |>
+  mutate(
+    cohort_name = factor(cohort_name, c(maeClean, aesiClean)),
+    `Variable name` = factor(
+      `Variable name`, 
+      levels = c(
+        "Pregnancies, N\n(Subjects, N)", 
+        "Maternal age,\nMedian [IQR]", 
+        "Cumulative Incidence\nper 10,000 pregnancies\n(95% CI)",
+        "Maternal Adverse Events\n(during pregnancy),\nN (%)",
+        "Maternal Adverse Events\n(prior pregnancy)"
+      )
+    ),
+    `Variable level` = factor(
+      `Variable level`, 
+      levels = c("-", NA,maeClean)
+    )
+  ) |>
+  arrange(cohort_name, `Variable name`, `Variable level`) |>
+  formatTable(type = "flextable", groupColumn = "cohort_name", merge = "all_columns") |>
+  # visOmopTable(
+  #   estimateName = c(
+  #     "N(%)" = "<count> (<percentage>%)",
+  #     "N(sub)" = "<count> (<count_subjects>)",
+  #     "N" = "<count>",
+  #     "Median [IQR]" = "<median> [<q25> - <q75>]",
+  #     "cif" = "<estimate> (<estimate_95CI_lower> - <estimate_95CI_upper>)"
+  #   ),
+  #   header = "cdm_name",
+  #   groupColumn = "cohort_name",
+  #   hide = c(strataColumns(characteristics), "table_name", "estimate_name"),
+  #   rename = c("Data source" = "cdm_name"),
+  #   factor = list(
+  #     cohort_name = c(maeClean, aesiClean),
+  #     cdm_name = dbOrder,
+  #     variable_name = c(
+  #       "Pregnancies, N\n(Subjects, N)", 
+  #       "Maternal age,\nMedian [IQR]", 
+  #       "Trimester",
+  #       "Cumulative Incidence\nper 10,000 pregnancies\n(95% CI)",
+  #       "Maternal Adverse Events\n(during pregnancy),\nN (%)",
+  #       "Maternal Adverse Events\n(prior pregnancy)"
+  #     ),
+  #     variable_level = c(
+  #       "12 to 17", "18 to 34", "35 to 55", "-", NA,
+  #       
+  #       paste0("Trimester ", 1:3), "Postpartum",
+  #       
+  #       maeClean,
+  #       
+  #       "Winter", "Autumn", "Spring", "Summer"
+  #     )
+  #   )
+  #   # .options = list(keepNotFormatted = FALSE, groupAsColumn = TRUE, decimalMark = "·", bigMark = " ")
+  # ) |> 
+  set_table_properties(layout = "autofit") |>
+  font(fontname = "calibri", part = "all") |>
+  fontsize(size = 9, part = "body") |>
+  fontsize(size = 10, part = "header")
+```
+
+# MAE contextual characterisation
+```{r, fig.width=22, fig.height=11}
+filterOut <- bind_rows(
+  # Miscarriage ----
+  tibble(
+    cohort_name = "Miscarriage",
+    variable_name = "Maternal Adverse Events\n(during pregnancy)",
+    variable_level = c("Miscarriage", "Stillbirth", "Gestational diabetes mellitus", "Antepartum haemorrhage", "Pre-eclampsia", "Eclampsia", "HELLP syndrome", "Preterm delivery", "Dysfunctional labour", "Postpartum haemorrhage")
+  ),
+  # Ectopic pregnancy ----
+  tibble(
+    cohort_name = "Ectopic pregnancy",
+    variable_name = "Maternal Adverse Events\n(during pregnancy)",
+    variable_level = c("Ectopic pregnancy", "Stillbirth", "Gestational diabetes mellitus", "Antepartum haemorrhage", "Pre-eclampsia", "Eclampsia", "HELLP syndrome", "Preterm delivery", "Dysfunctional labour", "Postpartum haemorrhage")
+  ),
+  # Stillbirth ----
+  tibble(
+    cohort_name = "Stillbirth",
+    variable_name = "Maternal Adverse Events\n(during pregnancy)",
+    variable_level = c("Miscarriage", "Stillbirth")
+  ), 
+  # Gestational diabetes mellitus ----
+  tibble(
+    cohort_name = "Gestational diabetes mellitus",
+    variable_name = "Maternal Adverse Events\n(during pregnancy)",
+    variable_level = c("Gestational diabetes mellitus")
+  ),
+  # Antepartum haemorrhage ----
+  tibble(
+    cohort_name = "Antepartum haemorrhage",
+    variable_name = "Maternal Adverse Events\n(during pregnancy)",
+    variable_level = c("Antepartum haemorrhage", "Miscarriage")
+  ), 
+  # Pre-eclampsia ----
+  tibble(
+    cohort_name = "Pre-eclampsia",
+    variable_name = "Maternal Adverse Events\n(during pregnancy)",
+    variable_level = c("Pre-eclampsia")
+  ), 
+  # Eclampsia ----
+  tibble(
+    cohort_name = "Eclampsia",
+    variable_name = "Maternal Adverse Events\n(during pregnancy)",
+    variable_level = c("Eclampsia")
+  ), 
+  # HELLP syndrome ----
+  tibble(
+    cohort_name = "HELLP syndrome",
+    variable_name = "Maternal Adverse Events\n(during pregnancy)",
+    variable_level = c("HELLP syndrome")
+  ), 
+  # Preterm delivery ----
+  tibble(
+    cohort_name = "Preterm delivery",
+    variable_name = "Maternal Adverse Events\n(during pregnancy)",
+    variable_level = c("Preterm delivery")
+  ), 
+  # Dysfunctional labour ----
+  tibble(
+    cohort_name = "Dysfunctional labour",
+    variable_name = "Maternal Adverse Events\n(during pregnancy)",
+    variable_level = c("Dysfunctional labour")
+  )
+)
+  
+# Figures comparison ----
+xlim <- 1.1
+smd <- characteristics |>
+  filter(
+    strata_name == "overall",
+    variable_name %in% c(
+      "Comorbidities\n(prior year)",
+      "Comorbidities\n(any-time before)",
+      # "Medications\n(prior 6 months)",
+      "Maternal Adverse Events\n(during pregnancy)",
+      "Maternal Adverse Events\n(prior pregnancy)"
+    ),
+    grepl("sample|match", group_level),
+    !variable_level %in% c("Alcohol misuse\ndependence", "HIV", "SLE", "Inflammatory bowel disease", "Chronic viral hepatitis", "Uterus malformations")
+  ) |>
+  splitAll() |>
+  mutate(
+    type = if_else(grepl("sampled", cohort_name), "sampled", "matched"),
+    cohort_name = gsub("_sampled|_matched", "", cohort_name),
+    estimate_value = as.numeric(estimate_value),
+    cohort_name = factor(cohort_name, levels = c(maeClean, aesiClean)),
+    variable_name = factor(
+      variable_name, 
+      levels = c("Comorbidities\n(prior year)", "Comorbidities\n(any-time before)", "Maternal Adverse Events\n(during pregnancy)", "Maternal Adverse Events\n(prior pregnancy)"),
+      labels = c("Comorbidities", "Comorbidities", "Maternal Adverse Events\n(during pregnancy)", "Maternal Adverse Events\n(prior pregnancy)")
+    )
+  ) |>
+  filter(!is.na(cohort_name)) |>
+  filter(variable_level != "Diabetes") |>
+  anti_join(filterOut) |>
+  # filter(!(as.character(cohort_name) == as.character(variable_level) & variable_name == 'Maternal Adverse Events during pregnancy')) |>
+  select(!estimate_type) |>
+  addSettings() |>
+  pivot_wider(names_from = c("estimate_name", "type"), values_from = "estimate_value") |>
+  mutate(
+    smd = case_when(
+      # variable_name == "Maternal age" ~ (mean_matched - mean_sampled)/sqrt(sd_matched + sd_sampled),
+      is.na(percentage_matched) | is.na(percentage_sampled) ~ NA,
+      percentage_matched == percentage_sampled ~ 0,
+      .default = (percentage_sampled/100 - percentage_matched/100) / sqrt((percentage_sampled/100*(1-percentage_sampled/100) + percentage_matched/100*(1-percentage_matched/100))/2)
+    ),
+    variable_level = factor(variable_level, levels = rev(levels(characteristics$variable_level)))
+  ) |>
+  mutate(
+    # Clamp the x-end for the segment at 2.0, but keep the original smd for the point
+    smd_clipped = if_else(smd > xlim, xlim, NA),
+    # Create a flag to identify where arrows are needed
+    is_out_of_bounds = smd > xlim
+  )
+
+colors <- c("#4A6FE3", "#4FAE6A", "#E08A3C", "#C94A5A")
+smd |>
+  # filter(cohort_name %in% maeClean) |>
+  ggplot(aes(x = smd, y = variable_level, colour = cdm_name)) +
+  geom_segment(aes(yend = variable_level, xend = 0), color = "#8b0000", size = 0.8) +
+  geom_segment(
+    aes(
+      x = 0, 
+      xend = smd_clipped, 
+      yend = variable_level
+    ), 
+    color = "#8b0000", 
+    linewidth = 0.8,
+    arrow = arrow(length = unit(0.2, "cm")),
+    na.rm = TRUE
+  ) +
+  coord_cartesian(xlim = c(-0.5, xlim)) +
+  geom_point(size = 2.5, alpha = 0.7) +
+  geom_vline(xintercept = 0, linetype = "dashed", color = "black") + 
+  facet_grid(variable_name ~ cohort_name, 
+             scales = "free_y", 
+             space = "free", 
+             labeller = labeller(cohort_name = label_wrap_gen(width = 10)),
+             switch = "y") +  
+  scale_y_discrete(position = "right") +
+  scale_x_continuous(expand = expansion(mult = c(0.05, 0)), breaks = c(-0.5, 0, 0.5, 1), labels = c("-0.5", "0", "0.5", "1")) +
+  labs(x = "Standardised Mean Difference", y = NULL) +
+  scale_color_manual(values = colors) +
+  scale_fill_manual(values = colors) +
+  guides(
+    color = guide_legend(title = "Data source"),
+    fill  = guide_legend(title = "Data source")
+  ) +
+  theme_bw() + 
+  theme(
+    panel.grid.major.y = element_line(color = "grey90", size = 0.5), 
+    panel.grid.minor.y = element_blank(),
+    panel.grid.major.x = element_blank(),
+    panel.grid.minor.x = element_blank(),
+    strip.text = element_text(face = "bold", size = 10),
+    strip.placement = "outside", # Ensures labels stay clear of the axis
+    legend.position = "bottom",
+    legend.title = element_text(face = "bold"),
+    # axis.text.x = element_text(face = "bold"),
+    axis.text.y = element_text(face = "bold", size = 9),
+    panel.spacing.x = unit(0.5, "lines"),
+    panel.spacing.y = unit(0.8, "lines")
+  )
+```
+

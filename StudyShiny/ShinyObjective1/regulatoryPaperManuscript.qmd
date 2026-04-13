@@ -1,5 +1,5 @@
 ---
-title: "Background rates of maternal adverse events and adverse events of special interest during pregnancy: a cohort study of four European countries"
+title: "Background rates of Maternal Adverse Events and Adverse Events of Special Interest during pregnancy: a cohort study of four European countries"
 format:
   docx:
     reference-doc: ref.docx
@@ -49,7 +49,7 @@ source(file.path(getwd(), "functions.R"))
 knitr::opts_chunk$set(
   out.width  = "95%",  # figures occupy ~95% of document width
   out.height = "auto",
-  dpi        = 320,    # ensure figure quality
+  dpi        = 360,    # ensure figure quality
   fig.width  = 9,      # default aspect ratio (can be overridden per-figure)
   fig.height = 6,
   results    = "asis"  # enable Markdown produced via cat() inside chunks
@@ -58,8 +58,8 @@ knitr::opts_chunk$set(
 maeCode <- c(
   "miscarriage", "ectopic_pregnancy", "stillbirth", 
   
-  "gestational_diabetes", "preeclampsia", 
-  "eclampsia", "hellp", "antepartum_haemorrhage",  
+  "gestational_diabetes", "antepartum_haemorrhage", 
+  "preeclampsia", "eclampsia", "hellp",  
   
   "preterm_labour", "dysfunctional_labour", 
   
@@ -70,8 +70,8 @@ maeCode <- c(
 maeClean <- c(
   "Miscarriage", "Ectopic pregnancy", "Stillbirth",
   
-  "Gestational diabetes", "Pre-eclampsia",
-  "Eclampsia", "HELLP syndrome", "Antepartum haemorrhage", 
+  "Gestational diabetes mellitus", "Antepartum haemorrhage", 
+  "Pre-eclampsia", "Eclampsia", "HELLP syndrome", 
   
   "Preterm delivery", "Dysfunctional labour",
   
@@ -80,52 +80,105 @@ maeClean <- c(
   "Postpartum haemorrhage", "Postpartum endometritis"
 )
 aesiCode <- c(
-  "pulmonary_embolism", "deep_vein_thrombosis", "tts",
-  "immune_thrombocytopenia", "disseminated_intravascular_coagulation", 
+  "pulmonary_embolism", "deep_vein_thrombosis", 
+  "immune_thrombocytopenia", "disseminated_intravascular_coagulation", "tts",
   
   "myocarditis_or_pericarditis", "myocardial_infarction", 
   
   "ischaemic_stroke", "haemorrhagic_stroke",   
   
-  "anaphylaxis", 
-  
   "bells_palsy", "guillain_barre_syndrome", 
-  "transverse_myelitis", "encephalitis", "narcolepsy"
+  "transverse_myelitis", "encephalitis", "narcolepsy",
+  
+  "anaphylaxis"
 )
 aesiClean <- c(
-  'Pulmonary embolism', 'Deep vein thrombosis', 'Thrombosis with thrombocytopenia syndrome', 
-  'Immune thrombocytopenia', 'Disseminated intravascular coagulation', 
+  'Pulmonary embolism', 'Deep vein thrombosis',
+  'Immune thrombocytopenia', 'Disseminated intravascular coagulation',
+  'Thrombosis with thrombocytopenia syndrome', 
   
   'Myocarditis or pericarditis', 'Myocardial infarction', 
   
   'Ischaemic stroke', 'Haemorrhagic stroke', 
   
-  'Anaphylaxis', 
-  
   'Bell’s palsy', 'Guillain–Barré syndrome', 
-  'Transverse myelitis', 'Encephalitis', 'Narcolepsy'
+  'Transverse myelitis', 'Encephalitis', 'Narcolepsy',
+  
+  'Anaphylaxis'
 )
-excludeCPRD <- c("Miscarriage", "Stillbirth")
-dbOrder <- c("NLHR@UiO", "SCIFI-PEARL", "SIDIAP", "CPRD GOLD")
+excludeCPRD <- c("Miscarriage", "Dysfunctional labour")
+excludeSCIFI <- c("Ectopic pregnancy")
+dbOrder <- c("SCIFI-PEARL", "NLHR", "SIDIAP", "CPRD GOLD")
 
 setGlobalTableOptions(type = "flextable")
 ```
 
+
 :::{custom-style="Caption"}
-Table 1. Characteristics of included pregnancies, stratified by database. 
+Table 1. Outcome-specific patient follow-up. Time-at-rik that individuals contribute in the denominator for incidence rates estimation. 
+:::
+
+```{r}
+
+dplyr::tibble(
+  "Outcome" = c(
+    "Adverse Events of Special Interest",
+    "Ectopic pregnancies\nGestational diabetes mellitus\nPre-eclampsia\nEclampsia\nHELLP syndrome",
+    "Miscarriage",
+    "Stillbirth",
+    "Antepartum haemorrhage",
+    "Preterm delivery",
+    "Dysfunctional labour",
+    "Postpartum endometritis",
+    "Postpartum haemorrhage",
+    "Postpartum haemorrhage - sensitivity",
+    "Maternal death"
+  ),
+  "Denominator" = c(
+    "All pregnancies in the study population without occurrence of the AESI during the wash-out window.",
+    "All pregnancies in the study population.",
+    "All pregnancies in the study population.",
+    "All pregnancies in the study population surviving up to gestational week 20.",
+    "All pregnancies in the study population surviving up to gestational week 24.",
+    "All pregnancies in the study population surviving up to gestational week 20.",
+    "All pregnancies in the study population surviving up to gestational week 20.",
+    "All pregnancies in the study poulation not ending in miscarriage.",
+    "All pregnancies in the study poulation not ending in miscarriage.",
+    "All pregnancies in the study poulation not ending in miscarriage.",
+    "All pregnancies in the study poulation."
+  ),
+  "Follow-up" = c(
+    "From pregnancy start until the earliest of: outcome occurrence, end of pregnancy, or end of available patient data.",
+    "From pregnancy start until the earliest of: outcome occurrence, end of pregnancy, or end of available patient data.",
+    "From pregnancy start until the earliest of: outcome occurrence, end of pregnancy, gestational week 19 + 6 days, or end of available patient data.",
+    "From gestational week 20 until the earliest of: outcome occurrence, end of pregnancy, or end of available patient data.",
+    "From gestational week 24 until the earliest of: outcome occurrence, end of pregnancy, or end of available patient data.",
+    "From gestational week 20 until the earliest of: outcome occurrence, end of pregnancy, gestational week 37, or end of available patient data.",
+    "From gestational week 20 until the earliest of: outcome occurrence, end of pregnancy, or end of available patient data.",
+    "From pregnancy end date (included) until the earliest of: outcome occurrence, 6 weeks postpartum, next pregnancy, or end of available patient data.",
+    "From pregnancy end date (included) until the earliest of: outcome occurrence, 12 weeks postpartum, next pregnancy, or end of available patient data.",
+    "From pregnancy end date (not included) until the earliest of: outcome occurrence, 12 weeks postpartum, next pregnancy, or end of available patient data.",
+    "From pregnancy start date until the earliest of: outcome occurrence, 6 weeks postpartum, or end of available patient data."
+  )
+) |>
+  visTable() |>
+  set_table_properties(layout = "autofit") |>
+  font(fontname = "calibri", part = "all") |>
+  fontsize(size = 9, part = "body") |>
+  fontsize(size = 10, part = "header") |>
+  flextable_to_rmd()
+```
+
+:::{custom-style="Caption"}
+Table 2. Characteristics of all pregnancies included over the study period, stratified by data source.  
 :::
 
 ```{r}
 # prepare results ----
 data$summarise_characteristics |>
   dplyr::filter(group_level == "pregnancy_denominator", strata_name == "overall") |>
-  dplyr::filter(
-    !variable_name %in% c("Cohort start date", "Cohort end date", "Age", "Sex", "Prior observation", "Future observation")
-  ) |>
   dplyr::mutate(
-    estimate_value = if_else(variable_name == "Previous pregnancies", as.character(as.numeric(.data$estimate_value) - 1), .data$estimate_value),
     cdm_name = factor(cdm_name, levels = dbOrder),
-    variable_level = dplyr::if_else(variable_name == "Previous pregnancies", "-", variable_level),
     variable_name = factor(
       variable_name,
       levels = c(
@@ -134,50 +187,60 @@ data$summarise_characteristics |>
         "Maternal age", 
         "Maternal age group",
         "Days in cohort", 
-        "Previous pregnancies", 
-        "Covariates in the past 5 years",
+        "Pre-Pregnancy Smoke",
+        "Covariates in the past year",
         "History of comorbidities", 
-        "Medications in the past year"
+        "Medications in the past 6 months"
       ),
       labels = c(
-        "Number\npregnancies", 
-        "Number\nsubjects",
-        "Maternal age", 
-        "Maternal age\ngroup",
-        "Pregnancy length\n(days)", 
-        "Prior\npregnancies",
-        "Covariates\n(prior 5 years)",
-        "Comorbidities\n(any-time before)",
-        "Medications\n(prior year)"
+        "Number\npregnancies, N", 
+        "Number\nsubjects, N",
+        "Maternal age,\nMedian [IQR]", 
+        "Maternal age\ngroup, N(%)",
+        "Pregnancy length\n(days), Median [IQR]", 
+        "Smoking status,\nN(%)",
+        "Comorbidities\n(prior year), N(%)",
+        "Comorbidities\n(any-time before),\nN(%)",
+        "Medications\n(prior 6 months),\nN(%)"
       )
     ),
     variable_level = factor(
       variable_level,
       levels = c(
-        "12 to 17", "18 to 34", "35 to 55", "-", 
+        "12 to 17", "18 to 34", "35 to 55", "-",
         
-        "Obesity", "Depression", "Anxiety", "Alcohol misuse dependence", 
+        "No", "Yes", "No smoker", "Smoker", "Never smoker", "Former smoker", "Current some day smoker", "Missing",          
         
-        "Asthma", "Diabetes", "Thyroid disorder", 
-        "Essential hypertension", 
-        "Systemic lupus erythematosus", "Hiv", 
+        "Obesity", "Depression", "Anxiety", "Alcohol misuse dependence",
         
-        "Antidepressants", "Antiinflammatory antirheumatic", "Nsaids", 
-        "Opioids", "Treatment acid related disorder", "Antiepileptics", 
-        "Diabetes treatments"
+        "Asthma", "Diabetes", "Thyroid disorder",
+        "Essential hypertension",
+        "Systemic lupus erythematosus", "Hiv",
+        "Uterus malformations", "Polycystic ovary syndrome",
+        "Chronic viral hepatitis", "Inflammatory bowel disease",
+        
+        "Antidepressants", "Antiinflammatory antirheumatic", "Nsaids",
+        "Opioids", "Treatment acid related disorder", "Antiepileptics",
+        "Diabetes treatments", "Antithrombotics", "Immunosupressants",
+        "Corticosteroids"
       ),
       labels = c(
-        "12 to 17", "18 to 34", "35 to 55", "-", 
+        "12 to 17", "18 to 34", "35 to 55", "-",
         
-        "Obesity", "Depression", "Anxiety", "Alcohol misuse\ndependence", 
+        "No", "Yes", "No", "Yes", "No", "Former smoker", "Yes", "Missing",   
         
-        "Asthma", "Diabetes", "Thyroid disorder", 
-        "Essential\nhypertension", 
-        "SLE", "HIV", 
+        "Obesity", "Depression", "Anxiety", "Alcohol misuse\ndependence",
         
-        "Antidepressants", "Antiinflammatory/\nantirheumatic", "NSAIDs", 
-        "Opioids", "Acid-related disorder\ntreatments", "Antiepileptics", 
-        "Diabetes treatments"
+        "Asthma", "Diabetes", "Thyroid disorder",
+        "Essential\nhypertension",
+        "SLE", "HIV",
+        "Uterus malformations", "PCOS",
+        "Chronic viral\nhepatitis", "Inflammatory\nbowel disease",
+        
+        "Antidepressants", "Antiinflammatory/\nantirheumatic", "NSAIDs",
+        "Opioids", "Acid-related disorder\ntreatments", "Antiepileptics",
+        "Diabetes treatments", "Antithrombotics", "Immunosupressants",
+        "Corticosteroids"
       )
     )
   ) |>
@@ -185,130 +248,208 @@ data$summarise_characteristics |>
   dplyr::arrange(cdm_name, variable_name, variable_level) |>
   visOmopTable(
     estimateName = c(
-      "N (%)" = "<count> (<percentage>%)",
-      "N" = "<count>",
-      "Median [Q25 to Q75]" = "<median> [<q25> to <q75>]"
+      "A" = "<count> (<percentage>%)",
+      "b" = "<count>",
+      "c" = "<median> [<q25> - <q75>]"
     ),
-    rename = c("Database" = "cdm_name"),
+    rename = c("Data source" = "cdm_name"),
     header = "cdm_name",
-    hide = c("cohort_name", strataColumns(data$summarise_characteristics)),
-    .options = list(keepNotFormatted = FALSE, groupAsColumn = TRUE),
-    groupColumn = "variable_name"
+    hide = c("cohort_name", strataColumns(data$summarise_characteristics), "estimate_name"),
+    .options = list(keepNotFormatted = FALSE, groupAsColumn = TRUE, decimalMark = "·", bigMark = " "),
+    groupColumn = "variable_name",
+    factor = list(
+      variable_name = c(
+        "Number\npregnancies, N", 
+        "Number\nsubjects, N",
+        "Maternal age,\nMedian [IQR]", 
+        "Maternal age\ngroup, N(%)",
+        "Pregnancy length\n(days), Median [IQR]", 
+        "Smoking status,\nN(%)",
+        "Comorbidities\n(prior year), N(%)",
+        "Comorbidities\n(any-time before),\nN(%)",
+        "Medications\n(prior 6 months),\nN(%)"
+      ),
+      variable_level = c(
+        "12 to 17", "18 to 34", "35 to 55", "-", NA,
+        
+        "No", "Yes", "Former smoker", "Missing",   
+        
+        "Obesity", "Depression", "Anxiety", "Alcohol misuse\ndependence",
+        
+        "Asthma", "Diabetes", "Thyroid disorder",
+        "Essential\nhypertension",
+        "SLE", "HIV",
+        "Uterus malformations", "PCOS",
+        "Chronic viral\nhepatitis", "Inflammatory\nbowel disease",
+        
+        "Antidepressants", "Antiinflammatory/\nantirheumatic", "NSAIDs",
+        "Opioids", "Acid-related disorder\ntreatments", "Antiepileptics",
+        "Diabetes treatments", "Antithrombotics", "Immunosupressants",
+        "Corticosteroids"
+      )
+    )
   ) |>
-  set_table_properties(width = 1, layout = "autofit") |>
+  set_table_properties(layout = "autofit") |>
   font(fontname = "calibri", part = "all") |>
   fontsize(size = 9, part = "body") |>
   fontsize(size = 10, part = "header") 
 ```
 
 
-:::{custom-style="Caption"}
-Table 2. Pooled Incidence Rates (per 100,000 person-years) and 95% Prediction Intervals for adverse events across four databases.
+:::{custom-style="FooterNuria"}
+The study period went from January 2018 to March 2024 for SCIFI-PEARL, March 2023 for NLHR, and March 2025 for CPRD GOLD and SIDIAP.
 
+NLHR = Norwegian Linked Health Registries; SCIFI-PEARL = Swedish Covid-19 Investigation for Future Insights – a Population Epidemiology Approach using Register Linkage; SIDIAP = Information System for Research in Primary Care Database; CPRD GOLD = Clinical Practice Research Datalink GOLD; SLE = Systemic Lupus Erythematosus; HIV= Human Immunodeficiency Virus; NSAIDs = Non-steroidal anti-inflammatory drugs
+:::
+
+
+:::{custom-style="Caption"}
+Table 3. Incidence Rates (per 100,000 person-years) and 95% Confidence Intervals for Maternal Adverse Events across data sources, for the overall study period.
 :::
 
 ```{r}
-# prepare results ----
-tidyIncidence <- data$incidence |>
-  dplyr::filter(strata_name %in% c("overall", "gestational_trimester", "maternal_age_group", "pregnancy_start_period")) |>
-  omopgenerics::filterAdditional(outcome_group %in% c("Maternal Adverse Events", "Adverse Events of Special Interest")) |>
-  dplyr::mutate(
-    group_level = factor(
-      .data$group_level, 
-      levels = c(aesiCode, maeCode), 
-      labels = c(aesiClean, maeClean)
-    ),
-    group_level = as.character(group_level)
-  ) |>
-  dplyr::filter(!is.na(group_level)) |>
-  dplyr::filter(!(cdm_name == "CPRD GOLD" & group_level %in% excludeCPRD)) |>
-  tidy() |>
-  select(!c(
-    "socioeconomic_status", "ethnicity", "birth_continent", "nationallity", "variable_name", "variable_level", "person_days_count", "incidence_100000_pys", "incidence_100000_pys_95CI_lower", "incidence_100000_pys_95CI_upper", "outcome_in_period_count", "outcome_in_period_percentage"
-  ))
-
-# pool results ----
-# --> model event counts using a Poisson distribution
-# --> account for different amounts of person-time in each database
-# --> random-effect for between-database heterogeneity. random intercept for database (1 | cdm_name)
-# --> consider databases with zero events
-if (runMetaAnalysis) {
-  data$meta_incidence <- tidyIncidence |>
-    filter(!is.na(outcome_count), !is.na(person_years)) |>
-    group_by(
-      outcome_cohort_name,
-      gestational_trimester,
-      maternal_age_group,
-      pregnancy_start_period,
-      outcome_group
-    ) |>
-    nest() |>
-    mutate(
-      meta = map(data, metaIR)
-    ) |>
-    unnest(meta) |>
-    ungroup() |>
-    select(!data)
-  save(data, choices, selected, values, file = file.path(getwd(), "data", "shinyData.RData"))
-} 
-
-# display results ----
-data$meta_incidence |>
-  dplyr::filter(
+incTable <- data$incidence |>
+  filterStrata(
     gestational_trimester == "overall",
     maternal_age_group == "overall",
-    pregnancy_start_period == "overall"
-  ) |>
-  select(!c("gestational_trimester", "maternal_age_group", "pregnancy_start_period")) |>
-  pivot_longer(
-    cols = c("pooled_incidence_100000_pys", "predicted_interval_95CI_lower", "predicted_interval_95CI_upper", "tau2", "denominator_count", "outcome_count", "outcome_percentage", "number_of_databases", "person_years"),
-    values_to = "estimate_value",
-    names_to = "estimate_name"
+    pregnancy_start_period == "overall",
+    socioeconomic_status == "overall",
+    ethnicity == "overall",
+    birth_continent == "overall",
+    nationallity == "overall"
   ) |>
   mutate(
-    estimate_type = case_when(
-      grepl("count", estimate_name) | estimate_name == "number_of_databases" ~ "integer",
-      grepl("percentage", estimate_name) | estimate_name == "tau2" ~ "percentage",
-      .default = "numeric"
-    ),
-    outcome = factor(.data$outcome_cohort_name, levels = c(aesiClean, maeClean)),
-    estimate_value = as.character(estimate_value),
-    outcome_group = factor(outcome_group, levels = c("Maternal Adverse Events", "Adverse Events of Special Interest"))
+    group_level = as.character(factor(.data$group_level, labels = c(maeClean, aesiClean), levels = c(maeCode, aesiCode))),
+    estimate_value = if_else(
+      estimate_name != "person_days_count", 
+      estimate_value, 
+      as.character(as.numeric(estimate_value)/365.25))
   ) |>
-  filter(!is.na(outcome)) |>
-  arrange(outcome_group, outcome) |>
-  select(!"outcome_cohort_name") |>
-  visTable(
+  dplyr::filter(!(cdm_name == "CPRD GOLD" & group_level %in% excludeCPRD)) |>
+   dplyr::filter(!(cdm_name == "SCIFI-PEARL" & group_level %in% excludeSCIFI)) |>
+  filter(!is.na(group_level)) 
+
+# add outcome percentage
+incTable <- bind(
+  incTable,
+  incTable |>
+    filter(estimate_name %in% c("denominator_count", "outcome_count")) |>
+    pivotEstimates() |>
+    mutate(
+      estimate_value = as.character(outcome_count/denominator_count * 100),
+      estimate_name = "outcome_percentage",
+      estimate_type = "percentage"
+    ) |>
+    select(!c("denominator_count", "outcome_count")) |>
+    newSummarisedResult(settings = settings(incTable))
+)
+
+# display MAE
+incTable |>
+  filterAdditional(outcome_group == "Maternal Adverse Events") |>
+  mutate(
+    additional_level = case_when(
+      group_level %in% c("Miscarriage", "Ectopic pregnancy", "Stillbirth") ~ "Foetal Loss",
+      group_level %in% c("Gestational diabetes mellitus", "Antepartum haemorrhage") ~ "Non-hypertensive Pregnancy Complications",
+      group_level %in% c("Pre-eclampsia", "Eclampsia", "HELLP syndrome") ~ "Hypertensive Disorders of Pregnancy",
+      group_level %in% c("Preterm delivery", "Dysfunctional labour") ~ "Perinatal Events",
+      group_level %in% c("Postpartum haemorrhage", "Postpartum endometritis") ~ "Postpartum Events",
+      .default = "Maternal Death"
+    )
+  ) |>
+  visOmopTable(
     estimateName = c(
-      "Databases (N)" = "<number_of_databases>",
-      "Pregnancies (N)" = "<denominator_count>",
-      "Outcomes (N (%))" = "<outcome_count> (<outcome_percentage>%)",
-      "Person-Years" = "<person_years>",
-      "IR (95% PI)" = "<pooled_incidence_100000_pys> (<predicted_interval_95CI_lower> to <predicted_interval_95CI_upper>)",
-      "𝜏²" = "<tau2>"
+      "Pregnancies" = "<denominator_count>",
+      "PYs" = "<person_years>",
+      "Outcomes, N\n(Cumulative\nIncidence, %)" = "<outcome_count> (<outcome_percentage>%)",
+      "IR per\n100,000 PYs\n(95% CI)" = "<incidence_100000_pys> (<incidence_100000_pys_95CI_lower> - <incidence_100000_pys_95CI_upper>)"
     ),
-    hide = "estimate_type",
+    rename = c("Outcome" = "outcome_cohort_name", "Data source" = "cdm_name"), 
     header = "estimate_name",
     groupColumn = "outcome_group",
-    .options = list(decimals = c(integer = 0, percentage = 3, numeric = 2))
+    factor = list(
+      outcome_group = c("Foetal Loss", "Non-hypertensive Pregnancy Complications", "Hypertensive Disorders of Pregnancy", "Perinatal Events", "Postpartum Events", "Maternal Death"),
+      outcome_cohort_name = c(maeClean, aesiClean),
+      cdm_name = c(dbOrder)
+    ),
+    hide = c("gestational_trimester", "maternal_age_group", "pregnancy_start_period", "socioeconomic_status", "ethnicity", "birth_continent", "nationallity", "variable_level", "variable_name"),
+    columnOrder = c("outcome_group", "outcome_cohort_name", "cdm_name"),
+    .options = list(decimals = c(integer = 0, percentage = 3, numeric = 2), keepNotFormatted = FALSE, delim = "8", decimalMark = "·", bigMark = " ")
   ) |>
-  set_table_properties(width = 1, layout = "autofit") |>
+  set_table_properties(layout = "autofit") |>
+  font(fontname = "calibri", part = "all") |>
+  fontsize(size = 9, part = "body") |>
+  fontsize(size = 10, part = "header")
+```
+:::{custom-style="FooterNuria"}
+The study period went from January 2018 to March 2024 for SCIFI-PEARL, March 2023 for NLHR, and March 2025 for CPRD GOLD and SIDIAP.
+
+The number of pregnancies contributing to each outcome varied according to outcome-specific eligibility criteria.
+
+Cumulative Incidence is given as number of outcomes per 100 pregnancies (%).
+
+PY = Person-Years; IR = Incidence Rate; CI = Confidence Interval; NLHR = Norwegian Linked Health Registries; SCIFI-PEARL = Swedish Covid-19 Investigation for Future Insights – a Population Epidemiology Approach using Register Linkage; SIDIAP = Information System for Research in Primary Care Database; CPRD GOLD = Clinical Practice Research Datalink GOLD
+:::
+
+
+
+:::{custom-style="Caption"}
+Table 4. Incidence Rates (per 100,000 person-years) and 95% Confidence Intervals for Adverse Events of Special Interes across data sources, for the overall study period.
+:::
+
+```{r}
+# display MAE
+incTable |>
+  filterAdditional(outcome_group == "Adverse Events of Special Interest") |>
+  mutate(
+    additional_level = case_when(
+      group_level %in% c("Pulmonary embolism", "Deep vein thrombosis") ~ "Venous Thromboembolic Events",
+      group_level %in% c("Immune thrombocytopenia") ~ "Immune-mediated Haematologic Disorder",
+      group_level %in% c("Thrombosis with thrombocytopenia syndrome", "Disseminated intravascular coagulation") ~ "Thrombotic and Coagulation Disorders",
+      group_level %in% c("Myocarditis or pericarditis", "Myocardial infarction") ~ "Cardiovascular Events",
+      group_level %in% c("Ischaemic stroke", "Haemorrhagic stroke") ~ "Cerebrovascular Events",
+      group_level %in% c("Bell’s palsy", "Guillain–Barré syndrome", "Transverse myelitis", "Encephalitis", "Narcolepsy") ~ "Neurological (Immune-mediated) Events",
+      .default = "Hypersensitivity"
+    )
+  ) |>
+  visOmopTable(
+    estimateName = c(
+      "Pregnancies**" = "<denominator_count>",
+      "PYs" = "<person_days_count>",
+      "Outcomes, N\n(Cumulative\nIncidence, %)" = "<outcome_count> (<outcome_percentage>%)",
+      "IR per\n100,000 PYs\n(95% CI)" = "<incidence_100000_pys> (<incidence_100000_pys_95CI_lower> - <incidence_100000_pys_95CI_upper>)"
+    ),
+    rename = c("Outcome" = "outcome_cohort_name", "Data source" = "cdm_name"), 
+    header = "estimate_name",
+    groupColumn = "outcome_group",
+    factor = list(
+      outcome_group = c("Venous Thromboembolic Events", "Immune-mediated Haematologic Disorder", "Thrombotic and Coagulation Disorders", "Cardiovascular Events", "Cerebrovascular Events", "Neurological (Immune-mediated) Events", "Hypersensitivity"),
+      outcome_cohort_name = c(maeClean, aesiClean),
+      cdm_name = c(dbOrder)
+    ),
+    hide = c("gestational_trimester", "maternal_age_group", "pregnancy_start_period", "socioeconomic_status", "ethnicity", "birth_continent", "nationallity", "variable_level", "variable_name"),
+    columnOrder = c("outcome_group", "outcome_cohort_name", "cdm_name"),
+    .options = list(decimals = c(integer = 0, percentage = 3, numeric = 2), keepNotFormatted = FALSE, delim = "8", decimalMark = "·", bigMark = " ")
+  ) |>
+  set_table_properties(layout = "autofit") |>
   font(fontname = "calibri", part = "all") |>
   fontsize(size = 9, part = "body") |>
   fontsize(size = 10, part = "header")
 ```
 
 :::{custom-style="FooterNuria"}
-Pooled incidence rates were estimated per 100,000 person-years using Poisson generalized linear mixed models with a random intercept for database; 95% prediction intervals reflect between-database heterogeneity. Source-specific estimates are shown in Supplementary Tables Sx. Databases with event counts <5 were clouded as per data-protection rules and were not included in pooled estimates. 
-IR = Incidence Rate; PI = Prediction Interval; 𝜏² = estimated in between-database variance
-:::
+*Study Period: January 2018 to March 2024 [SCIFI-PEARL]; March 2023 [NLHR]; March 2025 [CPRD GOLD and SIDIAP]
 
+** The number of pregnancies contributing to each outcome varied according to outcome-specific eligibility criteria
+
+PY = Person-Years; IR = Incidence Rate; CI = Confidence Interval; NLHR = Norwegian Linked Health Registries; SCIFI-PEARL = Swedish Covid-19 Investigation for Future Insights – a Population Epidemiology Approach using Register Linkage; SIDIAP = Information System for Research in Primary Care Database; CPRD GOLD = Clinical Practice Research Datalink GOLD
+:::
 
 :::{custom-style="Caption"}
-Figure 1. Incidence rates per 100,000 person-years for Maternal Adverse Events across databases, stratified by gestational trimester.
+Figure 1. Incidence rates per 100,000 person-years for Maternal Adverse Events across data sources for the overall study period, stratified by gestational trimester.
 :::
 
-```{r, fig.height=7, fig.width=10}
+```{r, fig.height=6, fig.width=12}
 # prepare results ----
 tidyIncidence <- data$incidence |>
   dplyr::filter(strata_name %in% c("gestational_trimester", "maternal_age_group", "pregnancy_start_period")) |>
@@ -323,6 +464,7 @@ tidyIncidence <- data$incidence |>
   ) |>
   dplyr::filter(!is.na(group_level)) |>
   dplyr::filter(!(cdm_name == "CPRD GOLD" & group_level %in% excludeCPRD)) |>
+   dplyr::filter(!(cdm_name == "SCIFI-PEARL" & group_level %in% excludeSCIFI)) |>
   tidy() |>
   select(!c(
     "socioeconomic_status", "ethnicity", "birth_continent", "nationallity", "variable_name", "variable_level", "person_days_count"
@@ -330,7 +472,9 @@ tidyIncidence <- data$incidence |>
   mutate(
     outcome_cohort_name = factor(.data$outcome_cohort_name, levels = maeClean),
     cdm_name = factor(cdm_name, dbOrder),
-    gestational_trimester = factor(gestational_trimester, levels = c(paste0("Trimester ", 1:3), "Postpartum"))
+    gestational_trimester = factor(
+      gestational_trimester, levels = c(paste0("Trimester ", 1:3), "Postpartum"), labels = c(paste0("Trimester\n", 1:3), "Post-\npartum")
+    )
   ) |>
   arrange(cdm_name, outcome_cohort_name, gestational_trimester)
 
@@ -342,28 +486,90 @@ design_mat <- matrix(
 
 tidyIncidence |> 
   filter(maternal_age_group == "overall", pregnancy_start_period == "overall") |> 
-  pIncidence("gestational_trimester", "free_y", ribbon = FALSE, errorbar = TRUE) +
-  ggh4x::facet_manual(~ outcome_cohort_name, design = design_mat, scales = "free_y") +
-  theme(axis.text.x = element_text(angle = 60, vjust = 1, hjust = 1))
+  filter(!grepl("Postpartum", outcome_cohort_name)) |>
+  pIncidence("gestational_trimester", "free", ribbon = FALSE, errorbar = TRUE) +
+  facet_wrap(~ outcome_cohort_name, scales = "free")
 ```
+
+:::{custom-style="FooterNuria"}
+The study period went from January 2018 to March 2024 for SCIFI-PEARL, March 2023 for NLHR, and March 2025 for CPRD GOLD and SIDIAP.
+
+Points represent the estimated incidence rate (per 100,000 person-years). Error bars indicate 95% Confidence Intervals (exact Poisson method); arrows denote intervals extending beyond the displayed axis limits.
+:::
 
 
 :::{custom-style="Caption"}
-Figure 2. Incidence rates per 100,000 person-years for Maternal Adverse Events across databases, stratified by maternal age.
+Figure 2. Incidence rates per 100,000 person-years for Maternal Adverse Events across data sources for the overall study period, stratified by maternal age
 :::
 
-```{r, fig.height=7, fig.width=10}
+```{r, fig.height=7, fig.width=11}
+mae_age_limits_y <- c(
+  "Eclampsia" = 150,
+  "HELLP syndrome" = 300,
+  "Maternal death" = 40,
+  "Postpartum endometritis" = 8000,
+  "Postpartum haemorrhage" = 20500
+)
+
 tidyIncidence |> 
+   mutate(
+    y_limit = case_when(
+      outcome_cohort_name == "Eclampsia" ~ mae_age_limits_y["Eclampsia"],
+      outcome_cohort_name == "HELLP syndrome" ~ mae_age_limits_y["HELLP syndrome"],
+      outcome_cohort_name == "Maternal death" ~ mae_age_limits_y["Maternal death"],
+      outcome_cohort_name == "Postpartum endometritis" ~ mae_age_limits_y["Postpartum endometritis"],
+      outcome_cohort_name == "Postpartum haemorrhage" ~ mae_age_limits_y["Postpartum haemorrhage"],
+      .default = NA
+    ),
+    arrow_end = ifelse(incidence_100000_pys_95CI_upper > y_limit, y_limit, NA)
+  ) |>
   filter(maternal_age_group != "overall", pregnancy_start_period == "overall") |>
   pIncidence("maternal_age_group", "free_y", ribbon = FALSE, errorbar = TRUE) +
-  ggh4x::facet_manual(~ outcome_cohort_name, design = design_mat, scales = "free_y") 
+  ggh4x::facet_manual(~ outcome_cohort_name, design = design_mat, scales = "free_y")  +
+  ggh4x::facetted_pos_scales(
+     y  = list(
+       outcome_cohort_name == "Eclampsia" ~ scale_y_continuous(expand = expansion(mult = c(0.05, 0)), limits = c(0,mae_age_limits_y["Eclampsia"]), oob = scales::rescale_none),
+       outcome_cohort_name == "HELLP syndrome" ~ scale_y_continuous(expand = expansion(mult = c(0.05, 0)), limits = c(0,mae_age_limits_y["HELLP syndrome"]), oob = scales::rescale_none),
+       outcome_cohort_name == "Maternal death" ~ scale_y_continuous(expand = expansion(mult = c(0.05, 0)), limits = c(0,mae_age_limits_y["Maternal death"]), oob = scales::rescale_none),
+       outcome_cohort_name == "Postpartum endometritis" ~ scale_y_continuous(expand = expansion(mult = c(0.05, 0)), limits = c(0,mae_age_limits_y["Postpartum endometritis"]), oob = scales::rescale_none),
+       outcome_cohort_name == "Postpartum haemorrhage" ~ scale_y_continuous(expand = expansion(mult = c(0.05, 0)), limits = c(4000,mae_age_limits_y["Postpartum haemorrhage"]), oob = scales::rescale_none)
+     )
+   ) +
+   geom_segment(
+    aes(yend = arrow_end),
+    arrow = arrow(length = unit(0.2, "cm")),
+    linewidth = 0.6, alpha = 0.4,
+    na.rm = TRUE
+  )
 ```
 
-:::{custom-style="Caption"}
-Figure 3. Incidence rates per 100,000 person-years for the 5-most frequent Adverse Events of Special Interest among pregnant women across databases, stratified by gestational trimester and maternal age.
+:::{custom-style="FooterNuria"}
+The study period went from January 2018 to March 2024 for SCIFI-PEARL, March 2023 for NLHR, and March 2025 for CPRD GOLD and SIDIAP.
+
+Points represent the estimated incidence rate (per 100,000 person-years). Error bars indicate 95% Confidence Intervals (exact Poisson method); arrows denote intervals extending beyond the displayed axis limits.
 :::
 
-```{r, fig.height=6, fig.width=11}
+:::{custom-style="Caption"}
+Figure 3. Incidence rates (per 100,000 person-years) for the four most frequent Adverse Events of Special Interest during pregnancy across data sources for the overall study period. Estimates are stratified by gestational trimester and maternal age.
+:::
+
+```{r, fig.height=6, fig.width=10}
+aesi_trimester_limits_y <- c(
+  "Deep vein thrombosis" = 360,
+  "Pulmonary embolism" = 400,
+  "Bell’s palsy" = 300,
+  "Immune thrombocytopenia" = 350,
+  "Anaphylaxis" = 150
+)
+
+aesi_age_limits_y <- c(
+  "Deep vein thrombosis" = 350,
+  "Pulmonary embolism" = 450,
+  "Bell’s palsy" = 150,
+  "Immune thrombocytopenia" = 175,
+  "Anaphylaxis" = 150
+)
+
 # prepare results ----
 tidyIncidence <- data$incidence |>
   dplyr::filter(strata_name %in% c("gestational_trimester", "maternal_age_group", "pregnancy_start_period")) |>
@@ -378,55 +584,97 @@ tidyIncidence <- data$incidence |>
   ) |>
   dplyr::filter(!is.na(group_level)) |>
   dplyr::filter(!(cdm_name == "CPRD GOLD" & group_level %in% excludeCPRD)) |>
+   dplyr::filter(!(cdm_name == "SCIFI-PEARL" & group_level %in% excludeSCIFI)) |>
   tidy() |>
   select(!c(
     "socioeconomic_status", "ethnicity", "birth_continent", "nationallity", "variable_name", "variable_level", "person_days_count"
   )) |>
-  filter(!outcome_cohort_name %in% c("Myocarditis or pericarditis", "Thrombosis with thrombocytopenia syndrome", "Narcolepsy", "Disseminated intravascular coagulation", "Encephalitis", "Guillain–Barré syndrome", "Myocardial infarction", "Transverse myelitis", "Ischaemic stroke", "Haemorrhagic stroke")) |>
+  filter(!outcome_cohort_name %in% c("Anaphylaxis", "Myocarditis or pericarditis", "Thrombosis with thrombocytopenia syndrome", "Narcolepsy", "Disseminated intravascular coagulation", "Encephalitis", "Guillain–Barré syndrome", "Myocardial infarction", "Transverse myelitis", "Ischaemic stroke", "Haemorrhagic stroke")) |>
   mutate(
     outcome_cohort_name = factor(.data$outcome_cohort_name, levels = aesiClean),
-    cdm_name = factor(cdm_name, dbOrder)
+    cdm_name = factor(cdm_name, dbOrder),
+    gestational_trimester = gsub(" ", "\n", gestational_trimester)
   ) |>
   arrange(cdm_name, outcome_cohort_name)
 
 pTrimester <- tidyIncidence |> 
+  mutate(
+    y_limit = case_when(
+      outcome_cohort_name == "Deep vein thrombosis" ~ aesi_trimester_limits_y["Deep vein thrombosis"],
+      outcome_cohort_name == "Pulmonary embolism" ~ aesi_trimester_limits_y["Pulmonary embolism"],
+      outcome_cohort_name == "Bell’s palsy" ~ aesi_trimester_limits_y["Bell’s palsy"],
+      outcome_cohort_name == "Immune thrombocytopenia" ~ aesi_trimester_limits_y["Immune thrombocytopenia"],
+      outcome_cohort_name == "Anaphylaxis" ~ aesi_trimester_limits_y["Anaphylaxis"],
+      .default = NA
+    ),
+    arrow_end = ifelse(incidence_100000_pys_95CI_upper > y_limit, y_limit, NA)
+  ) |>
   filter(maternal_age_group == "overall", pregnancy_start_period == "overall") |> 
   pIncidence("gestational_trimester", "free_y", ribbon = FALSE, errorbar = TRUE) +
-  theme(legend.position = "none") +
    ggh4x::facetted_pos_scales(
      y  = list(
-       outcome_cohort_name == "Deep vein thrombosis" ~ scale_y_continuous(limits = c(0,170), oob = scales::rescale_none),
-       outcome_cohort_name == "Pulmonary embolism" ~ scale_y_continuous(limits = c(0,250), oob = scales::rescale_none),
-       outcome_cohort_name == "Bell’s palsy" ~ scale_y_continuous(limits = c(0,170), oob = scales::rescale_none),
-       outcome_cohort_name == "Immune thrombocytopenia" ~ scale_y_continuous(limits = c(0,150), oob = scales::rescale_none),
-       outcome_cohort_name == "Anaphylaxis" ~ scale_y_continuous(limits = c(0,50), oob = scales::rescale_none),
-       outcome_cohort_name == "Myocarditis or pericarditis" ~ scale_y_continuous(limits = c(0,30), oob = scales::rescale_none)
+       outcome_cohort_name == "Deep vein thrombosis" ~ scale_y_continuous(expand = expansion(mult = c(0.05, 0)), limits = c(10,aesi_trimester_limits_y["Deep vein thrombosis"]), oob = scales::rescale_none),
+       outcome_cohort_name == "Pulmonary embolism" ~ scale_y_continuous(expand = expansion(mult = c(0.05, 0)), limits = c(0,aesi_trimester_limits_y["Pulmonary embolism"]), oob = scales::rescale_none),
+       outcome_cohort_name == "Bell’s palsy" ~ scale_y_continuous(expand = expansion(mult = c(0.05, 0)), limits = c(0,aesi_trimester_limits_y["Bell’s palsy"]), oob = scales::rescale_none),
+       outcome_cohort_name == "Immune thrombocytopenia" ~ scale_y_continuous(expand = expansion(mult = c(0.05, 0)), limits = c(0,aesi_trimester_limits_y["Immune thrombocytopenia"]), oob = scales::rescale_none),
+       outcome_cohort_name == "Anaphylaxis" ~ scale_y_continuous(expand = expansion(mult = c(0.05, 0)), limits = c(0,aesi_trimester_limits_y["Anaphylaxis"]), oob = scales::rescale_none)
      )
    ) +
   ggtitle("A) Incidence Rates by Gestational Trimester") +
   theme(
-    plot.title = element_text(hjust = -0.05, face = "bold", size = 15),
-    axis.text.x = element_text(angle = 60, vjust = 1, hjust = 1)
+    plot.title = element_text(hjust = -0.05, face = "bold", size = 15)
+    # axis.text.x = element_text(angle = 60, vjust = 1, hjust = 1)
+  ) +
+  theme(legend.position = "none") +
+  ylab("Incidence\n(per 100,000 person-years)") +
+  geom_segment(
+    aes(yend = arrow_end),
+    arrow = arrow(length = unit(0.2, "cm")),
+    linewidth = 0.6, alpha = 0.4,
+    na.rm = TRUE
   )
 
 pAge <- tidyIncidence |> 
   filter(gestational_trimester == "overall", pregnancy_start_period == "overall") |> 
+    mutate(
+    y_limit = case_when(
+      outcome_cohort_name == "Deep vein thrombosis" ~ aesi_age_limits_y["Deep vein thrombosis"],
+      outcome_cohort_name == "Pulmonary embolism" ~ aesi_age_limits_y["Pulmonary embolism"],
+      outcome_cohort_name == "Bell’s palsy" ~ aesi_age_limits_y["Bell’s palsy"],
+      outcome_cohort_name == "Immune thrombocytopenia" ~ aesi_age_limits_y["Immune thrombocytopenia"],
+      outcome_cohort_name == "Anaphylaxis" ~ aesi_age_limits_y["Anaphylaxis"],
+      .default = NA
+    ),
+    arrow_end = ifelse(incidence_100000_pys_95CI_upper > y_limit, y_limit, NA)
+  ) |>
   pIncidence("maternal_age_group", "free_y", ribbon = FALSE, errorbar = TRUE) +
-  # scale_y_continuous(limits = c(0,150)) +
-  theme(legend.position = "none") +
+  theme(legend.position = "bottom") +
+  # scale_y_continuous(expand = expansion(mult = c(0.05, 0)), limits = c(0,150)) +
      ggh4x::facetted_pos_scales(
      y  = list(
-       outcome_cohort_name == "Deep vein thrombosis" ~ scale_y_continuous(limits = c(0,150), oob = scales::rescale_none),
-       outcome_cohort_name == "Pulmonary embolism" ~ scale_y_continuous(limits = c(0,250), oob = scales::rescale_none),
-       outcome_cohort_name == "Bell’s palsy" ~ scale_y_continuous(limits = c(0,100), oob = scales::rescale_none),
-       outcome_cohort_name == "Immune thrombocytopenia" ~ scale_y_continuous(limits = c(0,100), oob = scales::rescale_none),
-       outcome_cohort_name == "Anaphylaxis" ~ scale_y_continuous(limits = c(0,40), oob = scales::rescale_none),
-       outcome_cohort_name == "Myocarditis or pericarditis" ~ scale_y_continuous(limits = c(0,25), oob = scales::rescale_none)
+       outcome_cohort_name == "Deep vein thrombosis" ~ scale_y_continuous(expand = expansion(mult = c(0.05, 0)), limits = c(0,aesi_age_limits_y["Deep vein thrombosis"]), oob = scales::rescale_none),
+       outcome_cohort_name == "Pulmonary embolism" ~ scale_y_continuous(expand = expansion(mult = c(0.05, 0)), limits = c(0,aesi_age_limits_y["Pulmonary embolism"]), oob = scales::rescale_none),
+       outcome_cohort_name == "Bell’s palsy" ~ scale_y_continuous(expand = expansion(mult = c(0.05, 0)), limits = c(0,aesi_age_limits_y["Bell’s palsy"]), oob = scales::rescale_none),
+       outcome_cohort_name == "Immune thrombocytopenia" ~ scale_y_continuous(expand = expansion(mult = c(0.05, 0)), limits = c(0,aesi_age_limits_y["Immune thrombocytopenia"]), oob = scales::rescale_none),
+       outcome_cohort_name == "Anaphylaxis" ~ scale_y_continuous(expand = expansion(mult = c(0.05, 0)), limits = c(0,aesi_age_limits_y["Anaphylaxis"]), oob = scales::rescale_none)
      )
    ) +
   ggtitle("B) Incidence Rates by Maternal Age") +
-  theme(plot.title = element_text(hjust = -0.05, face = "bold", size = 15))
+  theme(plot.title = element_text(hjust = -0.05, face = "bold", size = 15)) +
+  ylab("Incidence\n(per 100,000 person-years)") +
+  geom_segment(
+    aes(yend = arrow_end),
+    arrow = arrow(length = unit(0.2, "cm")),
+    linewidth = 0.6, alpha = 0.4,
+    na.rm = TRUE
+  )
 
 (pTrimester / pAge) + 
-  plot_layout(heights = c(2, 2)) 
+  plot_layout(heights = c(2, 1.93)) 
 ```
+
+:::{custom-style="FooterNuria"}
+The study period went from January 2018 to March 2024 for SCIFI-PEARL, March 2023 for NLHR, and March 2025 for CPRD GOLD and SIDIAP.
+
+Points represent the estimated incidence rate (per 100,000 person-years). Error bars indicate 95% Confidence Intervals (exact Poisson method); arrows denote intervals extending beyond the displayed axis limits.
+:::

@@ -292,51 +292,160 @@ server <- function(input, output, session) {
       )
   })
   getSummariseCharacteristicsTable <- shiny::reactive({
+    maeCode <- c(
+      "miscarriage", "ectopic_pregnancy", "stillbirth", 
+      
+      "gestational_diabetes", "antepartum_haemorrhage", 
+      "preeclampsia", "eclampsia", "hellp",  
+      
+      "preterm_labour", "dysfunctional_labour", 
+      
+      "maternal_death",
+      
+      "postpartum_haemorrhage", "postpartum_endometritis"
+    )
+    maeClean <- c(
+      "Miscarriage", "Ectopic pregnancy", "Stillbirth",
+      
+      "Gestational diabetes", "Antepartum haemorrhage", 
+      "Pre-eclampsia", "Eclampsia", "HELLP syndrome", 
+      
+      "Preterm delivery", "Dysfunctional labour",
+      
+      "Maternal death",
+      
+      "Postpartum haemorrhage", "Postpartum endometritis"
+    )
     getSummariseCharacteristicsData() |>
       dplyr::filter(
         !variable_name %in% c("Cohort start date", "Cohort end date", "Age", "Sex", "Prior observation", "Future observation", "Days in cohort")
       ) |>
-      dplyr::mutate(
-        estimate_value = if_else(variable_name == "Previous pregnancies" & .data$estimate_name != "sd", as.character(as.numeric(.data$estimate_value) - 1), .data$estimate_value),
-        variable_level = dplyr::if_else(variable_name == "Previous pregnancies", "-", variable_level),
+      dplyr::mutate( 
         variable_name = factor(
           variable_name,
           levels = c(
-            "Number records", "Number subjects", "Maternal age", "Maternal age group",
-            "Trimester", "Season", "Previous pregnancies",
-            "Ethnicity", "Birth continent", "Nationallity", 
-            'Socioeconomic status',
-            "Mental heatlh problems in the last year",
-            "Covariates in the past 5 years",
-            "History of comorbidities", "Medications in the past year"
+            "Number records", 
+            "Number subjects",
+            "Maternal age", 
+            "Maternal age group",
+            "Trimester",
+            "Days in cohort", 
+            "Pre-Pregnancy Smoke",
+            "Covariates in the past year",
+            "History of comorbidities", 
+            "Medications in the past 6 months",
+            "Maternal Adverse Events during pregnancy",
+            "Maternal Adverse Events during previous pregnancy",
+            "Season",
+            "Socioeconomic status",
+            "Ethnicity",
+            "Nationallity",
+            "Birth continent",
+            "Pregnancy start period"
           ),
           labels = c(
-            "Number pregnancies", "Number subjects", "Maternal age", "Maternal age group",
-            "Trimester", "Season", "Previous pregnancies",
-            "Ethnicity", "Birth continent", "Nationallity",
-            'Socioeconomic status',
-            "Mental heatlh problems in the last year",
-            "Covariates in the past 5 years",
-            "History of comorbidities", "Medications in the past year"
+            "Number\npregnancies", 
+            "Number\nsubjects",
+            "Maternal age", 
+            "Maternal age\ngroup",
+            "Trimester",
+            "Pregnancy length\n(days)", 
+            "Smoking status",
+            "Comorbidities\n(prior year)",
+            "Comorbidities\n(any-time before)",
+            "Medications\n(prior 6 months)",
+            "Maternal Adverse Events\n(during pregnancy)",
+            "Maternal Adverse Events\n(prior pregnancy)",
+            "Season",
+            "Socioeconomic status",
+            "Ethnicity",
+            "Nationallity",
+            "Birth continent",
+            "Pregnancy start period"
           )
         ),
-        strata_level = factor(
-          strata_level,
+        variable_level = factor(
+          variable_level,
           levels = c(
-            "overall", "12 to 17", "18 to 34", "35 to 55", "Pre COVID-19",
-            "COVID-19 main outbreak", "Post COVID-19 main outbreak",
-            paste0(1:10), "White", "Black", "Asian", "Missing",
-            paste0("Trimester ", 1:3), "Postpartum"
+            "12 to 17", "18 to 34", "35 to 55", "-",
+            
+            paste0("Trimester ", 1:3), "Postpartum",
+            
+            "No", "Yes", "No smoker", "Smoker", "Never smoker", "Former smoker", "Current some day smoker", "Missing",          
+
+            "Obesity", "Depression", "Anxiety", "Alcohol misuse dependence",
+
+            "Asthma", "Diabetes", "Thyroid disorder",
+            "Essential hypertension",
+            "Systemic lupus erythematosus", "Hiv",
+            "Uterus malformations", "Polycystic ovary syndrome",
+            "Chronic viral hepatitis", "Inflammatory bowel disease",
+
+            "Antidepressants", "Antiinflammatory antirheumatic", "Nsaids",
+            "Opioids", "Treatment acid related disorder", "Antiepileptics",
+            "Diabetes treatments", "Antithrombotics", "Immunosupressants",
+            "Corticosteroids",
+            
+            maeCode,
+            
+            "Autumn", "Spring", "Summer", "Winter",
+            
+            "Q1", "Q2", "Q3", "Q4", "Q5", "U1", "U2", "U3", "U4", "U5", "R", "0n", 
+            
+            "White", "Asian", "Black", 
+            
+            "Asia", "Central/south america", "Europe", "Africa", "North america", "Oceania", "Missing",
+            
+            "Pre covid-19", "Covid-19 main outbreak", "Post covid-19 main outbreak"
+          ),
+          labels = c(
+            "12 to 17", "18 to 34", "35 to 55", "-",
+            
+            paste0("Trimester ", 1:3), "Postpartum",
+            
+            "No", "Yes", "No", "Yes", "Never smoker", "Former smoker", "Current some day smoker", "Missing",   
+
+            "Obesity", "Depression", "Anxiety", "Alcohol misuse\ndependence",
+
+            "Asthma", "Diabetes", "Thyroid disorder",
+            "Essential\nhypertension",
+            "SLE", "HIV",
+            "Uterus malformations", "PCOS",
+            "Chronic viral hepatitis", "Inflammatory bowel disease",
+
+            "Antidepressants", "Antiinflammatory/\nantirheumatic", "NSAIDs",
+            "Opioids", "Acid-related disorder\ntreatments", "Antiepileptics",
+            "Diabetes treatments", "Antithrombotics", "Immunosupressants",
+            "Corticosteroids",
+            
+            maeClean,
+            
+            "Winter", "Autumn", "Spring", "Summer",
+            
+            "Q1", "Q2", "Q3", "Q4", "Q5", "U1", "U2", "U3", "U4", "U5", "R", "0n", 
+            
+            "White", "Asian", "Black", 
+            "Asia", "Central/south america", "Europe", "Africa", "North america", "Oceania", "Missing",
+            
+            "Pre COVID-19", "COVID-19 main outbreak", "Post COVID-19 main outbreak"
           )
         )
       ) |>
       dplyr::filter(!is.na(variable_name)) |>
-      dplyr::arrange(variable_name, variable_level, strata_level) |>
-      CohortCharacteristics::tableCharacteristics(
+      dplyr::arrange(cdm_name, variable_name, variable_level) |>
+      ungroup() |>
+      visOmopTable(
+        estimateName = c(
+          "N (%)" = "<count> (<percentage>%)",
+          "N" = "<count>",
+          "Median [Q25-Q75]" = "<median> [<q25> - <q75>]"
+        ),
+        rename = c("Data source" = "cdm_name"),
         header = input$summarise_characteristics_table_header,
-        groupColumn = input$summarise_characteristics_table_group_column,
-        hide = input$summarise_characteristics_table_hide
-      )
+        hide = input$summarise_characteristics_table_hide,
+        .options = list(keepNotFormatted = FALSE),
+        groupColumn = input$summarise_characteristics_table_group_column
+      ) 
   })
   output$summarise_characteristics_table <- gt::render_gt({
     getSummariseCharacteristicsTable()
@@ -769,6 +878,7 @@ server <- function(input, output, session) {
       ) |>
       dplyr::filter(
         .data$cdm_name %in% input$survival_cdm_name, 
+        .data$group_level %in% input$survival_group_level, 
         .data$variable_level %in% input$survival_outcome
       ) |>
       omopgenerics::filterStrata(

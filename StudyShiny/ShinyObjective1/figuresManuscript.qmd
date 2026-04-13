@@ -60,7 +60,7 @@ maeClean <- c("Miscarriage", "Ectopic pregnancy", "Stillbirth", "Preterm labour"
 aesiCode <- c("pulmonary_embolism", "deep_vein_thrombosis", "bells_palsy", "immune_thrombocytopenia", "anaphylaxis", "myocarditis_or_pericarditis", "ischaemic_stroke", "haemorrhagic_stroke", "tts",  "guillain_barre_syndrome",  "disseminated_intravascular_coagulation", "transverse_myelitis", "narcolepsy", "myocardial_infarction", "encephalitis")
 aesiClean <- c('Pulmonary embolism', 'Deep vein thrombosis', 'Bell’s palsy', 'Immune thrombocytopenia', 'Anaphylaxis', 'Myocarditis or pericarditis', 'Ischaemic stroke', 'Haemorrhagic stroke', 'Thrombosis with thrombocytopenia syndrome', 'Guillain–Barré syndrome', 'Disseminated intravascular coagulation', 'Transverse myelitis', 'Narcolepsy', 'Myocardial infarction', 'Encephalitis')
 excludeCPRD <- c("Miscarriage", "Stillbirth")
-dbOrder <- c("NLHR@UiO", "SCIFI-PEARL", "SIDIAP", "CPRD GOLD")
+dbOrder <- c("NLHR", "SCIFI-PEARL", "SIDIAP", "CPRD GOLD")
 
 setGlobalTableOptions(type = "flextable")
 ```

@@ -308,7 +308,8 @@ server <- function(input, output, session) {
           .default = .data$variable_level
         ),
         estimate_name = dplyr::if_else(estimate_name == "sum", "N", estimate_name)
-      ) 
+      ) |> 
+      dplyr::filter(variable_level != "Previous pregnant COVID-19 vaccines")
     
     if (grepl("objective_1", input$summarise_characteristics_cohort_name)) {
       x <- x |>
@@ -718,8 +719,8 @@ server <- function(input, output, session) {
   )
   getIncidenceRateRatioTableSummary <- shiny::reactive({
     getIncidenceRateRatioData() |>
-      dplyr::filter(.data$variable_name %in% c("Person-Days", "Number persons", "Number events")) |>
-      dplyr::mutate(variable_name = dplyr::if_else(.data$variable_name == "Number persons", "Number subjects", .data$variable_name)) |>
+      dplyr::filter(.data$variable_name %in% c("Person-Days", "Number pregnancies", "Number events")) |>
+      dplyr::mutate(variable_name = dplyr::if_else(.data$variable_name == "Number pregnancies", "Number cases", .data$variable_name)) |>
       visOmopResults::visOmopTable(
         estimateName = c(
           "N" = "<count>",
@@ -794,10 +795,10 @@ server <- function(input, output, session) {
         gestational_trimester = factor(
           gestational_trimester, levels = c("overall", paste0("Trimester ", 1:3))
         ),
-        outcome_name = factor(
-          outcome_name,
-          levels = rev(c("miscarriage", "stillbirth", "antepartum_haemorrhage",  "eclampsia", "hellp", "preterm_labour", "dysfunctional_labour", "postpartum_endometritis", "postpartum_haemorrhage", "maternal_death")),
-          labels = rev(c("Miscarriage", "Stillbirth", "Antepartum haemorrhage",  "Eclampsia", "HELLP Syndrome", "Preterm labour", "Dysfunctional labour", "Postpartum endometritis", "Postpartum haemorrhage", "Maternal death"))
+        association = case_when(
+          lower_ci > 1 ~ "positive association",
+          upper_ci < 1 ~ "negative association",
+          .default = "no association"
         )
       ) |>
       dplyr::arrange(outcome_name) |>
@@ -1074,8 +1075,7 @@ server <- function(input, output, session) {
     data[["summarise_cohort_attrition"]] |>
       dplyr::filter(.data$cdm_name %in% input$summarise_sampling_cdm_name) |>
       omopgenerics::filterGroup(.data$cohort_name %in% paste0("population_", input$summarise_sampling_cohort_name)) |>
-      omopgenerics::filterSettings(.data$table_name %in% "Study population") |>
-      omopgenerics::filterSettings(.data$table_name %in% "Study population") |>
+      omopgenerics::filterSettings(.data$table_name %in% "Study population weighted") |>
       dplyr::filter(as.numeric(additional_level) < 15) |>
       dplyr::mutate(group_level = paste0("source_", .data$group_level))
   })
@@ -1372,7 +1372,7 @@ server <- function(input, output, session) {
       dplyr::filter(
         .data$cdm_name %in% input$gestational_time_distributions_cdm_name
       ) |>
-      omopgenerics::filterGroup(.data$cohort_name %in% input$gestational_time_distributions_cohort_name) |>
+      # omopgenerics::filterGroup(.data$cohort_name %in% input$gestational_time_distributions_cohort_name) |>
       omopgenerics::filterStrata(
         .data$exposure %in% input$gestational_time_distributions_exposure,
         .data$vaccine_brand %in% input$gestational_time_distributions_vaccine_brand,

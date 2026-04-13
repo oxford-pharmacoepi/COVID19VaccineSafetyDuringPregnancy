@@ -616,13 +616,13 @@ pIncidence <- function(data, x, scales, ribbon = TRUE, errorbar = FALSE) {
     scale_color_manual(values = colors) +
     scale_fill_manual(values = colors) +
     guides(
-      color = guide_legend(title = "Database"),
-      fill  = guide_legend(title = "Database")
+      color = guide_legend(title = "Data source"),
+      fill  = guide_legend(title = "Data source")
     ) +
     ggplot2::theme_linedraw() +
     theme(
       strip.text = element_text(face = "bold", size = 10, colour = "white"),
-      legend.position = "top",
+      legend.position = "bottom",
       legend.title = element_text(face = "bold"),
       axis.text.x = element_text(face = "bold")
     ) +
@@ -650,13 +650,13 @@ pSurvival <- function(data) {
     scale_color_manual(values = colors) +
     scale_fill_manual(values = colors) +
     guides(
-      color = guide_legend(title = "Database"),
-      fill  = guide_legend(title = "Database")
+      color = guide_legend(title = "Data source"),
+      fill  = guide_legend(title = "Data source")
     ) +
     ggplot2::theme_linedraw() +
     theme(
       strip.text = element_text(face = "bold", size = 10, colour = "white"),
-      legend.position = "top",
+      legend.position = "bottom",
       legend.title = element_text(face = "bold")
     ) +
     xlab("Time (days)") +

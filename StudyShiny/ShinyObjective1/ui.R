@@ -709,6 +709,14 @@ ui <- bslib::page_navbar(
             options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
           ),
           shinyWidgets::pickerInput(
+            inputId = "survival_group_level",
+            label = "Target cohort",
+            choices = choices$survival_target_cohort,
+            selected = selected$survival_target_cohort[1],
+            multiple = TRUE,
+            options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
+          ),
+          shinyWidgets::pickerInput(
             inputId = "survival_outcome_group",
             label = "Outcome group name",
             choices = choices$survival_outcome_group,
@@ -1025,24 +1033,8 @@ ui <- bslib::page_navbar(
           shinyWidgets::pickerInput(
             inputId = "summarise_characteristics_variable_name",
             label = "Variable name",
-            choices = c(
-              "Number records", "Number subjects", "Maternal age", "Maternal age group",
-              "Trimester", "Season", "Previous pregnancies",
-              "Ethnicity", "Birth continent", "Nationallity", 
-              'Socioeconomic status',
-              "Mental heatlh problems in the last year",
-              "Covariates in the past 5 years",
-              "History of comorbidities", "Medications in the past year"
-            ),
-            selected = c(
-              "Number records", "Number subjects", "Maternal age", "Maternal age group",
-              "Trimester", "Season", "Previous pregnancies",
-              "Ethnicity", "Birth continent", "Nationallity", 
-              'Socioeconomic status',
-              "Mental heatlh problems in the last year",
-              "Covariates in the past 5 years",
-              "History of comorbidities", "Medications in the past year"
-            ),
+            choices = choices$summarise_characteristics_variable_name,
+            selected = selected$summarise_characteristics_variable_name,
             multiple = TRUE,
             options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
           ),
