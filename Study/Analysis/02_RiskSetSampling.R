@@ -326,6 +326,69 @@ cdm$study_population <- cdm$study_population |>
     )
   )
 
+# Censor match pair ----
+# censor exposed if 
+#   - only 1 control and is censored
+#   - all controls are censored --> censor at latest control censored 
+# censor all controls if exposed is censored
+# all controls censored and exposed all censored --> censored at the first of: exposed censoring or latest control censoring
+cdm$study_population <- cdm$study_population |>
+  group_by(cohort_definition_id, cohort_start_date, exposed_match_id, exposure) |>
+  mutate(
+    exposed_censored = if_else(
+      exposure == "exposed" & !exit_reason %in% c("date_of_death", "observation_end"), 
+      .data$cohort_end_date, 
+      as.Date(NA)
+    ),
+    comparator_censored = if_else(
+      all(exposure == "comparator" & !exit_reason %in% c("date_of_death", "observation_end")), # all comparator censored to censor an exposed
+      max(cohort_end_date, na.rm = TRUE), 
+      as.Date(NA)
+    ),
+    exposed_censored_sensitivty = if_else(
+      exposure == "exposed" & !exit_reason_sensitivty %in% c("date_of_death", "observation_end"), 
+      .data$cohort_end_date_sensitivity, 
+      as.Date(NA)
+    ),
+    comparator_censored_sensitivty = if_else(
+      all(exposure == "comparator" & !exit_reason_sensitivty %in% c("date_of_death", "observation_end")), # all comparator censored to censor an exposed
+      max(cohort_end_date_sensitivity, na.rm = TRUE), 
+      as.Date(NA)
+    )
+  ) |>
+  ungroup() |>
+  compute(name = "study_population", temporary = FALSE) |>
+  mutate(
+    cohort_end_date = case_when(
+      is.na(exposed_censored) & is.na(comparator_censored) ~ cohort_end_date,
+      is.na(exposed_censored) & !is.na(comparator_censored) ~ comparator_censored,
+      !is.na(exposed_censored) & is.na(comparator_censored) ~ exposed_censored,
+      exposed_censored > comparator_censored ~ comparator_censored,
+      exposed_censored <= comparator_censored ~ exposed_censored,
+      .default = NA
+    ),
+    exit_reason = case_when(
+      is.na(exposed_censored) & is.na(comparator_censored) ~ exit_reason,
+      !is.na(exposed_censored) | !is.na(comparator_censored) ~ "counterpart_censoring",
+      .default = NA
+    ),
+    cohort_end_date_sensitivity = case_when(
+      is.na(exposed_censored_sensitivty) & is.na(comparator_censored_sensitivty) ~ cohort_end_date_sensitivity,
+      is.na(exposed_censored_sensitivty) & !is.na(comparator_censored_sensitivty) ~ comparator_censored_sensitivty,
+      !is.na(exposed_censored_sensitivty) & is.na(comparator_censored_sensitivty) ~ exposed_censored_sensitivty,
+      exposed_censored_sensitivty > comparator_censored_sensitivty ~ comparator_censored_sensitivty,
+      exposed_censored_sensitivty <= comparator_censored_sensitivty ~ exposed_censored_sensitivty,
+      .default = NA
+    ),
+    exit_reason_sensitivty = case_when(
+      is.na(exposed_censored_sensitivty) & is.na(comparator_censored_sensitivty) ~ exit_reason_sensitivty,
+      !is.na(exposed_censored_sensitivty) | !is.na(comparator_censored_sensitivty) ~ "counterpart_censoring",
+      .default = NA
+    )
+  ) |>
+  select(!c("exposed_censored", "comparator_censored", "exposed_censored_sensitivty", "comparator_censored_sensitivty")) |>
+  compute(name = "study_population", temporary = FALSE) 
+
 # Strata and covariates ----
 info(logger, "- Study population cohort - set strata and covariates")
 cdm$study_population <- cdm$study_population |>
@@ -409,13 +472,13 @@ cdm$study_population <- cdm$study_population |>
 
 # Add cohort for miscarriage and preterm birth ----
 if (!grepl("SCIFI-PEARL|CPRD GOLD", cdmName(cdm))) {
-cdm$miscarriage <- cdm$study_population %>% 
-  mutate(max_index_date = !!dateadd("pregnancy_start_date", 19*7 + 6)) |>
-  filter(cohort_start_date < max_index_date) |>
-  select(!max_index_date) |>
-  compute(name = "miscarriage", temporary = FALSE) |>
-  recordCohortAttrition(reason = "Study population for miscarriage") |>
-  renameCohort(cohortId = 1:2, newCohortName = paste0("population_miscarriage_objective_", c(1,3)))
+  cdm$miscarriage <- cdm$study_population %>% 
+    mutate(max_index_date = !!dateadd("pregnancy_start_date", 19*7 + 6)) |>
+    filter(cohort_start_date < max_index_date) |>
+    select(!max_index_date) |>
+    compute(name = "miscarriage", temporary = FALSE) |>
+    recordCohortAttrition(reason = "Study population for miscarriage") |>
+    renameCohort(cohortId = 1:2, newCohortName = paste0("population_miscarriage_objective_", c(1,3)))
 }
 
 cdm$preterm_labour <- cdm$study_population %>% 

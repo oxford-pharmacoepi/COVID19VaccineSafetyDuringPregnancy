@@ -662,33 +662,63 @@ getFeaturesTable <- function(cdm, strata, covariatesPS) {
     distinct(cohort_name, feature) |>
     compute()
   
-  cdm$features <- features |>
-    inner_join(countsFeatures, by = c("cohort_name", "feature")) |>
-    select(any_of(c(
-      "cohort_name", "subject_id", "cohort_start_date", "feature"
-    ))) |>
-    mutate(value = 1) |>
-    right_join(
-      cdm$study_population |>
-        select(any_of(c(
-          "cohort_definition_id", "cohort_name", "subject_id", "exposure",
-          "pregnancy_id", "cohort_start_date", "cohort_end_date", "exposed_match_id",
-          "region", "ethnicity", "socioecnomic_status", "birth_continent", "nationallity",
-          "pre_pregnancy_smoking", unlist(strata), unique(unlist(covariatesPS))
-        )))
-    ) |>
-    mutate(unique_id = paste0(as.character(subject_id), "_", as.character(exposed_match_id), "_", as.character(pregnancy_id))) |>
-    pivot_wider(names_from = "feature", values_from = "value", values_fill = 0) |>
-    select(!"NA") |>
-    mutate(across(contains("_m"), ~ if_else(is.na(.x), 0, .x))) |>
-    compute(name = "features", temporary = FALSE) |>
-    newCohortTable(
-      cohortSetRef = settings(cdm$study_population),
-      cohortAttritionRef = NULL,
-      cohortCodelistRef = NULL,
-      .softValidation = TRUE
-    )
-  
+  if (grepl("SCIFI", cdmName(cdm))) {
+    cdm$features <- features |>
+      inner_join(countsFeatures, by = c("cohort_name", "feature")) |>
+      select(any_of(c(
+        "cohort_name", "subject_id", "cohort_start_date", "feature"
+      ))) |>
+      mutate(value = 1) |>
+      right_join(
+        cdm$study_population |>
+          select(any_of(c(
+            "cohort_definition_id", "cohort_name", "subject_id", "exposure",
+            "pregnancy_id", "cohort_start_date", "cohort_end_date", "exposed_match_id",
+            "region", "ethnicity", "socioecnomic_status", "birth_continent", "nationallity",
+            "pre_pregnancy_smoking", unlist(strata), unique(unlist(covariatesPS))
+          )))
+      ) |>
+      mutate(
+        unique_id = paste0(sql("CAST(CAST(subject_id AS BIGINT) AS VARCHAR(255))"), "_", sql("CAST(CAST(exposed_match_id AS BIGINT) AS VARCHAR(255))"), "_", sql("CAST(CAST(pregnancy_id AS BIGINT) AS VARCHAR(255))"))
+      ) |>
+      pivot_wider(names_from = "feature", values_from = "value", values_fill = 0) |>
+      select(!"NA") |>
+      mutate(across(contains("_m"), ~ if_else(is.na(.x), 0, .x))) |>
+      compute(name = "features", temporary = FALSE) |>
+      newCohortTable(
+        cohortSetRef = settings(cdm$study_population),
+        cohortAttritionRef = NULL,
+        cohortCodelistRef = NULL,
+        .softValidation = TRUE
+      )
+  } else {
+    cdm$features <- features |>
+      inner_join(countsFeatures, by = c("cohort_name", "feature")) |>
+      select(any_of(c(
+        "cohort_name", "subject_id", "cohort_start_date", "feature"
+      ))) |>
+      mutate(value = 1) |>
+      right_join(
+        cdm$study_population |>
+          select(any_of(c(
+            "cohort_definition_id", "cohort_name", "subject_id", "exposure",
+            "pregnancy_id", "cohort_start_date", "cohort_end_date", "exposed_match_id",
+            "region", "ethnicity", "socioecnomic_status", "birth_continent", "nationallity",
+            "pre_pregnancy_smoking", unlist(strata), unique(unlist(covariatesPS))
+          )))
+      ) |>
+      mutate(unique_id = paste0(as.character(subject_id), "_", as.character(exposed_match_id), "_", as.character(pregnancy_id))) |>
+      pivot_wider(names_from = "feature", values_from = "value", values_fill = 0) |>
+      select(!"NA") |>
+      mutate(across(contains("_m"), ~ if_else(is.na(.x), 0, .x))) |>
+      compute(name = "features", temporary = FALSE) |>
+      newCohortTable(
+        cohortSetRef = settings(cdm$study_population),
+        cohortAttritionRef = NULL,
+        cohortCodelistRef = NULL,
+        .softValidation = TRUE
+      )
+  }
   return(cdm)
 }
 

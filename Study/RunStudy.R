@@ -62,7 +62,7 @@ if (sensitvitySCIFIPEARL) {
 if (database_name == "SIDIAP") {
   info(logger, "SIDIAP: Filter drug exposure table")
   cdm$drug_exposure <- cdm$drug_exposure |>
-    filter(drug_type_concept_id == 32839) |>
+    filter(drug_type_concept_id %in% c(32839, 32818)) |>
     compute()
 }
 

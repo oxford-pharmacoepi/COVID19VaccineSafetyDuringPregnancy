@@ -5,13 +5,26 @@ allCovariatesPS <- vector("list", 3)
 ps <- NULL
 psCovariates <- NULL
 requiredWeightCols <- paste0("weights_", c("_overall", "_pfizer", "_moderna", "_12_to_17", "_18_to_34", "_35_to_55", "_t1", "_t2", "_t3"))
-cdm$study_population <- cdm$study_population |>
-  mutate(unique_id = paste0(as.character(subject_id), "_", as.character(exposed_match_id), "_", as.character(pregnancy_id))) |>
-  addCohortName() |>
-  dplyr::select(!dplyr::starts_with("ps")) |>
-  dplyr::select(!dplyr::starts_with("weight")) |>
-  dplyr::select(!dplyr::any_of(requiredWeightCols)) |>
-  dplyr::mutate(overall = "overall")
+if (grepl("SCIFI", cdmName(cdm))) {
+  cdm$study_population <- cdm$study_population |>
+    mutate(
+      unique_id = paste0(sql("CAST(CAST(subject_id AS BIGINT) AS VARCHAR(255))"), "_", sql("CAST(CAST(exposed_match_id AS BIGINT) AS VARCHAR(255))"), "_", sql("CAST(CAST(pregnancy_id AS BIGINT) AS VARCHAR(255))"))
+    ) |>
+    addCohortName() |>
+    dplyr::select(!dplyr::starts_with("ps")) |>
+    dplyr::select(!dplyr::starts_with("weight")) |>
+    dplyr::select(!dplyr::any_of(requiredWeightCols)) |>
+    dplyr::mutate(overall = "overall")
+} else {
+  cdm$study_population <- cdm$study_population |>
+    mutate(unique_id = paste0(as.character(subject_id), "_", as.character(exposed_match_id), "_", as.character(pregnancy_id))) |>
+    addCohortName() |>
+    dplyr::select(!dplyr::starts_with("ps")) |>
+    dplyr::select(!dplyr::starts_with("weight")) |>
+    dplyr::select(!dplyr::any_of(requiredWeightCols)) |>
+    dplyr::mutate(overall = "overall")
+}
+
 for (nm in cohortNames) {
   info(logger, paste0("  - Cohort: ", nm))
   cdm[[nm]] <- cdm$study_population |>
