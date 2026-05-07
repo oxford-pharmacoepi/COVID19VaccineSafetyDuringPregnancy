@@ -16,7 +16,7 @@ cdm$study_population_04 <- cdm$study_population_weighted |>
     cohortId = cohort04,
     name = "study_population_04"
   )
-  
+
 # AESI ----
 info(logger, "- Create AESI outcome cohort")
 strata <- selectStrata(cdm, strata = c("vaccine_brand", "gestational_trimester", "age_group"))
@@ -70,7 +70,7 @@ aesiOutcomes <- aesiOutcomes[!aesiOutcomes %in% lowCountAesi]
 ends <- c("end_42_days_or_pregnancy", "end_42_days", "end_42_days_or_pregnancy_sensitivity", "end_42_days_sensitivity")
 for (end in ends) {
   info(logger, glue::glue("- Get IRR for AESI : analysis '{end}'"))
-
+  
   estimateSurvivalRisk(
     cohort = cdm$aesi_outcome |> mutate(!! lowCountAesi[1] := as.Date(NA)), outcomes = c(aesiOutcomes, lowCountAesi[1]), outcomeGroup = "Adverse Events of Special Interest",
     end = end, strata = strata, group = "cohort_name", weights = allCovariatesPS, ci = ci
@@ -113,62 +113,8 @@ if (!grepl("SCIFI-PEARL|CPRD GOLD", cdmName(cdm))) {
       suppressRiskEstimates() |>
       exportSummarisedResult(fileName = glue("outcome_risk_{end}_{cdmName(cdm)}"), path = output_folder)
   }
-  
-  survival <- estimateSingleEventSurvival(
-    cdm = cdm,
-    targetCohortTable = "mae_miscarriage",
-    outcomeCohortTable = "mae",
-    outcomeCohortId = "miscarriage",
-    outcomeDateVariable = "cohort_start_date",
-    outcomeWashout = 0,
-    censorOnCohortExit = TRUE,
-    followUpDays = Inf,
-    strata = strata,
-    eventGap = 30,
-    estimateGap = 1,
-    restrictedMeanFollowUp = NULL,
-    minimumSurvivalDays = 0
-  ) 
-  survival |>
-    newSummarisedResult(
-      settings = settings(survival) |>
-        mutate(
-          outcome_group = "Maternal Adverse Events",
-          study_analysis =  "main",
-          weighting = "FALSE"
-        )
-    ) |>
-    exportSummarisedResult(fileName = glue("cohort_survival_week_19_end_{cdmName(cdm)}"), path = output_folder, minCellCount = minimum_counts)
-  
-  cdm$mae_miscarriage <- cdm$mae_miscarriage |>
-    mutate(cohort_end_date = week_19_end_sensitivity) |>
-    compute(name = "mae_miscarriage", temporary = FALSE)
-  survival_sensitivity <- estimateSingleEventSurvival(
-    cdm = cdm,
-    targetCohortTable = "mae_miscarriage",
-    outcomeCohortTable = "mae",
-    outcomeCohortId = "miscarriage",
-    outcomeDateVariable = "cohort_start_date",
-    outcomeWashout = 0,
-    censorOnCohortExit = TRUE,
-    followUpDays = Inf,
-    strata = strata,
-    eventGap = 30,
-    estimateGap = 1,
-    restrictedMeanFollowUp = NULL,
-    minimumSurvivalDays = 0
-  ) 
-  survival_sensitivity |>
-    newSummarisedResult(
-      settings = settings(survival_sensitivity) |>
-        mutate(
-          outcome_group = "Maternal Adverse Events",
-          study_analysis =  "sensitivity",
-          weighting = "FALSE"
-        )
-    ) |>
-    exportSummarisedResult(fileName = glue("cohort_survival_week_19_end_sensitivity_{cdmName(cdm)}"), path = output_folder, minCellCount = minimum_counts)
 }
+
 ## Group 2: < 37 weeks (preterm labour)
 info(logger, "  * Get IRR for preterm labour")
 cdm$mea_preterm_labour <- cdm$study_population_04 |>
@@ -199,60 +145,6 @@ for (end in c("week_37_end", "week_37_end_sensitivity")) {
     exportSummarisedResult(fileName = glue("outcome_risk_{end}_{cdmName(cdm)}"), path = output_folder)
 }
 
-survival <- estimateSingleEventSurvival(
-  cdm = cdm,
-  targetCohortTable = "mea_preterm_labour",
-  outcomeCohortTable = "mae",
-  outcomeCohortId = "preterm_labour",
-  outcomeDateVariable = "cohort_start_date",
-  outcomeWashout = 0,
-  censorOnCohortExit = TRUE,
-  followUpDays = Inf,
-  strata = strata,
-  eventGap = 30,
-  estimateGap = 1,
-  restrictedMeanFollowUp = NULL,
-  minimumSurvivalDays = 0
-) 
-survival |>
-  newSummarisedResult(
-    settings = settings(survival) |>
-      mutate(
-        outcome_group = "Maternal Adverse Events",
-        study_analysis =  "main",
-        weighting = "FALSE"
-      )
-  ) |>
-  exportSummarisedResult(fileName = glue("cohort_survival_week_37_end_{cdmName(cdm)}"), path = output_folder, minCellCount = minimum_counts)
-
-cdm$mea_preterm_labour <- cdm$mea_preterm_labour |>
-  mutate(cohort_end_date = week_37_end_sensitivity) |>
-  compute(name = "mea_preterm_labour", temporary = FALSE)
-survival_sensitivity <- estimateSingleEventSurvival(
-  cdm = cdm,
-  targetCohortTable = "mea_preterm_labour",
-  outcomeCohortTable = "mae",
-  outcomeCohortId = "preterm_labour",
-  outcomeDateVariable = "cohort_start_date",
-  outcomeWashout = 0,
-  censorOnCohortExit = TRUE,
-  followUpDays = Inf,
-  strata = strata,
-  eventGap = 30,
-  estimateGap = 1,
-  restrictedMeanFollowUp = NULL,
-  minimumSurvivalDays = 0
-) 
-survival_sensitivity |>
-  newSummarisedResult(
-    settings = settings(survival_sensitivity) |>
-      mutate(
-        outcome_group = "Maternal Adverse Events",
-        study_analysis =  "sensitivity",
-        weighting = "FALSE"
-      )
-  ) |>
-  exportSummarisedResult(fileName = glue("cohort_survival_week_37_end_sensitivity_{cdmName(cdm)}"), path = output_folder, minCellCount = minimum_counts)
 
 ## Group 3: during pregnancy
 info(logger, "  * Add other MAE outcomes")
@@ -293,60 +185,6 @@ for (end in c("pregnancy_end", "pregnancy_end_sensitivity")) {
     exportSummarisedResult(fileName = glue("outcome_risk_{end}_{cdmName(cdm)}"), path = output_folder)
 }
 
-survival <- estimateSingleEventSurvival(
-  cdm = cdm,
-  targetCohortTable = "mae_pregnancy",
-  outcomeCohortTable = "mae",
-  outcomeCohortId = outcomes,
-  outcomeDateVariable = "cohort_start_date",
-  outcomeWashout = 0,
-  censorOnCohortExit = TRUE,
-  followUpDays = Inf,
-  strata = strata,
-  eventGap = 30,
-  estimateGap = 1,
-  restrictedMeanFollowUp = NULL,
-  minimumSurvivalDays = 0
-) 
-survival |>
-  newSummarisedResult(
-    settings = settings(survival) |>
-      mutate(
-        outcome_group = "Maternal Adverse Events",
-        study_analysis =  "main",
-        weighting = "FALSE"
-      )
-  ) |>
-  exportSummarisedResult(fileName = glue("cohort_survival_pregnancy_end_{cdmName(cdm)}"), path = output_folder, minCellCount = minimum_counts)
-
-cdm$mae_pregnancy <- cdm$mae_pregnancy |>
-  mutate(cohort_end_date = pregnancy_end_sensitivity) |>
-  compute(name = "mae_pregnancy", temporary = FALSE)
-survival_sensitivity <- estimateSingleEventSurvival(
-  cdm = cdm,
-  targetCohortTable = "mae_pregnancy",
-  outcomeCohortTable = "mae",
-  outcomeCohortId = outcomes,
-  outcomeDateVariable = "cohort_start_date",
-  outcomeWashout = 0,
-  censorOnCohortExit = TRUE,
-  followUpDays = Inf,
-  strata = strata,
-  eventGap = 30,
-  estimateGap = 1,
-  restrictedMeanFollowUp = NULL,
-  minimumSurvivalDays = 0
-) 
-survival_sensitivity |>
-  newSummarisedResult(
-    settings = settings(survival_sensitivity) |>
-      mutate(
-        outcome_group = "Maternal Adverse Events",
-        study_analysis =  "sensitivity",
-        weighting = "FALSE"
-      )
-  ) |>
-  exportSummarisedResult(fileName = glue("cohort_survival_pregnancy_end_sensitivity_{cdmName(cdm)}"), path = output_folder, minCellCount = minimum_counts)
 
 ## Group 4: up to 6 weeks after pregnancy
 info(logger, "  * Get IRR for 6 weeks postpartum")
@@ -367,61 +205,6 @@ for (end in c("postpartum_6_weeks", "postpartum_6_weeks_sensitivity")) {
     suppressRiskEstimates() |>
     exportSummarisedResult(fileName = glue("outcome_risk_{end}_{cdmName(cdm)}"), path = output_folder)
 }
-survival <- estimateSingleEventSurvival(
-  cdm = cdm,
-  targetCohortTable = "mae_postpartum_6",
-  outcomeCohortTable = "mae",
-  outcomeCohortId = outcomes,
-  outcomeDateVariable = "cohort_start_date",
-  outcomeWashout = 0,
-  censorOnCohortExit = TRUE,
-  followUpDays = Inf,
-  strata = strata,
-  eventGap = 30,
-  estimateGap = 1,
-  restrictedMeanFollowUp = NULL,
-  minimumSurvivalDays = 0
-) 
-survival |>
-  newSummarisedResult(
-    settings = settings(survival) |>
-      mutate(
-        outcome_group = "Maternal Adverse Events",
-        study_analysis =  "main",
-        weighting = "FALSE"
-      )
-  ) |>
-  exportSummarisedResult(fileName = glue("cohort_survival_postpartum_6_weeks_{cdmName(cdm)}"), path = output_folder, minCellCount = minimum_counts)
-
-cdm$mae_postpartum_6 <- cdm$mae_postpartum_6 |>
-  mutate(cohort_end_date = postpartum_6_weeks_sensitivity) |>
-  compute(name = "mae_postpartum_6", temporary = FALSE)
-survival_sensitivity <- estimateSingleEventSurvival(
-  cdm = cdm,
-  targetCohortTable = "mae_postpartum_6",
-  outcomeCohortTable = "mae",
-  outcomeCohortId = outcomes,
-  outcomeDateVariable = "cohort_start_date",
-  outcomeWashout = 0,
-  censorOnCohortExit = TRUE,
-  followUpDays = Inf,
-  strata = strata,
-  eventGap = 30,
-  estimateGap = 1,
-  restrictedMeanFollowUp = NULL,
-  minimumSurvivalDays = 0
-) 
-survival_sensitivity |>
-  newSummarisedResult(
-    settings = settings(survival_sensitivity) |>
-      mutate(
-        outcome_group = "Maternal Adverse Events",
-        study_analysis =  "sensitivity",
-        weighting = "FALSE"
-      )
-  ) |>
-  exportSummarisedResult(fileName = glue("cohort_survival_postpartum_6_weeks_sensitivity_{cdmName(cdm)}"), path = output_folder, minCellCount = minimum_counts)
-
 
 ## Group 4: up to 12 weeks after pregnancy
 info(logger, "  * Get IRR for 12 weeks after pregnancy")
@@ -442,61 +225,6 @@ for (end in c("postpartum_12_weeks", "postpartum_12_weeks_sensitivity")) {
     suppressRiskEstimates() |>
     exportSummarisedResult(fileName = glue("outcome_risk_{end}_{cdmName(cdm)}"), path = output_folder)
 }
-
-survival <- estimateSingleEventSurvival(
-  cdm = cdm,
-  targetCohortTable = "mea_postpartum_12",
-  outcomeCohortTable = "mae",
-  outcomeCohortId = 'postpartum_haemorrhage',
-  outcomeDateVariable = "cohort_start_date",
-  outcomeWashout = 0,
-  censorOnCohortExit = TRUE,
-  followUpDays = Inf,
-  strata = strata,
-  eventGap = 30,
-  estimateGap = 1,
-  restrictedMeanFollowUp = NULL,
-  minimumSurvivalDays = 0
-) 
-survival |>
-  newSummarisedResult(
-    settings = settings(survival) |>
-      mutate(
-        outcome_group = "Maternal Adverse Events",
-        study_analysis =  "main",
-        weighting = "FALSE"
-      )
-  ) |>
-  exportSummarisedResult(fileName = glue("cohort_survival_postpartum_12_weeks_{cdmName(cdm)}"), path = output_folder, minCellCount = minimum_counts)
-
-cdm$mea_postpartum_12 <- cdm$mea_postpartum_12 |>
-  mutate(cohort_end_date = postpartum_12_weeks_sensitivity) |>
-  compute(name = "mea_postpartum_12", temporary = FALSE)
-survival_sensitivity <- estimateSingleEventSurvival(
-  cdm = cdm,
-  targetCohortTable = "mea_postpartum_12",
-  outcomeCohortTable = "mae",
-  outcomeCohortId = 'postpartum_haemorrhage',
-  outcomeDateVariable = "cohort_start_date",
-  outcomeWashout = 0,
-  censorOnCohortExit = TRUE,
-  followUpDays = Inf,
-  strata = strata,
-  eventGap = 30,
-  estimateGap = 1,
-  restrictedMeanFollowUp = NULL,
-  minimumSurvivalDays = 0
-) 
-survival_sensitivity |>
-  newSummarisedResult(
-    settings = settings(survival_sensitivity) |>
-      mutate(
-        outcome_group = "Maternal Adverse Events",
-        study_analysis =  "sensitivity",
-        weighting = "FALSE"
-      )
-  ) |>
-  exportSummarisedResult(fileName = glue("cohort_survival_postpartum_12_weeks_sensitivity_{cdmName(cdm)}"), path = output_folder, minCellCount = minimum_counts)
 
 
 # NCO ----
@@ -533,7 +261,7 @@ cdm$study_population_pco <- cdm$study_population_04 |>
     indexDate = "cohort_start_date",
     targetDate = "cohort_start_date",
     order = "first",
-    window = c(1, 90),
+    window = c(1, Inf),
     nameStyle = "{cohort_name}",
     name = "study_population_pco"
   ) %>% 
@@ -571,12 +299,71 @@ if (getNCO) {
   ) |>
     suppressRiskEstimates() |> 
     exportSummarisedResult(fileName = glue("pco_{cdmName(cdm)}"), path = output_folder)
-  
-  pco_sensitivity <-   estimateSurvivalRisk(
-    cohort = cdm$study_population_pco, outcomes = "covid", 
-    end = "pregnancy_end_sensitivity", strata = strata, group = "cohort_name", 
-    weights = allCovariatesPS, outcomeGroup = "Positive Control Outcomes", ci = ci
-  ) |>
-    suppressRiskEstimates() |> 
-    exportSummarisedResult(fileName = glue("pco_sensitivity_{cdmName(cdm)}"), path = output_folder)
 } 
+
+# Kaplan-Meier (for MAE main analysis) ----
+outcomes <- settings(cdm$mae)$cohort_name
+cdm$study_population_km <- cdm$study_population_04 %>% 
+  mutate(
+    week_19_end = as.Date(!!dateadd("pregnancy_start_date", 19*7 + 6)),
+    week_37_end = as.Date(!!dateadd("pregnancy_start_date", 37*7)),
+    cohort_end_date = case_when(
+      .data$cohort_name %in% !!paste0("population_miscarriage_objective_", c(1, 3)) ~ if_else(week_19_end < cohort_end_date, week_19_end, cohort_end_date),
+      .data$cohort_name %in% !!paste0("population_preterm_labour_objective_", c(1, 3)) ~ if_else(week_37_end < cohort_end_date, week_37_end, cohort_end_date),
+      .default = .data$cohort_end_date
+    )
+  ) |>
+  compute(name = "study_population_km", temporary = FALSE) |>
+  addCohortIntersectDays(
+    targetCohortTable = "mae",
+    indexDate = "cohort_start_date",
+    censorDate = "cohort_end_date",
+    targetDate = "cohort_start_date",
+    order = "first",
+    window = c(0, Inf),
+    nameStyle = "{cohort_name}",
+    name = "study_population_km"
+  ) |>
+  select(c("cohort_name", "subject_id", "cohort_start_date", "exposure", "exposed_match_id", "pregnancy_id", "vaccine_brand", "gestational_trimester", "age_group", outcomes, starts_with("weight"))) |>
+  compute(name = "study_population_km", temporary = FALSE) 
+
+cdm$study_population_km <- cdm$study_population_km |>
+  pivot_longer(cols = outcomes, names_to = "outcome", values_to = "time") %>% 
+  mutate(status = if_else(is.na(time), 0, 1)) |>
+  compute(name = "study_population_km", temporary = FALSE) 
+
+kaplanMeierResults <- list()
+for (nm in cohort04) {
+  if (grepl("miscarriage", nm)) {
+    outcomeFilter <- "miscarriage"
+  } else if (grepl("preterm_labour", nm)) {
+    outcomeFilter <- "preterm_labour"
+  } else {
+    outcomeFilter <- outcomes[!outcomes %in% c("miscarriage", "preterm_labour")]
+  }
+  
+  kaplanMeierResults[[nm]] <- cdm$study_population_km |>
+    filter(.data$cohort_name == .env$nm) |>
+    filter(outcome %in% outcomeFilter) |>
+    collect() |>
+    nest(.by = c("cohort_name", "outcome")) |>
+    mutate(
+      km_weighted = purrr::map(.x = data, .f = ~ kaplanMeier(data = .x, weighting = TRUE)),
+      km_unweighted = purrr::map(.x = data, .f = ~ kaplanMeier(data = .x, weighting = FALSE))
+    ) |>
+    select(!data) |>
+    pivot_longer(cols = c("km_weighted", "km_unweighted")) |>
+    unnest("value") |>
+    select(!"name") |>
+    uniteGroup(cols = c("cohort_name", "outcome")) |>
+    pivot_longer(
+      cols = c("n_event", "n_censor", "n_risk", "estimate", "estimate_95CI_lower", "estimate_95CI_upper"),
+      names_to = "estimate_name",
+      values_to = "estimate_value"
+    ) |>
+    mutate(result_id = if_else(weighting == "TRUE", 1L, 2L), cdm_name = cdmName(cdm), result_type = "kaplan_meier") |>
+    newSummarisedResult()
+}
+
+bind(kaplanMeierResults) |> 
+  exportSummarisedResult(fileName = glue("kaplan_meier_{cdmName(cdm)}"), path = output_folder)

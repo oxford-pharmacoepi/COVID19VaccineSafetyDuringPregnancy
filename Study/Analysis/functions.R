@@ -931,7 +931,7 @@ cohortExit <- function(x, strata, weights) {
     collect() %>%
     mutate(
       "follow-up time" = date_count_between(cohort_start_date, cohort_end_date_sensitivity, "day"),
-      "exit_reason" = exit_reason_sensitivty
+      "exit_reason" = exit_reason_sensitivity
     ) |>
     summariseResult(
       group = "cohort_name",
@@ -1335,7 +1335,7 @@ processGroupStrata <- function(data, groupLevel, strataLevel, ci, outcomes, weig
       ),
       estimate_value = as.character(estimate_value),
       estimate_name = gsub("person_days_", "", estimate_name)
-    )
+    ) 
   
   return(results)
 }
@@ -1450,25 +1450,9 @@ estimateSurvivalRisk <- function(cohort, outcomes, outcomeGroup, end, strata, gr
 
 suppressRiskEstimates <- function(result) {
   set <- settings(result)
-  # result <- result |>
-  #   group_by(result_id, cdm_name, group_name, group_level, strata_name, strata_level, additional_name, additional_level) |>
-  #   mutate(
-  #     sup_group = if_else(any(estimate_name == "count" & as.numeric(estimate_value) > 0 & as.numeric(estimate_value) < 5), TRUE, FALSE),
-  #     sup_row = if_else(grepl("count", estimate_name) & as.numeric(estimate_value) > 0 & as.numeric(estimate_value) < 5, TRUE, FALSE),
-  #     sup_estimate = if_else(sum(variable_name == "Number events" & estimate_value == "0") == 2, TRUE, FALSE)
-  #   ) |>
-  #   ungroup() |>
-  #   mutate(
-  #     estimate_value = case_when(
-  #       estimate_name != "count" & sup_group ~ "-",
-  #       estimate_name == "count" & sup_row ~ "-",
-  #       estimate_name %in% c("coef", "lower_ci", "upper_ci") & sup_estimate ~ NA_character_,
-  #       .default = estimate_value
-  #     )
-  #   ) |>
-  #   select(!c("sup_group", "sup_row", "sup_estimate"))
   
-  result <- result |>
+  resultSup <- result |>
+    filterSettings(weighting == "FALSE") |>
     group_by(result_id, cdm_name, group_name, group_level, strata_name, strata_level, additional_name, additional_level) |>
     mutate(
       sup_group = if_else(any(variable_name == "Number pregnancies" & as.numeric(estimate_value) > 0 & as.numeric(estimate_value) < 5), TRUE, FALSE), # will save number of records later if >5
@@ -1485,9 +1469,30 @@ suppressRiskEstimates <- function(result) {
         .data$variable_name == "Relative Risk" & sup_subgroup ~ NA_character_,
         .default = estimate_value
       )
-    ) |>
-    select(!c("sup_group", "sup_row", "sup_estimate", "sup_subgroup"))
-  
+    )
+    
+  result <- bind(
+    result |>
+      filterSettings(weighting == "TRUE") |>
+      inner_join(
+        resultSup |> select(!c("result_id", "estimate_value"))
+      ) |>
+      mutate(
+        estimate_value = case_when(
+          !grepl("count", estimate_name) & sup_group ~ "-",
+          grepl("count", estimate_name) & sup_row ~ "-",
+          .data$variable_name == "Relative Risk" & sup_estimate ~ NA_character_,
+          .data$variable_name == "Relative Risk" & sup_subgroup ~ NA_character_,
+          .default = estimate_value
+        )
+      ) |>
+      select(!c("sup_group", "sup_row", "sup_estimate", "sup_subgroup")),
+    resultSup |>
+      select(!c("sup_group", "sup_row", "sup_estimate", "sup_subgroup")) |>
+      newSummarisedResult(settings = set |> filter(weighting == "FALSE"))
+  )
+
+    
   result |>
     newSummarisedResult(
       settings = set |> mutate(min_cell_count = "5")
@@ -2002,4 +2007,118 @@ addLowCountOutcomes <- function(x, outcomes) {
   }
   
   x |> newSummarisedResult(settings = set)
+}
+
+kaplanMeier <- function(data, weighting = TRUE) {
+  
+  estimates <- list()
+  
+  if (isFALSE(weighting)) {
+    data <- data |>
+      mutate(across(starts_with("weight"), ~1)) 
+  }
+  
+  if (sum(data$status[data$exposure == "exposed"]) >= 5 & sum(data$status[data$exposure == "comparator"]) >= 5) {
+    
+    kmfit <- survfit(Surv(time, status) ~ exposure, data = data, weights = weights_overall)
+    summ <- summary(kmfit, times = 0:300, extend = FALSE, data.frame = TRUE)
+    estimates[["overall"]] <- dplyr::tibble(
+      variable_name = "time",
+      variable_level = as.character(summ$time),
+      n_event = summ$n.event,
+      n_censor = summ$n.censor,
+      n_risk = summ$n.risk,
+      estimate_type = "numeric",
+      estimate = summ$surv,
+      estimate_95CI_lower = summ$lower,
+      estimate_95CI_upper = summ$upper,
+      strata_name = "overall",
+      strata_level = "overall",
+      additional_name = "exposure",
+      additional_level = gsub("exposure=", "", summ$strata)
+    )
+    
+    # age 
+    for (ageGroup in c("12 to 17", "18 to 34", "35 to 55")) {
+      weightColumn <- paste0("weights_", gsub(" ", "_", ageGroup))
+      dataAgeGroup <- data |>
+        filter(age_group == ageGroup) |>
+        mutate(weight_column = .data[[weightColumn]])
+      if (sum(dataAgeGroup$status[dataAgeGroup$exposure == "exposed"]) >= 5 & sum(dataAgeGroup$status[dataAgeGroup$exposure == "comparator"]) >= 5) {
+        kmfit <- survfit(Surv(time, status) ~ exposure, data = dataAgeGroup, weights = weight_column)
+        summ <- summary(kmfit, times = 0:300, extend = FALSE, data.frame = TRUE)
+        estimates[[ageGroup]] <- dplyr::tibble(
+          variable_name = "time",
+          variable_level = as.character(summ$time),
+          n_event = summ$n.event,
+          n_censor = summ$n.censor,
+          n_risk = summ$n.risk,
+          estimate_type = "numeric",
+          estimate = summ$surv,
+          estimate_95CI_lower = summ$lower,
+          estimate_95CI_upper = summ$upper,
+          strata_name = "maternal_age_group",
+          strata_level = ageGroup,
+          additional_name = "exposure",
+          additional_level = gsub("exposure=", "", summ$strata)
+        )
+      }
+    }
+    
+    # trimester
+    for (trimester in c("T2", "T3", "T1")) {
+      weightColumn <- paste0("weights_", tolower(trimester))
+      dataTrimester <- data |>
+        filter(gestational_trimester == trimester) |>
+        mutate(weight_column = .data[[weightColumn]])
+      if (sum(dataTrimester$status[dataTrimester$exposure == "exposed"]) >= 5 & sum(dataTrimester$status[dataTrimester$exposure == "comparator"]) >= 5) {
+        kmfit <- survfit(Surv(time, status) ~ exposure, data = dataTrimester, weights = weight_column)
+        summ <- summary(kmfit, times = 0:300, extend = FALSE, data.frame = TRUE)
+        estimates[[trimester]] <- dplyr::tibble(
+          variable_name = "time",
+          variable_level = as.character(summ$time),
+          n_event = summ$n.event,
+          n_censor = summ$n.censor,
+          n_risk = summ$n.risk,
+          estimate_type = "numeric",
+          estimate = summ$surv,
+          estimate_95CI_lower = summ$lower,
+          estimate_95CI_upper = summ$upper,
+          strata_name = "gestational_trimester",
+          strata_level = trimester,
+          additional_name = "exposure",
+          additional_level = gsub("exposure=", "", summ$strata)
+        )
+      }
+    }
+    
+    # vaccine brand
+    for (vaccine in c("pfizer", "moderna")) {
+      weightColumn <- paste0("weights_", vaccine)
+      dataVaccine <- data |>
+        filter(vaccine_brand == vaccine) |>
+        mutate(weight_column = .data[[weightColumn]])
+      if (sum(dataVaccine$status[dataVaccine$exposure == "exposed"]) >= 5 & sum(dataVaccine$status[dataVaccine$exposure == "comparator"]) >= 5) {
+        kmfit <- survfit(Surv(time, status) ~ exposure, data = dataVaccine, weights = weight_column)
+        summ <- summary(kmfit, times = 0:300, extend = FALSE, data.frame = TRUE)
+        estimates[[vaccine]] <- dplyr::tibble(
+          variable_name = "time",
+          variable_level = as.character(summ$time),
+          n_event = summ$n.event,
+          n_censor = summ$n.censor,
+          n_risk = summ$n.risk,
+          estimate_type = "numeric",
+          estimate = summ$surv,
+          estimate_95CI_lower = summ$lower,
+          estimate_95CI_upper = summ$upper,
+          strata_name = "vaccine_brand",
+          strata_level = vaccine,
+          additional_name = "exposure",
+          additional_level = gsub("exposure=", "", summ$strata)
+        )
+      }
+    }
+  }
+  
+  return(estimates |> bind_rows() |> mutate(weighting = weighting))
 }

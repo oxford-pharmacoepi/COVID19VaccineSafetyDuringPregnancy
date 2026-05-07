@@ -213,12 +213,12 @@ sampling_summary <- samplingSummary(sampling_source, "Comparator eligible to con
 ## Sample ----
 sampling_source <- sampling_source |> 
   slice_sample(
-    n =  10, 
+    n =  1, 
     by = all_of(c("cohort_definition_id", "cohort_name", "exposed_id", "exposure_date", "exposed_pregnancy_id"))
   ) |>
   compute(name = "sampling_source", temporary = FALSE)
 
-sampling_summary <- samplingSummary(sampling_source, "Sample to 10 comparators", sampling_summary)
+sampling_summary <- samplingSummary(sampling_source, "Sample to 1 comparator", sampling_summary)
 
 ## Export sampling summary ----
 sampling_summary |>
@@ -301,14 +301,14 @@ cdm$study_population <- cdm$study_population |>
     "date_of_death" = "date_of_death_1",
     "next_covid_vaccine" = "next_covid_vaccine_1",
     "observation_end" = "observation_end_1"
-  ) |>
+  ) %>%
   exitAtFirstDateStudy(
     dateColumns = c("date_of_death", "next_covid_vaccine", "covid_infection", "observation_end"),
     endColumn = "cohort_end_date_sensitivity",
     keepDates = FALSE,
-    reason = "exit_reason_sensitivty",
+    reason = "exit_reason_sensitivity",
     name = "study_population"
-  )  |>
+  ) %>% 
   mutate(
     "exit_reason" = case_when(
       exit_reason == "date_of_death; observation_end" ~ "date_of_death",
@@ -317,12 +317,26 @@ cdm$study_population <- cdm$study_population |>
       exit_reason == "observation_end; next_covid_vaccine" ~ "next_covid_vaccine",
       .default = exit_reason
     ),
-    "exit_reason_sensitivty" = case_when(
-      exit_reason_sensitivty == "date_of_death; observation_end" ~ "date_of_death",
-      exit_reason_sensitivty == "observation_end; date_of_death" ~ "date_of_death",
-      exit_reason_sensitivty == "next_covid_vaccine; observation_end" ~ "next_covid_vaccine",
-      exit_reason_sensitivty == "observation_end; next_covid_vaccine" ~ "next_covid_vaccine",
-      .default = exit_reason_sensitivty
+    "exit_reason_sensitivity" = case_when(
+      exit_reason_sensitivity == "date_of_death; observation_end" ~ "date_of_death",
+      exit_reason_sensitivity == "observation_end; date_of_death" ~ "date_of_death",
+      exit_reason_sensitivity == "next_covid_vaccine; observation_end" ~ "next_covid_vaccine",
+      exit_reason_sensitivity == "observation_end; next_covid_vaccine" ~ "next_covid_vaccine",
+      exit_reason_sensitivity == "observation_end; covid_infection" ~ "covid_infection",
+      exit_reason_sensitivity == "covid_infection; observation_end" ~ "covid_infection",
+      exit_reason_sensitivity == "next_covid_vaccine; covid_infection" ~ "covid_infection; next_covid_vaccine",
+      exit_reason_sensitivity == "covid_infection; next_covid_vaccine" ~ "covid_infection; next_covid_vaccine",
+      .default = exit_reason_sensitivity
+    ),
+    cohort_end_date = if_else(
+      exit_reason %in% c("date_of_death", "observation_end"), 
+      cohort_end_date, 
+      !!dateadd("cohort_end_date", -1)
+    ),
+    cohort_end_date_sensitivity = if_else(
+      exit_reason_sensitivity %in% c("date_of_death", "observation_end"), 
+      cohort_end_date_sensitivity, 
+      !!dateadd("cohort_end_date_sensitivity", -1)
     )
   )
 
@@ -345,48 +359,65 @@ cdm$study_population <- cdm$study_population |>
       max(cohort_end_date, na.rm = TRUE), 
       as.Date(NA)
     ),
-    exposed_censored_sensitivty = if_else(
-      exposure == "exposed" & !exit_reason_sensitivty %in% c("date_of_death", "observation_end"), 
+    exposed_censored_sensitivity = if_else(
+      exposure == "exposed" & !exit_reason_sensitivity %in% c("date_of_death", "observation_end"), 
       .data$cohort_end_date_sensitivity, 
       as.Date(NA)
     ),
-    comparator_censored_sensitivty = if_else(
-      all(exposure == "comparator" & !exit_reason_sensitivty %in% c("date_of_death", "observation_end")), # all comparator censored to censor an exposed
+    comparator_censored_sensitivity = if_else(
+      all(exposure == "comparator" & !exit_reason_sensitivity %in% c("date_of_death", "observation_end")), # all comparator censored to censor an exposed
       max(cohort_end_date_sensitivity, na.rm = TRUE), 
       as.Date(NA)
     )
   ) |>
   ungroup() |>
   compute(name = "study_population", temporary = FALSE) |>
+  group_by(cohort_definition_id, cohort_start_date, exposed_match_id) |>
   mutate(
-    cohort_end_date = case_when(
+    exposed_censored = if_else(any(!is.na(exposed_censored)), max(exposed_censored, na.rm = TRUE), as.Date(NA)),
+    comparator_censored = if_else(any(!is.na(comparator_censored)), max(comparator_censored, na.rm = TRUE), as.Date(NA)),
+    exposed_censored_sensitivity = if_else(any(!is.na(exposed_censored_sensitivity)), max(exposed_censored_sensitivity, na.rm = TRUE), as.Date(NA)),
+    comparator_censored_sensitivity = if_else(any(!is.na(comparator_censored_sensitivity)), max(comparator_censored_sensitivity, na.rm = TRUE), as.Date(NA))
+  ) |>
+  ungroup() |>
+  compute(name = "study_population", temporary = FALSE) |>
+  mutate(
+    cohort_end_date_new = case_when(
       is.na(exposed_censored) & is.na(comparator_censored) ~ cohort_end_date,
       is.na(exposed_censored) & !is.na(comparator_censored) ~ comparator_censored,
       !is.na(exposed_censored) & is.na(comparator_censored) ~ exposed_censored,
       exposed_censored > comparator_censored ~ comparator_censored,
       exposed_censored <= comparator_censored ~ exposed_censored,
-      .default = NA
+      .default = NA_character_
     ),
+    cohort_end_date = if_else(cohort_end_date_new > cohort_end_date, cohort_end_date, cohort_end_date_new),
     exit_reason = case_when(
-      is.na(exposed_censored) & is.na(comparator_censored) ~ exit_reason,
-      !is.na(exposed_censored) | !is.na(comparator_censored) ~ "counterpart_censoring",
-      .default = NA
+      is.na(exposed_censored) & !is.na(comparator_censored) & exposure == "exposed" & cohort_end_date == cohort_end_date_new ~ "counterpart_censoring",
+      !is.na(exposed_censored) & is.na(comparator_censored) & exposure == "comparator" & cohort_end_date == cohort_end_date_new ~ "counterpart_censoring",
+      exposed_censored > comparator_censored & exposure == "exposed" ~ "counterpart_censoring",
+      exposed_censored < comparator_censored & exposure == "comparator" ~ "counterpart_censoring",
+      .default = exit_reason
     ),
-    cohort_end_date_sensitivity = case_when(
-      is.na(exposed_censored_sensitivty) & is.na(comparator_censored_sensitivty) ~ cohort_end_date_sensitivity,
-      is.na(exposed_censored_sensitivty) & !is.na(comparator_censored_sensitivty) ~ comparator_censored_sensitivty,
-      !is.na(exposed_censored_sensitivty) & is.na(comparator_censored_sensitivty) ~ exposed_censored_sensitivty,
-      exposed_censored_sensitivty > comparator_censored_sensitivty ~ comparator_censored_sensitivty,
-      exposed_censored_sensitivty <= comparator_censored_sensitivty ~ exposed_censored_sensitivty,
-      .default = NA
+    cohort_end_date_new_sensitivity = case_when(
+      is.na(exposed_censored_sensitivity) & is.na(comparator_censored_sensitivity) ~ cohort_end_date_sensitivity,
+      is.na(exposed_censored_sensitivity) & !is.na(comparator_censored_sensitivity) ~ comparator_censored_sensitivity,
+      !is.na(exposed_censored_sensitivity) & is.na(comparator_censored_sensitivity) ~ exposed_censored_sensitivity,
+      exposed_censored_sensitivity > comparator_censored_sensitivity ~ comparator_censored_sensitivity,
+      exposed_censored_sensitivity <= comparator_censored_sensitivity ~ exposed_censored_sensitivity,
+      .default = NA_character_
     ),
-    exit_reason_sensitivty = case_when(
-      is.na(exposed_censored_sensitivty) & is.na(comparator_censored_sensitivty) ~ exit_reason_sensitivty,
-      !is.na(exposed_censored_sensitivty) | !is.na(comparator_censored_sensitivty) ~ "counterpart_censoring",
-      .default = NA
-    )
+    cohort_end_date_sensitivity = if_else(cohort_end_date_new_sensitivity > cohort_end_date_sensitivity, cohort_end_date_sensitivity, cohort_end_date_new_sensitivity),
+    exit_reason = case_when(
+      is.na(exposed_censored_sensitivity) & !is.na(comparator_censored_sensitivity) & exposure == "exposed" & cohort_end_date_sensitivity == cohort_end_date_new_sensitivity ~ "counterpart_censoring",
+      !is.na(exposed_censored_sensitivity) & is.na(comparator_censored_sensitivity) & exposure == "comparator" & cohort_end_date_sensitivity == cohort_end_date_new_sensitivity ~ "counterpart_censoring",
+      exposed_censored_sensitivity > comparator_censored_sensitivity & exposure == "exposed" ~ "counterpart_censoring",
+      exposed_censored_sensitivity < comparator_censored_sensitivity & exposure == "comparator" ~ "counterpart_censoring",
+      .default = exit_reason_sensitivity
+    ),
+    cohort_end_date = as.Date(cohort_end_date),
+    cohort_end_date_sensitivity = as.Date(cohort_end_date_sensitivity)
   ) |>
-  select(!c("exposed_censored", "comparator_censored", "exposed_censored_sensitivty", "comparator_censored_sensitivty")) |>
+  select(!c("exposed_censored", "comparator_censored", "exposed_censored_sensitivity", "comparator_censored_sensitivity", "cohort_end_date_new", "cohort_end_date_new_sensitivity")) |>
   compute(name = "study_population", temporary = FALSE) 
 
 # Strata and covariates ----
@@ -523,3 +554,4 @@ smdNumeric <- summariseNumericSMD(baseline_characteristics) |>
   filter(!is.na(estimate_value))
 bind(baseline_characteristics, large_scale_characteristics, smdBinary, smdNumeric, censoring, timeDistribution) |>
   exportSummarisedResult(fileName = paste0("unweighted_characteristics_", cdmName(cdm), ".csv"), path = output_folder)
+
