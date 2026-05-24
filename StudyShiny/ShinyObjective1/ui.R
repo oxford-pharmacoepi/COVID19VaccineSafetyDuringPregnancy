@@ -777,7 +777,7 @@ ui <- bslib::page_navbar(
         ),
         bslib::navset_card_tab(
           bslib::nav_panel(
-            title = "Tidy",
+            title = "Table Estimates",
             bslib::card(
               full_screen = TRUE,
               bslib::card_header(
@@ -787,12 +787,47 @@ ui <- bslib::page_navbar(
                 ),
                 class = "text-end"
               ),
-              DT::DTOutput("survival_tidy") |>
-                shinycssloaders::withSpinner()
+              # bslib::layout_sidebar(
+                shinyWidgets::pickerInput(
+                  inputId = "survival_tidy_hide",
+                  label = "Hide",
+                  choices = c('cdm_name', 'target_cohort', 'outcome', 'competing_outcome', 'maternal_age_group', 'pregnancy_start_period', 'socioeconomic_status', 'ethnicity', 'birth_continent', 'nationallity', 'variable', 'time', 'result_type', 'outcome_group', 'outcome_washout', 'estimate', 'estimate_95CI_lower', 'estimate_95CI_upper'),
+                  selected = c('competing_outcome', 'maternal_age_group', 'pregnancy_start_period', 'socioeconomic_status', 'ethnicity', 'birth_continent', 'nationallity', 'variable', 'result_type', 'outcome_group', 'outcome_washout'),
+                  multiple = TRUE,
+                  options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
+                ),
+                DT::DTOutput("survival_tidy") |>
+                  shinycssloaders::withSpinner()
+              # )
             )
           ),
           bslib::nav_panel(
-            title = "Table",
+            title = "Table Events",
+            bslib::card(
+              full_screen = TRUE,
+              bslib::card_header(
+                bslib::popover(
+                  shiny::icon("download"),
+                  shiny::downloadButton(outputId = "survival_events_download", label = "Download csv")
+                ),
+                class = "text-end"
+              ),
+              # bslib::layout_sidebar(
+                shinyWidgets::pickerInput(
+                  inputId = "survival_events_hide",
+                  label = "Hide",
+                  choices = c('cdm_name', 'target_cohort', 'outcome', 'competing_outcome', 'maternal_age_group', 'pregnancy_start_period', 'socioeconomic_status', 'ethnicity', 'birth_continent', 'nationallity', 'variable', 'time', 'result_type', 'outcome_group', 'outcome_washout', 'estimate', 'estimate_95CI_lower', 'estimate_95CI_upper', 'eventgap', 'n_risk', 'n_events', 'n_censor'),
+                  selected = c('competing_outcome', 'maternal_age_group', 'pregnancy_start_period', 'socioeconomic_status', 'ethnicity', 'birth_continent', 'nationallity', 'variable', 'result_type', 'outcome_group', 'outcome_washout', 'estimate', 'estimate_95CI_lower', 'estimate_95CI_upper', 'eventgap'),
+                  multiple = TRUE,
+                  options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
+                ),
+                DT::DTOutput("survival_events") |>
+                  shinycssloaders::withSpinner()
+              )
+            # )
+          ),
+          bslib::nav_panel(
+            title = "Table Overall",
             bslib::card(
               full_screen = TRUE,
               bslib::card_header(

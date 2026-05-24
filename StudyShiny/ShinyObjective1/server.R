@@ -908,7 +908,7 @@ server <- function(input, output, session) {
   })
   getSurvivalProbabilityTidy <- shiny::reactive({
     CohortSurvival::asSurvivalResult(getSurvivalData()) |>
-      dplyr::select(!any_of(c("variable", "competing_outcome", "result_type", "target_cohort", "outcome_washout"))) 
+      dplyr::select(!any_of(c(input$survival_tidy_hide))) 
   })
   output$survival_tidy <- DT::renderDT({
     getSurvivalProbabilityTidy()
@@ -917,6 +917,23 @@ server <- function(input, output, session) {
     filename = "tidy_results.csv",
     content = function(file) {
       getSurvivalProbabilityData() |>
+        omopgenerics::tidy() |>
+        readr::write_csv(file = file)
+    }
+  )
+  getSurvivalProbabilityEvents <- shiny::reactive({
+    x <- CohortSurvival::asSurvivalResult(getSurvivalData()) 
+    x |>
+      inner_join(attr(x, "events")) |>
+      dplyr::select(!any_of(c(input$survival_events_hide))) 
+  })
+  output$survival_events <- DT::renderDT({
+    getSurvivalProbabilityEvents()
+  })
+  output$survival_events_download <- shiny::downloadHandler(
+    filename = "events_results.csv",
+    content = function(file) {
+      getSurvivalProbabilityEvents() |>
         omopgenerics::tidy() |>
         readr::write_csv(file = file)
     }

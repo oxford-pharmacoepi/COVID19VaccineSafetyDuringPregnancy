@@ -320,17 +320,19 @@ server <- function(input, output, session) {
           variable_name = factor(
             .data$variable_name,
             levels = c(
-              "Number records", "Number subjects", "Number pregnancies weighted", "Age", "Age group", "Vaccine brand",
+              "Number records", "Number subjects", "Number pregnancies weighted", 
+              "Age", "Age group", "Vaccine brand",
               "Gestational trimester", "Previous pregnancies", "Previous observation",
-              "Other vaccines within 5 days", "Previous COVID-19 infections", "Previous healthcare visits",
-              "Comorbidities in the last year",
+              "Other vaccines within 5 days", "Previous COVID-19 infections", 
+              "Previous healthcare visits", "Comorbidities in the last year",
               "History of comorbidities", "Medications in the past year"
             ),
             labels = c(
-              "Number records", "Number subjects", "Number records (weighted)", "Age", "Age group", "Vaccine brand",
+              "Number records", "Number subjects", "Number records (weighted)", 
+              "Age", "Age group", "Vaccine brand",
               "Gestational trimester", "Previous pregnancies", "Previous observation",
-              "Other vaccines within 5 days", "Previous COVID-19 infections", "Previous healthcare visits",
-              "Comorbidities in the past year",
+              "Other vaccines within 5 days", "Previous COVID-19 infections", 
+              "Previous healthcare visits", "Comorbidities in the past year",
               "History of comorbidities", "Medications in the past year"
             )
           )
@@ -339,7 +341,7 @@ server <- function(input, output, session) {
     if (grepl("objective_2", input$summarise_characteristics_cohort_name)) {
       x <- x |>
         dplyr::filter(
-          ! .data$variable_name %in% c("Days previous dose"),
+          !.data$variable_name %in% c("Days previous dose"),
           !(.data$variable_name %in% c("Previous COVID-19 vaccines", "Previous pregnant COVID-19 vaccines") & .data$variable_level %in% c("2", "0.0"))
         ) |>
         dplyr::mutate(
@@ -1286,7 +1288,7 @@ server <- function(input, output, session) {
           "age_group" = c("overall", "12 to 17", "18 to 34", "35 to 55"),
           "gestational_trimester" = c("overall", "Trimester 1", "Trimester 2", "Trimester 3"),
           "vaccine_brand" = c("overall", "Pfizer", "Moderna"),
-          "exit_reason" = c("overall", "date_of_death", "next_covid_vaccine", "observation_end", "covid_infection", "next_covid_vaccine; covid_infection")
+          "exit_reason" = c("overall", "next_covid_vaccine", "covid_infection", "date_of_death", "observation_end", "covid_infection; next_covid_vaccine", "counterpart_censoring")
         )
       )
   })
@@ -1514,7 +1516,7 @@ server <- function(input, output, session) {
       dplyr::rename("concept_name" = "variable_name") |>
       dplyr::mutate(asmd = abs(smd)) |>
       dplyr::relocate(c("smd", "asmd"), .after = dplyr::last_col()) |>
-      dplyr::select(!dplyr::any_of(c("analysis", "type", "table_name", "exposure", dropCols))) |>
+      dplyr::select(!dplyr::any_of(c("analysis", "type", "table_name", "exposure", "weights", dropCols))) |>
       dplyr::filter(!is.na(smd)) |>
       visOmopResults::formatTable(type = "reactable")
   })
@@ -1540,7 +1542,9 @@ server <- function(input, output, session) {
         smd = abs(smd), 
         weighting = dplyr::if_else(weighting == "TRUE", "weighted_smd", "unweighted_smd")
       ) |>
+      select(!c("weights")) |>
       tidyr::pivot_wider(names_from = "weighting", values_from = "smd") |>
+      filter(!is.na(weighted_smd) & !is.na(unweighted_smd)) |>
       visOmopResults::scatterPlot(
         x = "weighted_smd",
         y = "unweighted_smd",
@@ -1577,6 +1581,138 @@ server <- function(input, output, session) {
         height = as.numeric(input$summarise_standardised_mean_differences_plot_height),
         units = input$summarise_standardised_mean_differences_plot_units,
         dpi = as.numeric(input$summarise_standardised_mean_differences_plot_dpi)
+      )
+    }
+  )
+  
+  # kaplan_meier -----
+  ## update message if filter is changed
+  shiny::observeEvent(input$kaplan_meier_cdm_name,
+                      {
+                        updateButtons$kaplan_meier <- TRUE
+                      },
+                      ignoreInit = TRUE
+  )
+  shiny::observeEvent(input$kaplan_meier_cohort_name,
+                      {
+                        updateButtons$kaplan_meier <- TRUE
+                      },
+                      ignoreInit = TRUE
+  )
+  shiny::observeEvent(input$kaplan_meier_exposure,
+                      {
+                        updateButtons$kaplan_meier <- TRUE
+                      },
+                      ignoreInit = TRUE
+  )
+  shiny::observeEvent(input$kaplan_meier_vaccine_brand,
+                      {
+                        updateButtons$kaplan_meier <- TRUE
+                      },
+                      ignoreInit = TRUE
+  )
+  shiny::observeEvent(input$kaplan_meier_gestational_trimester,
+                      {
+                        updateButtons$kaplan_meier <- TRUE
+                      },
+                      ignoreInit = TRUE
+  )
+  shiny::observeEvent(input$kaplan_meier_age_group,
+                      {
+                        updateButtons$kaplan_meier <- TRUE
+                      },
+                      ignoreInit = TRUE
+  )
+  shiny::observeEvent(input$kaplan_meier_weighting,
+                      {
+                        updateButtons$kaplan_meier <- TRUE
+                      },
+                      ignoreInit = TRUE
+  )
+  shiny::observeEvent(updateButtons$kaplan_meier, {
+    if (updateButtons$kaplan_meier == TRUE) {
+      output$update_message_kaplan_meier <- shiny::renderText("Filters have changed please consider to use the update content button!")
+    } else {
+      output$update_message_kaplan_meier <- shiny::renderText("")
+    }
+  })
+  shiny::observeEvent(input$update_kaplan_meier, {
+    updateButtons$kaplan_meier <- FALSE
+  })
+  
+  ## get kaplan_meier data
+  getKMData <- shiny::eventReactive(input$update_kaplan_meier, {
+    data[["kaplan_meier"]] |>
+      dplyr::filter(
+        .data$cdm_name %in% input$kaplan_meier_cdm_name
+      ) |>
+      omopgenerics::filterGroup(
+        .data$cohort_name %in% input$kaplan_meier_cohort_name, 
+        .data$outcome %in% input$kaplan_meier_outcome
+      ) |>
+      omopgenerics::filterStrata(
+        .data$vaccine_brand %in% input$kaplan_meier_vaccine_brand,
+        .data$gestational_trimester %in% input$kaplan_meier_gestational_trimester,
+        .data$maternal_age_group %in% input$kaplan_meier_age_group
+      ) |>
+      omopgenerics::filterAdditional(.data$exposure %in% input$kaplan_meier_exposure) |>
+      omopgenerics::filterSettings(
+        .data$weighting %in% input$kaplan_meier_weighting
+      ) |>
+      omopgenerics::tidy() |>
+      dplyr::mutate(time = as.numeric(variable_level)) |>
+      dplyr::select(!c("variable_name", "variable_level"))
+  })
+  getKMTable <- shiny::reactive({
+    dropCols <- input$kaplan_meier_table_hide
+    getKMData() |>
+      dplyr::select(!dplyr::any_of(c(dropCols))) |>
+      visOmopResults::formatTable(type = "reactable")
+  })
+  output$kaplan_meier_table <- reactable::renderReactable({
+    getKMTable()
+  })
+  output$kaplan_meier_table_download <- shiny::downloadHandler(
+    filename = "km.csv",
+    content = function(file) {
+      rt <- getKMTable()
+      rt$x$tag$attribs$data |>
+        unclass() |>
+        jsonlite::fromJSON() |>
+        dplyr::as_tibble() |>
+        readr::write_csv(file)
+    }
+  )
+  getKMPlot <- shiny::reactive({
+    getKMData() |>
+      visOmopResults::scatterPlot(
+        x = "time",
+        y = "estimate",
+        line = TRUE,
+        point = FALSE,
+        ribbon = FALSE,
+        facet = input$kaplan_meier_plot_facet,
+        colour = input$kaplan_meier_plot_colour,
+        label = character()
+      ) +
+      visOmopResults::themeVisOmop(fontsizeRef = 11) +
+      ggplot2::ylab("Kaplan-Meier estimator") +
+      ggplot2::geom_ribbon(aes(ymin = estimate_95CI_lower, ymax = estimate_95CI_upper), alpha = 0.3, colour = NA)
+  })
+  output$kaplan_meier_plot <- shiny::renderUI({
+    x <- getKMPlot()
+    renderInteractivePlot(x, TRUE)
+  })
+  output$kaplan_meier_plot_download <- shiny::downloadHandler(
+    filename = "plot_KM.png",
+    content = function(file) {
+      ggplot2::ggsave(
+        filename = file,
+        plot = getKMPlot(),
+        width = as.numeric(input$kaplan_meier_plot_width),
+        height = as.numeric(input$kaplan_meier_plot_height),
+        units = input$kaplan_meier_plot_units,
+        dpi = as.numeric(input$kaplan_meier_plot_dpi)
       )
     }
   )

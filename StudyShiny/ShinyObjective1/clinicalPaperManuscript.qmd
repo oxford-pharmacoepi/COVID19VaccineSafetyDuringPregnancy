@@ -1,5 +1,5 @@
 ---
-title: "Cumulative incidence and characterization of adverse events during pregnancy: a multi-country European cohort study"
+title: "Cumulative incidence and characterisation of adverse events during pregnancy: a multi-country European cohort study"
 format:
   docx:
     reference-doc: ref.docx
@@ -56,61 +56,30 @@ knitr::opts_chunk$set(
 )
 
 maeCode <- c(
-  "miscarriage", "ectopic_pregnancy", "stillbirth", 
+  "stillbirth", 
   
   "gestational_diabetes", "antepartum_haemorrhage", 
+  
   "preeclampsia", "eclampsia", "hellp",  
   
-  "preterm_labour", "dysfunctional_labour", 
-  
-  # "maternal_death",
-  
-  "postpartum_haemorrhage"
-  #, "postpartum_endometritis"
+  "preterm_labour", "postpartum_haemorrhage"
 )
 maeClean <- c(
-  "Miscarriage", "Ectopic pregnancy", "Stillbirth",
+  "Stillbirth",
   
   "Gestational diabetes mellitus", "Antepartum haemorrhage", 
+  
   "Pre-eclampsia", "Eclampsia", "HELLP syndrome", 
   
-  "Preterm delivery", "Dysfunctional labour",
-  
-  # "Maternal death",
-  
-  "Postpartum haemorrhage"
-  #, "Postpartum endometritis"
+  "Preterm delivery", "Postpartum haemorrhage"
 )
 aesiCode <- c(
-  "pulmonary_embolism", "deep_vein_thrombosis"
-  # "immune_thrombocytopenia", "bells_palsy"
-  
-  # "disseminated_intravascular_coagulation", "tts",
-  # 
-  # "myocarditis_or_pericarditis", "myocardial_infarction", 
-  # 
-  # "ischaemic_stroke", "haemorrhagic_stroke",   
-  # 
-  # "bells_palsy", "guillain_barre_syndrome", 
-  # "transverse_myelitis", "encephalitis", "narcolepsy",
-  # 
-  # "anaphylaxis"
+  "pulmonary_embolism", "deep_vein_thrombosis",
+  "immune_thrombocytopenia", "bells_palsy"
 )
 aesiClean <- c(
-  'Pulmonary embolism', 'Deep vein thrombosis'
-  # 'Immune thrombocytopenia', 'Bell’s palsy'
-  
-  # 'Disseminated intravascular coagulation',
-  # 'Thrombosis with thrombocytopenia syndrome', 
-  # 
-  # 'Myocarditis or pericarditis', 'Myocardial infarction', 
-  # 
-  # 'Ischaemic stroke', 'Haemorrhagic stroke', 
-  # 
-  # 'Guillain–Barré syndrome', 
-  # 'Transverse myelitis', 'Encephalitis', 'Narcolepsy',
-  # 
-  # 'Anaphylaxis'
+  'Pulmonary embolism', 'Deep vein thrombosis',
+  'Immune thrombocytopenia', 'Bell’s palsy'
 )
 excludeCPRD <- c("Miscarriage", "Dysfunctional labour")
 excludeSCIFI <- c("Ectopic pregnancy")
@@ -264,11 +233,15 @@ survival <-data$survival |>
 
 limit_grid <- bind_rows(
   survival |>
+    mutate(week = time/7) |>
+    filter((week <= 35 & outcome == "Eclampsia") | week <= 40) |>
     filter(target_cohort == "pregnancy_denominator") |>
     group_by(outcome) |>
     summarise(facet_max = max(estimate, na.rm = TRUE), .groups = "drop") |>
     mutate(upper_limit = facet_max),
   survival |>
+    mutate(week = time/7) |>
+    filter(week <= 40) |>
     filter(target_cohort %in% c("postpartum_6_weeks_denominator", "postpartum_12_weeks_denominator")) |>
     group_by(outcome) |>
     summarise(facet_max = max(estimate, na.rm = TRUE), .groups = "drop") |>
@@ -287,9 +260,9 @@ custom_scales_list <- pmap(limit_grid, function(outcome, maternal_age_group, upp
 })
 
 colors <- c("#C94A5A", "#4A6FE3", "#4FAE6A", "#E08A3C")
-cif <- function(x, ylimits, colors = c("#BC4749", "#7D6B91", "#1982C4")) {
+cif <- function(x, ylimits, colors = c("#edae49", "#d1495b", "#00798c")) {
   x |>
-    ggplot(aes(x = time, y = estimate, color = maternal_age_group, fill = maternal_age_group, group = maternal_age_group)) +
+    ggplot(aes(x = week, y = estimate, color = maternal_age_group, fill = maternal_age_group, group = maternal_age_group)) +
     geom_ribbon(
       aes(
         ymin = estimate_95CI_lower, 
@@ -309,7 +282,8 @@ cif <- function(x, ylimits, colors = c("#BC4749", "#7D6B91", "#1982C4")) {
       legend.position = "top",
       legend.title = element_text(face = "bold"),
       panel.grid.minor = element_blank(),
-      plot.title = element_text(face = "bold", size = 14)
+      plot.title = element_text(face = "bold", size = 14),
+      panel.spacing.y = unit(0.8, "lines")
     ) +
     guides(
       color = guide_legend(title = "Data source"),
@@ -321,80 +295,39 @@ cif <- function(x, ylimits, colors = c("#BC4749", "#7D6B91", "#1982C4")) {
 
 # Cumulative Incidence Curves
 ```{r, fig.height=16, fig.width=9}
-trimester_days <- c(91, 189)
+trimester_days <- c(91, 189)/7
 
 pPregnancy <- survival |>
+  mutate(week = time/7) |>
+  filter(week <= 40) |>
   filter(maternal_age_group != "overall") |>
   filter(target_cohort == "pregnancy_denominator", outcome %in% c(maeClean, aesiClean)) |>
-  mutate(maternal_age_group = factor(maternal_age_group, levels = c("overall", "12 to 17", "18 to 34", "35 to 55"), labels = c("Overall", "12 to 17", "18 to 34", "35 to 55"))) |>
+  mutate(
+    maternal_age_group = factor(maternal_age_group, levels = c("overall", "12 to 17", "18 to 34", "35 to 55"), labels = c("Overall", "12 to 17", "18 to 34", "35 to 55")),
+    outcome = if_else(outcome == "Immune thrombocytopenia", "Immune thrombo-\ncytopenia", outcome),
+    outcome = factor(outcome, c(maeClean, "Pulmonary embolism", "Deep vein thrombosis", "Immune thrombo-\ncytopenia", "Bell’s palsy" ))
+  ) |>
   cif(custom_scales_list) +
   geom_vline(xintercept = trimester_days, linetype = "dashed", color = "grey40", alpha = 0.7) +
-  labs(x = "Pregnancy time (days)", y = "Cumulative Incidence (%)") +
+  labs(x = "Gestational time (weeks)", y = "Cumulative Incidence (%)") +
   ggtitle("A) Events during Pregnancy")
 
-# pAesi <- survival |>
-#   filter(maternal_age_group != "overall") |>
-#   filter(target_cohort == "pregnancy_denominator", !outcome %in% maeClean) |>
-#   mutate(maternal_age_group = factor(maternal_age_group, levels = c("overall", "12 to 17", "18 to 34", "35 to 55"), labels = c("Overall", "12 to 17", "18 to 34", "35 to 55"))) |>
-#   cif(custom_scales_list) +
-#   geom_vline(xintercept = trimester_days, linetype = "dashed", color = "grey40", alpha = 0.7) +
-#   labs(x = "Pregnancy time (days)", y = "Cumulative Incidence (%)") +
-#   # theme(legend.position = "bottom") +
-#   ggtitle("B) Venous Thromboembolic Events during Pregnancy")
-
 pPostpartum <- survival |>
+  mutate(week = time/7) |>
   filter(maternal_age_group != "overall") |>
   filter(target_cohort %in% c("postpartum_6_weeks_denominator", "postpartum_12_weeks_denominator")) |>
   mutate(maternal_age_group = factor(maternal_age_group, levels = c("overall", "12 to 17", "18 to 34", "35 to 55"), labels = c("Overall", "12 to 17", "18 to 34", "35 to 55"))) |>
   cif(custom_scales_list) +
-  labs(x = "Postpartum time (days)", y = "Cumulative Incidence (%)") +
-  ggtitle("B) Events during Postpartum")
+  labs(x = "Postpartum time (weeks)", y = "Cumulative Incidence (%)") +
+  ggtitle("B) Events during Postpartum") + 
+scale_x_continuous(breaks = seq.int(0, 12, 3))
+  
 
 pPregnancy / pPostpartum + 
   plot_layout(heights = c(2, 0.2), guides = "collect") & 
   theme(legend.position = "bottom")
 ```
 
-# Cumulative Incidence Table
-```{r}
-outcomesPregnancy <- c(maeClean[maeClean != "Postpartum haemorrhage"], aesiClean)
-survival |>
-  filter(target_cohort != "pregnancy_and_12_weeks_postpartum") |>
-  group_by(cdm_name, outcome, maternal_age_group) |>
-  filter(
-    # time == max(time) | 
-    time %in% seq.int(30, 330, 30)
-  ) |>
-  ungroup() |>
-  filter(!(outcome == "Postpartum haemorrhage" & target_cohort == "pregnancy_denominator")) |>
-  filter(maternal_age_group == "overall") |>
-  select(cdm_name, outcome, maternal_age_group, time, estimate, estimate_95CI_lower, estimate_95CI_upper) |>
-  pivot_longer(
-    cols = c("estimate", "estimate_95CI_lower", "estimate_95CI_upper"),
-    names_to = "estimate_name",
-    values_to = "estimate_value"
-  ) |>
-  mutate(
-    estimate_type = "numeric",
-    time = paste0(time, " days"),
-    # time = case_when(
-    #   time == 90 ~ "Trimester 1",
-    #   time == 180 ~ "Trimester 2",
-    #   outcome == "Postpartum haemorrhage" ~ "Postpartum (12 weeks)",
-    #   .default = "Trimester 3"
-    # ),
-    estimate_value = 100*estimate_value
-  ) |>
-  filter(outcome != "Postpartum haemorrhage") |>
-  visTable(
-    estimateName = c("Cumulative Incidence (95% CI)" = "<estimate> (<estimate_95CI_upper> - <estimate_95CI_lower>)"),
-    hide = c("estimate_type", "maternal_age_group"),
-    groupColumn = "outcome",
-    header = c("estimate_name", "time"),
-    # header = c("estimate_name", "outcome"),
-    .options = list(includeHeaderName = FALSE)
-  )
-```
 
 # Characterisation
 ```{r}
@@ -402,35 +335,23 @@ commonVarNames <- c("Number\npregnancies", "Number\nsubjects", "Maternal age")
 commonVarLevels <- c(NA, NA, NA)
 
 filters <- bind_rows(
-  # Miscarriage ----
-  tibble(
-    group_level = "Miscarriage",
-    variable_name = c(commonVarNames, "Maternal Adverse Events\n(prior pregnancy)"),
-    variable_level = c(commonVarLevels, "Miscarriage")
-  ),
-  # Ectopic pregnancy ----
-  tibble(
-    group_level = "Ectopic pregnancy",
-    variable_name = c(commonVarNames, "Maternal Adverse Events\n(during pregnancy)", "Maternal Adverse Events\n(during pregnancy)"),
-    variable_level = c(commonVarLevels, "Miscarriage", "Stillbirth")
-  ),
   # Stillbirth ----
   tibble(
     group_level = "Stillbirth",
-    variable_name = c(commonVarNames, "Maternal Adverse Events\n(during pregnancy)", "Maternal Adverse Events\n(prior pregnancy)", "Maternal Adverse Events\n(prior pregnancy)"),
-    variable_level = c(commonVarLevels, "Preterm delivery", "Miscarriage", "Stillbirth")
+    variable_name = c(commonVarNames, "Maternal Adverse Events\n(during pregnancy)", "Maternal Adverse Events\n(during pregnancy)", "Maternal Adverse Events\n(during pregnancy)", "Maternal Adverse Events\n(during pregnancy)"),
+    variable_level = c(commonVarLevels, "Gestational diabetes mellitus", "Pre-eclampsia", "Preterm delivery", "Antepartum haemorrhage")
   ), 
   # Gestational diabetes mellitus ----
   tibble(
     group_level = "Gestational diabetes mellitus",
-    variable_name = c(commonVarNames, "Maternal Adverse Events\n(prior pregnancy)"),
-    variable_level = c(commonVarLevels, "Gestational diabetes mellitus")
+    variable_name = c(commonVarNames, "Maternal Adverse Events\n(during pregnancy)", "Maternal Adverse Events\n(during pregnancy)", "Maternal Adverse Events\n(during pregnancy)"),
+    variable_level = c(commonVarLevels, "Pre-eclampsia", "Preterm delivery", "Antepartum haemorrhage")
   ),
   # Antepartum haemorrhage ----
   tibble(
     group_level = "Antepartum haemorrhage",
-    variable_name = c(commonVarNames, "Maternal Adverse Events\n(during pregnancy)", "Maternal Adverse Events\n(during pregnancy)"),
-    variable_level = c(commonVarLevels, "Preterm delivery", "Gestational diabetes mellitus")
+    variable_name = c(commonVarNames, "Maternal Adverse Events\n(during pregnancy)", "Maternal Adverse Events\n(during pregnancy)", "Maternal Adverse Events\n(during pregnancy)"),
+    variable_level = c(commonVarLevels, "Preterm delivery", "Pre-eclampsia", "Gestational diabetes mellitus")
   ), 
   # Pre-eclampsia ----
   tibble(
@@ -456,11 +377,29 @@ filters <- bind_rows(
     variable_name = c(commonVarNames, "Maternal Adverse Events\n(during pregnancy)", "Maternal Adverse Events\n(during pregnancy)", "Maternal Adverse Events\n(during pregnancy)"),
     variable_level = c(commonVarLevels, "Stillbirth", "Gestational diabetes mellitus", "Pre-eclampsia")
   ), 
-  # Dysfunctional labour ----
+  # Pulmonary embolism ----
   tibble(
-    group_level = "Dysfunctional labour",
-    variable_name = c(commonVarNames, "Maternal Adverse Events\n(during pregnancy)", "Maternal Adverse Events\n(during pregnancy)", "Maternal Adverse Events\n(during pregnancy)"),
-    variable_level = c(commonVarLevels, "Gestational diabetes mellitus", "Pre-eclampsia", "Preterm delivery")
+    group_level = "Pulmonary embolism",
+    variable_name = c(commonVarNames, "Maternal Adverse Events\n(during pregnancy)", "Maternal Adverse Events\n(during pregnancy)"),
+    variable_level = c(commonVarLevels, "Gestational diabetes mellitus", "Pre-eclampsia")
+  ),
+  # Deep vein thrombosis ----
+  tibble(
+    group_level = "Deep vein thrombosis",
+    variable_name = c(commonVarNames, "Maternal Adverse Events\n(during pregnancy)", "Maternal Adverse Events\n(during pregnancy)"),
+    variable_level = c(commonVarLevels, "Gestational diabetes mellitus", "Pre-eclampsia")
+  ),
+  # Immune thrombocytopenia ----
+  tibble(
+    group_level = "Immune thrombocytopenia",
+    variable_name = c(commonVarNames, "Maternal Adverse Events\n(during pregnancy)", "Maternal Adverse Events\n(during pregnancy)"),
+    variable_level = c(commonVarLevels, "Gestational diabetes mellitus", "Pre-eclampsia")
+  ),
+  # Bell’s palsy ----
+  tibble(
+    group_level = "Bell’s palsy",
+    variable_name = c(commonVarNames, "Maternal Adverse Events\n(during pregnancy)", "Maternal Adverse Events\n(during pregnancy)"),
+    variable_level = c(commonVarLevels, "Gestational diabetes mellitus", "Pre-eclampsia")
   )
 )
 
@@ -493,6 +432,7 @@ cif <- survival |>
 characteristics |>
   filter(strata_name == "overall") |>
   filter(!grepl("matched|sampled", group_level)) |>
+  inner_join(filters) |>
   mutate(
     estimate_name = if_else(variable_name == "Number\nsubjects", "count_subjects", estimate_name),
     variable_name = factor(
@@ -517,8 +457,7 @@ characteristics |>
   ) |>
   filter(!is.na(variable_name)) |>
   filter(estimate_name %in% c("count", "count_subjects", "percentage", "median", "q25", "q75")) |>
-  # inner_join(filters) |>
-  bind(cif) |>
+  # bind(cif) |>
   mutate(cdm_name = factor(cdm_name, dbOrder)) |>
   arrange(cdm_name) |>
   mutate(
@@ -687,11 +626,16 @@ smd <- characteristics |>
     type = if_else(grepl("sampled", cohort_name), "sampled", "matched"),
     cohort_name = gsub("_sampled|_matched", "", cohort_name),
     estimate_value = as.numeric(estimate_value),
-    cohort_name = factor(cohort_name, levels = c(maeClean, aesiClean)),
+    cohort_name = factor(cohort_name, levels = c(maeClean, aesiClean), labels = c(maeClean, "Pulmonary embolism", "Deep vein thrombosis",    "Immune thrombo-\ncytopenia", "Bell’s palsy")),
     variable_name = factor(
       variable_name, 
       levels = c("Comorbidities\n(prior year)", "Comorbidities\n(any-time before)", "Maternal Adverse Events\n(during pregnancy)", "Maternal Adverse Events\n(prior pregnancy)"),
       labels = c("Comorbidities", "Comorbidities", "Maternal Adverse Events\n(during pregnancy)", "Maternal Adverse Events\n(prior pregnancy)")
+    ),
+    cohort_group = case_when(
+      cohort_name == "Stillbirth" ~ "Stillbirth",
+      cohort_name %in% c("Gestational diabetes mellitus", "Antepartum haemorrhage") ~ "Non-hypertensive Pregnancy Complications",
+      cohort_name %in% c("Pre-eclampsia", "Eclampsia", "HELLP syndrome" ) ~ "Hypertensive Disorders of Pregnancy"
     )
   ) |>
   filter(!is.na(cohort_name)) |>
@@ -721,6 +665,9 @@ colors <- c("#4A6FE3", "#4FAE6A", "#E08A3C", "#C94A5A")
 smd |>
   # filter(cohort_name %in% maeClean) |>
   ggplot(aes(x = smd, y = variable_level, colour = cdm_name)) +
+  geom_vline(xintercept = 0, linetype = "dashed", color = "black") + 
+  geom_vline(xintercept = 0.1, linetype = "dashed", color = "gray") + 
+  geom_vline(xintercept = -0.1, linetype = "dashed", color = "gray") + 
   geom_segment(aes(yend = variable_level, xend = 0), color = "#8b0000", size = 0.8) +
   geom_segment(
     aes(
@@ -734,8 +681,7 @@ smd |>
     na.rm = TRUE
   ) +
   coord_cartesian(xlim = c(-0.5, xlim)) +
-  geom_point(size = 2.5, alpha = 0.7) +
-  geom_vline(xintercept = 0, linetype = "dashed", color = "black") + 
+  geom_point(size = 2.5, alpha = 0.8) +
   facet_grid(variable_name ~ cohort_name, 
              scales = "free_y", 
              space = "free", 

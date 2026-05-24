@@ -1804,6 +1804,196 @@ ui <- bslib::page_navbar(
       )
     )
   ),
+  # Kaplan-Meier ----
+  bslib::nav_panel(
+    title = "Kaplan-Meier",
+    icon = shiny::icon("chart-bar"),
+    bslib::layout_sidebar(
+      sidebar = bslib::sidebar(
+        shinyWidgets::pickerInput(
+          inputId = "kaplan_meier_cdm_name",
+          label = "CDM name",
+          choices = choices$kaplan_meier_cdm_name,
+          selected = selected$kaplan_meier_cdm_name,
+          multiple = TRUE,
+          options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
+        ),
+        shinyWidgets::pickerInput(
+          inputId = "kaplan_meier_cohort_name",
+          label = "Cohort name",
+          choices = choices$kaplan_meier_cohort_name,
+          selected = paste0("population_objective_", 1:3),
+          multiple = TRUE,
+          options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
+        ),
+        shinyWidgets::pickerInput(
+          inputId = "kaplan_meier_exposure",
+          label = "Exposure",
+          choices = choices$kaplan_meier_exposure,
+          selected = selected$kaplan_meier_exposure,
+          multiple = TRUE,
+          options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
+        ),
+        shinyWidgets::pickerInput(
+          inputId = "kaplan_meier_vaccine_brand",
+          label = "Vaccine brand",
+          choices = choices$kaplan_meier_vaccine_brand,
+          selected = "overall",
+          multiple = TRUE,
+          options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
+        ),
+        shinyWidgets::pickerInput(
+          inputId = "kaplan_meier_gestational_trimester",
+          label = "Gestational trimester",
+          choices = choices$kaplan_meier_gestational_trimester,
+          selected = "overall",
+          multiple = TRUE,
+          options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
+        ),
+        shinyWidgets::pickerInput(
+          inputId = "kaplan_meier_age_group",
+          label = "Age group",
+          choices = choices$kaplan_meier_maternal_age_group,
+          selected = "overall",
+          multiple = TRUE,
+          options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
+        ),
+        shinyWidgets::pickerInput(
+          inputId = "kaplan_meier_outcome",
+          label = "Outcome name",
+          choices = choices$kaplan_meier_outcome,
+          selected = selected$kaplan_meier_outcome[1],
+          multiple = TRUE,
+          options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
+        ),
+        shinyWidgets::pickerInput(
+          inputId = "kaplan_meier_study_analysis",
+          label = "Analysis",
+          choices = "main",
+          selected = "main",
+          multiple = TRUE,
+          options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
+        ),
+        shinyWidgets::pickerInput(
+          inputId = "kaplan_meier_weighting",
+          label = "Weighting",
+          choices = choices$kaplan_meier_weighting,
+          selected = TRUE,
+          multiple = TRUE,
+          options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
+        ),
+        width = 335,
+        position = "left"
+      ),
+      shiny::actionButton(
+        inputId = "update_kaplan_meier",
+        label = "Update content",
+        width = "200px"
+      ),
+      shiny::div(shiny::textOutput(outputId = "update_message_kaplan_meier"), class = "ov_update_button"),
+      bslib::navset_card_tab(
+        bslib::nav_panel(
+          title = "Table",
+          bslib::card(
+            full_screen = TRUE,
+            bslib::card_header(
+              bslib::popover(
+                shiny::icon("download"),
+                shinyWidgets::pickerInput(
+                  inputId = "kaplan_meier_table_format",
+                  label = "Format",
+                  choices = c("docx", "png", "pdf", "html"),
+                  selected = "docx",
+                  multiple = FALSE,
+                  options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
+                ),
+                shiny::downloadButton(outputId = "kaplan_meier_table_download", label = "Download table")
+              ),
+              class = "text-end"
+            ),
+            bslib::layout_sidebar(
+              sidebar = bslib::sidebar(
+                shinyWidgets::pickerInput(
+                  inputId = "kaplan_meier_table_hide",
+                  label = "Hide",
+                  choices = c("cdm_name", "cohort_name", "exposure", "vaccine_brand", "gestational_trimester", "maternal_age_group", "variable_level", "weighting"),
+                  selected = c("vaccine_brand", "gestational_trimester", "maternal_age_group", "weighting"),
+                  multiple = TRUE,
+                  options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
+                ),
+                position = "right"
+              ),
+              reactable::reactableOutput("kaplan_meier_table") |>
+                shinycssloaders::withSpinner()
+            )
+          )
+        ),
+        bslib::nav_panel(
+          title = "Plot",
+          bslib::card(
+            full_screen = TRUE,
+            bslib::card_header(
+              bslib::popover(
+                shiny::icon("download"),
+                shiny::numericInput(
+                  inputId = "kaplan_meier_plot_width",
+                  label = "Width",
+                  value = 15
+                ),
+                shiny::numericInput(
+                  inputId = "kaplan_meier_plot_height",
+                  label = "Height",
+                  value = 15
+                ),
+                shinyWidgets::pickerInput(
+                  inputId = "kaplan_meier_plot_units",
+                  label = "Units",
+                  choices = c("px", "cm", "inch"),
+                  selected = "cm",
+                  multiple = FALSE,
+                  options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
+                ),
+                shiny::numericInput(
+                  inputId = "kaplan_meier_plot_dpi",
+                  label = "DPI",
+                  value = 300
+                ),
+                shiny::downloadButton(outputId = "kaplan_meier_plot_download", label = "Download plot")
+              ),
+              class = "text-end"
+            ),
+            bslib::layout_sidebar(
+              fill = TRUE,
+              sidebar = bslib::sidebar(
+                shinyWidgets::pickerInput(
+                  inputId = "kaplan_meier_plot_facet",
+                  label = "Facet",
+                  choices = c("cdm_name", "cohort_name", "vaccine_brand", "gestational_trimester", "age_group", "weighting", "outcome_name", "outcome_group", "empirical_calibration"),
+                  selected = c("cdm_name", "cohort_name"),
+                  multiple = TRUE,
+                  options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
+                ),
+                shinyWidgets::pickerInput(
+                  inputId = "kaplan_meier_plot_colour",
+                  label = "Colour",
+                  choices = c("exposure", "cdm_name", "cohort_name", "vaccine_brand", "gestational_trimester", "age_group", "weighting", "outcome_name", "outcome_group", "empirical_calibration"),
+                  selected = "exposure",
+                  multiple = TRUE,
+                  options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
+                ),
+                position = "right"
+              ),
+              div(
+                style = "height: 100%;",
+                shiny::uiOutput("kaplan_meier_plot") |>
+                  shinycssloaders::withSpinner()
+              )
+            )
+          )
+        )
+      )
+    )
+  ),
   bslib::nav_spacer(),
   bslib::nav_item(
     bslib::popover(

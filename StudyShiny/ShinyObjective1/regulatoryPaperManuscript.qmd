@@ -342,7 +342,9 @@ incTable <- bind(
     ) |>
     select(!c("denominator_count", "outcome_count")) |>
     newSummarisedResult(settings = settings(incTable))
-)
+) |>
+  filter(!(estimate_type == "percentage" & estimate_value == "0")) |>
+  mutate(estimate_value = if_else(estimate_name == "outcome_count" & estimate_value == "-", "9999", estimate_value))
 
 # display MAE
 incTable |>
@@ -360,7 +362,7 @@ incTable |>
   visOmopTable(
     estimateName = c(
       "Pregnancies" = "<denominator_count>",
-      "PYs" = "<person_years>",
+      "PYs" = "<person_days_count>",
       "Outcomes, N\n(Cumulative\nIncidence, %)" = "<outcome_count> (<outcome_percentage>%)",
       "IR per\n100,000 PYs\n(95% CI)" = "<incidence_100000_pys> (<incidence_100000_pys_95CI_lower> - <incidence_100000_pys_95CI_upper>)"
     ),
@@ -374,7 +376,7 @@ incTable |>
     ),
     hide = c("gestational_trimester", "maternal_age_group", "pregnancy_start_period", "socioeconomic_status", "ethnicity", "birth_continent", "nationallity", "variable_level", "variable_name"),
     columnOrder = c("outcome_group", "outcome_cohort_name", "cdm_name"),
-    .options = list(decimals = c(integer = 0, percentage = 3, numeric = 2), keepNotFormatted = FALSE, delim = "8", decimalMark = "·", bigMark = " ")
+    .options = list(decimals = c(integer = 0, percentage = 3, numeric = 0), keepNotFormatted = FALSE, delim = "8", decimalMark = "·", bigMark = " ")
   ) |>
   set_table_properties(layout = "autofit") |>
   font(fontname = "calibri", part = "all") |>
@@ -449,7 +451,7 @@ PY = Person-Years; IR = Incidence Rate; CI = Confidence Interval; NLHR = Norwegi
 Figure 1. Incidence rates per 100,000 person-years for Maternal Adverse Events across data sources for the overall study period, stratified by gestational trimester.
 :::
 
-```{r, fig.height=6, fig.width=12}
+```{r, fig.height=6.5, fig.width=12}
 # prepare results ----
 tidyIncidence <- data$incidence |>
   dplyr::filter(strata_name %in% c("gestational_trimester", "maternal_age_group", "pregnancy_start_period")) |>
@@ -487,8 +489,32 @@ design_mat <- matrix(
 tidyIncidence |> 
   filter(maternal_age_group == "overall", pregnancy_start_period == "overall") |> 
   filter(!grepl("Postpartum", outcome_cohort_name)) |>
+  mutate(
+    across(
+      starts_with("incidence"), 
+      ~ case_when(
+        gestational_trimester == "Trimester\n1" & outcome_cohort_name %in% c("Antepartum haemorrhage", "Preterm delivery", "Dysfunctional labour", "Stillbirth") ~ NA,
+        gestational_trimester == "Trimester\n3" & outcome_cohort_name %in% c("Miscarriage") ~ NA,
+        .default = .x
+      )
+    )
+  ) |>
   pIncidence("gestational_trimester", "free", ribbon = FALSE, errorbar = TRUE) +
-  facet_wrap(~ outcome_cohort_name, scales = "free")
+  facet_wrap(~ outcome_cohort_name, scales = "free") 
+
+  ggsave(
+  filename = "Figure1.svg",
+  device = "svg",
+  path = NULL,
+  scale = 1,
+  width = 12,
+  height = 6.5,
+  units = c("in"),
+  dpi = 360,
+  limitsize = TRUE,
+  bg = NULL,
+  create.dir = FALSE
+)
 ```
 
 :::{custom-style="FooterNuria"}
@@ -502,7 +528,7 @@ Points represent the estimated incidence rate (per 100,000 person-years). Error 
 Figure 2. Incidence rates per 100,000 person-years for Maternal Adverse Events across data sources for the overall study period, stratified by maternal age
 :::
 
-```{r, fig.height=7, fig.width=11}
+```{r, fig.height=7.5, fig.width=12}
 mae_age_limits_y <- c(
   "Eclampsia" = 150,
   "HELLP syndrome" = 300,
@@ -541,6 +567,20 @@ tidyIncidence |>
     linewidth = 0.6, alpha = 0.4,
     na.rm = TRUE
   )
+
+  ggsave(
+  filename = "Figure2.svg",
+  device = "svg",
+  path = NULL,
+  scale = 1,
+  width = 12,
+  height = 7.5,
+  units = c("in"),
+  dpi = 360,
+  limitsize = TRUE,
+  bg = NULL,
+  create.dir = FALSE
+)
 ```
 
 :::{custom-style="FooterNuria"}
@@ -584,7 +624,7 @@ tidyIncidence <- data$incidence |>
   ) |>
   dplyr::filter(!is.na(group_level)) |>
   dplyr::filter(!(cdm_name == "CPRD GOLD" & group_level %in% excludeCPRD)) |>
-   dplyr::filter(!(cdm_name == "SCIFI-PEARL" & group_level %in% excludeSCIFI)) |>
+  dplyr::filter(!(cdm_name == "SCIFI-PEARL" & group_level %in% excludeSCIFI)) |>
   tidy() |>
   select(!c(
     "socioeconomic_status", "ethnicity", "birth_continent", "nationallity", "variable_name", "variable_level", "person_days_count"
@@ -611,15 +651,15 @@ pTrimester <- tidyIncidence |>
   ) |>
   filter(maternal_age_group == "overall", pregnancy_start_period == "overall") |> 
   pIncidence("gestational_trimester", "free_y", ribbon = FALSE, errorbar = TRUE) +
-   ggh4x::facetted_pos_scales(
-     y  = list(
-       outcome_cohort_name == "Deep vein thrombosis" ~ scale_y_continuous(expand = expansion(mult = c(0.05, 0)), limits = c(10,aesi_trimester_limits_y["Deep vein thrombosis"]), oob = scales::rescale_none),
-       outcome_cohort_name == "Pulmonary embolism" ~ scale_y_continuous(expand = expansion(mult = c(0.05, 0)), limits = c(0,aesi_trimester_limits_y["Pulmonary embolism"]), oob = scales::rescale_none),
-       outcome_cohort_name == "Bell’s palsy" ~ scale_y_continuous(expand = expansion(mult = c(0.05, 0)), limits = c(0,aesi_trimester_limits_y["Bell’s palsy"]), oob = scales::rescale_none),
-       outcome_cohort_name == "Immune thrombocytopenia" ~ scale_y_continuous(expand = expansion(mult = c(0.05, 0)), limits = c(0,aesi_trimester_limits_y["Immune thrombocytopenia"]), oob = scales::rescale_none),
-       outcome_cohort_name == "Anaphylaxis" ~ scale_y_continuous(expand = expansion(mult = c(0.05, 0)), limits = c(0,aesi_trimester_limits_y["Anaphylaxis"]), oob = scales::rescale_none)
-     )
-   ) +
+  ggh4x::facetted_pos_scales(
+    y  = list(
+      outcome_cohort_name == "Deep vein thrombosis" ~ scale_y_continuous(expand = expansion(mult = c(0.05, 0)), limits = c(10,aesi_trimester_limits_y["Deep vein thrombosis"]), oob = scales::rescale_none),
+      outcome_cohort_name == "Pulmonary embolism" ~ scale_y_continuous(expand = expansion(mult = c(0.05, 0)), limits = c(0,aesi_trimester_limits_y["Pulmonary embolism"]), oob = scales::rescale_none),
+      outcome_cohort_name == "Bell’s palsy" ~ scale_y_continuous(expand = expansion(mult = c(0.05, 0)), limits = c(0,aesi_trimester_limits_y["Bell’s palsy"]), oob = scales::rescale_none),
+      outcome_cohort_name == "Immune thrombocytopenia" ~ scale_y_continuous(expand = expansion(mult = c(0.05, 0)), limits = c(0,aesi_trimester_limits_y["Immune thrombocytopenia"]), oob = scales::rescale_none),
+      outcome_cohort_name == "Anaphylaxis" ~ scale_y_continuous(expand = expansion(mult = c(0.05, 0)), limits = c(0,aesi_trimester_limits_y["Anaphylaxis"]), oob = scales::rescale_none)
+    )
+  ) +
   ggtitle("A) Incidence Rates by Gestational Trimester") +
   theme(
     plot.title = element_text(hjust = -0.05, face = "bold", size = 15)
@@ -631,12 +671,13 @@ pTrimester <- tidyIncidence |>
     aes(yend = arrow_end),
     arrow = arrow(length = unit(0.2, "cm")),
     linewidth = 0.6, alpha = 0.4,
-    na.rm = TRUE
+    na.rm = TRUE,
+    show.legend = FALSE
   )
 
 pAge <- tidyIncidence |> 
   filter(gestational_trimester == "overall", pregnancy_start_period == "overall") |> 
-    mutate(
+  mutate(
     y_limit = case_when(
       outcome_cohort_name == "Deep vein thrombosis" ~ aesi_age_limits_y["Deep vein thrombosis"],
       outcome_cohort_name == "Pulmonary embolism" ~ aesi_age_limits_y["Pulmonary embolism"],
@@ -650,15 +691,15 @@ pAge <- tidyIncidence |>
   pIncidence("maternal_age_group", "free_y", ribbon = FALSE, errorbar = TRUE) +
   theme(legend.position = "bottom") +
   # scale_y_continuous(expand = expansion(mult = c(0.05, 0)), limits = c(0,150)) +
-     ggh4x::facetted_pos_scales(
-     y  = list(
-       outcome_cohort_name == "Deep vein thrombosis" ~ scale_y_continuous(expand = expansion(mult = c(0.05, 0)), limits = c(0,aesi_age_limits_y["Deep vein thrombosis"]), oob = scales::rescale_none),
-       outcome_cohort_name == "Pulmonary embolism" ~ scale_y_continuous(expand = expansion(mult = c(0.05, 0)), limits = c(0,aesi_age_limits_y["Pulmonary embolism"]), oob = scales::rescale_none),
-       outcome_cohort_name == "Bell’s palsy" ~ scale_y_continuous(expand = expansion(mult = c(0.05, 0)), limits = c(0,aesi_age_limits_y["Bell’s palsy"]), oob = scales::rescale_none),
-       outcome_cohort_name == "Immune thrombocytopenia" ~ scale_y_continuous(expand = expansion(mult = c(0.05, 0)), limits = c(0,aesi_age_limits_y["Immune thrombocytopenia"]), oob = scales::rescale_none),
-       outcome_cohort_name == "Anaphylaxis" ~ scale_y_continuous(expand = expansion(mult = c(0.05, 0)), limits = c(0,aesi_age_limits_y["Anaphylaxis"]), oob = scales::rescale_none)
-     )
-   ) +
+  ggh4x::facetted_pos_scales(
+    y  = list(
+      outcome_cohort_name == "Deep vein thrombosis" ~ scale_y_continuous(expand = expansion(mult = c(0.05, 0)), limits = c(0,aesi_age_limits_y["Deep vein thrombosis"]), oob = scales::rescale_none),
+      outcome_cohort_name == "Pulmonary embolism" ~ scale_y_continuous(expand = expansion(mult = c(0.05, 0)), limits = c(0,aesi_age_limits_y["Pulmonary embolism"]), oob = scales::rescale_none),
+      outcome_cohort_name == "Bell’s palsy" ~ scale_y_continuous(expand = expansion(mult = c(0.05, 0)), limits = c(0,aesi_age_limits_y["Bell’s palsy"]), oob = scales::rescale_none),
+      outcome_cohort_name == "Immune thrombocytopenia" ~ scale_y_continuous(expand = expansion(mult = c(0.05, 0)), limits = c(0,aesi_age_limits_y["Immune thrombocytopenia"]), oob = scales::rescale_none),
+      outcome_cohort_name == "Anaphylaxis" ~ scale_y_continuous(expand = expansion(mult = c(0.05, 0)), limits = c(0,aesi_age_limits_y["Anaphylaxis"]), oob = scales::rescale_none)
+    )
+  ) +
   ggtitle("B) Incidence Rates by Maternal Age") +
   theme(plot.title = element_text(hjust = -0.05, face = "bold", size = 15)) +
   ylab("Incidence\n(per 100,000 person-years)") +
@@ -666,11 +707,26 @@ pAge <- tidyIncidence |>
     aes(yend = arrow_end),
     arrow = arrow(length = unit(0.2, "cm")),
     linewidth = 0.6, alpha = 0.4,
-    na.rm = TRUE
+    na.rm = TRUE,
+    show.legend = FALSE
   )
 
 (pTrimester / pAge) + 
   plot_layout(heights = c(2, 1.93)) 
+
+ggsave(
+  filename = "Figure3.svg",
+  device = "svg",
+  path = NULL,
+  scale = 1,
+  width = 10,
+  height = 6,
+  units = c("in"),
+  dpi = 360,
+  limitsize = TRUE,
+  bg = NULL,
+  create.dir = FALSE
+)
 ```
 
 :::{custom-style="FooterNuria"}
