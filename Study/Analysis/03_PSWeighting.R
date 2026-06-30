@@ -55,7 +55,7 @@ for (nm in cohortNames) {
       if (nrow(lassoData) > 10) {
         # drop any columsn with 1 level
         columns <- sapply(lapply(lassoData, unique), length)
-        columns <- colnames(columns)[columns > 1]
+        columns <- colnames(columns)[columns == 1]
         x <- data.matrix(lassoData |> select(-any_of(c("subject_id", "exposure", "unique_id", columns))))
         y <- lassoData |> pull("exposure")
         lambdas <- 10^seq(2, -3, by = -.1)
