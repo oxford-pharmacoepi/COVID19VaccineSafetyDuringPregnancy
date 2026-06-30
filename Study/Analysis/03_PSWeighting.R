@@ -4,7 +4,7 @@ cohortNames <- settings(cdm$study_population)$cohort_name
 allCovariatesPS <- vector("list", 3)  
 ps <- NULL
 psCovariates <- NULL
-requiredWeightCols <- paste0("weights_", c("_overall", "_pfizer", "_moderna", "_12_to_17", "_18_to_34", "_35_to_55", "_t1", "_t2", "_t3"))
+requiredWeightCols <- paste0("weights", c("_overall", "_pfizer", "_moderna", "_12_to_17", "_18_to_34", "_35_to_55", "_t1", "_t2", "_t3"))
 if (grepl("SCIFI", cdmName(cdm))) {
   cdm$study_population <- cdm$study_population |>
     mutate(
