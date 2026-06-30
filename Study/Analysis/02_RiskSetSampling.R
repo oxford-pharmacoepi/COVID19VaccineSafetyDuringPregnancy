@@ -407,7 +407,7 @@ cdm$study_population <- cdm$study_population |>
       .default = NA_character_
     ),
     cohort_end_date_sensitivity = if_else(cohort_end_date_new_sensitivity > cohort_end_date_sensitivity, cohort_end_date_sensitivity, cohort_end_date_new_sensitivity),
-    exit_reason = case_when(
+    exit_reason_sensitivity = case_when(
       is.na(exposed_censored_sensitivity) & !is.na(comparator_censored_sensitivity) & exposure == "exposed" & cohort_end_date_sensitivity == cohort_end_date_new_sensitivity ~ "counterpart_censoring",
       !is.na(exposed_censored_sensitivity) & is.na(comparator_censored_sensitivity) & exposure == "comparator" & cohort_end_date_sensitivity == cohort_end_date_new_sensitivity ~ "counterpart_censoring",
       exposed_censored_sensitivity > comparator_censored_sensitivity & exposure == "exposed" ~ "counterpart_censoring",
