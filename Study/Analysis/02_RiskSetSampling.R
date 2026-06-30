@@ -394,8 +394,8 @@ cdm$study_population <- cdm$study_population |>
     exit_reason = case_when(
       is.na(exposed_censored) & !is.na(comparator_censored) & exposure == "exposed" & cohort_end_date == cohort_end_date_new ~ "counterpart_censoring",
       !is.na(exposed_censored) & is.na(comparator_censored) & exposure == "comparator" & cohort_end_date == cohort_end_date_new ~ "counterpart_censoring",
-      exposed_censored > comparator_censored & exposure == "exposed" ~ "counterpart_censoring",
-      exposed_censored < comparator_censored & exposure == "comparator" ~ "counterpart_censoring",
+      exposed_censored > comparator_censored & exposure == "exposed" & cohort_end_date == cohort_end_date_new ~ "counterpart_censoring",
+      exposed_censored < comparator_censored & exposure == "comparator" & cohort_end_date == cohort_end_date_new ~ "counterpart_censoring",
       .default = exit_reason
     ),
     cohort_end_date_new_sensitivity = case_when(
@@ -410,15 +410,15 @@ cdm$study_population <- cdm$study_population |>
     exit_reason_sensitivity = case_when(
       is.na(exposed_censored_sensitivity) & !is.na(comparator_censored_sensitivity) & exposure == "exposed" & cohort_end_date_sensitivity == cohort_end_date_new_sensitivity ~ "counterpart_censoring",
       !is.na(exposed_censored_sensitivity) & is.na(comparator_censored_sensitivity) & exposure == "comparator" & cohort_end_date_sensitivity == cohort_end_date_new_sensitivity ~ "counterpart_censoring",
-      exposed_censored_sensitivity > comparator_censored_sensitivity & exposure == "exposed" ~ "counterpart_censoring",
-      exposed_censored_sensitivity < comparator_censored_sensitivity & exposure == "comparator" ~ "counterpart_censoring",
+      exposed_censored_sensitivity > comparator_censored_sensitivity & exposure == "exposed" & cohort_end_date_sensitivity == cohort_end_date_new_sensitivity ~ "counterpart_censoring",
+      exposed_censored_sensitivity < comparator_censored_sensitivity & exposure == "comparator" & cohort_end_date_sensitivity == cohort_end_date_new_sensitivity ~ "counterpart_censoring",
       .default = exit_reason_sensitivity
     ),
     cohort_end_date = as.Date(cohort_end_date),
     cohort_end_date_sensitivity = as.Date(cohort_end_date_sensitivity)
   ) |>
   select(!c("exposed_censored", "comparator_censored", "exposed_censored_sensitivity", "comparator_censored_sensitivity", "cohort_end_date_new", "cohort_end_date_new_sensitivity")) |>
-  compute(name = "study_population", temporary = FALSE) 
+  compute(name = "study_population", temporary = FALSE)
 
 # Strata and covariates ----
 info(logger, "- Study population cohort - set strata and covariates")
