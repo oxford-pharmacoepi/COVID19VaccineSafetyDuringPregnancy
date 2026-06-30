@@ -266,8 +266,7 @@ cdm$study_population_pco <- cdm$study_population_04 |>
     name = "study_population_pco"
   ) %>% 
   mutate(
-    pregnancy_end =  if_else(pregnancy_end_date < cohort_end_date, pregnancy_end_date, cohort_end_date),
-    pregnancy_end_sensitivity =  if_else(pregnancy_end_date < cohort_end_date_sensitivity, pregnancy_end_date, cohort_end_date_sensitivity)
+    pregnancy_end =  if_else(pregnancy_end_date < cohort_end_date, pregnancy_end_date, cohort_end_date)
   ) |>
   compute(name = "study_population_pco", temporary = FALSE)
 
