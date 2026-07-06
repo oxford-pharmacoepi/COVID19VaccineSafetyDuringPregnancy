@@ -39,13 +39,14 @@ cdm$exposed_source <- cdm$source_population |>
   newCohortTable() 
 
 ## Start summary sampling
+
 sampling_summary <- omopgenerics::bind(
   cdm$exposed_source |> 
     summariseResult(group = "cohort_name") |> 
     mutate(
       variable_name = dplyr::case_when(
-        variable_name == "number records" ~ "Number exposed",
-        variable_name == "number subjects" ~ "Number unique exposed",
+        variable_name == "number records" ~ "Number pregnancies exposed",
+        variable_name == "number subjects" ~ "Number subjects exposed",
         .default = NA
       ), 
       variable_level = "Source population"
@@ -55,14 +56,14 @@ sampling_summary <- omopgenerics::bind(
     summariseResult(group = "cohort_name") |> 
     mutate(
       variable_name = dplyr::case_when(
-        variable_name == "number records" ~ "Number comparators",
-        variable_name == "number subjects" ~ "Number unique comparators",
+        variable_name == "number records" ~ "Number pregnancies comparator",
+        variable_name == "number subjects" ~ "Number subjects comparator",
         .default = NA
       ), 
       variable_level = "Source population"
     ) |>
     filter(!is.na(.data$variable_name))
-)
+) 
 
 ## Vaccinated with recommended vaccines ---- 
 cdm$exposed_source <- cdm$exposed_source |>
@@ -75,8 +76,8 @@ sampling_summary <- omopgenerics::bind(
     summariseResult(group = "cohort_name") |> 
     mutate(
       variable_name = dplyr::case_when(
-        variable_name == "number records" ~ "Number exposed",
-        variable_name == "number subjects" ~ "Number unique exposed",
+        variable_name == "number records" ~ "Number pregnancies exposed",
+        variable_name == "number subjects" ~ "Number subjects exposed",
         .default = NA
       ), 
       variable_level = "Vaccinated with recommended vaccines"
@@ -103,8 +104,8 @@ sampling_summary <- omopgenerics::bind(
     summariseResult(group = "cohort_name") |> 
     mutate(
       variable_name = dplyr::case_when(
-        variable_name == "number records" ~ "Number exposed",
-        variable_name == "number subjects" ~ "Number unique exposed",
+        variable_name == "number records" ~ "Number pregnancies exposed",
+        variable_name == "number subjects" ~ "Number subjects exposed",
         .default = NA
       ), 
       variable_level = "Eligible to contirbute at vaccination day"
@@ -211,11 +212,90 @@ sampling_source <- sampling_source |>
 sampling_summary <- samplingSummary(sampling_source, "Comparator eligible to contribute at matched vaccination day", sampling_summary)
 
 ## Sample ----
-sampling_source <- sampling_source |> 
-  slice_sample(
-    n =  1, 
-    by = all_of(c("cohort_definition_id", "cohort_name", "exposed_id", "exposure_date", "exposed_pregnancy_id"))
+# Step 1: collect only the key columns to generate random numbers in R
+keysRand <- sampling_source |>
+  select(
+    cohort_definition_id, cohort_name, 
+    exposed_id, exposure_date, exposed_pregnancy_id, 
+    comparator_pregnancy_id
   ) |>
+  collect() |>
+  mutate(rand = runif(n()))
+
+# Step 2: upload just the keys + rand back to the database as a temp table
+cdm <- insertTable(cdm, "sampling_source_rand", keysRand, overwrite = TRUE, temporary = TRUE)
+rm(keysRand)
+
+# Step 3: join rand onto the full sampling_source in the database
+# Full table never leaves the database
+sampling_source <- sampling_source |>
+  left_join(
+    cdm$sampling_source_rand,
+    by = c(
+      "cohort_definition_id", "cohort_name", 
+      "exposed_id", "exposure_date", "exposed_pregnancy_id", 
+      "comparator_pregnancy_id"
+    )
+  ) |>
+  compute(name = "sampling_source", temporary = FALSE)
+
+# Pass 1: without replacement
+# Each comparator claimed by at most one exposed person per index date
+no_replacement <- sampling_source |>
+  # Pass 1: each comparator claimed by exactly one exposed person total
+  # (no exposure_date — prevents reuse across dates entirely)
+  group_by(cohort_definition_id, cohort_name, comparator_pregnancy_id) |>
+  window_order(rand) |>
+  mutate(comparator_rank = row_number()) |>
+  ungroup() |>
+  filter(comparator_rank == 1) |>
+  select(!comparator_rank) |>
+  compute(name = "no_replacement", temporary = FALSE) |>
+  # Pass 2: each exposed picks one comparator from what remains
+  group_by(cohort_definition_id, cohort_name, exposed_id, exposure_date, exposed_pregnancy_id) |>
+  window_order(rand) |>
+  mutate(exposed_rank = row_number()) |>
+  ungroup() |>
+  filter(exposed_rank == 1) |>
+  select(!exposed_rank) |>
+  compute(name = "no_replacement", temporary = FALSE)
+
+n_matched <- no_replacement |> count() |> pull(n)
+n_exposed <- sampling_source |>
+  distinct(cohort_definition_id, cohort_name, exposed_id, exposure_date, exposed_pregnancy_id) |>
+  count() |> pull(n)
+info(logger, glue("--- Pass 1 (no replacement): {n_matched} / {n_exposed} exposed matched"))
+
+# Pass 2: recover unmatched exposed, preferring least-used comparators
+unmatched_exposed <- sampling_source |>
+  anti_join(
+    no_replacement |>
+      distinct(cohort_definition_id, cohort_name, exposed_id, exposure_date, exposed_pregnancy_id),
+    by = c("cohort_definition_id", "cohort_name", "exposed_id", "exposure_date", "exposed_pregnancy_id")
+  ) |>
+  left_join(
+    no_replacement |>
+      count(cohort_definition_id, cohort_name, comparator_pregnancy_id, name = "n_uses"),
+    by = c("cohort_definition_id", "cohort_name", "comparator_pregnancy_id")
+  ) |>
+  mutate(n_uses = if_else(is.na(n_uses), 0L, as.integer(n_uses))) |>
+  group_by(cohort_definition_id, cohort_name, exposed_id, exposure_date, exposed_pregnancy_id) |>
+  mutate(min_uses = min(n_uses, na.rm = TRUE)) |>
+  filter(n_uses == min_uses) |>
+  window_order(rand) |>
+  mutate(exposed_rank = row_number()) |>
+  ungroup() |>
+  filter(exposed_rank == 1) |>
+  select(!c(exposed_rank, n_uses, min_uses)) |>
+  compute(name = "unmatched_exposed", temporary = FALSE)
+
+n_recovered <- unmatched_exposed |> count() |> pull(n)
+info(logger, glue("--- Pass 2 (with replacement): {n_recovered} / {n_exposed - n_matched} recovered"))
+
+# Combine and clean up
+sampling_source <- no_replacement |>
+  union(unmatched_exposed) |>
+  select(!rand) |>
   compute(name = "sampling_source", temporary = FALSE)
 
 sampling_summary <- samplingSummary(sampling_source, "Sample to 1 comparator", sampling_summary)
@@ -272,7 +352,6 @@ cdm$study_population <- sampling_source |>
 # End date 
 info(logger, "- Study population cohort - set end dates")
 cdm$study_population <- cdm$study_population |>
-  addDeathDate() |>
   addCohortIntersectDate(
     targetCohortTable = "covid_vaccines",
     targetCohortId = getId(cdm$covid_vaccines, "any_covid_vaccine"),
@@ -286,24 +365,22 @@ cdm$study_population <- cdm$study_population |>
     name = "study_population"
   )  |>
   mutate(
-    date_of_death_1 = date_of_death,
     next_covid_vaccine_1 = next_covid_vaccine,
     observation_end_1 = observation_end
   ) |>
   exitAtFirstDateStudy(
-    dateColumns = c("date_of_death", "next_covid_vaccine", "observation_end"),
+    dateColumns = c("next_covid_vaccine", "observation_end"),
     endColumn = "cohort_end_date",
     keepDates = FALSE,
     reason = "exit_reason",
     name = "study_population"
   ) |>
   rename(
-    "date_of_death" = "date_of_death_1",
     "next_covid_vaccine" = "next_covid_vaccine_1",
     "observation_end" = "observation_end_1"
   ) %>%
   exitAtFirstDateStudy(
-    dateColumns = c("date_of_death", "next_covid_vaccine", "covid_infection", "observation_end"),
+    dateColumns = c("next_covid_vaccine", "covid_infection", "observation_end"),
     endColumn = "cohort_end_date_sensitivity",
     keepDates = FALSE,
     reason = "exit_reason_sensitivity",
@@ -311,15 +388,11 @@ cdm$study_population <- cdm$study_population |>
   ) %>% 
   mutate(
     "exit_reason" = case_when(
-      exit_reason == "date_of_death; observation_end" ~ "date_of_death",
-      exit_reason == "observation_end; date_of_death" ~ "date_of_death",
       exit_reason == "next_covid_vaccine; observation_end" ~ "next_covid_vaccine",
       exit_reason == "observation_end; next_covid_vaccine" ~ "next_covid_vaccine",
       .default = exit_reason
     ),
     "exit_reason_sensitivity" = case_when(
-      exit_reason_sensitivity == "date_of_death; observation_end" ~ "date_of_death",
-      exit_reason_sensitivity == "observation_end; date_of_death" ~ "date_of_death",
       exit_reason_sensitivity == "next_covid_vaccine; observation_end" ~ "next_covid_vaccine",
       exit_reason_sensitivity == "observation_end; next_covid_vaccine" ~ "next_covid_vaccine",
       exit_reason_sensitivity == "observation_end; covid_infection" ~ "covid_infection",
@@ -329,12 +402,12 @@ cdm$study_population <- cdm$study_population |>
       .default = exit_reason_sensitivity
     ),
     cohort_end_date = if_else(
-      exit_reason %in% c("date_of_death", "observation_end"), 
+      exit_reason %in% c("observation_end"), 
       cohort_end_date, 
       !!dateadd("cohort_end_date", -1)
     ),
     cohort_end_date_sensitivity = if_else(
-      exit_reason_sensitivity %in% c("date_of_death", "observation_end"), 
+      exit_reason_sensitivity %in% c("observation_end"), 
       cohort_end_date_sensitivity, 
       !!dateadd("cohort_end_date_sensitivity", -1)
     )
@@ -350,22 +423,22 @@ cdm$study_population <- cdm$study_population |>
   group_by(cohort_definition_id, cohort_start_date, exposed_match_id, exposure) |>
   mutate(
     exposed_censored = if_else(
-      exposure == "exposed" & !exit_reason %in% c("date_of_death", "observation_end"), 
+      exposure == "exposed" & !exit_reason %in% c("observation_end"), 
       .data$cohort_end_date, 
       as.Date(NA)
     ),
     comparator_censored = if_else(
-      all(exposure == "comparator" & !exit_reason %in% c("date_of_death", "observation_end")), # all comparator censored to censor an exposed
+      all(exposure == "comparator" & !exit_reason %in% c("observation_end")), # all comparator censored to censor an exposed
       max(cohort_end_date, na.rm = TRUE), 
       as.Date(NA)
     ),
     exposed_censored_sensitivity = if_else(
-      exposure == "exposed" & !exit_reason_sensitivity %in% c("date_of_death", "observation_end"), 
+      exposure == "exposed" & !exit_reason_sensitivity %in% c("observation_end"), 
       .data$cohort_end_date_sensitivity, 
       as.Date(NA)
     ),
     comparator_censored_sensitivity = if_else(
-      all(exposure == "comparator" & !exit_reason_sensitivity %in% c("date_of_death", "observation_end")), # all comparator censored to censor an exposed
+      all(exposure == "comparator" & !exit_reason_sensitivity %in% c("observation_end")), # all comparator censored to censor an exposed
       max(cohort_end_date_sensitivity, na.rm = TRUE), 
       as.Date(NA)
     )

@@ -122,6 +122,7 @@ getPregnantCohort <- function(db, cdm, mother_table_schema, mother_table_name) {
         ),
         .groups = "drop" 
       ) |>
+      mutate(pre_pregnancy_bmi = as.integer(NA)) |>
       compute(name = "mother_table", temporary = FALSE) |>
       recordCohortAttrition(reason = "Add smoking status")
     
@@ -345,37 +346,54 @@ samplingSummary <- function(sampling_source, reason, results, cohortId = 1:3, va
   }
   
   if ("comparator" %in% variable) {
-    comparator <- x |>
-      summariseResult(group = list("cohort_name")) |>
-      mutate(
-        variable_name = dplyr::case_when(
-          variable_name == "number records" ~ "Number comparators",
-          variable_name == "number subjects" ~ "Number unique comparators",
-          .default = NA
-        ),
-        variable_level = reason
-      ) |>
-      filter(!is.na(.data$variable_name))
+    comparator <- bind_rows(
+      x |>
+        summariseResult(group = list("cohort_name")) |>
+        mutate(
+          variable_name = dplyr::case_when(
+            variable_name == "number records" ~ "Number comparator-exposed",
+            variable_name == "number subjects" ~ "Number subjects comparator",
+            .default = NA
+          ),
+          variable_level = reason
+        ) |>
+        filter(!is.na(.data$variable_name)),
+      x |>
+        select(
+          cohort_name, subject_id, cohort_start_date = comparator_pregnancy_start_date, cohort_end_date = comparator_pregnancy_start_date 
+        )  |>
+        distinct() |>
+        summariseResult(group = list("cohort_name")) |>
+        mutate(
+          variable_name = dplyr::if_else(
+            variable_name == "number subjects", "Number pregnancies comparator", NA
+          ),
+          variable_level = reason
+        ) |>
+        filter(!is.na(.data$variable_name))
+    )
   } else {
     comparator <- NULL
   }
   
   if ("exposed" %in% variable) {
-    exposed <- x |>
-      select(
-        cohort_name, subject_id = exposed_id, cohort_start_date = exposure_date, cohort_end_date = exposure_date
-      )  |>
-      distinct() |>
-      summariseResult(group = list("cohort_name")) |>
-      mutate(
-        variable_name = dplyr::case_when(
-          variable_name == "number records" ~ "Number exposed",
-          variable_name == "number subjects" ~ "Number unique exposed",
-          .default = NA
-        ),
-        variable_level = reason
-      ) |>
-      filter(!is.na(.data$variable_name))
+    exposed <- bind_rows(
+      x |>
+        select(
+          cohort_name, subject_id = exposed_id, cohort_start_date = exposure_date, cohort_end_date = exposure_date
+        )  |>
+        distinct() |>
+        summariseResult(group = list("cohort_name")) |>
+        mutate(
+          variable_name = dplyr::case_when(
+            variable_name == "number records" ~ "Number pregnancies exposed",
+            variable_name == "number subjects" ~ "Number subjects exposed",
+            .default = NA
+          ),
+          variable_level = reason
+        ) |>
+        filter(!is.na(.data$variable_name))
+    )
   } else {
     exposed <- NULL
   }
@@ -968,28 +986,28 @@ summariseCohortExit <- function(cdm, strata, weights) {
     strata <- unlist(strata)
     strata <- c(strata[strata != "exposure"], "overall")
     data <- cdm$study_population_weighted |> mutate(overall = "overall")
-      for (strata.k in strata) { # strata name
-        strataLevels <- unique(data |> pull(strata.k))
-        for(strataLevel.k in strataLevels) { # strata level
-          # data
-          data.k <- data |>
-            filter(.data[[strata.k]] == strataLevel.k) |>
-            collect()
-          if (nrow(data.k) > 10) {
-            weightCol <- toSnakeCase(paste0("weights_", strataLevel.k))
-            # characteristics
-            summaryExit.k <- cohortExit(data.k, list("exit_reason", "exposure", c("exposure", "exit_reason")), weightCol)
-            if (strata.k != "overall") {
-              summaryExit.k <- summaryExit.k  |>
-                splitStrata() |>
-                mutate(!!strata.k := strataLevel.k) |>
-                uniteStrata(c("exposure", strata.k)) |>
-                newSummarisedResult(settings(summaryExit.k) |> mutate(strata = paste0("exposure &&& ", strata.k)))
-            }
-            summaryExit <- omopgenerics::bind(summaryExit, summaryExit.k)
+    for (strata.k in strata) { # strata name
+      strataLevels <- unique(data |> pull(strata.k))
+      for(strataLevel.k in strataLevels) { # strata level
+        # data
+        data.k <- data |>
+          filter(.data[[strata.k]] == strataLevel.k) |>
+          collect()
+        if (nrow(data.k) > 10) {
+          weightCol <- toSnakeCase(paste0("weights_", strataLevel.k))
+          # characteristics
+          summaryExit.k <- cohortExit(data.k, list("exit_reason", "exposure", c("exposure", "exit_reason")), weightCol)
+          if (strata.k != "overall") {
+            summaryExit.k <- summaryExit.k  |>
+              splitStrata() |>
+              mutate(!!strata.k := strataLevel.k) |>
+              uniteStrata(c("exposure", strata.k)) |>
+              newSummarisedResult(settings(summaryExit.k) |> mutate(strata = paste0("exposure &&& ", strata.k)))
           }
+          summaryExit <- omopgenerics::bind(summaryExit, summaryExit.k)
         }
       }
+    }
   }
   return(summaryExit |> mutate(cdm_name = cdmName(cdm)))
 }
@@ -1098,119 +1116,97 @@ pivotSurvivalData <- function(data, outcomes) {
   }
 }
 
+fitPoisson <- function(data, w = NULL) {
+  if (nrow(data) == 0 || sum(data$status, na.rm = TRUE) < 5) return(NULL)
+  weights_vec <- if (!is.null(w)) coalesce(data[[w]], 1) else rep(1, nrow(data))
+  tryCatch(
+    glm(
+      status ~ exposure + offset(log(pmax(time, 0.5))),
+      data    = data,
+      family  = poisson(link = "log"),
+      weights = weights_vec
+    ),
+    error = function(e) NULL
+  )
+}
+
 getIRR <- function(x, ci, outcomes, stats = FALSE, weightsCol) {
   
-  if (stats) {
-    summary_tbl <- bind_rows(
-      # weighted summary
-      x |>
-        group_by(outcome_name, exposure) |>
-        summarise(
-          person_days = sum(as.numeric(time) * coalesce(.data[[weightsCol]], 1), na.rm = TRUE),
-          cases = sum(as.numeric(status) * coalesce(.data[[weightsCol]], 1), na.rm = TRUE),
-          person_days_median = as.numeric(Hmisc::wtd.quantile(as.numeric(time), weights = .data[[weightsCol]], probs = 0.5, na.rm = TRUE)),
-          person_days_q25 = as.numeric(Hmisc::wtd.quantile(as.numeric(time), weights = .data[[weightsCol]], probs = 0.25, na.rm = TRUE)),
-          person_days_q75 = as.numeric(Hmisc::wtd.quantile(as.numeric(time), weights = .data[[weightsCol]], probs = 0.75, na.rm = TRUE)),
-          person_days_min = min(as.numeric(time), na.rm = TRUE),
-          person_days_max = max(as.numeric(time), na.rm = TRUE),
-          subject_count = sum(.data[[weightsCol]], na.rm = TRUE),
-          weighting = "TRUE",
-          .groups = "drop"
-        ) , 
-      # unweighted summary
-      x |>
-        group_by(outcome_name, exposure) |>
-        summarise(
-          person_days = sum(as.numeric(time), na.rm = TRUE),
-          cases = sum(as.numeric(status), na.rm = TRUE),
-          person_days_median = as.numeric(quantile(as.numeric(time), probs = 0.5, na.rm = TRUE)),
-          person_days_q25 = as.numeric(quantile(as.numeric(time), probs = 0.25, na.rm = TRUE)),
-          person_days_q75 = as.numeric(quantile(as.numeric(time), probs = 0.75, na.rm = TRUE)),
-          person_days_min = min(as.numeric(time), na.rm = TRUE),
-          person_days_max = max(as.numeric(time), na.rm = TRUE),
-          subject_count = n(),
-          weighting = "FALSE",
-          .groups = "drop"
-        ) |>
-        mutate(subject_count = as.numeric(subject_count))
-    )
-  } else {
-    summary_tbl <- bind_rows(
-      # weighted summary
-      x |>
-        group_by(outcome_name, exposure) |>
-        summarise(
-          person_days = sum(as.numeric(time) * coalesce(.data[[weightsCol]], 1), na.rm = TRUE),
-          cases = sum(as.numeric(status) * coalesce(.data[[weightsCol]], 1), na.rm = TRUE),
-          weighting = "TRUE",
-          .groups = "drop"
-        ) , 
-      # unweighted summary
-      x |>
-        group_by(outcome_name, exposure) |>
-        summarise(
-          person_days = sum(as.numeric(time), na.rm = TRUE),
-          cases = sum(as.numeric(status), na.rm = TRUE),
-          weighting = "FALSE",
-          .groups = "drop"
-        )
-    )
-  }
+  results <- list()
   
-  # add 0.01 if 0 cases - avoid denominator 0
-  summary_tbl <- summary_tbl |>
-    ungroup() |>
-    mutate(
-      person_days_fix = if_else(cases == 0, person_days + 0.01, person_days),
-      cases_fix = if_else(cases == 0, cases + 0.01, cases)
-    )
-  
-  # one row per coeficcient
-  statsVars <- c("person_days_median", "person_days_q25", "person_days_q75", "person_days_min", "person_days_max", "subject_count")
-  wide <- summary_tbl |>
-    pivot_wider(
-      id_cols = c("outcome_name", "weighting"),
-      names_from = "exposure",
-      values_from = c("person_days", "cases", "cases_fix", "person_days_fix", statsVars[stats]),
-      names_sep = "_"
-    )
-  
-  # compute coef and guard against division by zero / NA
-  wide <- wide |>
-    mutate(
-      person_days_fix_exposed = coalesce(person_days_fix_exposed, NA_real_),
-      person_days_fix_comparator = coalesce(person_days_fix_comparator, NA_real_),
-      cases_fix_exposed = coalesce(cases_fix_exposed, NA_real_),
-      cases_fix_comparator = coalesce(cases_fix_comparator, NA_real_),
-      coef = case_when(
-        is.na(cases_fix_exposed) | is.na(cases_fix_comparator) | is.na(person_days_fix_exposed) | is.na(person_days_fix_comparator) ~ NA_real_,
-        person_days_fix_exposed == 0 | person_days_fix_comparator == 0 ~ NA_real_,
-        .default = (cases_fix_exposed / person_days_fix_exposed) / (cases_fix_comparator / person_days_fix_comparator)
-      ),
-      coef = if_else(
-        cases_comparator < 5 | cases_exposed < 5, NA, coef
+  for (outcome in outcomes) {
+    
+    df <- x |> filter(outcome_name == .env$outcome)
+    if (nrow(df) == 0) next
+    
+    exposed_rows    <- df$exposure == "exposed"
+    comparator_rows <- df$exposure == "comparator"
+    
+    # Suppression based on unweighted counts only — disclosure risk is real counts
+    cases_exposed_unw    <- sum(df$status[exposed_rows],    na.rm = TRUE)
+    cases_comparator_unw <- sum(df$status[comparator_rows], na.rm = TRUE)
+    suppress             <- cases_exposed_unw < 5 | cases_comparator_unw < 5
+    
+    for (weighted in c(FALSE, TRUE)) {
+      w     <- if (weighted) weightsCol else NULL
+      w_vec <- if (weighted) coalesce(df[[w]], 1) else rep(1, nrow(df))
+      
+      irr       <- NA_real_
+      lower_ci  <- NA_real_
+      upper_ci  <- NA_real_
+      se        <- NA_real_
+      
+      if (!suppress) {
+        fit <- fitPoisson(df, w)
+        
+        if (!is.null(fit)) {
+          coefs    <- summary(fit)$coefficients
+          irr      <- exp(coefs["exposureexposed", "Estimate"])
+          
+          # ci == NULL: CIs stay NA — bootstrap fills them in processGroupStrata
+          if (!is.null(ci) && ci == "midp") {
+            se       <- coefs["exposureexposed", "Std. Error"]
+            lower_ci <- exp(log(irr) - 1.96 * se)
+            upper_ci <- exp(log(irr) + 1.96 * se)
+          }
+        }
+      }
+      
+      row <- tibble(
+        outcome_name           = outcome,
+        weighting              = as.character(weighted),
+        coef                   = irr,
+        lower_ci               = lower_ci,
+        upper_ci               = upper_ci,
+        se                     = se,
+        cases_exposed          = sum(df$status[exposed_rows]    * w_vec[exposed_rows],    na.rm = TRUE),
+        cases_comparator       = sum(df$status[comparator_rows] * w_vec[comparator_rows], na.rm = TRUE),
+        person_days_exposed    = sum(df$time[exposed_rows]      * w_vec[exposed_rows],    na.rm = TRUE),
+        person_days_comparator = sum(df$time[comparator_rows]   * w_vec[comparator_rows], na.rm = TRUE)
       )
-    )
-  
-  # confidence intervals using mid-p / normal approximation on log(IRR)
-  if (!is.null(ci) && ci == "midp") {
-    wide <- wide |>
-      mutate(
-        se = sqrt(1 / cases_fix_exposed + 1 / cases_fix_comparator),
-        lower_ci = exp(log(coef) - 1.96 * se),
-        upper_ci = exp(log(coef) + 1.96 * se)
-      ) |>
-      select(-"se")
-  } else {
-    # keep lower/upper as NA if not computed here (bootstrap handled elsewhere)
-    wide <- wide |>
-      mutate(lower_ci = NA_real_, upper_ci = NA_real_)
+      
+      if (stats) {
+        row <- row |> mutate(
+          person_days_median_exposed    = as.numeric(Hmisc::wtd.quantile(df$time[exposed_rows],    weights = w_vec[exposed_rows],    probs = 0.5,  na.rm = TRUE)),
+          person_days_q25_exposed       = as.numeric(Hmisc::wtd.quantile(df$time[exposed_rows],    weights = w_vec[exposed_rows],    probs = 0.25, na.rm = TRUE)),
+          person_days_q75_exposed       = as.numeric(Hmisc::wtd.quantile(df$time[exposed_rows],    weights = w_vec[exposed_rows],    probs = 0.75, na.rm = TRUE)),
+          person_days_min_exposed       = min(df$time[exposed_rows],    na.rm = TRUE),
+          person_days_max_exposed       = max(df$time[exposed_rows],    na.rm = TRUE),
+          subject_count_exposed         = sum(w_vec[exposed_rows],       na.rm = TRUE),
+          person_days_median_comparator = as.numeric(Hmisc::wtd.quantile(df$time[comparator_rows], weights = w_vec[comparator_rows], probs = 0.5,  na.rm = TRUE)),
+          person_days_q25_comparator    = as.numeric(Hmisc::wtd.quantile(df$time[comparator_rows], weights = w_vec[comparator_rows], probs = 0.25, na.rm = TRUE)),
+          person_days_q75_comparator    = as.numeric(Hmisc::wtd.quantile(df$time[comparator_rows], weights = w_vec[comparator_rows], probs = 0.75, na.rm = TRUE)),
+          person_days_min_comparator    = min(df$time[comparator_rows],  na.rm = TRUE),
+          person_days_max_comparator    = max(df$time[comparator_rows],  na.rm = TRUE),
+          subject_count_comparator      = sum(w_vec[comparator_rows],    na.rm = TRUE)
+        )
+      }
+      
+      results[[paste0(outcome, "_", weighted)]] <- row
+    }
   }
   
-  wide <- wide |>
-    select(!c("cases_fix_exposed", "cases_fix_comparator", "person_days_fix_exposed", "person_days_fix_comparator"))
-  
-  return(wide)
+  bind_rows(results)
 }
 
 getWeights <- function(x, coefs) {
@@ -1245,17 +1241,18 @@ processGroupStrata <- function(data, groupLevel, strataLevel, ci, outcomes, weig
   if (pull(tally(data)) <= 10) {
     return(tibble(
       variable_level = character(),
-      estimate_type = character(),
-      estimate_name = character(),
+      estimate_type  = character(),
+      estimate_name  = character(),
       estimate_value = character(),
-      variable_name = character(),
-      outcome_name = character(),
-      weighting = character()
+      variable_name  = character(),
+      outcome_name   = character(),
+      weighting      = character()
     ))
   }
   
   set.seed(123)
   
+  # exposed_match_id added — needed for cluster-robust SE and bootstrap
   data <- data |>
     select(all_of(c(
       "subject_id", "start_date", "exposed_match_id", "exposure", weights,
@@ -1264,21 +1261,26 @@ processGroupStrata <- function(data, groupLevel, strataLevel, ci, outcomes, weig
   data <- data |> pivotSurvivalData(outcomes)
   
   if (ci == "bootstrap") {
-    # bootstrap
     coefBootstrap <- tibble()
-    nboot <- 200
-    n <- as.integer(pull(tally(data)))
+    nboot    <- 300
+    # Resample matched pairs, not individual rows
+    clusters <- unique(data$exposed_match_id)
     
     for (ii in seq_len(nboot)) {
-      data.ii <- data |> slice_sample(n = n, replace = TRUE)
-      irr_tbl <- getIRR(data.ii, ci = NULL, outcomes = outcomes, weightsCol = weights) |> mutate(bootstrap = ii)
+      boot_clusters <- sample(clusters, length(clusters), replace = TRUE)
+      data.ii <- bind_rows(lapply(
+        boot_clusters, \(cl) data[data$exposed_match_id == cl, ]
+      ))
+      irr_tbl <- getIRR(
+        data.ii, ci = NULL, outcomes = outcomes, weightsCol = weights
+      ) |> mutate(bootstrap = ii)
       coefBootstrap <- bind_rows(coefBootstrap, irr_tbl)
     }
     
-    # Main estimate
-    main_est <- getIRR(data, ci = NULL, outcomes = outcomes, stats = TRUE, weightsCol = weights)
+    # Main estimate (stats = TRUE for full output columns)
+    main_est <- getIRR(data, ci = "midp", outcomes = outcomes, stats = TRUE, weightsCol = weights)
     
-    # CI
+    # Attach bootstrap CIs
     results <- main_est |>
       select(!c("lower_ci", "upper_ci")) |>
       left_join(
@@ -1287,8 +1289,8 @@ processGroupStrata <- function(data, groupLevel, strataLevel, ci, outcomes, weig
           summarise(
             lower_ci = quantile(coef, 0.025, na.rm = TRUE),
             upper_ci = quantile(coef, 0.975, na.rm = TRUE),
-            .groups = "drop"
-          ), 
+            .groups  = "drop"
+          ),
         by = c("outcome_name", "weighting")
       )
     
@@ -1301,43 +1303,43 @@ processGroupStrata <- function(data, groupLevel, strataLevel, ci, outcomes, weig
     stop("Unsupported ci method: ", ci)
   }
   
-  # tidy the risk estimates
-  results <- results |>
+  # Tidy into long summarised-result format — column list unchanged from original
+  results |>
     pivot_longer(
       cols = c(
-        'person_days_comparator', 'person_days_exposed', 
-        'cases_comparator', 'cases_exposed', 'person_days_median_comparator', 
-        'person_days_median_exposed', 'person_days_q25_comparator', 
-        'person_days_q25_exposed', 'person_days_q75_comparator', 'person_days_q75_exposed',
-        'person_days_min_comparator', 'person_days_min_exposed', 'person_days_max_comparator', 
-        'person_days_max_exposed', 'subject_count_comparator', 'subject_count_exposed', 
-        'coef', 'lower_ci', 'upper_ci'
+        "person_days_comparator", "person_days_exposed",
+        "cases_comparator", "cases_exposed",
+        "person_days_median_comparator", "person_days_median_exposed",
+        "person_days_q25_comparator",   "person_days_q25_exposed",
+        "person_days_q75_comparator",   "person_days_q75_exposed",
+        "person_days_min_comparator",   "person_days_min_exposed",
+        "person_days_max_comparator",   "person_days_max_exposed",
+        "subject_count_comparator",     "subject_count_exposed",
+        "coef", "lower_ci", "upper_ci", "se"
       ),
-      names_to = "estimate_name",
+      names_to  = "estimate_name",
       values_to = "estimate_value"
     ) |>
     mutate(
       variable_level = case_when(
-        grepl("exposed", estimate_name) ~ "exposed",
+        grepl("exposed",    estimate_name) ~ "exposed",
         grepl("comparator", estimate_name) ~ "comparator",
         .default = NA
       ),
       estimate_name = case_when(
-        grepl("cases", estimate_name) ~ "outcome_count",
-        grepl("subject_count", estimate_name)  ~ "record_count",
+        grepl("cases",        estimate_name) ~ "outcome_count",
+        grepl("subject_count", estimate_name) ~ "record_count",
         .default = gsub("_exposed|_comparator", "", estimate_name)
       ),
       variable_name = case_when(
-        estimate_name %in% c('coef', 'lower_ci', 'upper_ci') ~ "Relative Risk",
-        grepl("person_days", estimate_name) ~ "Person-Days",
-        estimate_name == "outcome_count" ~ "Number events",
-        estimate_name == "record_count" ~ "Number pregnancies"
+        estimate_name %in% c("coef", "lower_ci", "upper_ci", "se") ~ "Relative Risk",
+        grepl("person_days", estimate_name)                   ~ "Person-Days",
+        estimate_name == "outcome_count"                      ~ "Number events",
+        estimate_name == "record_count"                       ~ "Number pregnancies"
       ),
       estimate_value = as.character(estimate_value),
-      estimate_name = gsub("person_days_", "", estimate_name)
-    ) 
-  
-  return(results)
+      estimate_name  = gsub("person_days_", "", estimate_name)
+    )
 }
 
 getRiskEstimate <- function(data, group, strata, outcomes, weights = NULL, ci = "midp") {
@@ -1448,57 +1450,6 @@ estimateSurvivalRisk <- function(cohort, outcomes, outcomeGroup, end, strata, gr
   return(results)
 }
 
-suppressRiskEstimates <- function(result) {
-  set <- settings(result)
-  
-  resultSup <- result |>
-    filterSettings(weighting == "FALSE") |>
-    group_by(result_id, cdm_name, group_name, group_level, strata_name, strata_level, additional_name, additional_level) |>
-    mutate(
-      sup_group = if_else(any(variable_name == "Number pregnancies" & as.numeric(estimate_value) > 0 & as.numeric(estimate_value) < 5), TRUE, FALSE), # will save number of records later if >5
-      sup_subgroup = if_else(any(variable_name == "Number events" & as.numeric(estimate_value) > 0 & as.numeric(estimate_value) < 5), TRUE, FALSE), # will save number of records later if >5
-      sup_row = if_else(grepl("count", estimate_name) & as.numeric(estimate_value) > 0 & as.numeric(estimate_value) < 5, TRUE, FALSE),
-      sup_estimate = if_else(any(sum(variable_name == "Number events" & estimate_value == "0") == 2), TRUE, FALSE)
-    ) |>
-    ungroup() |>
-    mutate(
-      estimate_value = case_when(
-        !grepl("count", estimate_name) & sup_group ~ "-",
-        grepl("count", estimate_name) & sup_row ~ "-",
-        .data$variable_name == "Relative Risk" & sup_estimate ~ NA_character_,
-        .data$variable_name == "Relative Risk" & sup_subgroup ~ NA_character_,
-        .default = estimate_value
-      )
-    )
-    
-  result <- bind(
-    result |>
-      filterSettings(weighting == "TRUE") |>
-      inner_join(
-        resultSup |> select(!c("result_id", "estimate_value"))
-      ) |>
-      mutate(
-        estimate_value = case_when(
-          !grepl("count", estimate_name) & sup_group ~ "-",
-          grepl("count", estimate_name) & sup_row ~ "-",
-          .data$variable_name == "Relative Risk" & sup_estimate ~ NA_character_,
-          .data$variable_name == "Relative Risk" & sup_subgroup ~ NA_character_,
-          .default = estimate_value
-        )
-      ) |>
-      select(!c("sup_group", "sup_row", "sup_estimate", "sup_subgroup")),
-    resultSup |>
-      select(!c("sup_group", "sup_row", "sup_estimate", "sup_subgroup")) |>
-      newSummarisedResult(settings = set |> filter(weighting == "FALSE"))
-  )
-
-    
-  result |>
-    newSummarisedResult(
-      settings = set |> mutate(min_cell_count = "5")
-    )
-}
-
 summaryCohort <- function(cohort) {
   bind(summariseCohortCount(cohort), summariseCohortAttrition(cohort))
 }
@@ -1568,25 +1519,25 @@ summariseTimeDistribution <- function(cdm, strata, weights = FALSE) {
         right = FALSE
       )
     )
-    for (strata.k in strataNew) { # strata name
-      strataLevels <- unique(tab[,strata.k]) |> pull()
-      for(strataLevel.k in strataLevels) { # strata level
-        # data
-        data.k <- tab |>
-          filter(.data[[strata.k]] == strataLevel.k)
-        if (nrow(data.k) > 10) {
-          # weights
-          if (weights) {
-            weightCol <- toSnakeCase(paste0("weights_", strataLevel.k))
-          }
-          # time distribution
-          timeDistribution <- dplyr::bind_rows(
-            timeDistribution,
-            summariseGestationalWeek(data.k, strata.k, weightCol),
-            summariseCalendarWeek(data.k, strata.k, weightCol)
-          )
+  for (strata.k in strataNew) { # strata name
+    strataLevels <- unique(tab[,strata.k]) |> pull()
+    for(strataLevel.k in strataLevels) { # strata level
+      # data
+      data.k <- tab |>
+        filter(.data[[strata.k]] == strataLevel.k)
+      if (nrow(data.k) > 10) {
+        # weights
+        if (weights) {
+          weightCol <- toSnakeCase(paste0("weights_", strataLevel.k))
         }
+        # time distribution
+        timeDistribution <- dplyr::bind_rows(
+          timeDistribution,
+          summariseGestationalWeek(data.k, strata.k, weightCol),
+          summariseCalendarWeek(data.k, strata.k, weightCol)
+        )
       }
+    }
   }
   
   # summarised result
@@ -1995,15 +1946,20 @@ filterMinCellCount <- function(cohort, minCellCount, outcomes) {
 }
 
 addLowCountOutcomes <- function(x, outcomes) {
+  if (length(outcomes) == 0) return(x)
+  
+  set   <- settings(x)
   shell <- x |>
     omopgenerics::filterAdditional(outcome_name == outcomes[1]) |>
-    splitAdditional() 
-  set <- settings(x)
-  for (out in outcomes[2:length(outcomes)]) {
-    x <- x |> 
-      bind_rows(
-        shell |> mutate(outcome_name = .env$out) |> uniteAdditional(cols = additionalColumns(x))
-      )
+    splitAdditional()
+  
+  if (length(outcomes) > 1) {
+    for (out in outcomes[2:length(outcomes)]) {
+      x <- x |>
+        bind_rows(
+          shell |> mutate(outcome_name = .env$out) |> uniteAdditional(cols = additionalColumns(x))
+        )
+    }
   }
   
   x |> newSummarisedResult(settings = set)
