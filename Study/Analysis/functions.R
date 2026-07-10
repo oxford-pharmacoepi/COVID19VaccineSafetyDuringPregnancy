@@ -549,7 +549,7 @@ getBaselineCharacteristics <- function(cdm, strata, weights) {
         # data
         data.k <- data |>
           filter(.data[[strata.k]] == strataLevel.k) 
-        if (tally(data.k) |> pull() > 10) {
+        if (tally(data.k) |> pull() > 60) {
           strataBaseline <- "exposure"
           if (strata.k != "overall") strataBaseline <- (c("exposure", strata.k))
           weightCol <- toSnakeCase(paste0("weights_", strataLevel.k)) 
