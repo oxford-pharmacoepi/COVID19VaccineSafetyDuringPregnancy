@@ -152,12 +152,12 @@ cdm$mae_outcome <- cdm$study_population_04 |>
     targetCohortTable = "mae",
     targetCohortId    = c(
       "antepartum_haemorrhage", "eclampsia", "hellp", "dysfunctional_labour",
-      "postpartum_endometritis", "maternal_death", "postpartum_haemorrhage"
+      "postpartum_endometritis", "maternal_death", "postpartum_haemorrhage",
+      "stillbirth"
     ),
     window = c(1, Inf), nameStyle = "{cohort_name}", name = "mae_outcome"
   )
 
-## During pregnancy ----
 info(logger, "  * Get IRR for MAE during pregnancy")
 outcomes <- c("antepartum_haemorrhage", "eclampsia", "hellp", "dysfunctional_labour", "stillbirth")
 cdm$mae_pregnancy <- cdm$mae_outcome |>
