@@ -202,16 +202,21 @@ cdm$underweight <- unionCohorts(cdm$underweight, cohortName = "underweight")
 covariatesInf <- c(
   "asthma", "diabetes", "essential_hypertension", "hiv", "uterus_malformations",
   "polycystic_ovary_syndrome", "systemic_lupus_erythematosus", "thyroid_disorder",
-  "epilepsy", "chronic_viral_hepatitis", "inflammatory_bowel_disease", 
-  "venous_thromboembolism", "malignant_neoplastic_disease", "ckd"
+  "epilepsy", "chronic_viral_hepatitis", "inflammatory_bowel_disease", "ckd"
+)
+covariates1 <- c(
+  "malignant_neoplastic_disease"
 )
 covariates5 <- c(
   "alcohol_misuse_dependence", "anxiety", "depression"
 )
 ## All history
-cdm$covariates_inf <- cdm$base |>
-  subsetCohorts(cohortId = covariatesInf, name = "covariates_inf") |>
-  requireIsFirstEntry()
+cdm$covariates_chronic <- cdm$base |>
+  subsetCohorts(cohortId = covariatesInf, name = "covariates_chronic") |>
+  exitAtObservationEnd()
+cdm$covariates_acute <- cdm$base |>
+  subsetCohorts(cohortId = covariates1, name = "covariates_acute") 
+cdm <- bind(cdm$covariates_chronic, cdm$covariates_acute, name = "covariates_inf")
 ## 5 years
 cdm$covariates_5 <-  cdm$base |>
   subsetCohorts(cohortId = covariates5, name = "covariates_5")
@@ -229,7 +234,8 @@ comedications <- c(
   "diabetes_treatments", "opioids", "treatment_acid_related_disorder"
 )
 cdm$comedications <- cdm$base |>
-  subsetCohorts(cohortId = comedications, name = "comedications")
+  subsetCohorts(cohortId = comedications, name = "comedications") |>
+  collapseCohorts(gap = 30)
 
 # AESI ----
 info(logger, "- AESI")
@@ -297,6 +303,7 @@ cdm$venous_thromboembolism_90 <- cdm$base |>
   padCohortEnd(days = 90)
 
 cdm <- bind(cdm$aesi_90, cdm$cnsi_90, cdm$venous_thromboembolism_90, cdm$tts, name = "aesi_90")
+cdm <- bind(cdm$venous_thromboembolism_90, cdm$covariates_inf, name = "covariates_inf")
 
 ## AESI recurrent
 info(logger, "  - Recurrent")
