@@ -220,7 +220,7 @@ cdm <- bind(cdm$covariates_chronic, cdm$covariates_acute, name = "covariates_inf
 ## 5 years
 cdm$covariates_5 <-  cdm$base |>
   subsetCohorts(cohortId = covariates5, name = "covariates_5")
-cdm <- omopgenerics::bind(cdm$obesity, cdm$covariates_5, name = "covariates_5")
+cdm <- omopgenerics::bind(cdm$obesity, cdm$underweight, cdm$covariates_5, name = "covariates_5")
 # other vax
 cdm$other_vaccines <- cdm$base |>
   subsetCohorts(cohortId = c("influenza_vaccine", "tdap_vaccine"), name = "other_vaccines")
