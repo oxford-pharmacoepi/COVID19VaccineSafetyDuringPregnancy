@@ -154,7 +154,13 @@ cdm$bmi_underweight <- measurementCohort(
   cdm = cdm, conceptSet = codelist["bmi_measurement"], name = "bmi_underweight",
   valueAsNumber = list(c(6, 18))
 )
-cdm$bmi_pregnancy_overweight <- cdm$mother_table |>
+# body weight cohort
+cdm$body_weight <- measurementCohort(
+  cdm = cdm, conceptSet = codelist["body_weight"], name = "body_weight",
+  valueAsNumber = list("9529" = c(120, 200), "3195625" = c(265, 440))
+)
+if (grepl("SCIFI|NLHR", cdmName(cdm))) {
+  cdm$bmi_pregnancy_overweight <- cdm$mother_table |>
   mutate(pre_pregnancy_bmi = as.integer(NA)) |>
   filter(pre_pregnancy_bmi >= 30 & pre_pregnancy_bmi <= 100) |>
   select(subject_id, cohort_start_date) |>
@@ -185,17 +191,21 @@ cdm$bmi_pregnancy_underweight <- cdm$mother_table |>
     cohortAttritionRef = NULL,
     cohortCodelistRef = NULL,
   )
-
-# body weight cohort
-cdm$body_weight <- measurementCohort(
-  cdm = cdm, conceptSet = codelist["body_weight"], name = "body_weight",
-  valueAsNumber = list("9529" = c(120, 200), "3195625" = c(265, 440))
-)
+  
 cdm <- omopgenerics::bind(cdm$obesity, cdm$bmi_overweight, cdm$body_weight, cdm$bmi_pregnancy_overweight, name = "obesity")
 cdm$obesity <- unionCohorts(cdm$obesity, cohortName = "obesity")
 
 cdm <- omopgenerics::bind(cdm$bmi_underweight, cdm$bmi_pregnancy_underweight, name = "underweight")
 cdm$underweight <- unionCohorts(cdm$underweight, cohortName = "underweight")
+  
+} else {
+cdm <- omopgenerics::bind(cdm$obesity, cdm$bmi_overweight, cdm$body_weight, name = "obesity")
+cdm$obesity <- unionCohorts(cdm$obesity, cohortName = "obesity")
+
+cdm$underweight <- cdm$bmi_underweight |> 
+  copyCohorts(name = "underweight") |> 
+  renameCohort("underweight")
+}
 
 # Covariates ----
 # covid test, influenza, tdap and smoking apart
