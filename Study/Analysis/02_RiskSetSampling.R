@@ -422,27 +422,35 @@ cdm$study_population <- cdm$study_population |>
 cdm$study_population <- cdm$study_population |>
   group_by(cohort_definition_id, cohort_start_date, exposed_match_id, exposure) |>
   mutate(
+    # Create indicator flags first to avoid nested aggregate IIF parsing bugs in T-SQL
+    is_comparator_uncensored = if_else(exposure == "comparator" & exit_reason == "observation_end", 1L, 0L),
+    is_comparator_uncensored_sens = if_else(exposure == "comparator" & exit_reason_sensitivity == "observation_end", 1L, 0L),
+    
     exposed_censored = if_else(
-      exposure == "exposed" & !exit_reason %in% c("observation_end"), 
+      exposure == "exposed" & exit_reason != "observation_end", 
       .data$cohort_end_date, 
       as.Date(NA)
     ),
-    comparator_censored = if_else(
-      all(exposure == "comparator" & !exit_reason %in% c("observation_end")), # all comparator censored to censor an exposed
-      max(cohort_end_date, na.rm = TRUE), 
-      as.Date(NA)
-    ),
     exposed_censored_sensitivity = if_else(
-      exposure == "exposed" & !exit_reason_sensitivity %in% c("observation_end"), 
+      exposure == "exposed" & exit_reason_sensitivity != "observation_end", 
       .data$cohort_end_date_sensitivity, 
-      as.Date(NA)
-    ),
-    comparator_censored_sensitivity = if_else(
-      all(exposure == "comparator" & !exit_reason_sensitivity %in% c("observation_end")), # all comparator censored to censor an exposed
-      max(cohort_end_date_sensitivity, na.rm = TRUE), 
       as.Date(NA)
     )
   ) |>
+  mutate(
+    # Check if ANY comparator in the match group was uncensored (sum == 0 means ALL were censored)
+    comparator_censored = if_else(
+      exposure == "comparator" & sum(is_comparator_uncensored, na.rm = TRUE) == 0,
+      max(cohort_end_date, na.rm = TRUE),
+      as.Date(NA)
+    ),
+    comparator_censored_sensitivity = if_else(
+      exposure == "comparator" & sum(is_comparator_uncensored_sens, na.rm = TRUE) == 0,
+      max(cohort_end_date_sensitivity, na.rm = TRUE),
+      as.Date(NA)
+    )
+  ) |>
+  select(!c("is_comparator_uncensored", "is_comparator_uncensored_sens")) |>
   ungroup() |>
   compute(name = "study_population", temporary = FALSE) |>
   group_by(cohort_definition_id, cohort_start_date, exposed_match_id) |>
