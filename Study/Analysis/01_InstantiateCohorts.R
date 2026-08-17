@@ -203,8 +203,7 @@ cdm <- omopgenerics::bind(cdm$obesity, cdm$bmi_overweight, cdm$body_weight, name
 cdm$obesity <- unionCohorts(cdm$obesity, cohortName = "obesity")
 
 cdm$underweight <- cdm$bmi_underweight |> 
-  copyCohorts(name = "underweight") |> 
-  renameCohort("underweight")
+  copyCohorts(name = "underweight")
 }
 
 # Covariates ----
