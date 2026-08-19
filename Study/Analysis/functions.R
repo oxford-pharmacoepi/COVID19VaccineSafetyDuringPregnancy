@@ -549,7 +549,7 @@ getBaselineCharacteristics <- function(cdm, strata, weights) {
         # data
         data.k <- data |>
           filter(.data[[strata.k]] == strataLevel.k) 
-        if (tally(data.k) |> pull() > 100) {
+        if (tally(data.k) |> pull() > 300) {
           strataBaseline <- "exposure"
           if (strata.k != "overall") strataBaseline <- (c("exposure", strata.k))
           weightCol <- toSnakeCase(paste0("weights_", strataLevel.k)) 
@@ -993,7 +993,7 @@ summariseCohortExit <- function(cdm, strata, weights) {
         data.k <- data |>
           filter(.data[[strata.k]] == strataLevel.k) |>
           collect()
-        if (nrow(data.k) > 100) {
+        if (nrow(data.k) > 300) {
           weightCol <- toSnakeCase(paste0("weights_", strataLevel.k))
           # characteristics
           summaryExit.k <- cohortExit(data.k, list("exit_reason", "exposure", c("exposure", "exit_reason")), weightCol)
@@ -1525,7 +1525,7 @@ summariseTimeDistribution <- function(cdm, strata, weights = FALSE) {
       # data
       data.k <- tab |>
         filter(.data[[strata.k]] == strataLevel.k)
-      if (nrow(data.k) > 100) {
+      if (nrow(data.k) > 300) {
         # weights
         if (weights) {
           weightCol <- toSnakeCase(paste0("weights_", strataLevel.k))
