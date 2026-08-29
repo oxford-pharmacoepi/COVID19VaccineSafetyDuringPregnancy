@@ -583,7 +583,7 @@ cdm$study_population <- cdm$study_population |>
   addCohortName() 
 
 # Add cohort for miscarriage and preterm birth ----
-if (!grepl("SCIFI-PEARL|CPRD GOLD", cdmName(cdm))) {
+if (!grepl("SCIFI-PEARL|CPRD GOLD|SPEED", cdmName(cdm))) {
   cdm$miscarriage <- cdm$study_population %>% 
     mutate(max_index_date = !!dateadd("pregnancy_start_date", 19*7 + 6)) |>
     filter(cohort_start_date < max_index_date) |>
@@ -601,7 +601,7 @@ cdm$preterm_labour <- cdm$study_population %>%
   recordCohortAttrition(reason = "Study population for preterm labour") |>
   renameCohort(cohortId = 1:2, newCohortName = paste0("population_preterm_labour_objective_", c(1,3)))
 
-if (grepl("SCIFI-PEARL|CPRD GOLD", cdmName(cdm))) {
+if (grepl("SCIFI-PEARL|CPRD GOLD|SPEED", cdmName(cdm))) {
   cdm <- bind(cdm$study_population, cdm$preterm_labour, name = "study_population")
 } else {
   cdm <- bind(cdm$study_population, cdm$miscarriage, cdm$preterm_labour, name = "study_population")
