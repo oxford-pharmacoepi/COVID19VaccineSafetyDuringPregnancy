@@ -159,7 +159,7 @@ cdm$body_weight <- measurementCohort(
   cdm = cdm, conceptSet = codelist["body_weight"], name = "body_weight",
   valueAsNumber = list("9529" = c(120, 200), "3195625" = c(265, 440))
 )
-if (grepl("SCIFI|NLHR", cdmName(cdm))) {
+if (grepl("SCIFI|NLHR|SPEED", cdmName(cdm))) {
   cdm$bmi_pregnancy_overweight <- cdm$mother_table |>
   mutate(pre_pregnancy_bmi = as.integer(NA)) |>
   filter(pre_pregnancy_bmi >= 30 & pre_pregnancy_bmi <= 100) |>
