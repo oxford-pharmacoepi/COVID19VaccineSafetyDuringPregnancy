@@ -5,7 +5,7 @@ allCovariatesPS <- vector("list", 3)
 ps <- NULL
 psCovariates <- NULL
 requiredWeightCols <- paste0("weights", c("_overall", "_pfizer", "_moderna", "_12_to_17", "_18_to_34", "_35_to_55", "_t1", "_t2", "_t3"))
-if (grepl("SCIFI", cdmName(cdm))) {
+if (grepl("SCIFI|SPEED", cdmName(cdm))) {
   cdm$study_population <- cdm$study_population |>
     mutate(
       unique_id = paste0(sql("CAST(CAST(subject_id AS BIGINT) AS VARCHAR(255))"), "_", sql("CAST(CAST(exposed_match_id AS BIGINT) AS VARCHAR(255))"), "_", sql("CAST(CAST(pregnancy_id AS BIGINT) AS VARCHAR(255))"))
@@ -141,7 +141,7 @@ save(allCovariatesPS, file = here::here(output_folder, "lasso.RData"))
 
 
 # Study population weighted
-if (grepl("SCIFI-PEARL|CPRD GOLD", cdmName(cdm))) {
+if (grepl("SCIFI-PEARL|CPRD GOLD|SPEED", cdmName(cdm))) {
   cdm <- bind(
     cdm$population_objective_1, 
     cdm$population_objective_3,
