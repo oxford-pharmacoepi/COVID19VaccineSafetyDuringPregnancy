@@ -680,7 +680,7 @@ getFeaturesTable <- function(cdm, strata, covariatesPS) {
     distinct(cohort_name, feature) |>
     compute()
   
-  if (grepl("SCIFI", cdmName(cdm))) {
+  if (grepl("SCIFI|SPEED", cdmName(cdm))) {
     cdm$features <- features |>
       inner_join(countsFeatures, by = c("cohort_name", "feature")) |>
       select(any_of(c(
@@ -1728,7 +1728,7 @@ addEthnicity <- function(cohort) {
       mutate(nationallity = if_else(is.na(nationallity), "Missing", nationallity)) |>
       compute(name = name, temporary = FALSE)
     
-  } else if (grepl("SCIFI-PEARL", database)) {
+  } else if (grepl("SCIFI-PEARL|SPEED", database)) {
     cohort <- cohort |>
       left_join(
         cdm$observation |>
@@ -1807,7 +1807,7 @@ addSocioeconomicStatus <- function(cohort) {
       mutate(socioeconomic_status = if_else(is.na(socioeconomic_status), "Missing", socioeconomic_status)) |>
       compute(name = name, temporary = FALSE)
     
-  } else if (grepl("SCIFI-PEARL", database)) {
+  } else if (grepl("SCIFI-PEARL|SPEED", database)) {
     values2020 <- cdm$observation |>
       filter(observation_concept_id == 4076114, year(observation_date) == 2020) |>
       pull(value_as_number)
@@ -1873,7 +1873,7 @@ getCovariateList <- function(cdm) {
   if (grepl("NLHR@UiO", cdmName(cdm))) {
     covariatesPS <- c(covariatesPS, "birth_continent")
   }
-  if (grepl("SCIFI-PEARL", cdmName(cdm))) {
+  if (grepl("SCIFI-PEARL|SPEED", cdmName(cdm))) {
     covariatesPS <- c(covariatesPS, "birth_continent", "socioeconomic_status")
   }
   if (grepl("SIDIAP", cdmName(cdm))) {
