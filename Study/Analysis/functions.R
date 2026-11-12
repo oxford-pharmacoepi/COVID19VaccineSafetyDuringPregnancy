@@ -199,7 +199,7 @@ getSourcePopulation <- function(cdm, objective, enrollment, codelist) {
     recordCohortAttrition("Pregnancy end date > {enrollment[1]}") |>
     # pregnancy starts before enrollment ends
     filter(.data$cohort_start_date < !!enrollment[2]) |>
-    compute(name = name, temporary = FALSE) |>
+    compute(name = name, temporary = FALSE, overwrite = TRUE) |>
     recordCohortAttrition("Pregnancy start date < {enrollment[2]}") |>
     trimToDateRange(
       dateRange = c(enrollment[1], NA),
@@ -209,11 +209,11 @@ getSourcePopulation <- function(cdm, objective, enrollment, codelist) {
     mutate(pregnancy_start_week_6 = !!CDMConnector::dateadd("pregnancy_start_date", 6*7)) |>
     requireSex(sex = "Female") %>%
     filter(!!datediff("observation_period_start_date", "pregnancy_start_date") >= 365) |>
-    compute(name = name, temporary = FALSE) |>
+    compute(name = name, temporary = FALSE, overwrite = TRUE) |>
     recordCohortAttrition("Prior observation requirement: 365 days") |>
     addAge(indexDate = "pregnancy_start_date", ageGroup = list(c(12, 17), c(18, 34), c(35, 55))) |>
     filter(age >= 12 & age <= 55) |>
-    compute(name = name, temporary = FALSE) |>
+    compute(name = name, temporary = FALSE, overwrite = TRUE) |>
     recordCohortAttrition("Age requirement: 12 to 55")
   
   # Eligible for exposure
