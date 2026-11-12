@@ -283,6 +283,9 @@ server <- function(input, output, session) {
       omopgenerics::filterGroup(.data$cohort_name %in% cohortName) |>
       omopgenerics::filterStrata(
         .data$maternal_age_group %in% input$summarise_characteristics_maternal_age_group,
+        .data$maternal_age_group_narrow %in% input$summarise_characteristics_maternal_age_group_narrow,
+        .data$pregnancy_outcome_strata %in% input$summarise_characteristics_pregnancy_outcome_strata,
+        .data$previous_pregnancy %in% input$summarise_characteristics_previous_pregnancy,
         .data$pregnancy_start_period %in% input$summarise_characteristics_pregnancy_start_period,
         .data$ethnicity %in% input$summarise_characteristics_ethnicity,
         .data$socioeconomic_status %in% input$summarise_characteristics_socioeconomic_status,
@@ -300,9 +303,9 @@ server <- function(input, output, session) {
       
       "preterm_labour", "dysfunctional_labour", 
       
-      "maternal_death",
+      "postpartum_haemorrhage", "postpartum_endometritis",
       
-      "postpartum_haemorrhage", "postpartum_endometritis"
+      "maternal_death"
     )
     maeClean <- c(
       "Miscarriage", "Ectopic pregnancy", "Stillbirth",
@@ -312,27 +315,36 @@ server <- function(input, output, session) {
       
       "Preterm delivery", "Dysfunctional labour",
       
-      "Maternal death",
+      "Postpartum haemorrhage", "Postpartum endometritis",
       
-      "Postpartum haemorrhage", "Postpartum endometritis"
+      "Maternal death"
     )
     getSummariseCharacteristicsData() |>
       dplyr::filter(
         !variable_name %in% c("Cohort start date", "Cohort end date", "Age", "Sex", "Prior observation", "Future observation", "Days in cohort")
       ) |>
-      dplyr::mutate( 
+      dplyr::mutate(
         variable_name = factor(
           variable_name,
           levels = c(
-            "Number records", 
+            "Number records",
             "Number subjects",
-            "Maternal age", 
+            "Age",
+            "Maternal age",
             "Maternal age group",
+            "Maternal age group narrow",
             "Trimester",
-            "Days in cohort", 
+            "Days in cohort",
+            "Previous pregnancies",
+            "Pregnancy outcome study",
+            "Previous pregnancy parity",
+            "Pregnancy mode delivery",
+            "Pregnancy single",
+            "In vitro fertilisation",
+            "Pregnancy induced hypertension",
             "Pre-Pregnancy Smoke",
             "Covariates in the past year",
-            "History of comorbidities", 
+            "History of comorbidities",
             "Medications in the past 6 months",
             "Maternal Adverse Events during pregnancy",
             "Maternal Adverse Events during previous pregnancy",
@@ -344,12 +356,17 @@ server <- function(input, output, session) {
             "Pregnancy start period"
           ),
           labels = c(
-            "Number\npregnancies", 
+            "Number\npregnancies",
             "Number\nsubjects",
-            "Maternal age", 
+            "Maternal age",
             "Maternal age\ngroup",
             "Trimester",
-            "Pregnancy length\n(days)", 
+            "Pregnancy length\n(days)",
+            "Previous pregnancies",
+            "Pregnancy outcome",
+            "Previous pregnancy parity",
+            "Pregnancy mode delivery",
+            "Pregnancy single",
             "Smoking status",
             "Comorbidities\n(prior year)",
             "Comorbidities\n(any-time before)",
@@ -367,66 +384,74 @@ server <- function(input, output, session) {
         variable_level = factor(
           variable_level,
           levels = c(
-            "12 to 17", "18 to 34", "35 to 55", "-",
-            
-            paste0("Trimester ", 1:3), "Postpartum",
-            
-            "No", "Yes", "No smoker", "Smoker", "Never smoker", "Former smoker", "Current some day smoker", "Missing",          
+            "12 to 17", "18 to 34", "35 to 55", "18 to 29", "30 to 39", "40 to 55", "-",
 
-            "Obesity", "Depression", "Anxiety", "Alcohol misuse dependence",
+            paste0("Trimester ", 1:3), "Postpartum",
+
+            "Livebirth", "Miscarriage", "Stillbirth", "Elective termination", "Foetal loss",
+
+            "No", "Yes", "No smoker", "Smoker", "Never smoker", "Former smoker", "Current some day smoker", "Missing",
+
+            "Obesity", "Depression", "Anxiety", "Alcohol misuse dependence", "Underweight",
 
             "Asthma", "Diabetes", "Thyroid disorder",
             "Essential hypertension",
             "Systemic lupus erythematosus", "Hiv",
             "Uterus malformations", "Polycystic ovary syndrome",
             "Chronic viral hepatitis", "Inflammatory bowel disease",
+            "Malignant neoplastic disease", "Ckd",
+            "Epilepsy", "Venous thromboembolism",
 
             "Antidepressants", "Antiinflammatory antirheumatic", "Nsaids",
             "Opioids", "Treatment acid related disorder", "Antiepileptics",
             "Diabetes treatments", "Antithrombotics", "Immunosupressants",
             "Corticosteroids",
-            
+
             maeCode,
-            
+
             "Autumn", "Spring", "Summer", "Winter",
-            
-            "Q1", "Q2", "Q3", "Q4", "Q5", "U1", "U2", "U3", "U4", "U5", "R", "0n", 
-            
-            "White", "Asian", "Black", 
-            
-            "Asia", "Central/south america", "Europe", "Africa", "North america", "Oceania", "Missing",
-            
+
+            "Q1 (least disadvantaged)", "Q2", "Q3", "Q4", "Q5 (most disadvantaged)", "R",
+
+            "Black", "Asian", "White",
+
+            "Asia", "Central/south america", "Europe", "Africa", "North america", "America", "Oceania", "Missing",
+
             "Pre covid-19", "Covid-19 main outbreak", "Post covid-19 main outbreak"
           ),
           labels = c(
-            "12 to 17", "18 to 34", "35 to 55", "-",
-            
-            paste0("Trimester ", 1:3), "Postpartum",
-            
-            "No", "Yes", "No", "Yes", "Never smoker", "Former smoker", "Current some day smoker", "Missing",   
+            "12 to 17", "18 to 34", "35 to 55", "18 to 29", "30 to 39", "40 to 55", "-",
 
-            "Obesity", "Depression", "Anxiety", "Alcohol misuse\ndependence",
+            paste0("Trimester ", 1:3), "Postpartum",
+
+            "Livebirth", "Miscarriage", "Stillbirth", "Elective termination", "Foetal loss",
+
+            "No", "Yes", "No", "Yes", "Never smoker", "Former smoker", "Current some day smoker", "Missing",
+
+            "Obesity", "Depression", "Anxiety", "Alcohol misuse\ndependence", "Underweight",
 
             "Asthma", "Diabetes", "Thyroid disorder",
             "Essential\nhypertension",
             "SLE", "HIV",
             "Uterus malformations", "PCOS",
             "Chronic viral hepatitis", "Inflammatory bowel disease",
+            "Malignant neoplastic disease", "Chronic kidney disease",
+            "Epilepsy", "Venous thromboembolism",
 
             "Antidepressants", "Antiinflammatory/\nantirheumatic", "NSAIDs",
             "Opioids", "Acid-related disorder\ntreatments", "Antiepileptics",
             "Diabetes treatments", "Antithrombotics", "Immunosupressants",
             "Corticosteroids",
-            
+
             maeClean,
-            
+
             "Winter", "Autumn", "Spring", "Summer",
-            
-            "Q1", "Q2", "Q3", "Q4", "Q5", "U1", "U2", "U3", "U4", "U5", "R", "0n", 
-            
-            "White", "Asian", "Black", 
-            "Asia", "Central/south america", "Europe", "Africa", "North america", "Oceania", "Missing",
-            
+
+            "Q1 (least disadvantaged)", "Q2", "Q3", "Q4", "Q5 (most disadvantaged)", "R",
+
+            "Black", "Asian", "White",
+            "Africa", "Asia", "Europe", "Central/South America", "North America", "America", "Oceania", "Missing",
+
             "Pre COVID-19", "COVID-19 main outbreak", "Post COVID-19 main outbreak"
           )
         )
@@ -500,6 +525,9 @@ server <- function(input, output, session) {
       ) |>
       omopgenerics::filterStrata(
         .data$maternal_age_group %in% input$summarise_large_scale_characteristics_maternal_age_group,
+        .data$maternal_age_group_narrow %in% input$summarise_large_scale_characteristics_maternal_age_group_narrow,
+        .data$pregnancy_outcome_strata %in% input$summarise_large_scale_characteristics_pregnancy_outcome_strata,
+        .data$previous_pregnancy %in% input$summarise_large_scale_characteristics_previous_pregnancy,
         .data$pregnancy_start_period %in% input$summarise_large_scale_characteristics_pregnancy_start_period,
         .data$ethnicity %in% input$summarise_large_scale_characteristics_ethnicity,
         .data$nationallity %in% input$summarise_large_scale_characteristics_nationallity,
@@ -554,6 +582,9 @@ server <- function(input, output, session) {
       ) |>
       omopgenerics::filterStrata(
         .data$maternal_age_group %in% input$summarise_large_scale_characteristics_maternal_age_group,
+        .data$maternal_age_group_narrow %in% input$summarise_large_scale_characteristics_maternal_age_group_narrow,
+        .data$pregnancy_outcome_strata %in% input$summarise_large_scale_characteristics_pregnancy_outcome_strata,
+        .data$previous_pregnancy %in% input$summarise_large_scale_characteristics_previous_pregnancy,
         .data$pregnancy_start_period %in% input$summarise_large_scale_characteristics_pregnancy_start_period,
         .data$ethnicity %in% input$summarise_large_scale_characteristics_ethnicity,
         .data$nationallity %in% input$summarise_large_scale_characteristics_nationallity,
@@ -657,36 +688,54 @@ server <- function(input, output, session) {
         .data$cdm_name %in% input$incidence_cdm_name,
         .data$estimate_name %in% input$incidence_estimate_name
       ) |>
+      omopgenerics::filterAdditional(
+        .data$outcome_group %in% input$incidence_outcome_group
+      ) |>
       omopgenerics::filterGroup(
         .data$outcome_cohort_name %in% input$incidence_outcome_cohort_name
       ) |>
       omopgenerics::filterStrata(
         .data$maternal_age_group %in% input$incidence_maternal_age_group,
+        .data$maternal_age_group_narrow %in% input$incidence_maternal_age_group_narrow,
+        .data$pregnancy_outcome_strata %in% input$incidence_pregnancy_outcome_strata,
         .data$pregnancy_start_period %in% input$incidence_pregnancy_start_period,
+        .data$previous_pregnancy %in% input$incidence_previous_pregnancy,
         .data$ethnicity %in% input$incidence_ethnicity,
         .data$nationallity %in% input$incidence_nationallity,
         .data$birth_continent %in% input$incidence_birth_continent,
         .data$socioeconomic_status %in% input$incidence_socioeconomic_status,
         .data$gestational_trimester %in% input$incidence_gestational_trimester
-      ) |>
-      omopgenerics::filterAdditional(
-        .data$outcome_group %in% input$incidence_outcome_group
       )
   })
-  output$incidence_outcome_cohort_name_picker <- shiny::renderUI({
-    opts <- data[["incidence"]]  |>
+  # output$incidence_outcome_cohort_name_picker <- shiny::renderUI({
+  #   opts <- data[["incidence"]]  |>
+  #     omopgenerics::filterAdditional(
+  #       .data$outcome_group %in% input$incidence_outcome_group
+  #     ) |>
+  #     dplyr::pull(group_level) |>
+  #     unique()
+  #   shinyWidgets::pickerInput(
+  #     inputId = "incidence_outcome_cohort_name",
+  #     label = "Outcome cohort name",
+  #     choices = opts,
+  #     selected = opts,
+  #     multiple = TRUE,
+  #     options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
+  #   )
+  # })
+  shiny::observeEvent(input$incidence_outcome_group, {
+    opts <- data[["incidence"]] |>
       omopgenerics::filterAdditional(
         .data$outcome_group %in% input$incidence_outcome_group
       ) |>
       dplyr::pull(group_level) |>
       unique()
-    shinyWidgets::pickerInput(
+    
+    shinyWidgets::updatePickerInput(
+      session = session,
       inputId = "incidence_outcome_cohort_name",
-      label = "Outcome cohort name",
       choices = opts,
-      selected = opts,
-      multiple = TRUE,
-      options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
+      selected = opts
     )
   })
   getIncidenceTidy <- shiny::reactive({
@@ -707,13 +756,13 @@ server <- function(input, output, session) {
           socioeconomic_status, c("overall", paste0("Q", 1:5), "R", paste0("U", 1:5), "0N", "Missing")
         ),
         ethnicity = factor(
-          ethnicity, levels = c("overall", "White", "Black", "Asian", "Missing")
+          ethnicity, levels = c("overall", "Black", "Asian", "White", "Missing")
         ),
         nationallity = factor(
-          nationallity, levels = c("overall", "Africa", "Asia", "Central/South America", "Europe", "North America", "Oceania", "Missing")
+          nationallity, levels = c("overall", "Africa", "Asia", "Europe", "Central/South America", "North America", "America", "Oceania", "Missing")
         ),
         birth_continent = factor(
-          birth_continent, levels = c("overall", "Africa", "Asia", "Central/South America", "Europe", "North America", "Oceania", "Missing")
+          birth_continent, levels = c("overall", "Africa", "Asia", "Europe", "Central/South America", "North America", "America", "Oceania", "Missing")
         )
       ) |>
       dplyr::filter(!is.na(.data$outcome_group)) |>
@@ -765,18 +814,21 @@ server <- function(input, output, session) {
         groupColumn = input$incidence_table_group_column,
         hide = input$incidence_table_hide,
         columnOrder = c(
-          "cdm_name", "outcome_group", "outcome_cohort_name", "gestational_trimester", "maternal_age_group", "pregnancy_start_period",        
+          "cdm_name", "outcome_group", "outcome_cohort_name", "gestational_trimester", "maternal_age_group", "maternal_age_group_narrow", "pregnancy_outcome_strata", "previous_pregnancy", "pregnancy_start_period",        
           "socioeconomic_status", "ethnicity", "nationallity", "birth_country", "variable_name", "variable_level", "estimate_name"                  
         ),
         factor = list(
           "outcome_group" = c("Adverse Events of Special Interest", "Maternal Adverse Events", "AESI Sensitivity (180 wash-out)"),
           "outcome_cohort_name" = outcomes,
           "maternal_age_group" = c("overall", "12 to 17", "18 to 34", "35 to 55"),
+          "maternal_age_group_narrow" = c("overall", "12 to 17", "18 to 29", "30 to 39", "40 to 55"),
+          # "pregnancy_outcome_strata" = c(),
+          # "previous_pregnancy" = c(),
           "pregnancy_start_period" = c("overall", "Pre COVID-19", "COVID-19 main outbreak", "Post COVID-19 main outbreak"),
           "socioeconomic_status" = c("overall", paste0("Q", 1:5), "R", paste0("U", 1:5), "0N", "Missing"),
-          "ethnicity" = c("overall", "White", "Black", "Asian", "Missing"),
-          "nationallity" = c("overall", "Africa", "Asia", "Central/South America", "Europe", "North America", "Oceania", "Missing"),
-          "birth_continent" = c("overall", "Africa", "Asia", "Central/South America", "Europe", "North America", "Oceania", "Missing"),
+          "ethnicity" = c("overall", "Black", "Asian", "White", "Missing"),
+          "nationallity" = c("overall", "Africa", "Asia", "Europe", "Central/South America", "North America", "America", "Oceania", "Missing"),
+          "birth_continent" = c("overall", "Africa", "Asia", "Europe", "Central/South America", "North America", "America", "Oceania", "Missing"),
           "gestational_trimester" = c("overall", "Trimester 1", "Trimester 2", "Trimester 3", "Postpartum")
         )
       )
@@ -793,7 +845,7 @@ server <- function(input, output, session) {
   getIncidencePlot <- shiny::reactive({
     x <- getIncidenceData() |>
       omopgenerics::tidy()
-    label <- c('cdm_name', 'outcome_cohort_name', 'gestational_trimester', 'maternal_age_group', 'pregnancy_start_period', 'socioeconomic_status', 'ethnicity', 'variable_name', 'variable_level', 'outcome_count', 'person_days_count', 'denominator_count', 'person_years', 'incidence_100000_pys', 'incidence_100000_pys_95CI_lower', 'incidence_100000_pys_95CI_upper')
+    label <- c('cdm_name', 'outcome_cohort_name', 'gestational_trimester', 'maternal_age_group', 'maternal_age_group_narrow', 'pregnancy_outcome_strata', 'previous_pregnancy', 'pregnancy_start_period', 'socioeconomic_status', 'ethnicity', 'variable_name', 'variable_level', 'outcome_count', 'person_days_count', 'denominator_count', 'person_years', 'incidence_100000_pys', 'incidence_100000_pys_95CI_lower', 'incidence_100000_pys_95CI_upper')
     label <- label[label %in% colnames(x)]
     x |>
       dplyr::mutate(
@@ -804,6 +856,9 @@ server <- function(input, output, session) {
         maternal_age_group = factor(
           maternal_age_group, levels = c("overall", "12 to 17", "18 to 34", "35 to 55")
         ),
+        maternal_age_group_narrow = factor(
+          maternal_age_group_narrow, levels = c("overall", "12 to 17", "18 to 29", "30 to 39", "40 to 55")
+        ),
         pregnancy_start_period = factor(
           pregnancy_start_period, levels = c("overall", "Pre COVID-19", "COVID-19 main outbreak", "Post COVID-19 main outbreak")
         ),
@@ -811,13 +866,13 @@ server <- function(input, output, session) {
           socioeconomic_status, levels = c("overall", paste0("Q", 1:5), "R", paste0("U", 1:5), "0N", "Missing")
         ),
         ethnicity = factor(
-          ethnicity, levels = c("overall", "White", "Black", "Asian", "Missing")
+          ethnicity, levels = c("overall", "Black", "Asian", "White", "Missing")
         ),
         nationallity = factor(
-          nationallity, levels = c("overall", "Africa", "Asia", "Central/South America", "Europe", "North America", "Oceania", "Missing")
+          nationallity, levels = c("overall", "Africa", "Asia", "Europe", "Central/South America", "North America", "America", "Oceania", "Missing")
         ),
         birth_continent = factor(
-          birth_continent, levels = c("overall", "Africa", "Asia", "Central/South America", "Europe", "North America", "Oceania", "Missing")
+          birth_continent, levels = c("overall", "Africa", "Asia", "Europe", "Central/South America", "North America", "America", "Oceania", "Missing")
         ),
         gestational_trimester = factor(
           gestational_trimester, levels = c("overall", "Trimester 1", "Trimester 2", "Trimester 3", "Postpartum")
@@ -883,27 +938,28 @@ server <- function(input, output, session) {
       ) |>
       omopgenerics::filterStrata(
         .data$maternal_age_group %in% input$survival_maternal_age_group,
+        .data$maternal_age_group_narrow %in% input$survival_maternal_age_group_narrow,
+        .data$pregnancy_outcome_strata %in% input$survival_pregnancy_outcome_strata,
         .data$pregnancy_start_period %in% input$survival_pregnancy_start_period,
+        .data$previous_pregnancy %in% input$survival_previous_pregnancy,
         .data$ethnicity %in% input$survival_ethnicity,
         .data$nationallity %in% input$survival_nationallity,
         .data$birth_continent %in% input$survival_birth_continent,
         .data$socioeconomic_status %in% input$survival_socioeconomic_status
       )
   })
-  output$survival_outcome_cohort_name_picker <- shiny::renderUI({
-    opts <- data[["survival"]]  |>
+  shiny::observeEvent(input$survival_outcome_group, {
+    opts <- data[["survival"]] |>
       omopgenerics::filterSettings(
         .data$outcome_group %in% input$survival_outcome_group
       ) |>
       dplyr::pull(variable_level) |>
       unique()
-    shinyWidgets::pickerInput(
+    shinyWidgets::updatePickerInput(
+      session = session,
       inputId = "survival_outcome",
-      label = "Outcome cohort name",
       choices = opts,
-      selected = opts,
-      multiple = TRUE,
-      options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
+      selected = opts
     )
   })
   getSurvivalProbabilityTidy <- shiny::reactive({
@@ -998,18 +1054,22 @@ server <- function(input, output, session) {
         settingsColumn = "outcome_group",
         columnOrder = c(
           "cdm_name", "target_cohort", "outcome_group", "variable_name", "variable_level",
-          "maternal_age_group", "pregnancy_start_period", "socioeconomic_status",               
+          "maternal_age_group", "maternal_age_group_narrow", "pregnancy_outcome_strata",
+          "previous_pregnancy", "pregnancy_start_period", "socioeconomic_status",               
           "ethnicity", "nationallity", "birth_continent", "estimate_name"      
         ),
         factor = list(
           "outcome_group" = c("Adverse Events of Special Interest", "Maternal Adverse Events", "AESI Sensitivity (180 wash-out)"),
           "variable_level" = outcomes,
           "maternal_age_group" = c("overall", "12 to 17", "18 to 34", "35 to 55"),
+          "maternal_age_group_narrow" = c("overall", "12 to 17", "18 to 29", "30 to 39", "40 to 55"),
+          # "pregnancy_outcome_strata" = c("overall", ""),
+          # "previous_pregnancy" = c("overall", ),
           "pregnancy_start_period" = c("overall", "Pre COVID-19", "COVID-19 main outbreak", "Post COVID-19 main outbreak"),
           "socioeconomic_status" = c("overall", paste0("Q", 1:5), "R", paste0("U", 1:5), "0N", "Missing"),
-          "ethnicity" = c("overall", "White", "Black", "Asian", "Missing"),
-          "nationallity" = c("overall", "Africa", "Asia", "Central/South America", "Europe", "North America", "Oceania", "Missing"),
-          "birth_continent" = c("overall", "Africa", "Asia", "Central/South America", "Europe", "North America", "Oceania", "Missing")
+          "ethnicity" = c("overall", "Black", "Asian", "White", "Missing"),
+          "nationallity" = c("overall", "Africa", "Asia", "Europe", "Central/South America", "North America", "America", "Oceania", "Missing"),
+          "birth_continent" = c("overall", "Africa", "Asia", "Europe", "Central/South America", "North America", "America", "Oceania", "Missing")
         )
       )
   })

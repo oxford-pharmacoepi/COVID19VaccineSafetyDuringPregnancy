@@ -374,18 +374,18 @@ server <- function(input, output, session) {
             levels = c(
               "Number records", "Number subjects", "Number pregnancies weighted", "Age", "Age group", "Vaccine brand",
               "Gestational trimester", "Days previous dose", "Previous COVID-19 vaccines",
-              "Previous pregnant COVID-19 vaccines", "Previous pregnancies", "Previous observation",
+              "Previous pregnancies", "Previous observation",
               "Other vaccines within 5 days", "Previous COVID-19 infections", "Previous healthcare visits",
-              "Comorbidities in the last year",
-              "History of comorbidities", "Medications in the past year"
+              "Comorbidities in the last year", "History of comorbidities", "Medications in the past year",
+              "Ethnicity"
             ),
             labels = c(
               "Number records", "Number subjects", "Number records (weighted)", "Age", "Age group", "Vaccine brand",
               "Gestational trimester", "Days previous dose", "Previous COVID-19 vaccines",
-              "Previous pregnant COVID-19 vaccines", "Previous pregnancies", "Previous observation",
+              "Previous pregnancies", "Previous observation",
               "Other vaccines within 5 days", "Previous COVID-19 infections", "Previous healthcare visits",
-              "Comorbidities in the past year",
-              "History of comorbidities", "Medications in the past year"
+              "Comorbidities in the past year", "History of comorbidities", "Medications in the past year",
+              "Ethnicity"
             )
           ),
           estimate_name = dplyr::if_else(estimate_name == "sum", "N", .data$estimate_name)
@@ -757,7 +757,7 @@ server <- function(input, output, session) {
   )
   getIncidenceRateRatioTableIRR <- shiny::reactive({
     getIncidenceRateRatioData() |>
-      dplyr::filter(.data$variable_name == "Relative Risk") |>
+      dplyr::filter(.data$variable_name == "Relative Risk", .data$estimate_name != "se") |>
       visOmopResults::visOmopTable(
         estimateName = c("IRR [95% CI]" = "<coef> [<lower_ci> - <upper_ci>]"),
         settingsColumn = c("weighting", "outcome_group"),
@@ -1124,6 +1124,14 @@ server <- function(input, output, session) {
   })
   getSummariseSamplingTable <- shiny::reactive({
     getSummariseSamplingData() |>
+      mutate(
+        variable_name = factor(variable_name, c(c(
+          "Number pregnancies exposed",	"Number subjects exposed",	
+          "Number pregnancies comparator", "Number subjects comparator",
+          "Number comparator-exposed", "exposed:comparator"	
+        )))
+      ) |>
+      arrange(variable_name) |>
       visOmopResults::visOmopTable(
         estimateName = c(
           "N" = "<count>",
@@ -1374,7 +1382,7 @@ server <- function(input, output, session) {
       dplyr::filter(
         .data$cdm_name %in% input$gestational_time_distributions_cdm_name
       ) |>
-      # omopgenerics::filterGroup(.data$cohort_name %in% input$gestational_time_distributions_cohort_name) |>
+      omopgenerics::filterGroup(.data$cohort_name %in% input$gestational_time_distributions_cohort_name) |>
       omopgenerics::filterStrata(
         .data$exposure %in% input$gestational_time_distributions_exposure,
         .data$vaccine_brand %in% input$gestational_time_distributions_vaccine_brand,
@@ -1661,7 +1669,11 @@ server <- function(input, output, session) {
       ) |>
       omopgenerics::tidy() |>
       dplyr::mutate(time = as.numeric(variable_level)) |>
-      dplyr::select(!c("variable_name", "variable_level"))
+      dplyr::select(!c("variable_name", "variable_level")) |>
+      dplyr::mutate(
+        log_time = log(time),                  # Transform X
+        log_log_surv = log(-log(estimate))     # Transform Y
+      )
   })
   getKMTable <- shiny::reactive({
     dropCols <- input$kaplan_meier_table_hide
@@ -1686,9 +1698,9 @@ server <- function(input, output, session) {
   getKMPlot <- shiny::reactive({
     getKMData() |>
       visOmopResults::scatterPlot(
-        x = "time",
-        y = "estimate",
-        line = TRUE,
+        x = "log_time",
+        y = "log_log_surv",
+        line = FALSE,
         point = FALSE,
         ribbon = FALSE,
         facet = input$kaplan_meier_plot_facet,
@@ -1696,8 +1708,12 @@ server <- function(input, output, session) {
         label = character()
       ) +
       visOmopResults::themeVisOmop(fontsizeRef = 11) +
-      ggplot2::ylab("Kaplan-Meier estimator") +
-      ggplot2::geom_ribbon(aes(ymin = estimate_95CI_lower, ymax = estimate_95CI_upper), alpha = 0.3, colour = NA)
+      ggplot2::labs(
+        x = "Log(Time)",
+        y = "log(-log(S(t)))"
+      ) +
+      geom_step(linewidth = 0.8)
+      # ggplot2::geom_ribbon(aes(ymin = estimate_95CI_lower, ymax = estimate_95CI_upper), alpha = 0.3, colour = NA)
   })
   output$kaplan_meier_plot <- shiny::renderUI({
     x <- getKMPlot()

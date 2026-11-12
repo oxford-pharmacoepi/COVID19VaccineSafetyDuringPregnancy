@@ -1,5 +1,5 @@
 ---
-title: "Cumulative incidence and characterisation of adverse events during pregnancy: a multi-country European cohort study"
+title: "Cumulative Incidence and Characterisation of Maternal Adverse Events and Adverse Events of Special Interest during Pregnancy: a Multi-country Cohort Study"
 format:
   docx:
     reference-doc: ref.docx
@@ -225,9 +225,9 @@ survival <-data$survival |>
     ),
     cdm_name = factor(cdm_name, levels = dbOrder),
     time = as.numeric(time),
-    estimate = 1 - estimate,
-    estimate_95CI_lower = 1 - estimate_95CI_lower,
-    estimate_95CI_upper = 1 - estimate_95CI_upper
+    estimate = (1 - estimate)*100,
+    estimate_95CI_lower = (1 - estimate_95CI_lower)*100,
+    estimate_95CI_upper = (1 - estimate_95CI_upper)*100
   ) |>
   dplyr::filter(!is.na(outcome)) 
 
@@ -636,7 +636,8 @@ smd <- characteristics |>
       cohort_name == "Stillbirth" ~ "Stillbirth",
       cohort_name %in% c("Gestational diabetes mellitus", "Antepartum haemorrhage") ~ "Non-hypertensive Pregnancy Complications",
       cohort_name %in% c("Pre-eclampsia", "Eclampsia", "HELLP syndrome" ) ~ "Hypertensive Disorders of Pregnancy"
-    )
+    ),
+    cdm_name = factor(cdm_name, dbOrder)
   ) |>
   filter(!is.na(cohort_name)) |>
   filter(variable_level != "Diabetes") |>
