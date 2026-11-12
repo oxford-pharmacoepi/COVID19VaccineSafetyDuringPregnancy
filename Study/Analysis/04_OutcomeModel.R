@@ -8,7 +8,7 @@ cohort04 <- c(
   "population_preterm_labour_objective_1",
   "population_preterm_labour_objective_3"
 )
-if (grepl("SCIFI-PEARL|CPRD GOLD", cdmName(cdm))) {
+if (grepl("SCIFI-PEARL|CPRD GOLD|SPEED", cdmName(cdm))) {
   cohort04 <- cohort04[!grepl("miscarriage", cohort04)]
 }
 cdm$study_population_04 <- cdm$study_population_weighted |>
@@ -76,7 +76,7 @@ for (end in ends) {
 info(logger, "- Create MAE outcome cohort")
 
 ## Miscarriage: < 20 weeks ----
-if (!grepl("SCIFI-PEARL|CPRD GOLD", cdmName(cdm))) {
+if (!grepl("SCIFI-PEARL|CPRD GOLD|SPEED", cdmName(cdm))) {
   info(logger, "  * Get IRR for miscarriage")
   cdm$mae_miscarriage <- cdm$study_population_04 |>
     dplyr::select(dplyr::all_of(toKeep)) |>

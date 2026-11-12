@@ -549,7 +549,7 @@ getBaselineCharacteristics <- function(cdm, strata, weights) {
         # data
         data.k <- data |>
           filter(.data[[strata.k]] == strataLevel.k) 
-        if (tally(data.k) |> pull() > 60) {
+        if (tally(data.k) |> pull() > 300) {
           strataBaseline <- "exposure"
           if (strata.k != "overall") strataBaseline <- (c("exposure", strata.k))
           weightCol <- toSnakeCase(paste0("weights_", strataLevel.k)) 
@@ -680,7 +680,7 @@ getFeaturesTable <- function(cdm, strata, covariatesPS) {
     distinct(cohort_name, feature) |>
     compute()
   
-  if (grepl("SCIFI", cdmName(cdm))) {
+  if (grepl("SCIFI|SPEED", cdmName(cdm))) {
     cdm$features <- features |>
       inner_join(countsFeatures, by = c("cohort_name", "feature")) |>
       select(any_of(c(
@@ -993,7 +993,7 @@ summariseCohortExit <- function(cdm, strata, weights) {
         data.k <- data |>
           filter(.data[[strata.k]] == strataLevel.k) |>
           collect()
-        if (nrow(data.k) > 10) {
+        if (nrow(data.k) > 300) {
           weightCol <- toSnakeCase(paste0("weights_", strataLevel.k))
           # characteristics
           summaryExit.k <- cohortExit(data.k, list("exit_reason", "exposure", c("exposure", "exit_reason")), weightCol)
@@ -1434,7 +1434,7 @@ processGroupStrata <- function(data, groupLevel, strataLevel, ci, outcomes, weig
 getRiskEstimate <- function(data, group, strata, outcomes, weights = NULL, ci = "midp") {
   
   # proceed only if we have reasonable size
-  if (data |> tally() |> pull() <= 10) {
+  if (data |> tally() |> pull() <= 100) {
     return(tibble(
       variable_level = character(),
       estimate_type = character(),
@@ -1614,7 +1614,7 @@ summariseTimeDistribution <- function(cdm, strata, weights = FALSE) {
       # data
       data.k <- tab |>
         filter(.data[[strata.k]] == strataLevel.k)
-      if (nrow(data.k) > 10) {
+      if (nrow(data.k) > 300) {
         # weights
         if (weights) {
           weightCol <- toSnakeCase(paste0("weights_", strataLevel.k))
@@ -1817,7 +1817,7 @@ addEthnicity <- function(cohort) {
       mutate(nationallity = if_else(is.na(nationallity), "Missing", nationallity)) |>
       compute(name = name, temporary = FALSE)
     
-  } else if (grepl("SCIFI-PEARL", database)) {
+  } else if (grepl("SCIFI-PEARL|SPEED", database)) {
     cohort <- cohort |>
       left_join(
         cdm$observation |>
@@ -1896,7 +1896,7 @@ addSocioeconomicStatus <- function(cohort) {
       mutate(socioeconomic_status = if_else(is.na(socioeconomic_status), "Missing", socioeconomic_status)) |>
       compute(name = name, temporary = FALSE)
     
-  } else if (grepl("SCIFI-PEARL", database)) {
+  } else if (grepl("SCIFI-PEARL|SPEED", database)) {
     values2020 <- cdm$observation |>
       filter(observation_concept_id == 4076114, year(observation_date) == 2020) |>
       pull(value_as_number)
@@ -1962,7 +1962,7 @@ getCovariateList <- function(cdm) {
   if (grepl("NLHR@UiO", cdmName(cdm))) {
     covariatesPS <- c(covariatesPS, "birth_continent")
   }
-  if (grepl("SCIFI-PEARL", cdmName(cdm))) {
+  if (grepl("SCIFI-PEARL|SPEED", cdmName(cdm))) {
     covariatesPS <- c(covariatesPS, "birth_continent", "socioeconomic_status")
   }
   if (grepl("SIDIAP", cdmName(cdm))) {
