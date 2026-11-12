@@ -96,16 +96,7 @@ cdm$source_3 <- getSourcePopulation(cdm, 3, enrollment3)
 cdm <- omopgenerics::bind(cdm$source_1, cdm$source_3, name = "source_population")
 
 # add index vaccine dose date and other important covariates
-cdm$source_population <- cdm$source_population |>
-  mutate(cohort_start_date = as.Date(cohort_start_date)) |>
-  requireSex(sex = "Female") %>%
-  filter(!!datediff("observation_period_start_date", "pregnancy_start_date") >= 365) |>
-  compute(name = "source_population", temporary = FALSE) |>
-  recordCohortAttrition("Prior observation requirement: 365 days") |>
-  addAge(indexDate = "pregnancy_start_date", ageGroup = list(c(12, 17), c(18, 34), c(35, 55))) |>
-  filter(age >= 12 & age <= 55) |>
-  compute(name = "source_population", temporary = FALSE) |>
-  recordCohortAttrition("Age requirement: 12 to 55") %>%
+cdm$source_population <- cdm$source_population %>% 
   mutate(
     pregnancy_start_band = if_else(
       day(pregnancy_start_date) <= 15,

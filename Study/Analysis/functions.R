@@ -204,7 +204,17 @@ getSourcePopulation <- function(cdm, objective, enrollment, codelist) {
     trimToDateRange(
       dateRange = c(enrollment[1], NA),
       name = name
-    )
+    ) |>
+    mutate(cohort_start_date = as.Date(cohort_start_date)) %>% 
+    mutate(pregnancy_start_week_6 = !!CDMConnector::dateadd("pregnancy_start_date", 6*7)) |>
+    requireSex(sex = "Female") %>%
+    filter(!!datediff("observation_period_start_date", "pregnancy_start_date") >= 365) |>
+    compute(name = name, temporary = FALSE) |>
+    recordCohortAttrition("Prior observation requirement: 365 days") |>
+    addAge(indexDate = "pregnancy_start_date", ageGroup = list(c(12, 17), c(18, 34), c(35, 55))) |>
+    filter(age >= 12 & age <= 55) |>
+    compute(name = name, temporary = FALSE) |>
+    recordCohortAttrition("Age requirement: 12 to 55")
   
   # Eligible for exposure
   if (objective == 1) {
@@ -218,7 +228,10 @@ getSourcePopulation <- function(cdm, objective, enrollment, codelist) {
       ) %>%
       filter(vaccine_date > cohort_start_date | is.na(vaccine_date)) |>
       compute(name = name, temporary = FALSE) |>
-      recordCohortAttrition(reason = "Unvaccinated before pregnancy start")
+      recordCohortAttrition(reason = "Unvaccinated before pregnancy start") |>
+      filter(vaccine_date > pregnancy_start_week_6 | is.na(vaccine_date)) |>
+      compute(name = name, temporary = FALSE) |>
+      recordCohortAttrition(reason = "Unvaccinated before gestational week 6")
   }
   
   if (objective == 2) {
@@ -236,8 +249,11 @@ getSourcePopulation <- function(cdm, objective, enrollment, codelist) {
       filter(vaccine_date >= pregnancy_start_date | is.na(vaccine_date)) |>
       compute(name = name, temporary = FALSE) |>
       recordCohortAttrition(reason = "No 2nd dose before pregnancy") %>%
+      filter(vaccine_date >= pregnancy_start_week_6 | is.na(vaccine_date)) |>
+      compute(name = name, temporary = FALSE) |>
+      recordCohortAttrition(reason = "No 2nd dose before gestational week 6") %>%
       mutate(new_cohort_start = !!dateadd("previous_dose", 16)) |>
-      filter(new_cohort_start < .data$cohort_end_date) %>%
+      filter(new_cohort_start < .data$cohort_end_date & pregnancy_start_week_6  < .data$cohort_end_date) %>%
       mutate(
         cohort_start_date = if_else(
           new_cohort_start < cohort_start_date, cohort_start_date, new_cohort_start
@@ -295,11 +311,14 @@ getSourcePopulation <- function(cdm, objective, enrollment, codelist) {
       select(!c("any_covid_vaccine_2", "booster_previous", "new_cohort_start")) |>
       compute(name = name, temporary = FALSE) |>
       recordCohortAttrition(reason = "Eligible for booster during pregnancy") |>
+      filter(vaccine_date >= pregnancy_start_week_6 | is.na(vaccine_date)) |>
+      compute(name = name, temporary = FALSE) |>
+      recordCohortAttrition(reason = "No pregnant vaccination before gestational week 6") |>
       addCohortIntersectCount(
         targetCohortTable = "covid_vaccines",
         targetCohortId = "any_covid_vaccine",
-        indexDate = "cohort_start_date",
-        window = list(c(-Inf, 0)),
+        indexDate = "pregnancy_start_week_6",
+        window = list(c(-Inf, -1)),
         nameStyle = "number_previous_doses",
         name = name
       )
