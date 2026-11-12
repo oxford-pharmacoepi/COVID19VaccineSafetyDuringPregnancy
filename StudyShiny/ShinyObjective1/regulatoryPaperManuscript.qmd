@@ -466,7 +466,7 @@ tidyIncidence <- data$incidence |>
   ) |>
   dplyr::filter(!is.na(group_level)) |>
   dplyr::filter(!(cdm_name == "CPRD GOLD" & group_level %in% excludeCPRD)) |>
-   dplyr::filter(!(cdm_name == "SCIFI-PEARL" & group_level %in% excludeSCIFI)) |>
+  dplyr::filter(!(cdm_name == "SCIFI-PEARL" & group_level %in% excludeSCIFI)) |>
   tidy() |>
   select(!c(
     "socioeconomic_status", "ethnicity", "birth_continent", "nationallity", "variable_name", "variable_level", "person_days_count"
@@ -486,7 +486,7 @@ design_mat <- matrix(
   byrow = TRUE
 )
 
-tidyIncidence |> 
+f1 <- tidyIncidence |> 
   filter(maternal_age_group == "overall", pregnancy_start_period == "overall") |> 
   filter(!grepl("Postpartum", outcome_cohort_name)) |>
   mutate(
@@ -502,7 +502,8 @@ tidyIncidence |>
   pIncidence("gestational_trimester", "free", ribbon = FALSE, errorbar = TRUE) +
   facet_wrap(~ outcome_cohort_name, scales = "free") 
 
-  ggsave(
+ggsave(
+  plot = f1,
   filename = "Figure1.svg",
   device = "svg",
   path = NULL,
@@ -511,6 +512,20 @@ tidyIncidence |>
   height = 6.5,
   units = c("in"),
   dpi = 360,
+  limitsize = TRUE,
+  bg = NULL,
+  create.dir = FALSE
+)
+ggsave(
+  plot = f1,
+  filename = "Figure1.jpeg",
+  device = "jpeg",
+  path = NULL,
+  scale = 1,
+  width = 12,
+  height = 6.5,
+  units = c("in"),
+  dpi = 1000,
   limitsize = TRUE,
   bg = NULL,
   create.dir = FALSE
@@ -537,8 +552,8 @@ mae_age_limits_y <- c(
   "Postpartum haemorrhage" = 20500
 )
 
-tidyIncidence |> 
-   mutate(
+f2 <- tidyIncidence |> 
+  mutate(
     y_limit = case_when(
       outcome_cohort_name == "Eclampsia" ~ mae_age_limits_y["Eclampsia"],
       outcome_cohort_name == "HELLP syndrome" ~ mae_age_limits_y["HELLP syndrome"],
@@ -551,24 +566,25 @@ tidyIncidence |>
   ) |>
   filter(maternal_age_group != "overall", pregnancy_start_period == "overall") |>
   pIncidence("maternal_age_group", "free_y", ribbon = FALSE, errorbar = TRUE) +
-  ggh4x::facet_manual(~ outcome_cohort_name, design = design_mat, scales = "free_y")  +
+  ggh4x::facet_manual(~ outcome_cohort_name, design = design_mat, scales = "free")  +
   ggh4x::facetted_pos_scales(
-     y  = list(
-       outcome_cohort_name == "Eclampsia" ~ scale_y_continuous(expand = expansion(mult = c(0.05, 0)), limits = c(0,mae_age_limits_y["Eclampsia"]), oob = scales::rescale_none),
-       outcome_cohort_name == "HELLP syndrome" ~ scale_y_continuous(expand = expansion(mult = c(0.05, 0)), limits = c(0,mae_age_limits_y["HELLP syndrome"]), oob = scales::rescale_none),
-       outcome_cohort_name == "Maternal death" ~ scale_y_continuous(expand = expansion(mult = c(0.05, 0)), limits = c(0,mae_age_limits_y["Maternal death"]), oob = scales::rescale_none),
-       outcome_cohort_name == "Postpartum endometritis" ~ scale_y_continuous(expand = expansion(mult = c(0.05, 0)), limits = c(0,mae_age_limits_y["Postpartum endometritis"]), oob = scales::rescale_none),
-       outcome_cohort_name == "Postpartum haemorrhage" ~ scale_y_continuous(expand = expansion(mult = c(0.05, 0)), limits = c(4000,mae_age_limits_y["Postpartum haemorrhage"]), oob = scales::rescale_none)
-     )
-   ) +
-   geom_segment(
+    y  = list(
+      outcome_cohort_name == "Eclampsia" ~ scale_y_continuous(expand = expansion(mult = c(0.05, 0)), limits = c(0,mae_age_limits_y["Eclampsia"]), oob = scales::rescale_none),
+      outcome_cohort_name == "HELLP syndrome" ~ scale_y_continuous(expand = expansion(mult = c(0.05, 0)), limits = c(0,mae_age_limits_y["HELLP syndrome"]), oob = scales::rescale_none),
+      outcome_cohort_name == "Maternal death" ~ scale_y_continuous(expand = expansion(mult = c(0.05, 0)), limits = c(0,mae_age_limits_y["Maternal death"]), oob = scales::rescale_none),
+      outcome_cohort_name == "Postpartum endometritis" ~ scale_y_continuous(expand = expansion(mult = c(0.05, 0)), limits = c(0,mae_age_limits_y["Postpartum endometritis"]), oob = scales::rescale_none),
+      outcome_cohort_name == "Postpartum haemorrhage" ~ scale_y_continuous(expand = expansion(mult = c(0.05, 0)), limits = c(4000,mae_age_limits_y["Postpartum haemorrhage"]), oob = scales::rescale_none)
+    )
+  ) +
+  geom_segment(
     aes(yend = arrow_end),
     arrow = arrow(length = unit(0.2, "cm")),
     linewidth = 0.6, alpha = 0.4,
     na.rm = TRUE
   )
 
-  ggsave(
+ggsave(
+  plot = f2,
   filename = "Figure2.svg",
   device = "svg",
   path = NULL,
@@ -577,6 +593,20 @@ tidyIncidence |>
   height = 7.5,
   units = c("in"),
   dpi = 360,
+  limitsize = TRUE,
+  bg = NULL,
+  create.dir = FALSE
+)
+ggsave(
+  plot = f2,
+  filename = "Figure2.jpeg",
+  device = "jpeg",
+  path = NULL,
+  scale = 1,
+  width = 12,
+  height = 7.5,
+  units = c("in"),
+  dpi = 1000,
   limitsize = TRUE,
   bg = NULL,
   create.dir = FALSE
@@ -660,13 +690,13 @@ pTrimester <- tidyIncidence |>
       outcome_cohort_name == "Anaphylaxis" ~ scale_y_continuous(expand = expansion(mult = c(0.05, 0)), limits = c(0,aesi_trimester_limits_y["Anaphylaxis"]), oob = scales::rescale_none)
     )
   ) +
-  ggtitle("A) Incidence Rates by Gestational Trimester") +
+  ggtitle("a)") +
   theme(
     plot.title = element_text(hjust = -0.05, face = "bold", size = 15)
     # axis.text.x = element_text(angle = 60, vjust = 1, hjust = 1)
   ) +
   theme(legend.position = "none") +
-  ylab("Incidence\n(per 100,000 person-years)") +
+  ylab("Incidence (100,000 person-years)") +
   geom_segment(
     aes(yend = arrow_end),
     arrow = arrow(length = unit(0.2, "cm")),
@@ -700,9 +730,9 @@ pAge <- tidyIncidence |>
       outcome_cohort_name == "Anaphylaxis" ~ scale_y_continuous(expand = expansion(mult = c(0.05, 0)), limits = c(0,aesi_age_limits_y["Anaphylaxis"]), oob = scales::rescale_none)
     )
   ) +
-  ggtitle("B) Incidence Rates by Maternal Age") +
+  ggtitle("b)") +
   theme(plot.title = element_text(hjust = -0.05, face = "bold", size = 15)) +
-  ylab("Incidence\n(per 100,000 person-years)") +
+  ylab("Incidence (100,000 person-years)") +
   geom_segment(
     aes(yend = arrow_end),
     arrow = arrow(length = unit(0.2, "cm")),
@@ -711,10 +741,56 @@ pAge <- tidyIncidence |>
     show.legend = FALSE
   )
 
-(pTrimester / pAge) + 
-  plot_layout(heights = c(2, 1.93)) 
+# (pTrimester / pAge) + 
+#   plot_layout(heights = c(2, 1.93)) 
+lancet_theme <- theme(
+  text = element_text(family = "Times New Roman", size = 10),
+  axis.text = element_text(size = 10),
+  axis.title = element_text(size = 10),
+  strip.text = element_text(
+    family = "Times New Roman",
+    size = 10,
+    face = "bold"
+  ),
+  legend.text = element_text(size = 10),
+  legend.title = element_text(size = 10),
+  plot.title = element_blank(),
+  panel.border = element_blank(),
+  plot.background = element_rect(fill = "white", colour = NA),
+  panel.background = element_rect(fill = "white", colour = NA),
+  panel.spacing.x = unit(0.5, "cm"),
+  panel.spacing.y = unit(0.3, "cm"),
+  plot.margin = margin(10, 15, 10, 10, unit = "pt")
+)
+f3 <- (
+  (pTrimester + lancet_theme) /
+    (pAge + lancet_theme)
+) +
+  plot_layout(heights = c(2, 1.93)) +
+  plot_annotation(tag_levels = "a") &
+  theme(
+    plot.tag = element_text(
+      family = "Times New Roman",
+      size = 13,
+      face = "bold"
+    )
+  ) 
+# shared_y <- wrap_elements(
+#   full = textGrob(
+#     "Incidence (100,000 person-years)",
+#     rot = 90,
+#     gp = gpar(
+#       fontfamily = "Times New Roman",
+#       fontsize = 10
+#     )
+#   )
+# )
+# f3 <- wrap_elements(full = combined) | shared_y
+# f3 <- shared_y + wrap_elements(full = combined) +
+#     plot_layout(widths = c(0.025, 1))
 
 ggsave(
+  plot = f3,
   filename = "Figure3.svg",
   device = "svg",
   path = NULL,
@@ -723,6 +799,20 @@ ggsave(
   height = 6,
   units = c("in"),
   dpi = 360,
+  limitsize = TRUE,
+  bg = NULL,
+  create.dir = FALSE
+)
+ggsave(
+  plot = f3,
+  filename = "Figure3.jpeg",
+  device = "jpeg",
+  path = NULL,
+  scale = 1,
+  width = 12,
+  height = 6.5,
+  units = c("in"),
+  dpi = 1000,
   limitsize = TRUE,
   bg = NULL,
   create.dir = FALSE

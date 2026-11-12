@@ -1218,8 +1218,8 @@ ui <- bslib::page_navbar(
               shinyWidgets::pickerInput(
                 inputId = "summarise_large_scale_characteristics_table_lsc_hide",
                 label = "Hide",
-                choices = c("cdm_name", "cohort_name", "exposure", "vaccine_brand", "gestational_trimester", "age_group", "variable_level", "weighting"),
-                selected = c("vaccine_brand", "gestational_trimester", "age_group", "weighting"),
+                choices = c("cdm_name", "cohort_name", "exposure", "vaccine_brand", "gestational_trimester", "age_group", "variable_level", "weighting", "weights"),
+                selected = c("vaccine_brand", "gestational_trimester", "age_group", "weighting", "weights"),
                 multiple = TRUE,
                 options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
               ),
@@ -1806,7 +1806,7 @@ ui <- bslib::page_navbar(
   ),
   # Kaplan-Meier ----
   bslib::nav_panel(
-    title = "Kaplan-Meier",
+    title = "Log-Log plot",
     icon = shiny::icon("chart-bar"),
     bslib::layout_sidebar(
       sidebar = bslib::sidebar(
@@ -1968,7 +1968,7 @@ ui <- bslib::page_navbar(
                 shinyWidgets::pickerInput(
                   inputId = "kaplan_meier_plot_facet",
                   label = "Facet",
-                  choices = c("cdm_name", "cohort_name", "vaccine_brand", "gestational_trimester", "age_group", "weighting", "outcome_name", "outcome_group", "empirical_calibration"),
+                  choices = c("cdm_name", "cohort_name", "vaccine_brand", "gestational_trimester", "age_group", "weighting", "outcome", "outcome_group"),
                   selected = c("cdm_name", "cohort_name"),
                   multiple = TRUE,
                   options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
@@ -1976,7 +1976,7 @@ ui <- bslib::page_navbar(
                 shinyWidgets::pickerInput(
                   inputId = "kaplan_meier_plot_colour",
                   label = "Colour",
-                  choices = c("exposure", "cdm_name", "cohort_name", "vaccine_brand", "gestational_trimester", "age_group", "weighting", "outcome_name", "outcome_group", "empirical_calibration"),
+                  choices = c("exposure", "cdm_name", "cohort_name", "vaccine_brand", "gestational_trimester", "age_group", "weighting", "outcome", "outcome_group"),
                   selected = "exposure",
                   multiple = TRUE,
                   options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")

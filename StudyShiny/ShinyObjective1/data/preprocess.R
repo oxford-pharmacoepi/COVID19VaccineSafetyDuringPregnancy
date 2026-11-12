@@ -34,7 +34,30 @@ result <- result |>
       .data$result_id %in% incidenceID & !.data$group_level %in% mae ~ "Adverse Events of Special Interest",
       .default = .data$additional_level
     ),
-    group_level = dplyr::if_else(group_level == "overall_denominator", "pregnancy_and_12_weeks_postpartum", .data$group_level)
+    group_level = dplyr::if_else(group_level == "overall_denominator", "pregnancy_and_12_weeks_postpartum", .data$group_level),
+    strata_level = dplyr::case_when(
+      strata_level == "0" ~ "No previous pregnancy",
+      strata_level == "1" ~ "≥1 previous pregnancy",
+      .default = .data$strata_level
+    ), 
+    dplyr::across(
+      c("strata_level", "variable_level"), 
+      ~ dplyr::case_when(
+        .x == "Q1" & cdm_name == "SCIFI-PEARL" ~ "Q5 (most disadvantaged)",
+        .x == "Q2" & cdm_name == "SCIFI-PEARL" ~ "Q4",
+        .x == "Q4" & cdm_name == "SCIFI-PEARL" ~ "Q2",
+        .x == "Q5" & cdm_name == "SCIFI-PEARL" ~ "Q1 (least disadvantaged)",
+        .x == "0N" | .x == "0n" ~ "Missing",
+        .x == "Q5" ~ "Q5 (most disadvantaged)",
+        .x == "Q1" ~ "Q1 (least disadvantaged)",
+        .x == "U1" ~ "Q1 (least disadvantaged)",
+        .x == "U2" ~ "Q2",
+        .x == "U3" ~ "Q3",
+        .x == "U4" ~ "Q4",
+        .x == "U5" ~ "Q5 (most disadvantaged)",
+        .default = .x
+      )
+    )
   )  |>
   dplyr::filter(!(cdm_name == "CPRD GOLD" & group_level %in% c("miscarriage", "dysfunctional_labour"))) |>
   dplyr::filter(!(cdm_name == "SCIFI-PEARL" & group_level %in% "ectopic_pregnancy")) |>
@@ -56,20 +79,21 @@ attr(result, "settings") <- omopgenerics::settings(result) |>
 data <- prepareResult(result, resultList)
 attr(data$incidence, "settings") <- attr(data$incidence, "settings") |> dplyr::mutate(additional = "outcome_group")
 data$summarise_characteristics <- data$summarise_characteristics |>
+  filter(variable_level != "Previous maternal death") |>
   dplyr::mutate(
     variable_level = dplyr::case_when(
       .data$variable_name %in% c(
         "Eclampsia", "Ectopic pregnancy", "Gestational diabetes", "Hellp",
         "Preeclampsia", "Dysfunctional labour", "Antepartum haemorrhage",
         "Postpartum endometritis","Postpartum haemorrhage", "Miscarriage",
-        "Stillbirth", "Preterm labour"
-      ) ~ toSnakeCase(.data$variable_name),
+        "Stillbirth", "Preterm labour", "Maternal death"
+      ) ~ omopgenerics::toSnakeCase(.data$variable_name),
       .data$variable_name %in% c(
         "Previous eclampsia", "Previous ectopic pregnancy", "Previous gestational diabetes", "Previous hellp",
         "Previous preeclampsia", "Previous dysfunctional labour", "Previous antepartum haemorrhage",
         "Previous postpartum endometritis","Previous postpartum haemorrhage", "Previous miscarriage",
         "Previous stillbirth", "Previous preterm labour"
-      ) ~ toSnakeCase(gsub("Previous ", "", .data$variable_name)),
+      ) ~ omopgenerics::toSnakeCase(gsub("Previous ", "", .data$variable_name)),
       .default = .data$variable_level
     ), 
     variable_name = dplyr::case_when(
@@ -83,9 +107,10 @@ data$summarise_characteristics <- data$summarise_characteristics |>
         "Previous eclampsia", "Previous ectopic pregnancy", "Previous gestational diabetes", "Previous hellp",
         "Previous preeclampsia", "Previous dysfunctional labour", "Previous antepartum haemorrhage",
         "Previous postpartum endometritis","Previous postpartum haemorrhage", "Previous miscarriage",
-        "Previous stillbirth", "Previous preterm labour"
+        "Previous stillbirth", "Previous preterm labour", "Previous maternal death"
       ) ~ "Maternal Adverse Events during previous pregnancy",
       .data$variable_name == "Pre pregnancy smoking" ~ "Pre-Pregnancy Smoke",
+      .data$variable_name == "Prev pregnancy parity" ~ "Previous pregnancy parity",
       .default = .data$variable_name
     )
   ) |>
@@ -97,11 +122,17 @@ values$survival_target_cohort <- unique(gsub("2_", "_12_", gsub("_1", "", values
 values$survival_target_cohort <- values$survival_target_cohort[values$survival_target_cohort != "overall_denominator"]
 values$summarise_characteristics_variable_name <- c(
   "Number records", "Number subjects", "Trimester", "Maternal age group", 
+  "Maternal age group narrow", "In vitro fertilisation", 
+  "Pregnancy induced hypertension", "Age", 
   "Pregnancy start period", "Socioeconomic status", "Nationallity", "Season",
-  "Maternal age", "Pre-Pregnancy Smoke", 
-  "Maternal Adverse Events during pregnancy", "Maternal Adverse Events during previous pregnancy",
+  "Ethnicity", "Birth continent",
+  "Maternal age", "Pre-Pregnancy Smoke", "Previous pregnancies", 
+  "Pregnancy outcome study", "Previous pregnancy parity", 
+  "Pregnancy mode delivery", "Pregnancy single",
+  "Maternal Adverse Events during pregnancy", 
+  "Maternal Adverse Events during previous pregnancy",
   "Prior observation", "Days in cohort", "History of comorbidities",
-  "Covariates in the past year", "Medications in the past 6 months" 
+  "Covariates in the past year", "Medications in the past 6 months"
 )
 
 # edit choices and values of interest

@@ -391,7 +391,10 @@ renderInteractivePlot <- function(plt, interactive) {
 }
 
 metaAnalysis <- function(data) {
-  data <- data|> dplyr::ungroup()
+  data <- data|> 
+    dplyr::ungroup() |>
+    dplyr::filter(!is.na(exposed_outcome_count)) |>
+    dplyr::filter(!is.na(comparator_outcome_count))
   if (nrow(data) < 2) {
     return(NULL)
   }
@@ -406,7 +409,7 @@ metaAnalysis <- function(data) {
     time.e = data$exposed_person_days,
     event.c = data$comparator_outcome_count,
     time.c = data$comparator_person_days,
-    sm = "IRR"
+    method = "GLMM"
   )
   dplyr::tibble(
     cdm_name = "Meta Analysis", 
@@ -453,10 +456,10 @@ empiricalCalibration <- function(data) {
   nco <- data |> 
     dplyr::filter(outcome_group %in% "Negative Control Outcomes") |>
     dplyr::filter(!is.na(coef))
-  if (nrow(nco) > 10) {
-    estimates <- data |> 
-      dplyr::filter(!outcome_group %in% "Negative Control Outcomes") |>
-      dplyr::filter(!is.na(coef))
+  estimates <- data |> 
+    dplyr::filter(!outcome_group %in% "Negative Control Outcomes") |>
+    dplyr::filter(!is.na(coef))
+  if (nrow(nco) > 10 & nrow(estimates) > 0) {
     newNull <- EmpiricalCalibration::fitSystematicErrorModel(
       logRr = log(nco$coef),
       seLogRr = (log(nco$lower_ci) - log(nco$coef))/qnorm(0.025),

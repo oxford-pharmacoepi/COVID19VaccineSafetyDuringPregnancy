@@ -1,6 +1,6 @@
 ---
 title: "Supplementary Material"
-subtitle: "Cumulative incidence and characterisation of adverse events during pregnancy: a multi-country European cohort study"
+subtitle: "Cumulative Incidence and Characterisation of Maternal Adverse Events and Adverse Events of Special Interest during Pregnancy: a Multi-country Cohort Study"
 format:
   docx:
     reference-doc: ref.docx
@@ -291,142 +291,6 @@ tabNum <- 1
 figNum <- 1
 ```
 
-
-```{r}
-cat(paste0("# Supplementary Table ", tabNum, ". Characteristics of all pregnancies included over the study period, stratified by data source.\n"))
-tabNum <- tabNum + 1
- 
-data$summarise_characteristics |>
-  dplyr::filter(group_level == "pregnancy_denominator", strata_name == "overall") |>
-  dplyr::mutate(
-    cdm_name = factor(cdm_name, levels = dbOrder, labels = c("SCIFI-PEARL (Sweden)", "NLHR (Norway)", "SIDIAP (Spain)")),
-    variable_name = factor(
-      variable_name,
-      levels = c(
-        "Number records", 
-        "Number subjects",
-        "Maternal age", 
-        "Maternal age group",
-        "Days in cohort", 
-        "Pre-Pregnancy Smoke",
-        "Covariates in the past year",
-        "History of comorbidities", 
-        "Medications in the past 6 months"
-      ),
-      labels = c(
-        "Number\npregnancies, N", 
-        "Number\nsubjects, N",
-        "Maternal age,\nMedian [IQR]", 
-        "Maternal age\ngroup, N(%)",
-        "Pregnancy length\n(days), Median [IQR]", 
-        "Smoking status,\nN(%)",
-        "Comorbidities\n(prior year), N(%)",
-        "Comorbidities\n(any-time before),\nN(%)",
-        "Medications\n(prior 6 months),\nN(%)"
-      )
-    ),
-    variable_level = factor(
-      variable_level,
-      levels = c(
-        "12 to 17", "18 to 34", "35 to 55", "-",
-        
-        "No", "Yes", "No smoker", "Smoker", "Never smoker", "Former smoker", "Current some day smoker", "Missing",          
-        
-        "Obesity", "Depression", "Anxiety", "Alcohol misuse dependence",
-        
-        "Asthma", "Diabetes", "Thyroid disorder",
-        "Essential hypertension",
-        "Systemic lupus erythematosus", "Hiv",
-        "Uterus malformations", "Polycystic ovary syndrome",
-        "Chronic viral hepatitis", "Inflammatory bowel disease",
-        
-        "Antidepressants", "Antiinflammatory antirheumatic", "Nsaids",
-        "Opioids", "Treatment acid related disorder", "Antiepileptics",
-        "Diabetes treatments", "Antithrombotics", "Immunosupressants",
-        "Corticosteroids"
-      ),
-      labels = c(
-        "12 to 17", "18 to 34", "35 to 55", "-",
-        
-        "No", "Yes", "No", "Yes", "No", "Former smoker", "Yes", "Missing",   
-        
-        "Obesity", "Depression", "Anxiety", "Alcohol misuse\ndependence",
-        
-        "Asthma", "Diabetes", "Thyroid disorder",
-        "Essential\nhypertension",
-        "SLE", "HIV",
-        "Uterus malformations", "PCOS",
-        "Chronic viral\nhepatitis", "Inflammatory\nbowel disease",
-        
-        "Antidepressants", "Antiinflammatory/\nantirheumatic", "NSAIDs",
-        "Opioids", "Acid-related disorder\ntreatments", "Antiepileptics",
-        "Diabetes treatments", "Antithrombotics", "Immunosupressants",
-        "Corticosteroids"
-      )
-    )
-  ) |>
-  dplyr::filter(!is.na(variable_name), !is.na(cdm_name)) |>
-  dplyr::arrange(cdm_name, variable_name, variable_level) |>
-  visOmopTable(
-    estimateName = c(
-      "A" = "<count> (<percentage>%)",
-      "b" = "<count>",
-      "c" = "<median> [<q25> - <q75>]"
-    ),
-    rename = c("Data source" = "cdm_name"),
-    header = "cdm_name",
-    hide = c("cohort_name", strataColumns(data$summarise_characteristics), "estimate_name"),
-    .options = list(keepNotFormatted = FALSE, groupAsColumn = TRUE, decimalMark = "·", bigMark = " "),
-    groupColumn = "variable_name",
-    factor = list(
-      variable_name = c(
-        "Number\npregnancies, N", 
-        "Number\nsubjects, N",
-        "Maternal age,\nMedian [IQR]", 
-        "Maternal age\ngroup, N(%)",
-        "Pregnancy length\n(days), Median [IQR]", 
-        "Smoking status,\nN(%)",
-        "Comorbidities\n(prior year), N(%)",
-        "Comorbidities\n(any-time before),\nN(%)",
-        "Medications\n(prior 6 months),\nN(%)"
-      ),
-      variable_level = c(
-        "12 to 17", "18 to 34", "35 to 55", "-", NA,
-        
-        "No", "Yes", "Former smoker", "Missing",   
-        
-        "Obesity", "Depression", "Anxiety", "Alcohol misuse\ndependence",
-        
-        "Asthma", "Diabetes", "Thyroid disorder",
-        "Essential\nhypertension",
-        "SLE", "HIV",
-        "Uterus malformations", "PCOS",
-        "Chronic viral\nhepatitis", "Inflammatory\nbowel disease",
-        
-        "Antidepressants", "Antiinflammatory/\nantirheumatic", "NSAIDs",
-        "Opioids", "Acid-related disorder\ntreatments", "Antiepileptics",
-        "Diabetes treatments", "Antithrombotics", "Immunosupressants",
-        "Corticosteroids"
-      )
-    )
-  ) |>
-  set_table_properties(layout = "autofit") |>
-  font(fontname = "calibri", part = "all") |>
-  fontsize(size = 9, part = "body") |>
-  fontsize(size = 10, part = "header") 
-
-  footer <- paste0("The study enrolment period went from January 2018 to December 2023 for SCIFI-PEARL, March 2023 for NLHR, and March 2024 for SIDIAP. End dates correspond to 9 months before pregnancy data cut-off date. All pregnancies starting during enrolment period, aged 12 to 55 years, and with at least 1 year of previous observation in the data source were included\n
-Smoking status was estimated differently for each database. In SCIFI-PEARL and NLHR, it is a binary variable from the birth registry indicating smoking status before pregnancy and is collected in the first maternal healthcare visit. In SIDIAP it is based on primary care collected records, as a proxy for maternal smoking we used the latest record from 5 years before pregnancy until pregnancy end.\n
-Abbreviations: SCIFI-PEARL = Swedish Covid-19 Investigation for Future Insights – a Population Epidemiology Approach using Register Linkage; NLHR = Norwegian Linked Health Registries; SIDIAP = Information System for Research in Primary Care Database; SLE = Systemic Lupus Erythematosus; HIV= Human Immunodeficiency Virus; PCOS = Polycystic Ovary Syndrome
-
-")
-  cat(paste0(
-    ':::{custom-style="FooterNuria"}\n',
-    footer, '\n',
-    '::: \n'
-  ))
-    cat("\n\n\\pagebreak\n")
-```
 
 
 
@@ -764,7 +628,8 @@ filterOut <- bind_rows(
     variable_level = c("Dysfunctional labour")
   )
 )
-  
+
+
 # Figures comparison ----
 xlim <- 1.1
 smd <- characteristics |>
@@ -794,7 +659,8 @@ smd <- characteristics |>
       cohort_name == "Stillbirth" ~ "Stillbirth",
       cohort_name %in% c("Gestational diabetes mellitus", "Antepartum haemorrhage") ~ "Non-hypertensive Pregnancy Complications",
       cohort_name %in% c("Pre-eclampsia", "Eclampsia", "HELLP syndrome" ) ~ "Hypertensive Disorders of Pregnancy"
-    )
+    ),
+    cdm_name = factor(cdm_name, dbOrder)
   ) |>
   filter(!is.na(cohort_name)) |>
   filter(variable_level != "Diabetes") |>
@@ -817,7 +683,74 @@ smd <- characteristics |>
     smd_clipped = if_else(smd > xlim, xlim, NA),
     # Create a flag to identify where arrows are needed
     is_out_of_bounds = smd > xlim
-  )
+  ) |>
+  arrange(cdm_name, cohort_name, variable_name)
+
+
+# Overall table ----
+cat(paste0("# Supplementary Table ", tabNum, ". Counts, percentages, and standardised mean differences of covariates and co-occurrent and recurrent obstetric events between pregnancies affected by each outcome and matched outcome-free pregnancies across data sources.\n"))
+tabNum <- tabNum + 1
+
+footer <- "\nAbbreviations: SCIFI-PEARL = Swedish Covid-19 Investigation for Future Insights – a Population Epidemiology Approach using Register Linkage; NLHR = Norwegian Linked Health Registries; SIDIAP = Information System for Research in Primary Care Database (Spain); PCOS = Polycystic Ovary Syndrome; HELLP = Elevated Liver enzymes, and Low Platelet count."
+
+smd |>
+  filter(
+    trimester == "overall", 
+    maternal_age_group == "overall", 
+    pregnancy_start_period == "overall",
+    socioeconomic_status == "overall",
+    ethnicity == "overall", 
+    birth_continent == "overall",
+    nationallity == "overall"
+  ) |>
+  mutate(
+    outcome_cohort = case_when(
+      is.na(count_sampled) | count_sampled == "-" ~ "<5", 
+      count_sampled == 0 ~ "0", 
+      .default = paste0(round(count_sampled, 2), " (", round(percentage_sampled, 2), "%)")
+    ),
+    matched_cohort = case_when(
+      is.na(count_matched) | count_matched == "-" ~ "<5", 
+      count_matched == 0 ~ "0", 
+      .default = paste0(round(count_matched, 2), " (", round(percentage_matched, 2), "%)")
+    ),
+    smd = as.character(round(smd, 3)),
+    estimate_type = "character"
+  ) |>
+  select(
+    "Data source" = "cdm_name",
+    "Outcome" = "cohort_name", 
+    variable_name,
+    variable_level, 
+    estimate_type,
+    "Outcome cohort, N(%)" = "outcome_cohort",
+    "Matched cohort, N(%)" = "matched_cohort", 
+    "Standardised Mean Difference" = "smd"
+  ) |>
+  pivot_longer(
+    cols = c("Outcome cohort, N(%)", "Matched cohort, N(%)", "Standardised Mean Difference"),
+    names_to = "estimate_name",
+    values_to = "estimate_value"
+  ) |>
+  visTable(header = c("Data source", "estimate_name"), groupColumn = "Outcome", hide = "estimate_type") |>
+  set_table_properties(layout = "autofit") |>
+  font(fontname = "calibri", part = "all") |>
+  fontsize(size = 9, part = "body") |>
+  fontsize(size = 9, part = "header") |>
+  border(
+    border = officer::fp_border(color = "#c8c8c8"),
+    part = "all"
+  ) |>
+  flextable::flextable_to_rmd()
+
+cat(paste0(
+  ':::{custom-style="FooterNuria"}\n',
+  footer, '\n',
+  '::: \n'
+))
+
+cat("\n\n\\pagebreak\n")
+
 
 colors <- c("#4A6FE3", "#4FAE6A", "#E08A3C", "#C94A5A")
 
@@ -845,7 +778,7 @@ for (strataName in c("trimester", "maternal_age_group")) {
     cat(paste0("# Supplementary Figure ", figNum, ". Standardised mean differences comparing pregnancies affected by each outcome with matched outcome-free pregnancies across data sources, stratified by ", strataLabel, ".\n"))
     figNum <- figNum + 1
     
-    footer <- "\nThe figure shows Standardised mean differences (SMDs) for selected comorbidities, maternal adverse events occurring during the index pregnancy, and in previous pregnancies among pregnancies affected by the outcomes of interest in the study. Comparisons were performed separately for SCIFI-PEARL (Sweden), NLHR (Norway), and SIDIAP (Spain). Outcome-free pregnancies were matched on maternal age, gestational age (2-week bands), and calendar time (2-week bands). Positive SMD values indicate higher prevalence among pregnancies affected by the outcome compared with matched pregnancies without the outcome, whereas negative values indicate lower prevalence. Vertical dashed lines indicate SMD thresholds of ±0.1. These comparisons are descriptive and should not be interpreted as causal associations without targeted analysis."
+    footer <- "\nThe figure shows Standardised mean differences (SMDs) for selected comorbidities, maternal adverse events occurring during the index pregnancy, and in previous pregnancies among pregnancies affected by the outcomes of interest in the study. Comparisons were performed separately for SCIFI-PEARL (Sweden), NLHR (Norway), and SIDIAP (Spain). Outcome-free pregnancies were matched on maternal age, gestational age (2-week bands), and calendar time (2-week bands). Positive SMD values indicate higher prevalence among pregnancies affected by the outcome compared with matched pregnancies without the outcome, whereas negative values indicate lower prevalence. Vertical dashed lines indicate SMD thresholds of ±0.1. These comparisons are descriptive and should not be interpreted as causal associations without targeted analysis.\nAbbreviations: SCIFI-PEARL = Swedish Covid-19 Investigation for Future Insights – a Population Epidemiology Approach using Register Linkage; NLHR = Norwegian Linked Health Registries; SIDIAP = Information System for Research in Primary Care Database (Spain); PCOS = Polycystic Ovary Syndrome; HELLP = Elevated Liver enzymes, and Low Platelet count."
     
     cat(paste0(
       ':::{custom-style="FooterNuria"}\n',
@@ -905,8 +838,64 @@ for (strataName in c("trimester", "maternal_age_group")) {
         )
     )
     
-         cat("\n\n\\pagebreak\n")
-        
+    cat("\n\n\\pagebreak\n")
+    
+    # cat(paste0("# Supplementary Table ", tabNum, ". Counts, percentages, and standardised mean differences of covariates and co-occurrent and recurrent obstetric events between pregnancies affected by each outcome and matched outcome-free pregnancies across data sources, stratified by ", strataLabel, ".\n"))
+    # tabNum <- tabNum + 1
+    # 
+    # footer <- "\nAbbreviations: SCIFI-PEARL = Swedish Covid-19 Investigation for Future Insights – a Population Epidemiology Approach using Register Linkage; NLHR = Norwegian Linked Health Registries; SIDIAP = Information System for Research in Primary Care Database (Spain); PCOS = Polycystic Ovary Syndrome; HELLP = Elevated Liver enzymes, and Low Platelet count."
+    # 
+    # smd |>
+    #   filter(.data[[strataName]] == strataLevel) |>
+    #   filter(!cohort_name %in% outcomeOut) |>
+    #   mutate(
+    #     outcome_cohort = case_when(
+    #       is.na(count_sampled) | count_sampled == "-" ~ "<5", 
+    #       count_sampled == 0 ~ "0", 
+    #       .default = paste0(round(count_sampled, 2), " (", round(percentage_sampled, 2), "%)")
+    #     ),
+    #     matched_cohort = case_when(
+    #       is.na(count_matched) | count_matched == "-" ~ "<5", 
+    #       count_matched == 0 ~ "0", 
+    #       .default = paste0(round(count_matched, 2), " (", round(percentage_matched, 2), "%)")
+    #     ),
+    #     smd = as.character(round(smd, 3)),
+    #     estimate_type = "character"
+    #   ) |>
+    #   select(
+    #     "Data source" = "cdm_name",
+    #     "Outcome" = "cohort_name", 
+    #     variable_name,
+    #     variable_level, 
+    #     estimate_type,
+    #     "Outcome cohort, N(%)" = "outcome_cohort",
+    #     "Matched cohort, N(%)" = "matched_cohort", 
+    #     "Standardised Mean Difference" = "smd"
+    #   ) |>
+    #   pivot_longer(
+    #     cols = c("Outcome cohort, N(%)", "Matched cohort, N(%)", "Standardised Mean Difference"),
+    #     names_to = "estimate_name",
+    #     values_to = "estimate_value"
+    #   ) |>
+    #   visTable(header = c("Data source", "estimate_name"), groupColumn = "Outcome", hide = "estimate_type")  |>
+    #   set_table_properties(layout = "autofit") |>
+    #   font(fontname = "calibri", part = "all") |>
+    #   fontsize(size = 9, part = "body") |>
+    #   fontsize(size = 9, part = "header") |>
+    #   border(
+    #     border = officer::fp_border(color = "#c8c8c8"),
+    #     part = "all"
+    #   ) |>
+    #   flextable::flextable_to_rmd()
+    # 
+    # cat(paste0(
+    #   ':::{custom-style="FooterNuria"}\n',
+    #   footer, '\n',
+    #   '::: \n'
+    # ))
+    
+    cat("\n\n\\pagebreak\n")
+    
   }
 }
 ```

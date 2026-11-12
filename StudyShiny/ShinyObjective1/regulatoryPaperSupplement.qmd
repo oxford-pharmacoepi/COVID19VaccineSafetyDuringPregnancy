@@ -284,7 +284,7 @@ incidenceTableFunction <- function(x, strata) {
       estimateName = c(
         "Pregnancies" = "<denominator_count>",
         "PYs" = "<person_days_count>",
-        "Outcomes, N\n(Cumulative\nIncidence, %)" = "<outcome_count> (<outcome_percentage>%)",
+        "Outcomes,\nN(%)" = "<outcome_count> (<outcome_percentage>%)",
         "IR per\n100 000 PYs\n(95% CI)" = "<incidence_100000_pys> (<incidence_100000_pys_95CI_lower> - <incidence_100000_pys_95CI_upper>)"
       ),
       rename = c("Outcome" = "outcome_cohort_name", "Data source" = "cdm_name"), 
@@ -295,8 +295,9 @@ incidenceTableFunction <- function(x, strata) {
         outcome_cohort_name = c(maeClean, aesiClean),
         cdm_name = c(dbOrder),
         gestational_trimester = c(paste0("Trimester ", 1:3), "Postpartum"),
-        maternal_age = c("12 to 17", "18 to 34", "35 to 55")
-      )[c(TRUE, TRUE, TRUE, "gestational_trimester" == strata, "maternal_age" ==  strata)],
+        maternal_age = c("12 to 17", "18 to 34", "35 to 55"),
+        pregnancy_start_period = c("2018–2019", "2020–2021", ">2021")
+      )[c(TRUE, TRUE, TRUE, "gestational_trimester" == strata, "maternal_age" ==  strata, "pregnancy_start_period" == strata)],
       hide = hide[hide != strata],
       columnOrder = c("outcome_group", "outcome_cohort_name", "cdm_name"),
       .options = list(decimals = c(integer = 0, percentage = 3, numeric = 2), keepNotFormatted = FALSE, delim = "8", decimalMark = "·", bigMark = "")
@@ -319,6 +320,14 @@ for (strata in stratas) {
   incidence |>
     filterAdditional(outcome_group == outcomeGroup) |>
     filter(strata_name == strata) |>
+    mutate(
+      strata_level = case_when(
+        strata_level == "Pre COVID-19" ~ "2018–2019",
+        strata_level == "COVID-19 main outbreak" ~ "2020–2021",
+        strata_level == "Post COVID-19 main outbreak" ~ ">2021",
+        .default = strata_level
+      )
+    ) |>
     filter(group_level != "postpartum_haemorrhage_sens") |>
     incidenceTableFunction(strata)
   
@@ -453,7 +462,240 @@ for (strata in stratas) {
 
 ```{r}
 # Table for AESI stratification ----
-for (outcomeGroup in outcomeGroups[2:3]) {
+for (outcomeGroup in outcomeGroups[2]) {
+  for (strata in stratas) {
+    if (outcomeGroup == "AESI Sensitivity (180 wash-out)") {
+      cat(paste0('\n# Supplementary Table ', tableCount, '. ',  glue::glue(captionSens), '\n'))
+    } else {
+      cat(paste0('\n# Supplementary Table ', tableCount, '. ',  glue::glue(caption), '\n'))
+    }
+    tableCount <- tableCount + 1
+    incidence |>
+      filterAdditional(outcome_group == outcomeGroup) |>
+      filter(strata_name == strata) |>
+      incidenceTableFunction(strata)
+    
+    cat(paste0(
+      ':::{custom-style="FooterNuria"}\n',
+      footer, "\n",
+      ':::'
+    ))
+    
+    cat("\n\n\\pagebreak\n")
+  }
+}
+```
+
+```{r}
+# Table for MAE and AESI by claendar period ----
+for (outcomeGroup in outcomeGroups[1:2]) {
+  
+  strata <- "pregnancy start period relative to the COVID-19 pandemic"
+  cat(paste0('\n# Supplementary Table ', tableCount, '. ',  glue::glue(caption), '\n'))
+  
+  strata <- "pregnancy_start_period"
+  tableCount <- tableCount + 1
+  incidence |>
+    filterAdditional(outcome_group == outcomeGroup) |>
+    filter(strata_name == strata) |>
+    mutate(
+      strata_level = case_when(
+        strata_level == "Pre COVID-19" ~ "2018–2019",
+        strata_level == "COVID-19 main outbreak" ~ "2020–2021",
+        strata_level == "Post COVID-19 main outbreak" ~ ">2021",
+        .default = strata_level
+      )
+    ) |>
+    incidenceTableFunction(strata)
+  
+  cat(paste0(
+    ':::{custom-style="FooterNuria"}\n',
+    footer, "\n",
+    ':::'
+  ))
+
+  cat("\n\n\\pagebreak\n")
+}
+```
+
+
+```{r, fig.height=8, fig.width=10}
+# Figures for all MAE stratification ----
+mae_age_limits_y <- c(
+  "Eclampsia" = 150,
+  "HELLP syndrome" = 300,
+  "Maternal death" = 40,
+  "Postpartum endometritis" = 8000,
+  "Postpartum haemorrhage" = 20500
+)
+
+design_mat <- matrix(
+  c(1:11, NA, 12:13, NA , NA),
+  nrow = 4,
+  byrow = TRUE
+)
+
+cat(paste0('\n# Supplementary Figure ', figureCount, '. Incidence rates per 100 000 person-years for Maternal Adverse Events across data sources for the overall study period, stratified by pregnancy start period relative to the COVID-19 pandemic.\n'))
+cat(paste0(
+  ':::{custom-style="FooterNuria"}\n',
+  'Calendar period relative to COVID-19 pandemic are the following: pre-pandemic (January 1, 2018–December 31, 2019), early pandemic (January 1, 2020–December 31, 2021), and later period (January 1, 2022–end of data availability). Points represent the estimated incidence rate (per 100 000 person-years). Error bars indicate 95% confidence intervals (exact Poisson method); arrows denote intervals extending beyond the displayed axis limits.', '\n',
+  '::: \n'
+))
+
+incidence |> 
+  filterAdditional(outcome_group == "Maternal Adverse Events") |>
+  filter(strata_name == "pregnancy_start_period") |>
+  tidy() |>
+  filter(!grepl("sens", outcome_cohort_name)) |>
+  filter(maternal_age_group == "overall", pregnancy_start_period != "overall") |>
+  mutate(outcome_cohort_name = factor(outcome_cohort_name, levels = c(maeClean))) |>
+  mutate(
+    y_limit = case_when(
+      outcome_cohort_name == "Eclampsia" ~ mae_age_limits_y["Eclampsia"],
+      outcome_cohort_name == "HELLP syndrome" ~ mae_age_limits_y["HELLP syndrome"],
+      outcome_cohort_name == "Maternal death" ~ mae_age_limits_y["Maternal death"],
+      outcome_cohort_name == "Postpartum endometritis" ~ mae_age_limits_y["Postpartum endometritis"],
+      outcome_cohort_name == "Postpartum haemorrhage" ~ mae_age_limits_y["Postpartum haemorrhage"],
+      .default = NA
+    ),
+    arrow_end = ifelse(incidence_100000_pys_95CI_upper > y_limit, y_limit, NA),
+    pregnancy_start_period = factor(pregnancy_start_period, levels = c("Pre COVID-19", "COVID-19 main outbreak" ,"Post COVID-19 main outbreak"), labels = c("2018–2019", "2020–2021", ">2021"))
+  ) |>
+  pIncidence("pregnancy_start_period", "free_y", ribbon = FALSE, errorbar = TRUE) +
+  ggh4x::facet_manual(~ outcome_cohort_name, design = design_mat, scales = "free_y")  +
+  ggh4x::facetted_pos_scales(
+     y  = list(
+       outcome_cohort_name == "Eclampsia" ~ scale_y_continuous(expand = expansion(mult = c(0.05, 0)), limits = c(0,mae_age_limits_y["Eclampsia"]), oob = scales::rescale_none),
+       outcome_cohort_name == "HELLP syndrome" ~ scale_y_continuous(expand = expansion(mult = c(0.05, 0)), limits = c(0,mae_age_limits_y["HELLP syndrome"]), oob = scales::rescale_none),
+       outcome_cohort_name == "Maternal death" ~ scale_y_continuous(expand = expansion(mult = c(0.05, 0)), limits = c(0,mae_age_limits_y["Maternal death"]), oob = scales::rescale_none),
+       outcome_cohort_name == "Postpartum endometritis" ~ scale_y_continuous(expand = expansion(mult = c(0.05, 0)), limits = c(0,mae_age_limits_y["Postpartum endometritis"]), oob = scales::rescale_none),
+       outcome_cohort_name == "Postpartum haemorrhage" ~ scale_y_continuous(expand = expansion(mult = c(0.05, 0)), limits = c(4000,mae_age_limits_y["Postpartum haemorrhage"]), oob = scales::rescale_none)
+     )
+   ) 
+  figureCount <- figureCount + 1
+```
+
+```{r, fig.height=9, fig.width=12}
+# Figures for all AESI stratification ----
+aesi_limits_y <- c(
+  "Deep vein thrombosis" = 360,
+  "Pulmonary embolism" = 450,
+  "Bell’s palsy" = 300,
+  "Immune thrombocytopenia" = 350,
+  "Anaphylaxis" = 150,
+  "Disseminated intravascular coagulation" = 40,
+  "Thrombosis with thrombocytopenia syndrome" = 40,
+  "Myocarditis or pericarditis" = 50,
+  "Myocardial infarction" = 20,
+  "Ischaemic stroke" = 50,
+  "Haemorrhagic stroke" = 50,
+  "Guillain–Barré syndrome" = 30,
+  "Transverse myelitis" = 50,
+  "Encephalitis" = 50,
+  "Narcolepsy" = 10
+)
+
+outcomeGroup <- outcomeGroups[2]
+for (strata in "pregnancy_start_period") {
+cat(paste0('\n# Supplementary Figure ', figureCount, '. Incidence rates per 100 000 person-years for Adverse Events of Special Interest across data sources for the overall study period, stratified by pregnancy start period relative to the COVID-19 pandemic.\n'))
+cat(paste0(
+  ':::{custom-style="FooterNuria"}\n',
+  'Calendar period relative to COVID-19 pandemic are the following: pre-pandemic (January 1, 2018–December 31, 2019), early pandemic (January 1, 2020–December 31, 2021), and later period (January 1, 2022–end of data availability). Points represent the estimated incidence rate (per 100 000 person-years). Error bars indicate 95% confidence intervals (exact Poisson method); arrows denote intervals extending beyond the displayed axis limits.', '\n',
+  '::: \n'
+))
+  figureCount <- figureCount + 1
+  print(
+    incidence |>
+      filterAdditional(outcome_group == outcomeGroup) |>
+      filter(strata_name == strata) |>
+      tidy() |>
+      mutate(outcome_cohort_name = factor(outcome_cohort_name, levels = c(aesiClean))) |>
+      mutate(
+        outcome_cohort_name = factor(
+          outcome_cohort_name, 
+          levels = c(
+            "Pulmonary embolism", "Deep vein thrombosis", "Immune thrombocytopenia",
+            "Bell’s palsy", "Anaphylaxis", "Disseminated intravascular coagulation",   
+            "Thrombosis with thrombocytopenia syndrome", "Myocarditis or pericarditis",              
+            "Myocardial infarction", "Ischaemic stroke",                         
+            "Haemorrhagic stroke",                             
+            "Guillain–Barré syndrome", "Transverse myelitis",                      
+            "Encephalitis", "Narcolepsy"
+          ),
+          labels = c(
+            "Pulmonary embolism", "Deep vein thrombosis", "Immune thrombocytopenia",
+            "Bell’s palsy", "Anaphylaxis", "Disseminated intravascular\ncoagulation",   
+            "Thrombosis with\nthrombocytopenia syndrome", "Myocarditis or pericarditis",              
+            "Myocardial infarction", "Ischaemic stroke",                         
+            "Haemorrhagic stroke",                             
+            "Guillain–Barré syndrome", "Transverse myelitis",                      
+            "Encephalitis", "Narcolepsy"
+          )
+        )
+      ) |>
+      arrange(outcome_cohort_name) |>
+      mutate(
+        y_limit = case_when(
+          outcome_cohort_name == "Deep vein thrombosis" ~ aesi_limits_y["Deep vein thrombosis"],
+          outcome_cohort_name == "Pulmonary embolism" ~ aesi_limits_y["Pulmonary embolism"],
+          outcome_cohort_name == "Bell’s palsy" ~ aesi_limits_y["Bell’s palsy"],
+          outcome_cohort_name == "Immune thrombocytopenia" ~ aesi_limits_y["Immune thrombocytopenia"],
+          outcome_cohort_name == "Anaphylaxis" ~ aesi_limits_y["Anaphylaxis"],
+          outcome_cohort_name == "Disseminated intravascular coagulation" ~ aesi_limits_y["Disseminated intravascular coagulation"],
+          outcome_cohort_name == "Thrombosis with thrombocytopenia syndrome" ~ aesi_limits_y["Thrombosis with thrombocytopenia syndrome"],
+          outcome_cohort_name == "Myocarditis or pericarditis" ~ aesi_limits_y["Myocarditis or pericarditis"],
+          outcome_cohort_name == "Myocardial infarction" ~ aesi_limits_y["Myocardial infarction"],
+          outcome_cohort_name == "Ischaemic stroke" ~ aesi_limits_y["Ischaemic stroke"],
+          outcome_cohort_name == "Haemorrhagic stroke" ~ aesi_limits_y["Haemorrhagic stroke"],
+          outcome_cohort_name == "Guillain–Barré syndrome" ~ aesi_limits_y["Guillain–Barré syndrome" ],
+          outcome_cohort_name == "Bell’s palsy" ~ aesi_limits_y["Bell’s palsy"],
+          outcome_cohort_name == "Transverse myelitis" ~ aesi_limits_y["Transverse myelitis"],
+          outcome_cohort_name == "Encephalitis" ~ aesi_limits_y["Encephalitis"],
+          outcome_cohort_name == "Narcolepsy" ~ aesi_limits_y["Narcolepsy"],
+          .default = NA
+        ),
+        arrow_end = ifelse(incidence_100000_pys_95CI_upper > y_limit, y_limit, NA),
+        pregnancy_start_period = factor(pregnancy_start_period, levels = c("Pre COVID-19", "COVID-19 main outbreak" ,"Post COVID-19 main outbreak"), labels = c("2018–2019", "2020–2021", ">2021"))
+      ) |>
+      pIncidence(strata, "free_y", ribbon = FALSE, errorbar = TRUE) +
+      theme(legend.position = "bottom") +
+      facet_wrap(vars(outcome_cohort_name), scales = "free_y") +
+      theme(legend.position = "bottom") +
+      ggh4x::facetted_pos_scales(
+        y  = list(
+          outcome_cohort_name == "Deep vein thrombosis" ~ scale_y_continuous(expand = expansion(mult = c(0.05, 0)), limits = c(0,aesi_limits_y["Deep vein thrombosis"]), oob = scales::rescale_none),
+          outcome_cohort_name == "Pulmonary embolism" ~ scale_y_continuous(expand = expansion(mult = c(0.05, 0)), limits = c(0,aesi_limits_y["Pulmonary embolism"]), oob = scales::rescale_none),
+          outcome_cohort_name == "Bell’s palsy" ~ scale_y_continuous(expand = expansion(mult = c(0.05, 0)), limits = c(0,aesi_limits_y["Bell’s palsy"]), oob = scales::rescale_none),
+          outcome_cohort_name == "Immune thrombocytopenia" ~ scale_y_continuous(expand = expansion(mult = c(0.05, 0)), limits = c(0,aesi_limits_y["Immune thrombocytopenia"]), oob = scales::rescale_none),
+          outcome_cohort_name == "Anaphylaxis" ~ scale_y_continuous(expand = expansion(mult = c(0.05, 0)), limits = c(0,aesi_limits_y["Anaphylaxis"]), oob = scales::rescale_none),
+          outcome_cohort_name == "Disseminated intravascular coagulation" ~ scale_y_continuous(expand = expansion(mult = c(0.05, 0)), limits = c(0,aesi_limits_y["Disseminated intravascular coagulation"]), oob = scales::rescale_none),
+          outcome_cohort_name == "Thrombosis with thrombocytopenia syndrome" ~ scale_y_continuous(expand = expansion(mult = c(0.05, 0)), limits = c(0,aesi_limits_y["Thrombosis with thrombocytopenia syndrome"]), oob = scales::rescale_none),
+          outcome_cohort_name == "Myocarditis or pericarditis" ~ scale_y_continuous(expand = expansion(mult = c(0.05, 0)), limits = c(0,aesi_limits_y["Myocarditis or pericarditis"]), oob = scales::rescale_none),
+          outcome_cohort_name == "Myocardial infarction" ~ scale_y_continuous(expand = expansion(mult = c(0.05, 0)), limits = c(0,aesi_limits_y["Myocardial infarction"]), oob = scales::rescale_none),
+          outcome_cohort_name == "Ischaemic stroke" ~ scale_y_continuous(expand = expansion(mult = c(0.05, 0)), limits = c(0,aesi_limits_y["Ischaemic stroke"]), oob = scales::rescale_none),
+          outcome_cohort_name == "Haemorrhagic stroke" ~ scale_y_continuous(expand = expansion(mult = c(0.05, 0)), limits = c(0,aesi_limits_y["Haemorrhagic stroke"]), oob = scales::rescale_none),
+          outcome_cohort_name == "Guillain–Barré syndrome" ~ scale_y_continuous(expand = expansion(mult = c(0.05, 0)), limits = c(0,aesi_limits_y["Guillain–Barré syndrome"]), oob = scales::rescale_none),
+          outcome_cohort_name == "Transverse myelitis" ~ scale_y_continuous(expand = expansion(mult = c(0.05, 0)), limits = c(0,aesi_limits_y["Transverse myelitis"]), oob = scales::rescale_none),
+          outcome_cohort_name == "Encephalitis" ~ scale_y_continuous(expand = expansion(mult = c(0.05, 0)), limits = c(0,aesi_limits_y["Encephalitis"]), oob = scales::rescale_none),
+          outcome_cohort_name == "Narcolepsy" ~ scale_y_continuous(expand = expansion(mult = c(0.05, 0)), limits = c(0,aesi_limits_y["Narcolepsy"]), oob = scales::rescale_none)
+        )
+      ) +
+      ylab("Incidence\n(per 100,000 person-years)") +
+      geom_segment(
+        aes(yend = arrow_end),
+        arrow = arrow(length = unit(0.2, "cm")),
+        linewidth = 0.6, alpha = 0.4,
+        na.rm = TRUE
+      )
+  )
+  
+  cat("\n\n\\pagebreak\n")
+}
+```
+
+```{r}
+# Table for AESI stratification ----
+for (outcomeGroup in outcomeGroups[3]) {
   for (strata in stratas) {
     if (outcomeGroup == "AESI Sensitivity (180 wash-out)") {
       cat(paste0('\n# Supplementary Table ', tableCount, '. ',  glue::glue(captionSens), '\n'))
@@ -518,27 +760,3 @@ cat(paste0(
 ```
 
 
-```{r}
-# # Table for MAE and AESI by claendar period ----
-# for (outcomeGroup in outcomeGroups[1:2]) {
-#   if (outcomeGroup == "AESI Sensitivity (180 wash-out)") {
-#     cat(paste0('\n# Supplementary Table ', tableCount, '. ',  glue::glue(captionSens), '\n'))
-#   } else {
-#     cat(paste0('\n# Supplementary Table ', tableCount, '. ',  glue::glue(caption), '\n'))
-#   }
-#   strata <- "pregnancy_start_period"
-#   tableCount <- tableCount + 1
-#   incidence |>
-#     filterAdditional(outcome_group == outcomeGroup) |>
-#     filter(strata_name == strata) |>
-#     incidenceTableFunction(strata)
-#   
-#   cat(paste0(
-#     ':::{custom-style="FooterNuria"}\n',
-#     footer, "\n",
-#     ':::'
-#   ))
-#   
-#   cat("\n\n\\pagebreak\n")
-# }
-```

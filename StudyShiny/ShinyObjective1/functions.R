@@ -627,7 +627,26 @@ pIncidence <- function(data, x, scales, ribbon = TRUE, errorbar = FALSE) {
       axis.text.x = element_text(face = "bold")
     ) +
     xlab("") +
-    ylab("Incidence (100,000 person-years)")
+    ylab("Incidence (100,000 person-years)") +
+    theme(
+      text = element_text(family = "Times New Roman", size = 10),
+      axis.text = element_text(size = 10),
+      axis.title = element_text(size = 10),
+      strip.text = element_text(
+        family = "Times New Roman",
+        size = 10,
+        face = "bold"
+      ),
+      legend.text = element_text(size = 10),
+      legend.title = element_text(size = 10),
+      plot.title = element_blank(),
+      panel.border = element_blank(),
+      plot.background = element_rect(fill = "white", colour = NA),
+      panel.background = element_rect(fill = "white", colour = NA),
+      panel.spacing.x = unit(0.5, "cm"),
+      panel.spacing.y = unit(0.3, "cm"),
+      plot.margin = margin(10, 15, 10, 10, unit = "pt")
+    )
   if (ribbon) {
     p <- p +
       geom_ribbon(  alpha = 0.15, color = NA, show.legend = FALSE)
