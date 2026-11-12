@@ -1048,12 +1048,13 @@ getSurvivalData <- function(data, outcomes, group, strata,
                             start = "cohort_start_date",
                             end = "cohort_end_date",
                             weights = NULL) {
+  
   tmp <- omopgenerics::uniqueTableName()
   
   # Work on a renamed copy so we don't clobber original
   outdata <- data |>
-    dplyr::rename(start_date = !!rlang::sym(start),
-                  end_date   = !!rlang::sym(end))
+    dplyr::rename(start_date = !!rlang::sym(start), end_date   = !!rlang::sym(end)) |>
+    compute(name = tmp, temporary = FALSE, overwrite = TRUE)
   
   # For each requested outcome, create two columns: <outcome>_status and <outcome>_time
   for (outcome in outcomes) {
@@ -1072,13 +1073,13 @@ getSurvivalData <- function(data, outcomes, group, strata,
           as.numeric(difftime(start_date, end_date, units = "days"))
         )
       ) |>
-      compute(name = tmp, temporary = FALSE)
+      compute(name = tmp, temporary = FALSE, overwrite = TRUE)
   }
   
   # remove original outcome date columns 
   outdata <- outdata |> 
     select(-any_of(outcomes)) |>
-    compute(name = tmp, temporary = FALSE)
+    compute(name = tmp, temporary = FALSE, overwrite = TRUE)
   
   return(outdata)
 }
@@ -1116,7 +1117,7 @@ pivotSurvivalData <- function(data, outcomes) {
   }
 }
 
-fitPoisson <- function(data, w = NULL) {
+fitPoissonRegression <- function(data, w = NULL) {
   if (nrow(data) == 0 || sum(data$status, na.rm = TRUE) < 5) return(NULL)
   weights_vec <- if (!is.null(w)) coalesce(data[[w]], 1) else rep(1, nrow(data))
   tryCatch(
@@ -1127,6 +1128,61 @@ fitPoisson <- function(data, w = NULL) {
       weights = weights_vec
     ),
     error = function(e) NULL
+  )
+}
+
+fitPoisson <- function(data, w = NULL) {
+  
+  if (nrow(data) == 0 || sum(data$status, na.rm = TRUE) < 5) {
+    return(NULL)
+  }
+  
+  weights_vec <- if (!is.null(w)) {
+    dplyr::coalesce(data[[w]], 1)
+  } else {
+    rep(1, nrow(data))
+  }
+  
+  exposed <- data$exposure == "exposed"
+  comparator <- data$exposure == "comparator"
+  
+  events_exp <- sum(
+    data$status[exposed] * weights_vec[exposed],
+    na.rm = TRUE
+  )
+  
+  events_comp <- sum(
+    data$status[comparator] * weights_vec[comparator],
+    na.rm = TRUE
+  )
+  
+  time_exp <- sum(
+    pmax(data$time[exposed], 0.5) * weights_vec[exposed],
+    na.rm = TRUE
+  )
+  
+  time_comp <- sum(
+    pmax(data$time[comparator], 0.5) * weights_vec[comparator],
+    na.rm = TRUE
+  )
+  
+  if (
+    events_exp <= 0 ||
+    events_comp <= 0 ||
+    time_exp <= 0 ||
+    time_comp <= 0
+  ) {
+    return(NULL)
+  }
+  
+  irr <- (events_exp / time_exp) /
+    (events_comp / time_comp)
+  
+  se <- sqrt(1 / events_exp + 1 / events_comp)
+  
+  list(
+    irr = irr,
+    se = se
   )
 }
 
@@ -1157,12 +1213,12 @@ getIRR <- function(x, ci, outcomes, stats = FALSE, weightsCol) {
       se        <- NA_real_
       
       if (!suppress) {
-        fit <- fitPoisson(df, w)
+        fit <- fitPoissonRegression(df, w)
         
         if (!is.null(fit)) {
           coefs    <- summary(fit)$coefficients
           irr      <- exp(coefs["exposureexposed", "Estimate"])
-          
+
           # ci == NULL: CIs stay NA — bootstrap fills them in processGroupStrata
           if (!is.null(ci) && ci == "midp") {
             se       <- coefs["exposureexposed", "Std. Error"]
@@ -1170,6 +1226,17 @@ getIRR <- function(x, ci, outcomes, stats = FALSE, weightsCol) {
             upper_ci <- exp(log(irr) + 1.96 * se)
           }
         }
+        
+        # if (!is.null(fit)) {
+        #   
+        #   irr <- fit$irr
+        #   
+        #   if (!is.null(ci) && ci == "midp") {
+        #     se <- fit$se
+        #     lower_ci <- exp(log(irr) - 1.96 * se)
+        #     upper_ci <- exp(log(irr) + 1.96 * se)
+        #   }
+        # }
       }
       
       row <- tibble(
@@ -1235,6 +1302,8 @@ getWeights <- function(x, coefs) {
   return(psData)
 }
 
+
+
 processGroupStrata <- function(data, groupLevel, strataLevel, ci, outcomes, weights) {
   data <- data |> ungroup()
   
@@ -1261,21 +1330,41 @@ processGroupStrata <- function(data, groupLevel, strataLevel, ci, outcomes, weig
   data <- data |> pivotSurvivalData(outcomes)
   
   if (ci == "bootstrap") {
-    coefBootstrap <- tibble()
-    nboot    <- 300
-    # Resample matched pairs, not individual rows
-    clusters <- unique(data$exposed_match_id)
+    
+    # Precompute cluster indices once (matched pairs, not individual rows)
+    cluster_rows <- split(
+      seq_len(nrow(data)),
+      data$exposed_match_id
+    )
+    
+    clusters <- names(cluster_rows)
+    nboot <- 300
+    
+    coefBootstrap <- vector("list", nboot)
     
     for (ii in seq_len(nboot)) {
-      boot_clusters <- sample(clusters, length(clusters), replace = TRUE)
-      data.ii <- bind_rows(lapply(
-        boot_clusters, \(cl) data[data$exposed_match_id == cl, ]
-      ))
-      irr_tbl <- getIRR(
-        data.ii, ci = NULL, outcomes = outcomes, weightsCol = weights
-      ) |> mutate(bootstrap = ii)
-      coefBootstrap <- bind_rows(coefBootstrap, irr_tbl)
+      boot_clusters <- sample(
+        clusters,
+        length(clusters),
+        replace = TRUE
+      )
+
+      idx <- unlist(
+        cluster_rows[boot_clusters],
+        use.names = FALSE
+      )
+
+      data.ii <- data[idx, , drop = FALSE]
+
+      coefBootstrap[[ii]] <- getIRR(
+        data.ii,
+        ci = NULL,
+        outcomes = outcomes,
+        weightsCol = weights
+      )
     }
+
+    coefBootstrap <- bind_rows(coefBootstrap)
     
     # Main estimate (stats = TRUE for full output columns)
     main_est <- getIRR(data, ci = "midp", outcomes = outcomes, stats = TRUE, weightsCol = weights)
