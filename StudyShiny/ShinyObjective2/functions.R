@@ -441,8 +441,8 @@ metaAnalysis <- function(data) {
         .default = "Person-Days"
       ),
       variable_level = dplyr::case_when(
-        grepl("exposed", estimate_name) ~ "exposed",
-        grepl("comparator", estimate_name) ~ "comparator",
+        grepl("exposed", estimate_name) ~ "Exposed",
+        grepl("comparator", estimate_name) ~ "Comparator",
         .default = NA_character_
       ),
       estimate_type = dplyr::if_else(grepl("count", estimate_name), "integer", "numeric"),
@@ -485,4 +485,17 @@ empiricalCalibration <- function(data) {
   } else {
     return(data |> dplyr::mutate(empirical_calibration = FALSE))
   }
+}
+
+# Helper to render a small explanatory footer below a table/plot output
+footerNote <- function(...) {
+  shiny::div(
+    style = paste(
+      "font-size: 0.82rem;",
+      "color: #555555;",
+      "line-height: 1.45;",
+      "margin-top: 12px;"
+    ),
+    shiny::p(...)
+  )
 }

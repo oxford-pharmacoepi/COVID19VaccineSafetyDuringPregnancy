@@ -38,23 +38,25 @@ result <- result |>
     strata_level = dplyr::case_when(
       strata_level == "0" ~ "No previous pregnancy",
       strata_level == "1" ~ "≥1 previous pregnancy",
+      grepl("0 &&&", strata_level) ~ gsub("0 &&&", "No previous pregnancy &&&", strata_level),
+      grepl("1 &&&", strata_level) ~ gsub("1 &&&", "≥1 previous pregnancy &&&", strata_level),
       .default = .data$strata_level
     ), 
     dplyr::across(
       c("strata_level", "variable_level"), 
       ~ dplyr::case_when(
-        .x == "Q1" & cdm_name == "SCIFI-PEARL" ~ "Q5 (most disadvantaged)",
-        .x == "Q2" & cdm_name == "SCIFI-PEARL" ~ "Q4",
-        .x == "Q4" & cdm_name == "SCIFI-PEARL" ~ "Q2",
-        .x == "Q5" & cdm_name == "SCIFI-PEARL" ~ "Q1 (least disadvantaged)",
-        .x == "0N" | .x == "0n" ~ "Missing",
-        .x == "Q5" ~ "Q5 (most disadvantaged)",
-        .x == "Q1" ~ "Q1 (least disadvantaged)",
-        .x == "U1" ~ "Q1 (least disadvantaged)",
-        .x == "U2" ~ "Q2",
-        .x == "U3" ~ "Q3",
-        .x == "U4" ~ "Q4",
-        .x == "U5" ~ "Q5 (most disadvantaged)",
+        grepl("Q1", .x) & cdm_name == "SCIFI-PEARL" ~ gsub("Q1", "Q5 (most disadvantaged)", .x),
+        grepl("Q2", .x) & cdm_name == "SCIFI-PEARL" ~ gsub("Q2", "Q4", .x),
+        grepl("Q4", .x) & cdm_name == "SCIFI-PEARL" ~ gsub("Q4", "Q2", .x),
+        grepl("Q5", .x) & cdm_name == "SCIFI-PEARL" ~ gsub("Q5", "Q1 (least disadvantaged)", .x),
+        grepl("0N", .x) | grepl("0n", .x) ~ gsub("0n|0N", "Missing", .x),
+        grepl("Q5", .x) ~ gsub("Q5", "Q5 (most disadvantaged)", .x),
+        grepl("Q1", .x) ~ gsub("Q1", "Q1 (least disadvantaged)", .x),
+        grepl("U1", .x) ~ gsub("U1", "Q1 (least disadvantaged)", .x),
+        grepl("U2", .x) ~ gsub("U2", "Q2", .x),
+        grepl("U3", .x) ~ gsub("U3", "Q3", .x),
+        grepl("U4", .x) ~ gsub("U4", "Q4", .x),
+        grepl("U5", .x) ~ gsub("U5", "Q5 (most disadvantaged)", .x),
         .default = .x
       )
     )
@@ -123,7 +125,7 @@ values$survival_target_cohort <- values$survival_target_cohort[values$survival_t
 values$summarise_characteristics_variable_name <- c(
   "Number records", "Number subjects", "Trimester", "Maternal age group", 
   "Maternal age group narrow", "In vitro fertilisation", 
-  "Pregnancy induced hypertension", "Age", 
+  "Pregnancy induced hypertension", 
   "Pregnancy start period", "Socioeconomic status", "Nationallity", "Season",
   "Ethnicity", "Birth continent",
   "Maternal age", "Pre-Pregnancy Smoke", "Previous pregnancies", 

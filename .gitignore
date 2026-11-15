@@ -1,9 +1,18 @@
 .Rproj.user
 .Rhistory
+.Rapp.history
+.DS_Store
 **/Results_CPRD GOLD/*
 **/CodeToRunLocal.R
 Downloads/*
 *.zip
+*.dcf
+*.png
+*.svg
+*.jpeg
+!**/www/*.png
+!**/www/*.svg
+!**/www/*.jpeg
 **/data/*.csv
 **/data/*.RData
 **/nco'weighted.R
@@ -11,3 +20,8 @@ Downloads/*
 **data2/*
 **/CopyOfdata/*
 **/data copy/*
+**/data copy old/*.csv
+**/dataOld/*
+**/dataNew/*
+**/shinyData.RData
+P5C1006_test_*.csv

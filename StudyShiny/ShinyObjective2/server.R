@@ -311,7 +311,7 @@ server <- function(input, output, session) {
       ) |> 
       dplyr::filter(variable_level != "Previous pregnant COVID-19 vaccines")
     
-    if (grepl("objective_1", input$summarise_characteristics_cohort_name)) {
+    if (grepl("First-dose", input$summarise_characteristics_cohort_name)) {
       x <- x |>
         dplyr::filter(
           ! .data$variable_name %in% c("Days previous dose", "Previous COVID-19 vaccines", "Previous pregnant COVID-19 vaccines")
@@ -366,7 +366,7 @@ server <- function(input, output, session) {
           )
         )
     }
-    if (grepl("objective_3", input$summarise_characteristics_cohort_name)) {
+    if (grepl("Boosted", input$summarise_characteristics_cohort_name)) {
       x <- x |>
         dplyr::mutate(
           variable_name = factor(
@@ -396,11 +396,11 @@ server <- function(input, output, session) {
         strata_level = factor(
           strata_level, 
           levels = c(
-            "overall", "exposed", "comparator", "comparator &&& moderna", "exposed &&& moderna",    
-            "comparator &&& pfizer", "exposed &&& pfizer", "comparator &&& T1", "exposed &&& T1", 
-            "comparator &&& T2", "exposed &&& T2", "comparator &&& T3", "exposed &&& T3",
-            "comparator &&& 12 to 17", "exposed &&& 12 to 17", "comparator &&& 18 to 34", 
-            "exposed &&& 18 to 34", "comparator &&& 35 to 55", "exposed &&& 35 to 55"
+            "overall", "Exposed", "Comparator", "Comparator &&& moderna", "Exposed &&& moderna",
+            "Comparator &&& pfizer", "Exposed &&& pfizer", "Comparator &&& T1", "Exposed &&& T1",
+            "Comparator &&& T2", "Exposed &&& T2", "Comparator &&& T3", "Exposed &&& T3",
+            "Comparator &&& 12 to 17", "Exposed &&& 12 to 17", "Comparator &&& 18 to 34",
+            "Exposed &&& 18 to 34", "Comparator &&& 35 to 55", "Exposed &&& 35 to 55"
           ),
           labels = c(
             "overall", "Exposed", "Comparator", "Comparator &&& Moderna", "Exposed &&& Moderna",    
@@ -891,7 +891,7 @@ server <- function(input, output, session) {
                       },
                       ignoreInit = TRUE
   )
-  shiny::observeEvent(input$propensity_scores_hide,
+  shiny::observeEvent(input$propensity_score_hide,
                       {
                         updateButtons$propensity_scores <- TRUE
                       },
@@ -909,7 +909,7 @@ server <- function(input, output, session) {
   })
   
   ## propensity_score_coeficcients -----
-  getPropensityScoreCoeficcientsTidy <- shiny::reactive({
+  getPropensityScoreCoeficcientsTidy <- shiny::eventReactive(input$update_propensity_scores, {
     # notHide <- NULL
     # if (isFALSE(all(input$propensity_scores_vaccine_brand == "overall"))) notHide <- c(notHide, "vaccine_brand")
     # if (isFALSE(all(input$propensity_scores_gestational_trimester == "overall"))) notHide <- c(notHide, "gestational_trimester")
@@ -923,9 +923,9 @@ server <- function(input, output, session) {
         .data$group_level %in% input$propensity_scores_cohort_name
       ) |> 
       omopgenerics::filterStrata(
-        .data$vaccine_brand %in% input$summarise_characteristics_vaccine_brand,
-        .data$gestational_trimester %in% input$summarise_characteristics_gestational_trimester,
-        .data$age_group %in% input$summarise_characteristics_age_group
+        .data$vaccine_brand %in% input$propensity_scores_vaccine_brand,
+        .data$gestational_trimester %in% input$propensity_scores_gestational_trimester,
+        .data$age_group %in% input$propensity_scores_age_group
       ) |>
       visOmopResults::tidy() |>
       select(!dplyr::any_of(input$propensity_score_hide))
@@ -1018,7 +1018,6 @@ server <- function(input, output, session) {
   ## population count ----
   getSummariseCohortCountDataPop <- shiny::eventReactive(input$update_summarise_sampling, {
     cohorts <- as.vector(outer(input$summarise_cohort_count_population, input$summarise_sampling_cohort_name, paste, sep = "_"))
-    cohorts <- paste0("population_", cohorts)
     cohorts <- gsub("overall_", "", cohorts)
     data[["summarise_characteristics"]] |>
       dplyr::filter(variable_name %in% c("Number records", "Number subjects")) |>
@@ -1035,14 +1034,14 @@ server <- function(input, output, session) {
         strata_level = factor(
           strata_level,
           levels = c(
-            "overall", "exposed", "comparator", paste0("exposed &&& T", 1:3), 
-            paste0("comparator &&& T", 1:3), paste0("exposed &&& ", c("12 to 17", "18 to 34", "35 to 55")), 
-            paste0("comparator &&& ", c("12 to 17", "18 to 34", "35 to 55")),
-            "exposed &&& moderna", "exposed &&& pfizer", "comparator &&& moderna",
-            "comparator &&& pfizer"
+            "overall", "Exposed", "Comparator", paste0("Exposed &&& T", 1:3),
+            paste0("Comparator &&& T", 1:3), paste0("Exposed &&& ", c("12 to 17", "18 to 34", "35 to 55")),
+            paste0("Comparator &&& ", c("12 to 17", "18 to 34", "35 to 55")),
+            "Exposed &&& moderna", "Exposed &&& pfizer", "Comparator &&& moderna",
+            "Comparator &&& pfizer"
           ),
           labels = c(
-            "overall", "Exposed", "Comparator", paste0("Exposed &&& Trimester ", 1:3), 
+            "overall", "Exposed", "Comparator", paste0("Exposed &&& Trimester ", 1:3),
             paste0("Comparator &&& Trimester ", 1:3), paste0("Exposed &&& ", c("12 to 17", "18 to 34", "35 to 55")), 
             paste0("Comparator &&& ", c("12 to 17", "18 to 34", "35 to 55")),
             "Exposed &&& Moderna", "Exposed &&& Pfizer", "Comparator &&& Moderna",
@@ -1060,7 +1059,7 @@ server <- function(input, output, session) {
         header = input$summarise_cohort_count_table_header_pop,
         groupColumn = input$summarise_cohort_count_table_group_column_pop,
         hide = input$summarise_cohort_count_table_hide_pop,
-        factor = list("cohort_name" = c(paste0("population_objective_", 1:3), paste0("population_miscarriage_objective_", 1:3), paste0("population_preterm_labour_objective_", 1:3)))
+        factor = list("cohort_name" = c("First-dose vaccinated vs. Unvaccinated", "Boosted vs. Unboosted", "First-dose vaccinated vs. Unvaccinated (Miscarriage)", "Boosted vs. Unboosted (Miscarriage)", "First-dose vaccinated vs. Unvaccinated (Preterm delivery)", "Boosted vs. Unboosted (Preterm delivery)"))
       )
   })
   output$summarise_cohort_count_table_pop <- gt::render_gt({
@@ -1076,10 +1075,13 @@ server <- function(input, output, session) {
   getSummariseCohortAttritionDataPop <- shiny::eventReactive(input$update_summarise_sampling, {
     data[["summarise_cohort_attrition"]] |>
       dplyr::filter(.data$cdm_name %in% input$summarise_sampling_cdm_name) |>
-      omopgenerics::filterGroup(.data$cohort_name %in% paste0("population_", input$summarise_sampling_cohort_name)) |>
+      omopgenerics::filterGroup(.data$cohort_name %in% input$summarise_sampling_cohort_name) |>
       omopgenerics::filterSettings(.data$table_name %in% "Study population weighted") |>
-      dplyr::filter(as.numeric(additional_level) < 15) |>
-      dplyr::mutate(group_level = paste0("source_", .data$group_level))
+      dplyr::filter(
+        as.numeric(additional_level) <= 15 & group_level == "First-dose vaccinated vs. Unvaccinated" |
+          as.numeric(additional_level) <= 16 & group_level == "Boosted vs. Unboosted"
+      ) |>
+      dplyr::mutate(group_level = paste0("Source population: ", .data$group_level))
   })
   getSummariseCohortAttritionTablePop <- shiny::reactive({
     getSummariseCohortAttritionDataPop() |>
@@ -1120,23 +1122,38 @@ server <- function(input, output, session) {
   getSummariseSamplingData <- shiny::eventReactive(input$update_summarise_sampling, {
     data[["summarise_sampling"]] |>
       dplyr::filter(.data$cdm_name %in% input$summarise_sampling_cdm_name) |> 
-      omopgenerics::filterGroup(.data$cohort_name %in% paste0("source_population_", input$summarise_sampling_cohort_name))
+      omopgenerics::filterGroup(.data$cohort_name %in% paste0("source_", input$summarise_sampling_cohort_name))
   })
   getSummariseSamplingTable <- shiny::reactive({
+    sampling_labels <- c(
+      "Number pregnancies exposed" =
+        "Exposed entries",
+      "Number subjects exposed" =
+        "Distinct exposed individuals",
+      "Number pregnancies comparator" =
+        "Distinct comparator pregnancies",
+      "Number subjects comparator" =
+        "Distinct comparator individuals",
+      "Number comparator-exposed" =
+        "Eligible exposed-comparator pairings",
+      "exposed:comparator" =
+        "Eligible comparators per exposed entry"
+    )
     getSummariseSamplingData() |>
-      mutate(
-        variable_name = factor(variable_name, c(c(
-          "Number pregnancies exposed",	"Number subjects exposed",	
-          "Number pregnancies comparator", "Number subjects comparator",
-          "Number comparator-exposed", "exposed:comparator"	
-        )))
+      dplyr::mutate(
+        variable_name = factor(
+          variable_name,
+          levels = names(sampling_labels),
+          labels = unname(sampling_labels)
+        ),
+        group_level = gsub("source_", "", group_level)
       ) |>
-      arrange(variable_name) |>
+      dplyr::arrange(variable_name) |>
       visOmopResults::visOmopTable(
         estimateName = c(
           "N" = "<count>",
-          "Median [Q25 - Q75]" = "<median> [<q25> - <q75>]",
-          "Range" = "<min> - <max>"
+          "Median [IQR]" = "<median> [<q25> - <q75>]",
+          "Min-max" = "<min> - <max>"
         ),
         header = input$summarise_sampling_table_header, 
         groupColumn = input$summarise_sampling_table_group_column,
@@ -1255,12 +1272,12 @@ server <- function(input, output, session) {
         strata_level = factor(
           strata_level,
           levels = c(
-            "overall", "exposed", "comparator", paste0("T", 1:3), "pfizer", "moderna", 
-            "12 to 17", "18 to 34", "35 to 55", paste0("exposed &&& T", 1:3), 
-            paste0("comparator &&& T", 1:3), paste0("exposed &&& ", c("12 to 17", "18 to 34", "35 to 55")), 
-            paste0("comparator &&& ", c("12 to 17", "18 to 34", "35 to 55")),
-            "exposed &&& moderna", "exposed &&& pfizer", "comparator &&& moderna",
-            "comparator &&& pfizer"
+            "overall", "Exposed", "Comparator", paste0("T", 1:3), "pfizer", "moderna",
+            "12 to 17", "18 to 34", "35 to 55", paste0("Exposed &&& T", 1:3),
+            paste0("Comparator &&& T", 1:3), paste0("Exposed &&& ", c("12 to 17", "18 to 34", "35 to 55")),
+            paste0("Comparator &&& ", c("12 to 17", "18 to 34", "35 to 55")),
+            "Exposed &&& moderna", "Exposed &&& pfizer", "Comparator &&& moderna",
+            "Comparator &&& pfizer"
           ),
           labels = c(
             "overall", "Exposed", "Comparator", paste0("Trimester ", 1:3), "Pfizer", "Moderna", 
@@ -1296,7 +1313,7 @@ server <- function(input, output, session) {
           "age_group" = c("overall", "12 to 17", "18 to 34", "35 to 55"),
           "gestational_trimester" = c("overall", "Trimester 1", "Trimester 2", "Trimester 3"),
           "vaccine_brand" = c("overall", "Pfizer", "Moderna"),
-          "exit_reason" = c("overall", "next_covid_vaccine", "covid_infection", "date_of_death", "observation_end", "covid_infection; next_covid_vaccine", "counterpart_censoring")
+          "exit_reason" = c("Overall", "Next COVID-19 vaccine dose", "COVID-19 infection", "Death", "End of observation", "COVID-19 infection; next COVID-19 vaccine dose", "Counterpart censored (matched pair)")
         )
       )
   })
@@ -1593,143 +1610,4 @@ server <- function(input, output, session) {
     }
   )
   
-  # kaplan_meier -----
-  ## update message if filter is changed
-  shiny::observeEvent(input$kaplan_meier_cdm_name,
-                      {
-                        updateButtons$kaplan_meier <- TRUE
-                      },
-                      ignoreInit = TRUE
-  )
-  shiny::observeEvent(input$kaplan_meier_cohort_name,
-                      {
-                        updateButtons$kaplan_meier <- TRUE
-                      },
-                      ignoreInit = TRUE
-  )
-  shiny::observeEvent(input$kaplan_meier_exposure,
-                      {
-                        updateButtons$kaplan_meier <- TRUE
-                      },
-                      ignoreInit = TRUE
-  )
-  shiny::observeEvent(input$kaplan_meier_vaccine_brand,
-                      {
-                        updateButtons$kaplan_meier <- TRUE
-                      },
-                      ignoreInit = TRUE
-  )
-  shiny::observeEvent(input$kaplan_meier_gestational_trimester,
-                      {
-                        updateButtons$kaplan_meier <- TRUE
-                      },
-                      ignoreInit = TRUE
-  )
-  shiny::observeEvent(input$kaplan_meier_age_group,
-                      {
-                        updateButtons$kaplan_meier <- TRUE
-                      },
-                      ignoreInit = TRUE
-  )
-  shiny::observeEvent(input$kaplan_meier_weighting,
-                      {
-                        updateButtons$kaplan_meier <- TRUE
-                      },
-                      ignoreInit = TRUE
-  )
-  shiny::observeEvent(updateButtons$kaplan_meier, {
-    if (updateButtons$kaplan_meier == TRUE) {
-      output$update_message_kaplan_meier <- shiny::renderText("Filters have changed please consider to use the update content button!")
-    } else {
-      output$update_message_kaplan_meier <- shiny::renderText("")
-    }
-  })
-  shiny::observeEvent(input$update_kaplan_meier, {
-    updateButtons$kaplan_meier <- FALSE
-  })
-  
-  ## get kaplan_meier data
-  getKMData <- shiny::eventReactive(input$update_kaplan_meier, {
-    data[["kaplan_meier"]] |>
-      dplyr::filter(
-        .data$cdm_name %in% input$kaplan_meier_cdm_name
-      ) |>
-      omopgenerics::filterGroup(
-        .data$cohort_name %in% input$kaplan_meier_cohort_name, 
-        .data$outcome %in% input$kaplan_meier_outcome
-      ) |>
-      omopgenerics::filterStrata(
-        .data$vaccine_brand %in% input$kaplan_meier_vaccine_brand,
-        .data$gestational_trimester %in% input$kaplan_meier_gestational_trimester,
-        .data$maternal_age_group %in% input$kaplan_meier_age_group
-      ) |>
-      omopgenerics::filterAdditional(.data$exposure %in% input$kaplan_meier_exposure) |>
-      omopgenerics::filterSettings(
-        .data$weighting %in% input$kaplan_meier_weighting
-      ) |>
-      omopgenerics::tidy() |>
-      dplyr::mutate(time = as.numeric(variable_level)) |>
-      dplyr::select(!c("variable_name", "variable_level")) |>
-      dplyr::mutate(
-        log_time = log(time),                  # Transform X
-        log_log_surv = log(-log(estimate))     # Transform Y
-      )
-  })
-  getKMTable <- shiny::reactive({
-    dropCols <- input$kaplan_meier_table_hide
-    getKMData() |>
-      dplyr::select(!dplyr::any_of(c(dropCols))) |>
-      visOmopResults::formatTable(type = "reactable")
-  })
-  output$kaplan_meier_table <- reactable::renderReactable({
-    getKMTable()
-  })
-  output$kaplan_meier_table_download <- shiny::downloadHandler(
-    filename = "km.csv",
-    content = function(file) {
-      rt <- getKMTable()
-      rt$x$tag$attribs$data |>
-        unclass() |>
-        jsonlite::fromJSON() |>
-        dplyr::as_tibble() |>
-        readr::write_csv(file)
-    }
-  )
-  getKMPlot <- shiny::reactive({
-    getKMData() |>
-      visOmopResults::scatterPlot(
-        x = "log_time",
-        y = "log_log_surv",
-        line = FALSE,
-        point = FALSE,
-        ribbon = FALSE,
-        facet = input$kaplan_meier_plot_facet,
-        colour = input$kaplan_meier_plot_colour,
-        label = character()
-      ) +
-      visOmopResults::themeVisOmop(fontsizeRef = 11) +
-      ggplot2::labs(
-        x = "Log(Time)",
-        y = "log(-log(S(t)))"
-      ) +
-      geom_step(linewidth = 0.8)
-      # ggplot2::geom_ribbon(aes(ymin = estimate_95CI_lower, ymax = estimate_95CI_upper), alpha = 0.3, colour = NA)
-  })
-  output$kaplan_meier_plot <- shiny::renderUI({
-    x <- getKMPlot()
-    renderInteractivePlot(x, TRUE)
-  })
-  output$kaplan_meier_plot_download <- shiny::downloadHandler(
-    filename = "plot_KM.png",
-    content = function(file) {
-      ggplot2::ggsave(
-        filename = file,
-        plot = getKMPlot(),
-        width = as.numeric(input$kaplan_meier_plot_width),
-        height = as.numeric(input$kaplan_meier_plot_height),
-        units = input$kaplan_meier_plot_units,
-        dpi = as.numeric(input$kaplan_meier_plot_dpi)
-      )
-    }
-  )
 }

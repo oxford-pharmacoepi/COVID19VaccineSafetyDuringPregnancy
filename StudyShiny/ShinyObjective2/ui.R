@@ -37,10 +37,11 @@ ui <- bslib::page_navbar(
       class = "text-end"
     ),
     gt::gt_output("summarise_omop_snapshot_table") |>
-      shinycssloaders::withSpinner()
+      shinycssloaders::withSpinner(),
+    footerNote("Metadata for each contributing data source (data holder, CDM and vocabulary versions, and observation period), as recorded in the OMOP Common Data Model.")
   ),
   # Cohort summary ----
-  bslib::nav_menu(
+  if (!disseminationMode) bslib::nav_menu(
     title = "Cohort summary",
     icon = shiny::icon("list"),
     bslib::nav_panel(
@@ -50,7 +51,7 @@ ui <- bslib::page_navbar(
         sidebar = bslib::sidebar(
           shinyWidgets::pickerInput(
             inputId = "summarise_cohort_count_cdm_name",
-            label = "CDM name",
+            label = "Data source",
             choices = choices$summarise_cohort_count_cdm_name,
             selected = selected$summarise_cohort_count_cdm_name,
             multiple = TRUE,
@@ -137,7 +138,8 @@ ui <- bslib::page_navbar(
                   position = "right"
                 ),
                 gt::gt_output("summarise_cohort_count_table") |>
-                  shinycssloaders::withSpinner()
+                  shinycssloaders::withSpinner(),
+                footerNote("Number of records and distinct subjects in the base study cohorts (pregnancy source populations, vaccine-dose cohorts, outcome, covariate, and negative-control cohorts) before risk-set sampling and matching. Counts below the minimum cell count are suppressed.")
               )
             )
           ),
@@ -216,7 +218,7 @@ ui <- bslib::page_navbar(
         sidebar = bslib::sidebar(
           shinyWidgets::pickerInput(
             inputId = "summarise_cohort_attrition_cdm_name",
-            label = "CDM name",
+            label = "Data source",
             choices = choices$summarise_cohort_attrition_cdm_name,
             selected = selected$summarise_cohort_attrition_cdm_name[1],
             multiple = TRUE,
@@ -295,7 +297,8 @@ ui <- bslib::page_navbar(
                   position = "right"
                 ),
                 gt::gt_output("summarise_cohort_attrition_table") |>
-                  shinycssloaders::withSpinner()
+                  shinycssloaders::withSpinner(),
+                footerNote("Eligibility criteria applied in sequence for each base cohort. Each row shows the number of records and subjects excluded at that step and the number remaining.")
               )
             )
           ),
@@ -347,7 +350,7 @@ ui <- bslib::page_navbar(
         sidebar = bslib::sidebar(
           shinyWidgets::pickerInput(
             inputId = "summarise_sampling_cdm_name",
-            label = "CDM name",
+            label = "Data source",
             choices = choices$summarise_sampling_cdm_name,
             selected = selected$summarise_sampling_cdm_name,
             multiple = TRUE,
@@ -355,9 +358,9 @@ ui <- bslib::page_navbar(
           ),
           shinyWidgets::pickerInput(
             inputId = "summarise_sampling_cohort_name",
-            label = "Cohort name",
-            choices = paste0("objective_", 1:3),
-            selected = paste0("objective_", 1:3),
+            label = "Analysis (dose comparison)",
+            choices = c("First-dose vaccinated vs. Unvaccinated", "Boosted vs. Unboosted"),
+            selected = c("First-dose vaccinated vs. Unvaccinated", "Boosted vs. Unboosted"),
             multiple = TRUE,
             options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
           ),
@@ -406,7 +409,7 @@ ui <- bslib::page_navbar(
                       inputId = "summarise_cohort_count_exposure_pop",
                       label = "Exposure",
                       choices = choices$summarise_characteristics_exposure,
-                      selected = c("comparator", "exposed"),
+                      selected = c("Comparator", "Exposed"),
                       multiple = TRUE,
                       options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
                     ),
@@ -461,7 +464,8 @@ ui <- bslib::page_navbar(
                   position = "right"
                 ),
                 gt::gt_output("summarise_cohort_count_table_pop") |>
-                  shinycssloaders::withSpinner()
+                  shinycssloaders::withSpinner(),
+                footerNote("Number of Exposed and Comparator pregnancies in each analysis population after risk-set sampling and 1:1 matching. Miscarriage and preterm delivery populations are restricted to pregnancies still at risk of the outcome at the index date (before gestational week 20 and 37, respectively).")
               )
             )
           ),
@@ -520,45 +524,13 @@ ui <- bslib::page_navbar(
                   position = "right"
                 ),
                 gt::gt_output("summarise_cohort_attrition_table_pop") |>
-                  shinycssloaders::withSpinner()
+                  shinycssloaders::withSpinner(),
+                footerNote("Eligibility criteria applied to the source population of pregnancies for each dose-specific analysis before risk-set sampling.")
               )
             )
           ),
-          # bslib::nav_panel(
-          #   title = "Source Population Attrition Diagram",
-          #   bslib::card(
-          #     full_screen = TRUE,
-          #     bslib::card_header(
-          #       bslib::popover(
-          #         shiny::icon("download"),
-          #         shiny::numericInput(
-          #           inputId = "summarise_cohort_attrition_diagram_width_pop",
-          #           label = "Width (px)",
-          #           value = 2000
-          #         ),
-          #         shiny::downloadButton(outputId = "summarise_cohort_attrition_diagram_download_pop", label = "Download Diagram")
-          #       ),
-          #       class = "text-end"
-          #     ),
-          #     bslib::layout_sidebar(
-          #       sidebar = bslib::sidebar(
-          #         shinyWidgets::pickerInput(
-          #           inputId = "summarise_cohort_attrition_diagram_show_pop",
-          #           label = "Show",
-          #           choices = c("subjects", "records"),
-          #           selected = c("records"),
-          #           multiple = TRUE,
-          #           options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
-          #         ),
-          #         position = "right"
-          #       ),
-          #       DiagrammeR::grVizOutput("summarise_cohort_attrition_diagram_pop") |>
-          #         shinycssloaders::withSpinner()
-          #     )
-          #   )
-          # ),
           bslib::nav_panel(
-            title = "Sampling Summary Table",
+            title = "Risk-set Sampling and Matching",
             bslib::card(
               full_screen = TRUE,
               bslib::card_header(
@@ -604,7 +576,42 @@ ui <- bslib::page_navbar(
                   position = "right"
                 ),
                 gt::gt_output("summarise_sampling_table") |>
-                  shinycssloaders::withSpinner()
+                  shinycssloaders::withSpinner(),
+                
+                # Footnotes below the sampling table
+                shiny::div(
+                  style = paste(
+                    "font-size: 0.82rem;",
+                    "color: #555555;",
+                    "line-height: 1.45;",
+                    "margin-top: 12px;"
+                  ),
+                  
+                  shiny::p(
+                    shiny::strong("Notes: "),
+                    "Each eligible vaccinated pregnancy defined a risk set at its vaccination date (index date). Pregnancies not yet exposed to the vaccine dose of interest and eligible at that date were identified as potential comparators. Sequential exact matching was followed by 1:1 selection, prioritising previously unmatched comparators and permitting resampling when necessary. Pregnancies could contribute to multiple risk sets and subsequently become exposed."
+                  ),
+                  
+                  shiny::p(
+                    shiny::strong("a. Exposed entries: "),
+                    "Distinct individual-vaccination-date combinations. An individual may contribute more than once across eligible pregnancies."
+                  ),
+                  
+                  shiny::p(
+                    shiny::strong("b. Distinct comparator pregnancies: "),
+                    "Unique individual-pregnancy combinations represented among eligible comparators."
+                  ),
+                  
+                  shiny::p(
+                    shiny::strong("c. Eligible exposed-comparator pairings: "),
+                    "Total potential matches across vaccination-date risk sets; a comparator pregnancy may contribute to multiple pairings."
+                  ),
+                  
+                  shiny::p(
+                    shiny::strong("d. Comparators per exposed entry: "),
+                    "Median, interquartile range, and range of eligible comparators per exposed entry."
+                  )
+                )
               )
             )
           )
@@ -619,7 +626,7 @@ ui <- bslib::page_navbar(
         sidebar = bslib::sidebar(
           shinyWidgets::pickerInput(
             inputId = "propensity_scores_cdm_name",
-            label = "CDM name",
+            label = "Data source",
             choices = choices$propensity_scores_cdm_name,
             selected = selected$propensity_scores_cdm_name,
             multiple = TRUE,
@@ -627,7 +634,7 @@ ui <- bslib::page_navbar(
           ),
           shinyWidgets::pickerInput(
             inputId = "propensity_scores_cohort_name",
-            label = "Cohort name",
+            label = "Analysis (dose comparison)",
             choices = choices$propensity_scores_cohort_name,
             selected = selected$propensity_scores_cohort_name,
             multiple = TRUE,
@@ -691,7 +698,8 @@ ui <- bslib::page_navbar(
                   position = "right"
                 ),
                 DT::DTOutput("propensity_score_coeficcients_tidy") |>
-                  shinycssloaders::withSpinner()
+                  shinycssloaders::withSpinner(),
+                footerNote("Propensity scores were estimated within each analysis, data source, and stratum using clinically pre-selected variables and data-driven variables selected by LASSO-penalised logistic regression.")
               )
             )
           ),
@@ -747,7 +755,8 @@ ui <- bslib::page_navbar(
                   position = "right"
                 ),
                 shiny::uiOutput("propensity_score_plot") |>
-                  shinycssloaders::withSpinner()
+                  shinycssloaders::withSpinner(),
+                footerNote("Distribution of the estimated propensity scores by exposure group.")
               )
             )
           )
@@ -762,7 +771,7 @@ ui <- bslib::page_navbar(
         sidebar = bslib::sidebar(
           shinyWidgets::pickerInput(
             inputId = "cohort_exit_cdm_name",
-            label = "CDM name",
+            label = "Data source",
             choices = choices$cohort_exit_cdm_name,
             selected = selected$cohort_exit_cdm_name,
             multiple = TRUE,
@@ -770,7 +779,7 @@ ui <- bslib::page_navbar(
           ),
           shinyWidgets::pickerInput(
             inputId = "cohort_exit_cohort_name",
-            label = "Cohort name",
+            label = "Analysis (dose comparison)",
             choices = choices$cohort_exit_cohort_name,
             selected = selected$cohort_exit_cohort_name,
             multiple = TRUE,
@@ -904,7 +913,8 @@ ui <- bslib::page_navbar(
                 position = "right"
               ),
               gt::gt_output("cohort_exit_table") |>
-                shinycssloaders::withSpinner()
+                shinycssloaders::withSpinner(),
+              footerNote("Available follow-up time in the data source, and reasons to end the follow-up.")
             )
           )
         )
@@ -918,7 +928,7 @@ ui <- bslib::page_navbar(
         sidebar = bslib::sidebar(
           shinyWidgets::pickerInput(
             inputId = "summarise_characteristics_cdm_name",
-            label = "CDM name",
+            label = "Data source",
             choices = choices$summarise_characteristics_cdm_name,
             selected = selected$summarise_characteristics_cdm_name,
             multiple = TRUE,
@@ -926,9 +936,9 @@ ui <- bslib::page_navbar(
           ),
           shinyWidgets::pickerInput(
             inputId = "summarise_characteristics_cohort_name",
-            label = "Cohort name",
+            label = "Analysis (dose comparison)",
             choices = choices$summarise_characteristics_cohort_name,
-            selected = "population_objective_1",
+            selected = "First-dose vaccinated vs. Unvaccinated",
             multiple = FALSE,
             options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
           ),
@@ -936,7 +946,7 @@ ui <- bslib::page_navbar(
             inputId = "summarise_characteristics_exposure",
             label = "Exposure",
             choices = choices$summarise_characteristics_exposure,
-            selected = c("exposed", "comparator"),
+            selected = c("Exposed", "Comparator"),
             multiple = TRUE,
             options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
           ),
@@ -1045,79 +1055,8 @@ ui <- bslib::page_navbar(
                   position = "right"
                 ),
                 gt::gt_output("summarise_characteristics_table") |>
-                  shinycssloaders::withSpinner()
-              )
-            )
-          ),
-          bslib::nav_panel(
-            title = "Plot Characteristics",
-            bslib::card(
-              full_screen = TRUE,
-              bslib::card_header(
-                bslib::popover(
-                  shiny::icon("download"),
-                  shiny::numericInput(
-                    inputId = "summarise_characteristics_plot_width",
-                    label = "Width",
-                    value = 15
-                  ),
-                  shiny::numericInput(
-                    inputId = "summarise_characteristics_plot_height",
-                    label = "Height",
-                    value = 15
-                  ),
-                  shinyWidgets::pickerInput(
-                    inputId = "summarise_characteristics_plot_units",
-                    label = "Units",
-                    choices = c("px", "cm", "inch"),
-                    selected = "cm",
-                    multiple = FALSE,
-                    options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
-                  ),
-                  shiny::numericInput(
-                    inputId = "summarise_characteristics_plot_dpi",
-                    label = "DPI",
-                    value = 300
-                  ),
-                  shiny::downloadButton(outputId = "summarise_characteristics_plot_download", label = "Download plot")
-                ),
-                class = "text-end"
-              ),
-              bslib::layout_sidebar(
-                sidebar = bslib::sidebar(
-                  shinyWidgets::materialSwitch(
-                    inputId = "summarise_characteristics_plot_interactive",
-                    label = "Interactive",
-                    value = TRUE
-                  ),
-                  shinyWidgets::pickerInput(
-                    inputId = "summarise_characteristics_plot_plot_type",
-                    label = "Plot type",
-                    choices = c("boxplot", "barplot", "scatterplot"),
-                    selected = "boxplot",
-                    multiple = FALSE,
-                    options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
-                  ),
-                  shinyWidgets::pickerInput(
-                    inputId = "summarise_characteristics_plot_facet",
-                    label = "Facet",
-                    choices = c("cdm_name", "cohort_name", "exposure", "vaccine_brand", "gestational_trimester", "age_group"),
-                    selected = "cdm_name",
-                    multiple = TRUE,
-                    options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
-                  ),
-                  shinyWidgets::pickerInput(
-                    inputId = "summarise_characteristics_plot_colour",
-                    label = "Colour",
-                    choices = c("cdm_name", "cohort_name", "exposure", "vaccine_brand", "gestational_trimester", "age_group"),
-                    selected = "cohort_name",
-                    multiple = TRUE,
-                    options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
-                  ),
-                  position = "right"
-                ),
-                shiny::uiOutput("summarise_characteristics_plot") |>
-                  shinycssloaders::withSpinner()
+                  shinycssloaders::withSpinner(),
+                footerNote("Baseline characteristics of Exposed and Comparator pregnancies, before (unweighted) and after (weighted) propensity-score overlap weighting.")
               )
             )
           )
@@ -1132,7 +1071,7 @@ ui <- bslib::page_navbar(
         sidebar = bslib::sidebar(
           shinyWidgets::pickerInput(
             inputId = "summarise_large_scale_characteristics_cdm_name",
-            label = "CDM name",
+            label = "Data source",
             choices = choices$summarise_large_scale_characteristics_cdm_name,
             selected = selected$summarise_large_scale_characteristics_cdm_name,
             multiple = TRUE,
@@ -1140,9 +1079,9 @@ ui <- bslib::page_navbar(
           ),
           shinyWidgets::pickerInput(
             inputId = "summarise_large_scale_characteristics_cohort_name",
-            label = "Cohort name",
+            label = "Analysis (dose comparison)",
             choices = choices$summarise_large_scale_characteristics_cohort_name,
-            selected = "population_objective_1",
+            selected = "First-dose vaccinated vs. Unvaccinated",
             multiple = TRUE,
             options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
           ),
@@ -1150,7 +1089,7 @@ ui <- bslib::page_navbar(
             inputId = "summarise_large_scale_characteristics_exposure",
             label = "Exposure",
             choices = choices$summarise_large_scale_characteristics_exposure,
-            selected = c("exposed"),
+            selected = c("Exposed"),
             multiple = TRUE,
             options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
           ),
@@ -1226,7 +1165,8 @@ ui <- bslib::page_navbar(
               position = "right"
             ),
             reactable::reactableOutput("summarise_large_scale_characteristics_table_lsc") |>
-              shinycssloaders::withSpinner()
+              shinycssloaders::withSpinner(),
+            footerNote("Prevalence of recorded conditions, drug exposures, procedures, measurements, and observations in prespecified time windows before the index date. These features were candidates for the LASSO propensity-score models.")
           )
           # )
         )
@@ -1240,7 +1180,7 @@ ui <- bslib::page_navbar(
         sidebar = bslib::sidebar(
           shinyWidgets::pickerInput(
             inputId = "gestational_time_distributions_cdm_name",
-            label = "CDM name",
+            label = "Data source",
             choices = choices$gestational_time_distributions_cdm_name,
             selected = selected$gestational_time_distributions_cdm_name,
             multiple = TRUE,
@@ -1248,7 +1188,7 @@ ui <- bslib::page_navbar(
           ),
           shinyWidgets::pickerInput(
             inputId = "gestational_time_distributions_cohort_name",
-            label = "Cohort name",
+            label = "Analysis (dose comparison)",
             choices = choices$gestational_time_distributions_cohort_name,
             selected = selected$gestational_time_distributions_cohort_name[1],
             multiple = TRUE,
@@ -1369,7 +1309,8 @@ ui <- bslib::page_navbar(
                   style = "height: 100%;",
                   shiny::plotOutput("gestational_time_distributions_plot", height = "500px") |>
                     shinycssloaders::withSpinner()
-                )
+                ),
+                footerNote("Distribution of the index date \u2014 the vaccination date for the Exposed, and the matched vaccination date for Comparators \u2014 by calendar time and gestational age.")
               )
             )
           )
@@ -1384,7 +1325,7 @@ ui <- bslib::page_navbar(
         sidebar = bslib::sidebar(
           shinyWidgets::pickerInput(
             inputId = "summarise_standardised_mean_differences_cdm_name",
-            label = "CDM name",
+            label = "Data source",
             choices = choices$summarise_standardised_mean_differences_cdm_name,
             selected = selected$summarise_standardised_mean_differences_cdm_name,
             multiple = TRUE,
@@ -1392,9 +1333,9 @@ ui <- bslib::page_navbar(
           ),
           shinyWidgets::pickerInput(
             inputId = "summarise_standardised_mean_differences_cohort_name",
-            label = "Cohort name",
+            label = "Analysis (dose comparison)",
             choices = choices$summarise_standardised_mean_differences_cohort_name,
-            selected = "population_objective_1",
+            selected = "First-dose vaccinated vs. Unvaccinated",
             multiple = TRUE,
             options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
           ),
@@ -1464,7 +1405,8 @@ ui <- bslib::page_navbar(
                   position = "right"
                 ),
                 reactable::reactableOutput("summarise_standardised_mean_differences_table") |>
-                  shinycssloaders::withSpinner()
+                  shinycssloaders::withSpinner(),
+                footerNote("Standardised mean differences (SMD) comparing baseline characteristics between Exposed and Comparator groups, before and after propensity-score weighting (overlap weights).")
               )
             )
           ),
@@ -1524,7 +1466,8 @@ ui <- bslib::page_navbar(
                   position = "right"
                 ),
                 shiny::uiOutput("summarise_standardised_mean_differences_plot") |>
-                  shinycssloaders::withSpinner()
+                  shinycssloaders::withSpinner(),
+                footerNote("Each point is a baseline characteristic; the reference lines mark the 0.1 absolute SMD threshold for adequate balance, before (unweighted) and after (weighted) propensity-score weighting.")
               )
             )
           )
@@ -1540,7 +1483,7 @@ ui <- bslib::page_navbar(
       sidebar = bslib::sidebar(
         shinyWidgets::pickerInput(
           inputId = "incidence_rate_ratio_cdm_name",
-          label = "CDM name",
+          label = "Data source",
           choices = choices$incidence_rate_ratio_cdm_name,
           selected = selected$incidence_rate_ratio_cdm_name,
           multiple = TRUE,
@@ -1548,9 +1491,9 @@ ui <- bslib::page_navbar(
         ),
         shinyWidgets::pickerInput(
           inputId = "incidence_rate_ratio_cohort_name",
-          label = "Cohort name",
+          label = "Analysis (dose comparison)",
           choices = choices$incidence_rate_ratio_cohort_name,
-          selected = paste0("population_objective_", 1:3),
+          selected = c("First-dose vaccinated vs. Unvaccinated", "Boosted vs. Unboosted", "First-dose vaccinated vs. Unvaccinated (Miscarriage)", "Boosted vs. Unboosted (Miscarriage)", "First-dose vaccinated vs. Unvaccinated (Preterm delivery)", "Boosted vs. Unboosted (Preterm delivery)"),
           multiple = TRUE,
           options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
         ),
@@ -1675,7 +1618,8 @@ ui <- bslib::page_navbar(
                 position = "right"
               ),
               gt::gt_output("incidence_rate_ratio_table_summary") |>
-                shinycssloaders::withSpinner()
+                shinycssloaders::withSpinner(),
+              footerNote("Follow-up (person-days), number of pregnancies, and number of events by exposure group. 'Meta Analysis' rows pool data-source-specific results using random-effects meta-analysis.")
             )
           )
         ),
@@ -1726,7 +1670,8 @@ ui <- bslib::page_navbar(
                 position = "right"
               ),
               gt::gt_output("incidence_rate_ratio_table_irr") |>
-                shinycssloaders::withSpinner()
+                shinycssloaders::withSpinner(),
+              footerNote("Incidence rate ratios estimated by Poisson regression, with 95% confidence intervals from bootstrap resampling of matched pairs. Empirically calibrated estimates (selectable in the sidebar) use 38 negative control outcomes to adjust for residual confounding. 'Meta Analysis' rows pool data-source-specific estimates using random-effects meta-analysis.")
             )
           )
         ),
@@ -1769,7 +1714,7 @@ ui <- bslib::page_navbar(
               sidebar = bslib::sidebar(
                 shinyWidgets::pickerInput(
                   inputId = "incidence_rate_ratio_plot_y",
-                  label = "Vertical component",
+                  label = "Y-axis",
                   choices = c("cdm_name", "cohort_name", "vaccine_brand", "gestational_trimester", "age_group", "weighting", "outcome_name", "outcome_group", "empirical_calibration"),
                   selected = "outcome_name",
                   multiple = TRUE,
@@ -1797,197 +1742,8 @@ ui <- bslib::page_navbar(
                 style = "height: 100%;",
                 shiny::uiOutput("incidence_rate_ratio_plot") |>
                   shinycssloaders::withSpinner()
-              )
-            )
-          )
-        )
-      )
-    )
-  ),
-  # Kaplan-Meier ----
-  bslib::nav_panel(
-    title = "Log-Log plot",
-    icon = shiny::icon("chart-bar"),
-    bslib::layout_sidebar(
-      sidebar = bslib::sidebar(
-        shinyWidgets::pickerInput(
-          inputId = "kaplan_meier_cdm_name",
-          label = "CDM name",
-          choices = choices$kaplan_meier_cdm_name,
-          selected = selected$kaplan_meier_cdm_name,
-          multiple = TRUE,
-          options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
-        ),
-        shinyWidgets::pickerInput(
-          inputId = "kaplan_meier_cohort_name",
-          label = "Cohort name",
-          choices = choices$kaplan_meier_cohort_name,
-          selected = paste0("population_objective_", 1:3),
-          multiple = TRUE,
-          options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
-        ),
-        shinyWidgets::pickerInput(
-          inputId = "kaplan_meier_exposure",
-          label = "Exposure",
-          choices = choices$kaplan_meier_exposure,
-          selected = selected$kaplan_meier_exposure,
-          multiple = TRUE,
-          options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
-        ),
-        shinyWidgets::pickerInput(
-          inputId = "kaplan_meier_vaccine_brand",
-          label = "Vaccine brand",
-          choices = choices$kaplan_meier_vaccine_brand,
-          selected = "overall",
-          multiple = TRUE,
-          options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
-        ),
-        shinyWidgets::pickerInput(
-          inputId = "kaplan_meier_gestational_trimester",
-          label = "Gestational trimester",
-          choices = choices$kaplan_meier_gestational_trimester,
-          selected = "overall",
-          multiple = TRUE,
-          options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
-        ),
-        shinyWidgets::pickerInput(
-          inputId = "kaplan_meier_age_group",
-          label = "Age group",
-          choices = choices$kaplan_meier_maternal_age_group,
-          selected = "overall",
-          multiple = TRUE,
-          options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
-        ),
-        shinyWidgets::pickerInput(
-          inputId = "kaplan_meier_outcome",
-          label = "Outcome name",
-          choices = choices$kaplan_meier_outcome,
-          selected = selected$kaplan_meier_outcome[1],
-          multiple = TRUE,
-          options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
-        ),
-        shinyWidgets::pickerInput(
-          inputId = "kaplan_meier_study_analysis",
-          label = "Analysis",
-          choices = "main",
-          selected = "main",
-          multiple = TRUE,
-          options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
-        ),
-        shinyWidgets::pickerInput(
-          inputId = "kaplan_meier_weighting",
-          label = "Weighting",
-          choices = choices$kaplan_meier_weighting,
-          selected = TRUE,
-          multiple = TRUE,
-          options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
-        ),
-        width = 335,
-        position = "left"
-      ),
-      shiny::actionButton(
-        inputId = "update_kaplan_meier",
-        label = "Update content",
-        width = "200px"
-      ),
-      shiny::div(shiny::textOutput(outputId = "update_message_kaplan_meier"), class = "ov_update_button"),
-      bslib::navset_card_tab(
-        bslib::nav_panel(
-          title = "Table",
-          bslib::card(
-            full_screen = TRUE,
-            bslib::card_header(
-              bslib::popover(
-                shiny::icon("download"),
-                shinyWidgets::pickerInput(
-                  inputId = "kaplan_meier_table_format",
-                  label = "Format",
-                  choices = c("docx", "png", "pdf", "html"),
-                  selected = "docx",
-                  multiple = FALSE,
-                  options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
-                ),
-                shiny::downloadButton(outputId = "kaplan_meier_table_download", label = "Download table")
               ),
-              class = "text-end"
-            ),
-            bslib::layout_sidebar(
-              sidebar = bslib::sidebar(
-                shinyWidgets::pickerInput(
-                  inputId = "kaplan_meier_table_hide",
-                  label = "Hide",
-                  choices = c("cdm_name", "cohort_name", "exposure", "vaccine_brand", "gestational_trimester", "maternal_age_group", "variable_level", "weighting"),
-                  selected = c("vaccine_brand", "gestational_trimester", "maternal_age_group", "weighting"),
-                  multiple = TRUE,
-                  options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
-                ),
-                position = "right"
-              ),
-              reactable::reactableOutput("kaplan_meier_table") |>
-                shinycssloaders::withSpinner()
-            )
-          )
-        ),
-        bslib::nav_panel(
-          title = "Plot",
-          bslib::card(
-            full_screen = TRUE,
-            bslib::card_header(
-              bslib::popover(
-                shiny::icon("download"),
-                shiny::numericInput(
-                  inputId = "kaplan_meier_plot_width",
-                  label = "Width",
-                  value = 15
-                ),
-                shiny::numericInput(
-                  inputId = "kaplan_meier_plot_height",
-                  label = "Height",
-                  value = 15
-                ),
-                shinyWidgets::pickerInput(
-                  inputId = "kaplan_meier_plot_units",
-                  label = "Units",
-                  choices = c("px", "cm", "inch"),
-                  selected = "cm",
-                  multiple = FALSE,
-                  options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
-                ),
-                shiny::numericInput(
-                  inputId = "kaplan_meier_plot_dpi",
-                  label = "DPI",
-                  value = 300
-                ),
-                shiny::downloadButton(outputId = "kaplan_meier_plot_download", label = "Download plot")
-              ),
-              class = "text-end"
-            ),
-            bslib::layout_sidebar(
-              fill = TRUE,
-              sidebar = bslib::sidebar(
-                shinyWidgets::pickerInput(
-                  inputId = "kaplan_meier_plot_facet",
-                  label = "Facet",
-                  choices = c("cdm_name", "cohort_name", "vaccine_brand", "gestational_trimester", "age_group", "weighting", "outcome", "outcome_group"),
-                  selected = c("cdm_name", "cohort_name"),
-                  multiple = TRUE,
-                  options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
-                ),
-                shinyWidgets::pickerInput(
-                  inputId = "kaplan_meier_plot_colour",
-                  label = "Colour",
-                  choices = c("exposure", "cdm_name", "cohort_name", "vaccine_brand", "gestational_trimester", "age_group", "weighting", "outcome", "outcome_group"),
-                  selected = "exposure",
-                  multiple = TRUE,
-                  options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
-                ),
-                position = "right"
-              ),
-              div(
-                style = "height: 100%;",
-                shiny::uiOutput("kaplan_meier_plot") |>
-                  shinycssloaders::withSpinner()
-              )
+              footerNote("Incidence rate ratios with 95% confidence intervals. See the table tab for details on estimation, empirical calibration, and meta-analysis pooling.")
             )
           )
         )

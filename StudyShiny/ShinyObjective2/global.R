@@ -29,6 +29,9 @@ library(scales)
 library(meta)
 library(EmpiricalCalibration)
 
+# set TRUE to hide internal diagnostics (e.g. Cohort summary) for dissemination
+disseminationMode <- FALSE
+
 # preprocess data if it has not been done
 fileData <- file.path(getwd(), "data", "shinyData.RData")
 if (!file.exists(fileData)) {

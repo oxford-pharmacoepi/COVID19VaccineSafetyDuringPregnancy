@@ -943,7 +943,7 @@ ui <- bslib::page_navbar(
                     ),
                     sortable::add_rank_list(
                       text = "hide",
-                      labels = c("maternal_age_group", 'maternal_age_group_narrow', 'pregnancy_outcome_strata', "pregnancy_start_period", "socioeconomic_status", "ethnicity", 'birth_continent', 'nationallity', "target_cohort", "time"),
+                      labels = c("maternal_age_group", 'maternal_age_group_narrow', 'pregnancy_outcome_strata', 'previous_pregnancy', "pregnancy_start_period", "socioeconomic_status", "ethnicity", 'birth_continent', 'nationallity', "target_cohort", "time"),
                       input_id = "survival_table_hide"
                     )
                   ),
@@ -1014,7 +1014,7 @@ ui <- bslib::page_navbar(
                     label = "Colour",
                     selected = c("outcome"),
                     multiple = TRUE,
-                    choices = c("cdm_name", "outcome", "maternal_age_group", 'maternal_age_group_narrow', 'pregnancy_outcome_strata', "pregnancy_start_period", "socioeconomic_status", "ethnicity", 'birth_continent', 'nationallity'),
+                    choices = c("cdm_name", "outcome", "maternal_age_group", 'maternal_age_group_narrow', 'pregnancy_outcome_strata', 'previous_pregnancy', "pregnancy_start_period", "socioeconomic_status", "ethnicity", 'birth_continent', 'nationallity'),
                     options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
                   ),
                   shinyWidgets::pickerInput(
@@ -1022,7 +1022,7 @@ ui <- bslib::page_navbar(
                     label = "Facet",
                     selected = c("cdm_name"),
                     multiple = TRUE,
-                    choices = c("cdm_name", "outcome", "maternal_age_group", 'maternal_age_group_narrow', 'pregnancy_outcome_strata', "pregnancy_start_period", "socioeconomic_status", "ethnicity", 'birth_continent', 'nationallity'),
+                    choices = c("cdm_name", "outcome", "maternal_age_group", 'maternal_age_group_narrow', 'pregnancy_outcome_strata', 'previous_pregnancy', "pregnancy_start_period", "socioeconomic_status", "ethnicity", 'birth_continent', 'nationallity'),
                     options = list(`actions-box` = TRUE, size = 10, `selected-text-format` = "count > 3")
                   ),
                   shinyWidgets::pickerInput(
