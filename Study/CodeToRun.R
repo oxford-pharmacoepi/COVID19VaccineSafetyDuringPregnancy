@@ -63,8 +63,7 @@ cdm <- cdmFromCon(
   cdmSchema = cdm_database_schema,
   writeSchema = results_database_schema,
   writePrefix = tolower(table_stem),
-  cdmName = database_name,
-  .softValidation = TRUE
+  cdmName = database_name
 )
 
 # Pregnancy tables details:
