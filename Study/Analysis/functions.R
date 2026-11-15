@@ -226,10 +226,10 @@ getSourcePopulation <- function(cdm, objective, enrollment, codelist) {
           select("subject_id", "vaccine_date" = "cohort_start_date"),
         by = "subject_id"
       ) %>%
-      filter(vaccine_date > cohort_start_date | is.na(vaccine_date)) |>
+      filter(vaccine_date >= cohort_start_date | is.na(vaccine_date)) |>
       compute(name = name, temporary = FALSE) |>
       recordCohortAttrition(reason = "Unvaccinated before pregnancy start") |>
-      filter(vaccine_date > pregnancy_start_week_6 | is.na(vaccine_date)) |>
+      filter(vaccine_date >= pregnancy_start_week_6 | is.na(vaccine_date)) |>
       compute(name = name, temporary = FALSE) |>
       recordCohortAttrition(reason = "Unvaccinated before gestational week 6")
   }
@@ -264,7 +264,7 @@ getSourcePopulation <- function(cdm, objective, enrollment, codelist) {
   }
   
   if (objective == 3) {
-    ## 2nd Objective
+    ## 3rd Objective
     cdm[[name]] <- cdm[[name]] |>
       left_join(
         cdm$covid_vaccines_dose |>
@@ -1384,25 +1384,35 @@ processGroupStrata <- function(data, groupLevel, strataLevel, ci, outcomes, weig
     }
 
     coefBootstrap <- bind_rows(coefBootstrap)
+    bootstrapSummary <- coefBootstrap |>
+      dplyr::filter(is.finite(coef), coef > 0) |>
+      dplyr::group_by(outcome_name, weighting) |>
+      dplyr::summarise(
+        lower_ci = exp(stats::quantile(
+          log(coef), 0.025, na.rm = TRUE
+        )),
+        upper_ci = exp(stats::quantile(
+          log(coef), 0.975, na.rm = TRUE
+        )),
+        se = stats::sd(log(coef), na.rm = TRUE),
+        n_boot_valid = dplyr::n(),
+        .groups = "drop"
+      )
     
     # Main estimate (stats = TRUE for full output columns)
     main_est <- getIRR(data, ci = "midp", outcomes = outcomes, stats = TRUE, weightsCol = weights)
     
-    # Attach bootstrap CIs
+    
     results <- main_est |>
-      select(!c("lower_ci", "upper_ci")) |>
-      left_join(
-        coefBootstrap |>
-          group_by(outcome_name, weighting) |>
-          summarise(
-            lower_ci = quantile(coef, 0.025, na.rm = TRUE),
-            upper_ci = quantile(coef, 0.975, na.rm = TRUE),
-            .groups  = "drop"
-          ),
+      dplyr::select(-dplyr::any_of(
+        c("lower_ci", "upper_ci", "se")
+      )) |>
+      dplyr::left_join(
+        bootstrapSummary,
         by = c("outcome_name", "weighting")
       )
     
-    rm(coefBootstrap, data.ii)
+    rm(coefBootstrap, bootstrapSummary, data.ii)
     
   } else if (ci == "midp") {
     results <- getIRR(data, ci = "midp", outcomes = outcomes, stats = TRUE, weightsCol = weights)
@@ -1418,12 +1428,12 @@ processGroupStrata <- function(data, groupLevel, strataLevel, ci, outcomes, weig
         "person_days_comparator", "person_days_exposed",
         "cases_comparator", "cases_exposed",
         "person_days_median_comparator", "person_days_median_exposed",
-        "person_days_q25_comparator",   "person_days_q25_exposed",
-        "person_days_q75_comparator",   "person_days_q75_exposed",
-        "person_days_min_comparator",   "person_days_min_exposed",
-        "person_days_max_comparator",   "person_days_max_exposed",
-        "subject_count_comparator",     "subject_count_exposed",
-        "coef", "lower_ci", "upper_ci", "se"
+        "person_days_q25_comparator", "person_days_q25_exposed",
+        "person_days_q75_comparator", "person_days_q75_exposed",
+        "person_days_min_comparator", "person_days_min_exposed",
+        "person_days_max_comparator", "person_days_max_exposed",
+        "subject_count_comparator", "subject_count_exposed",
+        "coef", "lower_ci", "upper_ci", "se", "n_boot_valid"
       ),
       names_to  = "estimate_name",
       values_to = "estimate_value"

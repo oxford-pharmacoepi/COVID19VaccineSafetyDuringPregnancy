@@ -390,66 +390,123 @@ renderInteractivePlot <- function(plt, interactive) {
   }
 }
 
+
 metaAnalysis <- function(data) {
-  data <- data|> 
+  
+  required <- c("cdm_name", "coef", "se")
+  missing <- setdiff(required, names(data))
+  
+  if (length(missing) > 0) {
+    stop(
+      "Missing required columns: ",
+      paste(missing, collapse = ", ")
+    )
+  }
+  
+  # Use database-specific adjusted effect estimates
+  data <- data |>
     dplyr::ungroup() |>
-    dplyr::filter(!is.na(exposed_outcome_count)) |>
-    dplyr::filter(!is.na(comparator_outcome_count))
-  if (nrow(data) < 2) {
+    dplyr::mutate(
+      coef = as.numeric(coef),
+      se = as.numeric(se)
+    ) |>
+    dplyr::filter(
+      is.finite(coef),
+      coef > 0,
+      is.finite(se),
+      se > 0
+    )
+  
+  # Require at least two independent databases
+  if (
+    nrow(data) < 2 ||
+    dplyr::n_distinct(data$cdm_name) < 2
+  ) {
     return(NULL)
   }
-  if (sum(!is.na(as.numeric(data$comparator_outcome_count)), na.rm = TRUE) < 2 | sum(!is.na(as.numeric(data$exposed_outcome_count)), na.rm = TRUE) < 2) {
-    return(NULL)
+  
+  if (anyDuplicated(data$cdm_name)) {
+    stop(
+      "Expected one effect estimate per database. ",
+      "Check outcome and subgroup filtering."
+    )
   }
-  if (sum(as.numeric(data$comparator_outcome_count), na.rm = TRUE) == 0 | sum(as.numeric(data$exposed_outcome_count), na.rm = TRUE) == 0) {
-    return(NULL)
-  }
-  metaResults <- meta::metainc(
-    event.e = data$exposed_outcome_count,
-    time.e = data$exposed_person_days,
-    event.c = data$comparator_outcome_count,
-    time.c = data$comparator_person_days,
-    method = "GLMM"
+  
+  # Random-effects inverse-variance meta-analysis
+  fit <- meta::metagen(
+    TE = log(data$coef),
+    seTE = data$se,
+    studlab = data$cdm_name,
+    sm = "IRR",
+    common = FALSE,
+    random = TRUE,
+    method.tau = "REML",
+    method.random.ci = "classic"
   )
-  dplyr::tibble(
-    cdm_name = "Meta Analysis", 
-    coef = exp(metaResults$TE.random),
-    lower_ci = exp(metaResults$lower.random),
-    upper_ci = exp(metaResults$upper.random),
-    heterogeneity = metaResults$I2,
-    comparator_record_count = sum(data$comparator_record_count, na.rm = TRUE),
-    exposed_record_count = sum(data$exposed_record_count, na.rm = TRUE),
-    comparator_outcome_count = sum(data$comparator_outcome_count, na.rm = TRUE),
-    exposed_outcome_count = sum(data$exposed_outcome_count, na.rm = TRUE),
-    comparator_person_days = sum(data$comparator_person_days, na.rm = TRUE),
-    exposed_person_days = sum(data$exposed_person_days, na.rm = TRUE)
-  ) |>
+  
+  # Extract pooled estimates
+  result <- dplyr::tibble(
+    cdm_name = "Meta Analysis",
+    coef = exp(fit$TE.random),
+    lower_ci = exp(fit$lower.random),
+    upper_ci = exp(fit$upper.random),
+    heterogeneity = fit$I2,
+    tau2 = fit$tau2,
+    n_databases = nrow(data)
+  )
+  
+  # Retain your descriptive summary fields
+  summary_columns <- c(
+    "comparator_record_count",
+    "exposed_record_count",
+    "comparator_outcome_count",
+    "exposed_outcome_count",
+    "comparator_person_days",
+    "exposed_person_days"
+  )
+  
+  for (nm in intersect(summary_columns, names(data))) {
+    result[[nm]] <- sum(
+      as.numeric(data[[nm]]),
+      na.rm = TRUE
+    )
+  }
+  
+  result |>
     tidyr::pivot_longer(
-      cols = c(
-        "coef", "lower_ci", "upper_ci", "heterogeneity", "comparator_record_count", 
-        "exposed_record_count", "comparator_outcome_count", "exposed_outcome_count", 
-        "comparator_person_days", "exposed_person_days"
-      ),
+      cols = -cdm_name,
       names_to = "estimate_name",
       values_to = "estimate_value"
     ) |>
     dplyr::mutate(
       variable_name = dplyr::case_when(
-        estimate_name %in% c("coef", "lower_ci", "upper_ci", "heterogeneity") ~ "Relative Risk",
-        grepl("record_count", estimate_name) ~ "Number pregnancies",
-        grepl("outcome_count", estimate_name) ~ "Number events",
-        .default = "Person-Days"
+        estimate_name %in% c(
+          "coef", "lower_ci", "upper_ci",
+          "heterogeneity", "tau2", "n_databases"
+        ) ~ "Relative Risk",
+        grepl("record_count", estimate_name) ~
+          "Number pregnancies",
+        grepl("outcome_count", estimate_name) ~
+          "Number events",
+        TRUE ~ "Person-Days"
       ),
       variable_level = dplyr::case_when(
         grepl("exposed", estimate_name) ~ "Exposed",
         grepl("comparator", estimate_name) ~ "Comparator",
-        .default = NA_character_
+        TRUE ~ NA_character_
       ),
-      estimate_type = dplyr::if_else(grepl("count", estimate_name), "integer", "numeric"),
-      estimate_name = gsub("exposed_|comparator_", "", estimate_name),
+      estimate_type = dplyr::if_else(
+        grepl("count|n_databases", estimate_name),
+        "integer",
+        "numeric"
+      ),
+      estimate_name = gsub(
+        "exposed_|comparator_", "", estimate_name
+      ),
       estimate_value = as.character(estimate_value)
     )
 }
+
 
 empiricalCalibration <- function(data) {
   # nco

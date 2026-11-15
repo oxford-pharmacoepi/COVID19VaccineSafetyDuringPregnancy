@@ -15,7 +15,11 @@ cdm$comparator_source <- cdm$source_population |>
       cohort_end_date < vaccine_date | is.na(vaccine_date), cohort_end_date, as.Date(!!dateadd("vaccine_date", -1))
     )
   ) |>
-  filter(!is.na(cohort_start_date) & !is.na(cohort_end_date)) |>
+  filter(
+    !is.na(cohort_start_date),
+    !is.na(cohort_end_date),
+    cohort_start_date <= cohort_end_date
+  ) |>
   compute(name = "comparator_source", temporary = FALSE)
 
 ## Potential exposed cohort ----  
@@ -23,7 +27,7 @@ info(logger, "- Potential exposed cohort")
 cdm$exposed_source <- cdm$source_population |>
   addCohortName() |>
   mutate(
-    exposure_date = if_else(vaccine_date < cohort_end_date & vaccine_date > pregnancy_start_week_6, vaccine_date, NA)
+    exposure_date = if_else(vaccine_date < cohort_end_date & vaccine_date >= pregnancy_start_week_6, vaccine_date, NA)
   ) |>
   filter(!is.na(exposure_date)) |>
   # vaccine brand and dose
