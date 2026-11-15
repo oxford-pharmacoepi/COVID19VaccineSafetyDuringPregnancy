@@ -6,6 +6,8 @@
 **/CodeToRunLocal.R
 Downloads/*
 *.zip
+*.docx
+**/data/raw/*
 *.dcf
 *.png
 *.svg
